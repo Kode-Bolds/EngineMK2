@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KodeboldsEngineMK2", "KodeboldsEngineMK2\KodeboldsEngineMK2.vcxproj", "{20D1FD96-5E35-44E4-AC0E-CEB0AD22C9A3}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExampleGame", "ExampleGame\ExampleGame.vcxproj", "{FD2E5450-E1CF-461E-8D84-97EC221501E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{20D1FD96-5E35-44E4-AC0E-CEB0AD22C9A3}.Release|x64.Build.0 = Release|x64
 		{20D1FD96-5E35-44E4-AC0E-CEB0AD22C9A3}.Release|x86.ActiveCfg = Release|Win32
 		{20D1FD96-5E35-44E4-AC0E-CEB0AD22C9A3}.Release|x86.Build.0 = Release|Win32
+		{FD2E5450-E1CF-461E-8D84-97EC221501E7}.Debug|x64.ActiveCfg = Debug|x64
+		{FD2E5450-E1CF-461E-8D84-97EC221501E7}.Debug|x64.Build.0 = Debug|x64
+		{FD2E5450-E1CF-461E-8D84-97EC221501E7}.Debug|x86.ActiveCfg = Debug|Win32
+		{FD2E5450-E1CF-461E-8D84-97EC221501E7}.Debug|x86.Build.0 = Debug|Win32
+		{FD2E5450-E1CF-461E-8D84-97EC221501E7}.Release|x64.ActiveCfg = Release|x64
+		{FD2E5450-E1CF-461E-8D84-97EC221501E7}.Release|x64.Build.0 = Release|x64
+		{FD2E5450-E1CF-461E-8D84-97EC221501E7}.Release|x86.ActiveCfg = Release|Win32
+		{FD2E5450-E1CF-461E-8D84-97EC221501E7}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
