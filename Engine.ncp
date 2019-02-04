@@ -1,0 +1,374 @@
+<Project>
+  <Name>Engine</Name>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=2.4.1823.0, Culture=neutral, PublicKeyToken=null">
+    <Name>Untitled</Name>
+    <Language>CSharp</Language>
+    <Entities>
+      <Entity type="Class">
+        <Name>ECSManager</Name>
+        <Access>Public</Access>
+        <Location left="1786" top="385" />
+        <Size width="673" height="571" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">vector&lt;Entity&gt; mEntities</Member>
+        <Member type="Field">vector&lt;Pair&lt;int, Transform&gt;&gt; mTransforms</Member>
+        <Member type="Field">vector&lt;ISystem&gt; mRenderSystems</Member>
+        <Member type="Field">vector&lt;ISystem&gt; mUpdateSystems</Member>
+        <Member type="Method">public void CreateEntity(string pEntityName)</Member>
+        <Member type="Method">public void DestroyEntity(string pEntityName)</Member>
+        <Member type="Method">public void AddComponent(IComponent pComponent, string pEntityName)</Member>
+        <Member type="Method">public void RemoveComponent(ComponentType pComponentType, string pEntityName)</Member>
+        <Member type="Method">public void AddUpdateSystem(ISystem pSystem)</Member>
+        <Member type="Method">public void AddRenderSystem(ISystem pSystem)</Member>
+        <Member type="Method">private void AssignEntity(Entity pEntity)</Member>
+        <Member type="Method">private void RemoveEntity(Entity pEntity)</Member>
+        <Member type="Method">public void ProcessSystems()</Member>
+        <Member type="Method">public IComponent GetComponent(string pEntityName, ComponentType pComponentType)</Member>
+        <Member type="Method">public void SetComponent(string pEntityName, ComponentType pComponentType, IComponent pComponent)</Member>
+        <Member type="Method">public IComponent GetComponent(int pEntityID, ComponentType pComponentType)</Member>
+        <Member type="Method">public void SetComponent(int pEntityID, ComponentType pComponentType, IComponent pComponent)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Comment">
+        <Text>Systems</Text>
+        <Location left="307" top="75" />
+        <Size width="100" height="50" />
+      </Entity>
+      <Entity type="Comment">
+        <Text>Components</Text>
+        <Location left="419" top="1210" />
+        <Size width="100" height="50" />
+      </Entity>
+      <Entity type="Comment">
+        <Text>Managers</Text>
+        <Location left="2146" top="77" />
+        <Size width="100" height="50" />
+      </Entity>
+      <Entity type="Structure">
+        <Name>Entity</Name>
+        <Access>Public</Access>
+        <Location left="1924" top="226" />
+        <Size width="162" height="128" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">string name</Member>
+        <Member type="Field">int ID</Member>
+        <Member type="Field">Enum ComponentMask</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>ISystem</Name>
+        <Access>Public</Access>
+        <Location left="42" top="151" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">vector&lt;int&gt; mEntities</Member>
+        <Member type="Field">ComponentType mMask</Member>
+        <Member type="Method">public void AssignEntity(Entity pEntity)</Member>
+        <Member type="Method">public void Process()</Member>
+        <Member type="Method">public void DeleteEntity(Entity pEntity)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>MovementSystem</Name>
+        <Access>Public</Access>
+        <Location left="231" top="151" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Enum">
+        <Name>ComponentType</Name>
+        <Access>Public</Access>
+        <Location left="107" top="1286" />
+        <Size width="162" height="545" />
+        <Collapsed>False</Collapsed>
+        <Value>Transform</Value>
+        <Value>Velocity</Value>
+        <Value>BoxCollider</Value>
+        <Value>SphereCollider</Value>
+        <Value>Geometry</Value>
+        <Value>Texture</Value>
+        <Value>Shader</Value>
+        <Value>Camera</Value>
+        <Value>Light</Value>
+        <Value>Gravity</Value>
+        <Value>Audio</Value>
+        <Value>AI</Value>
+      </Entity>
+      <Entity type="Class">
+        <Name>InputManager</Name>
+        <Access>Public</Access>
+        <Location left="2102" top="143" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Comment">
+        <Text>Classes</Text>
+        <Location left="2136" top="1195" />
+        <Size width="100" height="50" />
+      </Entity>
+      <Entity type="Class">
+        <Name>ObjLoader</Name>
+        <Access>Public</Access>
+        <Location left="1786" top="1285" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">vector&lt;VertexData&gt; mVertices</Member>
+        <Member type="Field">vector&lt;int&gt; mIndices</Member>
+        <Member type="Method">public Pair&lt;ID3D11Buffers&gt; LoadObject(string filename)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>GUI</Name>
+        <Access>Public</Access>
+        <Location left="1998" top="1285" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>RenderSystem</Name>
+        <Access>Public</Access>
+        <Location left="418" top="151" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Constructor">public RenderSystem(Hwnd pWindow)</Member>
+        <Member type="Method">public void InitDevice(HWND pHwnd)</Member>
+        <Member type="Method">public void CreateConstantBuffers()</Member>
+        <Member type="Method">public void CleanUp()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>AudioLoader</Name>
+        <Access>Public</Access>
+        <Location left="2211" top="1289" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Scene</Name>
+        <Access>Public</Access>
+        <Location left="2416" top="1289" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">public void Render()</Member>
+        <Member type="Method">public void Update()</Member>
+        <Member type="Method">public void OnLoad()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>SceneManager</Name>
+        <Access>Public</Access>
+        <Location left="2483" top="77" />
+        <Size width="162" height="315" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">Scene mScene</Member>
+        <Member type="Field">float mDeltaTime</Member>
+        <Member type="Field">float mTime</Member>
+        <Member type="Field">int mFps</Member>
+        <Member type="Method">public void Render()</Member>
+        <Member type="Method">public void Update()</Member>
+        <Member type="Method">public void LoadScene()</Member>
+        <Member type="Method">public float DeltaTime()</Member>
+        <Member type="Method">public float Time()</Member>
+        <Member type="Method">public int Fps()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>AudioSystem</Name>
+        <Access>Public</Access>
+        <Location left="43" top="389" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>AISystem</Name>
+        <Access>Public</Access>
+        <Location left="231" top="392" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Structure">
+        <Name>Velocity</Name>
+        <Access>Public</Access>
+        <Location left="525" top="1286" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">float3 mVelocity</Member>
+        <Member type="Field">float3 mAcceleration</Member>
+        <Member type="Field">float mMaxSpeed</Member>
+      </Entity>
+      <Entity type="Structure">
+        <Name>IComponent</Name>
+        <Access>Public</Access>
+        <Location left="347" top="1286" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">public ComponentType ComponentType()</Member>
+      </Entity>
+      <Entity type="Structure">
+        <Name>Transform</Name>
+        <Access>Public</Access>
+        <Location left="713" top="1285" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">float4x4 mTransform</Member>
+        <Member type="Field">float3 mTranslation</Member>
+        <Member type="Field">float3 mRotation</Member>
+        <Member type="Field">float3 mScale</Member>
+        <Member type="Field">float3 mForward</Member>
+        <Member type="Field">float3 mRight</Member>
+        <Member type="Field">float3 mUp</Member>
+      </Entity>
+      <Entity type="Structure">
+        <Name>BoxCollider</Name>
+        <Access>Public</Access>
+        <Location left="347" top="1516" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">vector&lt;string&gt; mCollidedWith</Member>
+        <Member type="Field">float mWidth</Member>
+        <Member type="Field">float mHeight</Member>
+        <Member type="Field">float mDepth</Member>
+      </Entity>
+      <Entity type="Structure">
+        <Name>SphereCollider</Name>
+        <Access>Public</Access>
+        <Location left="527" top="1519" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">vector&lt;string&gt; mCollidedWith</Member>
+        <Member type="Field">float mRadius</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>ResourceManager</Name>
+        <Access>Public</Access>
+        <Location left="2297" top="77" />
+        <Size width="162" height="281" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">vector&lt;Pair&lt;string, ID3D11ShaderResourceView&gt;&gt; mTextures</Member>
+        <Member type="Field">vector&lt;Pair&lt;string, ID3D11Buffers&gt;&gt; mGeometries</Member>
+        <Member type="Field">vector&lt;Pair&lt;string, ID3D11Buffer&gt;&gt; mInstances</Member>
+        <Member type="Field">vector&lt;Pair&lt;string, AudioBufferPointer&gt;&gt; mAudio</Member>
+        <Member type="Field">vector&lt;Pair&lt;string, ID3D11VertexPixelShaders&gt;&gt; mShaders</Member>
+        <Member type="Field">ObjLoader mObjLoader</Member>
+        <Member type="Field">AudioLoader mAudioLoader</Member>
+        <Member type="Method">public ID3D11ShaderResourceView LoadTexture(string filename)</Member>
+        <Member type="Method">public Pair&lt;Buffers&gt; LoadGeometry(string filename)</Member>
+        <Member type="Method">public AudioBufferPointer LoadAudio(string filename)</Member>
+        <Member type="Method">public Pair&lt;ShaderPointers&gt; LoadShader(string filename)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Structure">
+        <Name>Geometry</Name>
+        <Access>Public</Access>
+        <Location left="713" top="1516" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">string mFilename</Member>
+      </Entity>
+      <Entity type="Structure">
+        <Name>Texture</Name>
+        <Access>Public</Access>
+        <Location left="911" top="1285" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">string mDiffuse</Member>
+        <Member type="Field">string mNormal</Member>
+        <Member type="Field">string mHeight</Member>
+      </Entity>
+      <Entity type="Structure">
+        <Name>Shader</Name>
+        <Access>Public</Access>
+        <Location left="911" top="1516" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">BlendStates mBlendState</Member>
+        <Member type="Field">CullStates mCullState</Member>
+        <Member type="Field">DepthStates mDepthState</Member>
+        <Member type="Field">string mFilename</Member>
+      </Entity>
+      <Entity type="Structure">
+        <Name>Camera</Name>
+        <Access>Public</Access>
+        <Location left="347" top="1749" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">float3 mLookAt</Member>
+        <Member type="Field">float3 mUp</Member>
+        <Member type="Field">float3 mRight</Member>
+      </Entity>
+      <Entity type="Structure">
+        <Name>Light</Name>
+        <Access>Public</Access>
+        <Location left="528" top="1749" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">float3 mColour</Member>
+        <Member type="Field">float mIntensity</Member>
+      </Entity>
+      <Entity type="Structure">
+        <Name>Gravity</Name>
+        <Access>Public</Access>
+        <Location left="713" top="1747" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+      </Entity>
+      <Entity type="Structure">
+        <Name>AI</Name>
+        <Access>Public</Access>
+        <Location left="345" top="1979" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+      </Entity>
+      <Entity type="Structure">
+        <Name>Audio</Name>
+        <Access>Public</Access>
+        <Location left="525" top="1979" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">string mFilename</Member>
+      </Entity>
+      <Entity type="Comment">
+        <Text>TO BE DESIGNED AT LATER DATE</Text>
+        <Location left="438" top="2031" />
+        <Size width="160" height="75" />
+      </Entity>
+      <Entity type="Comment">
+        <Text>TO BE DESIGNED AT LATER DATE</Text>
+        <Location left="151" top="439" />
+        <Size width="160" height="75" />
+      </Entity>
+      <Entity type="Comment">
+        <Text>TO BE DESIGNED AT LATER DATE</Text>
+        <Location left="2211" top="1365" />
+        <Size width="160" height="75" />
+      </Entity>
+      <Entity type="Class">
+        <Name>BoxCollisionSystem</Name>
+        <Access>Public</Access>
+        <Location left="617" top="151" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>SphereCollisionSystem</Name>
+        <Access>Public</Access>
+        <Location left="808" top="151" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Comment">
+        <Text>TO BE DESIGNED AT LATER DATE</Text>
+        <Location left="1998" top="1365" />
+        <Size width="160" height="75" />
+      </Entity>
+    </Entities>
+    <Relationships />
+  </ProjectItem>
+</Project>
