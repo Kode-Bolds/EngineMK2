@@ -20,9 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Managers\ResourceManager.cpp" />
+    <ClCompile Include="Source Files\HelperClasses\Scene.cpp" />
+    <ClCompile Include="Source Files\Managers\SceneManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\Managers\ResourceManager.h" />
+    <ClInclude Include="Header Files\HelperClasses\Scene.h" />
+    <ClInclude Include="Header Files\Managers\SceneManager.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
