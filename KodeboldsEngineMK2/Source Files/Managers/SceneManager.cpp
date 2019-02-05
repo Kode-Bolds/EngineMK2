@@ -1,7 +1,5 @@
 #include "SceneManager.h"
 
-
-
 void SceneManager::Render()
 {
 	mScene->Render();
@@ -9,7 +7,13 @@ void SceneManager::Render()
 
 void SceneManager::Update()
 {
+	mCurrentTime = std::chrono::high_resolution_clock::now();
+	mStartTime = mCurrentTime;
+	mDeltaTime = mPreviousTime - mCurrentTime;
+
 	mScene->Update();
+
+	mPreviousTime = mCurrentTime;
 }
 
 void SceneManager::LoadScene(Scene& pScene)
@@ -23,17 +27,20 @@ void SceneManager::LoadScene(Scene& pScene)
 
 float SceneManager::DeltaTime()
 {
-	return 0.0f;
+	return mDeltaTime.count() * pow(10, 9); // (or 1e+9)
 }
 
 float SceneManager::Time()
 {
-	return 0.0f;
+	auto time = mCurrentTime - mStartTime;
+	return time.count() * pow(10, 9); // (or 1e+9)
 }
 
 int SceneManager::Fps()
 {
-	return 0;
+	// TODO: Average the fps over n frames.
+	mFps = 1 / DeltaTime();
+	return mFps;
 }
 
 SceneManager::SceneManager()
@@ -42,8 +49,11 @@ SceneManager::SceneManager()
 	{
 		mInstance = std::make_unique<SceneManager>(this);
 	}
+	else
+	{
+		delete this;
+	}
 }
-
 
 SceneManager::~SceneManager()
 {
