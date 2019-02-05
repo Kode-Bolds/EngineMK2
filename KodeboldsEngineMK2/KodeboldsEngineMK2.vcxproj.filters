@@ -38,14 +38,26 @@
       <UniqueIdentifier>{f9a0bec4-9734-47a0-a4df-314458c78150}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup>    
     <ClCompile Include="Source Files\Managers\ResourceManager.cpp">
       <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Managers\SceneManager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\HelperClasses\Scene.cpp">
+      <Filter>Source Files\HelperClasses</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\Managers\ResourceManager.h">
       <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+        <ClInclude Include="Source Files\Managers\SceneManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Files\HelperClasses\Scene.h">
+      <Filter>Header Files\HelperClasses</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
