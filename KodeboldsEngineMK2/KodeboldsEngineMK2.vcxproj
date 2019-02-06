@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Managers\ECSManager.cpp" />
+    <ClCompile Include="Source Files\Managers\InputManager.cpp" />
     <ClCompile Include="Source Files\Managers\ResourceManager.cpp" />
     <ClCompile Include="Source Files\HelperClasses\Scene.cpp" />
     <ClCompile Include="Source Files\Managers\SceneManager.cpp" />
@@ -41,6 +42,7 @@
     <ClInclude Include="Header Files\Components\Transform.h" />
     <ClInclude Include="Header Files\Components\Velocity.h" />
     <ClInclude Include="Header Files\Managers\ECSManager.h" />
+    <ClInclude Include="Header Files\Managers\InputManager.h" />
     <ClInclude Include="Header Files\Managers\ResourceManager.h" />
     <ClInclude Include="Header Files\HelperClasses\Scene.h" />
     <ClInclude Include="Header Files\Managers\SceneManager.h" />

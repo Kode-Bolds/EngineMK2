@@ -1,11 +1,11 @@
 #include "SceneManager.h"
 
-void SceneManager::Render()
+const void SceneManager::Render()
 {
 	mScene->Render();
 }
 
-void SceneManager::Update()
+const void SceneManager::Update()
 {
 	mCurrentTime = std::chrono::high_resolution_clock::now();
 	mStartTime = mCurrentTime;
@@ -16,7 +16,7 @@ void SceneManager::Update()
 	mPreviousTime = mCurrentTime;
 }
 
-void SceneManager::LoadScene(Scene& pScene)
+const void SceneManager::LoadScene(Scene& pScene)
 {
 	// unload current scene
 	mScene = nullptr; // TODO: DOES THIS CAUSE A MEMORY LEAK?
@@ -25,18 +25,18 @@ void SceneManager::LoadScene(Scene& pScene)
 	*mScene = pScene;
 }
 
-float SceneManager::DeltaTime()
+const float SceneManager::DeltaTime() const
 {
 	return mDeltaTime.count() * pow(10, 9); // (or 1e+9)
 }
 
-float SceneManager::Time()
+const float SceneManager::Time() const
 {
 	auto time = mCurrentTime - mStartTime;
 	return time.count() * pow(10, 9); // (or 1e+9)
 }
 
-int SceneManager::Fps()
+const int SceneManager::Fps() 
 {
 	// TODO: Average the fps over n frames.
 	mFps = 1 / DeltaTime();
