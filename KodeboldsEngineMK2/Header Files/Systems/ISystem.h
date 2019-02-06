@@ -1,11 +1,12 @@
 #pragma once
 #include <vector>
-#include "ComponentType.h"
+#include "Components.h"
+#include "Entity.h"
 
 class ISystem
 {
 private:
-	std::vector<int> mEntities;
+	std::vector<Entity> mEntities;
 	ComponentType mMask;
 
 public:
