@@ -113,5 +113,8 @@
     <ClInclude Include="Header Files\Components\BoxCollider.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Header Files\Managers\Entity.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
