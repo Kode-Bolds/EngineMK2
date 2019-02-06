@@ -42,8 +42,8 @@
     <ClInclude Include="Header Files\Components\Transform.h" />
     <ClInclude Include="Header Files\Components\Velocity.h" />
     <ClInclude Include="Header Files\Managers\ECSManager.h" />
+    <ClInclude Include="Header Files\Managers\Entity.h" />
     <ClInclude Include="Header Files\Managers\InputManager.h" />
-    <ClInclude Include="Header Files\HelperClasses\Entity.h" />
     <ClInclude Include="Header Files\Managers\ResourceManager.h" />
     <ClInclude Include="Header Files\HelperClasses\Scene.h" />
     <ClInclude Include="Header Files\Managers\SceneManager.h" />
