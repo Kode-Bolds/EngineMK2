@@ -54,6 +54,9 @@
     <ClCompile Include="Source Files\HelperClasses\ObjLoader.cpp">
       <Filter>Source Files\HelperClasses</Filter>
     </ClCompile>
+    <ClCompile Include="Source Files\Managers\InputManager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\Managers\ResourceManager.h">
@@ -115,6 +118,9 @@
     </ClInclude>
     <ClInclude Include="Header Files\Components\BoxCollider.h">
       <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Managers\InputManager.h">
+      <Filter>Header Files\Managers</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\Managers\Entity.h">
       <Filter>Header Files\Managers</Filter>

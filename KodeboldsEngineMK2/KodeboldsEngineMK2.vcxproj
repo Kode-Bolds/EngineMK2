@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="Source Files\HelperClasses\ObjLoader.cpp" />
     <ClCompile Include="Source Files\Managers\ECSManager.cpp" />
+    <ClCompile Include="Source Files\Managers\InputManager.cpp" />
     <ClCompile Include="Source Files\Managers\ResourceManager.cpp" />
     <ClCompile Include="Source Files\HelperClasses\Scene.cpp" />
     <ClCompile Include="Source Files\Managers\SceneManager.cpp" />
@@ -44,6 +45,7 @@
     <ClInclude Include="Header Files\HelperClasses\ObjLoader.h" />
     <ClInclude Include="Header Files\Managers\ECSManager.h" />
     <ClInclude Include="Header Files\Managers\Entity.h" />
+    <ClInclude Include="Header Files\Managers\InputManager.h" />
     <ClInclude Include="Header Files\Managers\ResourceManager.h" />
     <ClInclude Include="Header Files\HelperClasses\Scene.h" />
     <ClInclude Include="Header Files\Managers\SceneManager.h" />
