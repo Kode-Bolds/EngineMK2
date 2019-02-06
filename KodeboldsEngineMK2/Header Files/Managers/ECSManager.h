@@ -39,16 +39,7 @@ public:
 	ECSManager(ECSManager const&) = delete;
 	ECSManager& operator=(ECSManager const&) = delete;
 	
-	/// <summary>
-	/// Creates a singleton instance of ECS Manager if one hasn't been created before
-	/// Returns pointer to the instance of ECS Manager
-	/// </summary>
-	/// <returns>Shared pointer to the ECS Manager instance</returns>
-	static std::shared_ptr<ECSManager> Instance()
-	{
-		static std::shared_ptr<ECSManager> mInstance{new ECSManager};
-		return mInstance;
-	}
+	static std::shared_ptr<ECSManager> Instance();
 
 	void CreateEntity(const std::string& pEntityName);
 	void DestroyEntity(const std::string& pEntityName);

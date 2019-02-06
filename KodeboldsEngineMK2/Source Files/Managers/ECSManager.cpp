@@ -64,6 +64,16 @@ ECSManager::~ECSManager()
 {
 }
 
+/// <summary>
+/// Creates a singleton instance of ECS Manager if one hasn't been created before
+/// Returns pointer to the instance of ECS Manager
+/// </summary>
+/// <returns>Shared pointer to the ECS Manager instance</returns>
+std::shared_ptr<ECSManager> ECSManager::Instance()
+{
+	static std::shared_ptr<ECSManager> instance{ new ECSManager };
+	return instance;
+}
 
 /// <summary>
 /// Creates an entity with the given name
