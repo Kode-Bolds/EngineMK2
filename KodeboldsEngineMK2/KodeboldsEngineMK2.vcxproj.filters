@@ -51,6 +51,9 @@
     <ClCompile Include="Source Files\Managers\ECSManager.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
+    <ClCompile Include="Source Files\HelperClasses\ObjLoader.cpp">
+      <Filter>Source Files\HelperClasses</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\Managers\ResourceManager.h">
@@ -115,6 +118,9 @@
     </ClInclude>
     <ClInclude Include="Header Files\Managers\Entity.h">
       <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\ObjLoader.h">
+      <Filter>Header Files\HelperClasses</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
