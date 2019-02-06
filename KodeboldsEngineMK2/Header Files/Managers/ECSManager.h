@@ -3,21 +3,13 @@
 #include <vector>
 #include "Components.h"
 #include "ISystem.h"
+#include "Entity.h"
 #include <algorithm>
 #include <string>
 
-struct Entity
-{
-	std::string mName;
-	int mID;
-	ComponentType mComponentMask;
-};
-
-class ECSManager final
+class ECSManager
 {
 private:
-	static std::shared_ptr<ECSManager> mInstance;
-
 	std::vector<Entity> mEntities;
 	std::vector<std::pair<std::string, int>> mEntityNames;
 	std::vector<std::pair<int, Transform>> mTransforms;
@@ -35,25 +27,38 @@ private:
 	std::vector<std::shared_ptr<ISystem>> mRenderSystems;
 	std::vector<std::shared_ptr<ISystem>> mUpdateSystems;
 
+	ECSManager();
+
 	void AssignEntity(const Entity& pEntity);
 	void RemoveEntity(const Entity& pEntity);
 
 public:
-	ECSManager();
 	~ECSManager();
+
+	//Deleted so no copies of the singleton instance can be made
+	ECSManager(ECSManager const&) = delete;
+	ECSManager& operator=(ECSManager const&) = delete;
 	
-	static std::shared_ptr<ECSManager> Instance();
+	/// <summary>
+	/// Creates a singleton instance of ECS Manager if one hasn't been created before
+	/// Returns pointer to the instance of ECS Manager
+	/// </summary>
+	/// <returns>Shared pointer to the ECS Manager instance</returns>
+	static std::shared_ptr<ECSManager> Instance()
+	{
+		static std::shared_ptr<ECSManager> mInstance{new ECSManager};
+		return mInstance;
+	}
 
 	void CreateEntity(const std::string& pEntityName);
 	void DestroyEntity(const std::string& pEntityName);
-	void AddComponent(const ComponentType& pComponentType, const std::shared_ptr<const IComponent> pComponent, const std::string& pEntityName);
+	void AddComponent(const ComponentType& pComponentType, const std::shared_ptr<IComponent> pComponent, const std::string& pEntityName);
 	void RemoveComponent(const ComponentType& pComponentType, const std::string& pEntityName);
-	void AddUpdateSystem(const std::shared_ptr<const ISystem> pSystem);
-	void AddRenderSystem(const std::shared_ptr<const ISystem> pSystem);
+	void AddUpdateSystem(const std::shared_ptr<ISystem> pSystem);
+	void AddRenderSystem(const std::shared_ptr<ISystem> pSystem);
 	void ProcessSystems();
 	const std::shared_ptr<const IComponent> GetComponent(const ComponentType& pComponentType, const std::string& pEntityName) const;
-	void SetComponent(const ComponentType& pComponentType, const std::shared_ptr<const IComponent> pComponent);
+	void SetComponent(const ComponentType& pComponentType, const std::shared_ptr<IComponent> pComponent, const std::string pEntityName);
 	const std::shared_ptr<const IComponent> GetComponent(const ComponentType& pComponentType, const int& pEntityID) const;
-	void SetComponent(const ComponentType& pComponentType, const int& pEntityID);
-
+	void SetComponent(const ComponentType& pComponentType, const std::shared_ptr<IComponent> pComponent, const int& pEntityID);
 };
