@@ -51,6 +51,9 @@
     <ClCompile Include="Source Files\Managers\ECSManager.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
+    <ClCompile Include="Source Files\Managers\InputManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\Managers\ResourceManager.h">
@@ -113,7 +116,10 @@
     <ClInclude Include="Header Files\Components\BoxCollider.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Header Files\Managers\Entity.h">
+    <ClInclude Include="Header Files\Managers\InputManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\Entity.h">
       <Filter>Header Files\Managers</Filter>
     </ClInclude>
   </ItemGroup>

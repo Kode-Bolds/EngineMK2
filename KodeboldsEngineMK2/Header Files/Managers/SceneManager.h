@@ -15,17 +15,17 @@ private:
 	std::shared_ptr<Scene> mScene;
 	int mFps = 0;
 
-	void Render();
-	void Update();
-	void LoadScene(Scene & pScene);
-	float DeltaTime();
-	float Time();
-	int Fps();
+	const void Render();
+	const void Update();
+	const void LoadScene(Scene & pScene);
+	const float DeltaTime() const;
+	const float Time() const;
+	const int Fps();
 public:
 	SceneManager();
 	~SceneManager();
 	SceneManager& operator=(const SceneManager&) = delete;
 	SceneManager(const SceneManager&) = delete;
 
-	SceneManager& Instance() { return *mInstance; }
+	const SceneManager& Instance() { return *mInstance; }
 };
