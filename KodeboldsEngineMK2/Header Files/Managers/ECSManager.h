@@ -39,26 +39,17 @@ public:
 	ECSManager(ECSManager const&) = delete;
 	ECSManager& operator=(ECSManager const&) = delete;
 	
-	/// <summary>
-	/// Creates a singleton instance of ECS Manager if one hasn't been created before
-	/// Returns pointer to the instance of ECS Manager
-	/// </summary>
-	/// <returns>Shared pointer to the ECS Manager instance</returns>
-	static std::shared_ptr<ECSManager> Instance()
-	{
-		static std::shared_ptr<ECSManager> mInstance{new ECSManager};
-		return mInstance;
-	}
+	static std::shared_ptr<ECSManager> Instance();
 
 	void CreateEntity(const std::string& pEntityName);
 	void DestroyEntity(const std::string& pEntityName);
-	void AddComponent(const ComponentType& pComponentType, const std::shared_ptr<IComponent> pComponent, const std::string& pEntityName);
+	void AddComponent(const ComponentType& pComponentType, const std::shared_ptr<const IComponent> pComponent, const std::string& pEntityName);
 	void RemoveComponent(const ComponentType& pComponentType, const std::string& pEntityName);
 	void AddUpdateSystem(const std::shared_ptr<ISystem> pSystem);
 	void AddRenderSystem(const std::shared_ptr<ISystem> pSystem);
 	void ProcessSystems();
 	const std::shared_ptr<const IComponent> GetComponent(const ComponentType& pComponentType, const std::string& pEntityName) const;
-	void SetComponent(const ComponentType& pComponentType, const std::shared_ptr<IComponent> pComponent, const std::string pEntityName);
+	void SetComponent(const ComponentType& pComponentType, const std::shared_ptr<const IComponent> pComponent, const std::string pEntityName);
 	const std::shared_ptr<const IComponent> GetComponent(const ComponentType& pComponentType, const int& pEntityID) const;
-	void SetComponent(const ComponentType& pComponentType, const std::shared_ptr<IComponent> pComponent, const int& pEntityID);
+	void SetComponent(const ComponentType& pComponentType, const std::shared_ptr<const IComponent> pComponent, const int& pEntityID);
 };
