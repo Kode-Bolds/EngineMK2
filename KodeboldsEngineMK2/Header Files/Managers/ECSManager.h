@@ -52,13 +52,13 @@ public:
 
 	void CreateEntity(const std::string& pEntityName);
 	void DestroyEntity(const std::string& pEntityName);
-	void AddComponent(const ComponentType& pComponentType, const std::shared_ptr<IComponent> pComponent, const std::string& pEntityName);
+	void AddComponent(const ComponentType& pComponentType, const std::shared_ptr<const IComponent> pComponent, const std::string& pEntityName);
 	void RemoveComponent(const ComponentType& pComponentType, const std::string& pEntityName);
 	void AddUpdateSystem(const std::shared_ptr<ISystem> pSystem);
 	void AddRenderSystem(const std::shared_ptr<ISystem> pSystem);
 	void ProcessSystems();
 	const std::shared_ptr<const IComponent> GetComponent(const ComponentType& pComponentType, const std::string& pEntityName) const;
-	void SetComponent(const ComponentType& pComponentType, const std::shared_ptr<IComponent> pComponent, const std::string pEntityName);
+	void SetComponent(const ComponentType& pComponentType, const std::shared_ptr<const IComponent> pComponent, const std::string pEntityName);
 	const std::shared_ptr<const IComponent> GetComponent(const ComponentType& pComponentType, const int& pEntityID) const;
-	void SetComponent(const ComponentType& pComponentType, const std::shared_ptr<IComponent> pComponent, const int& pEntityID);
+	void SetComponent(const ComponentType& pComponentType, const std::shared_ptr<const IComponent> pComponent, const int& pEntityID);
 };

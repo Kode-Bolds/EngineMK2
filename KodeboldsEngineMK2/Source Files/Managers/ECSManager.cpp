@@ -112,7 +112,7 @@ void ECSManager::DestroyEntity(const std::string & pEntityName)
 /// <param name="pComponentType">Given type of the component to add</param>
 /// <param name="pComponent">Pointer to the given component to add</param>
 /// <param name="pEntityName">Given name of the entity to add the component to</param>
-void ECSManager::AddComponent(const ComponentType& pComponentType, const std::shared_ptr<IComponent> pComponent, const std::string & pEntityName)
+void ECSManager::AddComponent(const ComponentType& pComponentType, const std::shared_ptr<const IComponent> pComponent, const std::string & pEntityName)
 {
 	//Finds if an entity with this name already exists and returns an iterator to the entity if it does otherwise returns an iterator pointing to the end of the vector
 	auto entity = find_if(mEntities.begin(), mEntities.end(), [&](const Entity& entity) {return entity.mName == pEntityName; });
@@ -123,51 +123,51 @@ void ECSManager::AddComponent(const ComponentType& pComponentType, const std::sh
 		switch (pComponentType)
 		{
 		case COMPONENT_TRANSFORM:
-			mTransforms.push_back(pair<int, Transform>(entity->mID, *dynamic_pointer_cast<Transform>(pComponent)));
+			mTransforms.push_back(pair<int, Transform>(entity->mID, *dynamic_pointer_cast<const Transform>(pComponent)));
 			entity->mComponentMask |= COMPONENT_TRANSFORM;
 			break;
 		case COMPONENT_VELOCITY:
-			mVelocities.push_back(pair<int, Velocity>(entity->mID, *dynamic_pointer_cast<Velocity>(pComponent)));
+			mVelocities.push_back(pair<int, Velocity>(entity->mID, *dynamic_pointer_cast<const Velocity>(pComponent)));
 			entity->mComponentMask |= COMPONENT_VELOCITY;
 			break;
 		case COMPONENT_BOXCOLLIDER:
-			mBoxColliders.push_back(pair<int, BoxCollider>(entity->mID, *dynamic_pointer_cast<BoxCollider>(pComponent)));
+			mBoxColliders.push_back(pair<int, BoxCollider>(entity->mID, *dynamic_pointer_cast<const BoxCollider>(pComponent)));
 			entity->mComponentMask |= COMPONENT_BOXCOLLIDER;
 			break;
 		case COMPONENT_SPHERECOLLIDER:
-			mSphereColliders.push_back(pair<int, SphereCollider>(entity->mID, *dynamic_pointer_cast<SphereCollider>(pComponent)));
+			mSphereColliders.push_back(pair<int, SphereCollider>(entity->mID, *dynamic_pointer_cast<const SphereCollider>(pComponent)));
 			entity->mComponentMask |= COMPONENT_SPHERECOLLIDER;
 			break;
 		case COMPONENT_GEOMETRY:
-			mGeometries.push_back(pair<int, Geometry>(entity->mID, *dynamic_pointer_cast<Geometry>(pComponent)));
+			mGeometries.push_back(pair<int, Geometry>(entity->mID, *dynamic_pointer_cast<const Geometry>(pComponent)));
 			entity->mComponentMask |= COMPONENT_GEOMETRY;
 			break;
 		case COMPONENT_TEXTURE:
-			mTextures.push_back(pair<int, Texture>(entity->mID, *dynamic_pointer_cast<Texture>(pComponent)));
+			mTextures.push_back(pair<int, Texture>(entity->mID, *dynamic_pointer_cast<const Texture>(pComponent)));
 			entity->mComponentMask |= COMPONENT_TEXTURE;
 			break;
 		case COMPONENT_SHADER:
-			mShaders.push_back(pair<int, Shader>(entity->mID, *dynamic_pointer_cast<Shader>(pComponent)));
+			mShaders.push_back(pair<int, Shader>(entity->mID, *dynamic_pointer_cast<const Shader>(pComponent)));
 			entity->mComponentMask |= COMPONENT_SHADER;
 			break;
 		case COMPONENT_CAMERA:
-			mCameras.push_back(pair<int, Camera>(entity->mID, *dynamic_pointer_cast<Camera>(pComponent)));
+			mCameras.push_back(pair<int, Camera>(entity->mID, *dynamic_pointer_cast<const Camera>(pComponent)));
 			entity->mComponentMask |= COMPONENT_CAMERA;
 			break;
 		case COMPONENT_LIGHT:
-			mLights.push_back(pair<int, Light>(entity->mID, *dynamic_pointer_cast<Light>(pComponent)));
+			mLights.push_back(pair<int, Light>(entity->mID, *dynamic_pointer_cast<const Light>(pComponent)));
 			entity->mComponentMask |= COMPONENT_LIGHT;
 			break;
 		case COMPONENT_GRAVITY:
-			mGravities.push_back(pair<int, Gravity>(entity->mID, *dynamic_pointer_cast<Gravity>(pComponent)));
+			mGravities.push_back(pair<int, Gravity>(entity->mID, *dynamic_pointer_cast<const Gravity>(pComponent)));
 			entity->mComponentMask |= COMPONENT_GRAVITY;
 			break;
 		case COMPONENT_AUDIO:
-			mAudios.push_back(pair<int, Audio>(entity->mID, *dynamic_pointer_cast<Audio>(pComponent)));
+			mAudios.push_back(pair<int, Audio>(entity->mID, *dynamic_pointer_cast<const Audio>(pComponent)));
 			entity->mComponentMask |= COMPONENT_AUDIO;
 			break;
 		case COMPONENT_AI:
-			mAIs.push_back(pair<int, AI>(entity->mID, *dynamic_pointer_cast<AI>(pComponent)));
+			mAIs.push_back(pair<int, AI>(entity->mID, *dynamic_pointer_cast<const AI>(pComponent)));
 			entity->mComponentMask |= COMPONENT_AI;
 			break;
 		}
@@ -327,7 +327,7 @@ const std::shared_ptr<const IComponent> ECSManager::GetComponent(const Component
 /// <param name="pComponentType">Given type of the component</param>
 /// <param name="pComponent">Given instance of component</param>
 /// <param name="pEntityName">Given name of the entity</param>
-void ECSManager::SetComponent(const ComponentType & pComponentType, const std::shared_ptr<IComponent> pComponent, const std::string pEntityName)
+void ECSManager::SetComponent(const ComponentType & pComponentType, const std::shared_ptr<const IComponent> pComponent, const std::string pEntityName)
 {
 	//Finds if an entity with this name already exists and returns an iterator to the entity if it does otherwise returns an iterator pointing to the end of the vector
 	auto entity = find_if(mEntities.begin(), mEntities.end(), [&](const Entity& entity) {return entity.mName == pEntityName; });
@@ -338,40 +338,40 @@ void ECSManager::SetComponent(const ComponentType & pComponentType, const std::s
 		switch (pComponentType)
 		{
 		case COMPONENT_TRANSFORM:
-			mTransforms[entity->mID].second = *dynamic_pointer_cast<Transform>(pComponent);
+			mTransforms[entity->mID].second = *dynamic_pointer_cast<const Transform>(pComponent);
 			break;
 		case COMPONENT_VELOCITY:
-			mVelocities[entity->mID].second = *dynamic_pointer_cast<Velocity>(pComponent);
+			mVelocities[entity->mID].second = *dynamic_pointer_cast<const Velocity>(pComponent);
 			break;
 		case COMPONENT_BOXCOLLIDER:
-			mBoxColliders[entity->mID].second = *dynamic_pointer_cast<BoxCollider>(pComponent);
+			mBoxColliders[entity->mID].second = *dynamic_pointer_cast<const BoxCollider>(pComponent);
 			break;
 		case COMPONENT_SPHERECOLLIDER:
-			mSphereColliders[entity->mID].second = *dynamic_pointer_cast<SphereCollider>(pComponent);
+			mSphereColliders[entity->mID].second = *dynamic_pointer_cast<const SphereCollider>(pComponent);
 			break;
 		case COMPONENT_GEOMETRY:
-			mGeometries[entity->mID].second = *dynamic_pointer_cast<Geometry>(pComponent);
+			mGeometries[entity->mID].second = *dynamic_pointer_cast<const Geometry>(pComponent);
 			break;
 		case COMPONENT_TEXTURE:
-			mTextures[entity->mID].second = *dynamic_pointer_cast<Texture>(pComponent);
+			mTextures[entity->mID].second = *dynamic_pointer_cast<const Texture>(pComponent);
 			break;
 		case COMPONENT_SHADER:
-			mShaders[entity->mID].second = *dynamic_pointer_cast<Shader>(pComponent);
+			mShaders[entity->mID].second = *dynamic_pointer_cast<const Shader>(pComponent);
 			break;
 		case COMPONENT_CAMERA:
-			mCameras[entity->mID].second = *dynamic_pointer_cast<Camera>(pComponent);
+			mCameras[entity->mID].second = *dynamic_pointer_cast<const Camera>(pComponent);
 			break;
 		case COMPONENT_LIGHT:
-			mLights[entity->mID].second = *dynamic_pointer_cast<Light>(pComponent);
+			mLights[entity->mID].second = *dynamic_pointer_cast<const Light>(pComponent);
 			break;
 		case COMPONENT_GRAVITY:
-			mGravities[entity->mID].second = *dynamic_pointer_cast<Gravity>(pComponent);
+			mGravities[entity->mID].second = *dynamic_pointer_cast<const Gravity>(pComponent);
 			break;
 		case COMPONENT_AUDIO:
-			mAudios[entity->mID].second = *dynamic_pointer_cast<Audio>(pComponent);
+			mAudios[entity->mID].second = *dynamic_pointer_cast<const Audio>(pComponent);
 			break;
 		case COMPONENT_AI:
-			mAIs[entity->mID].second = *dynamic_pointer_cast<AI>(pComponent);
+			mAIs[entity->mID].second = *dynamic_pointer_cast<const AI>(pComponent);
 			break;
 		}
 	}
@@ -434,45 +434,45 @@ const std::shared_ptr<const IComponent> ECSManager::GetComponent(const Component
 /// <param name="pComponentType">Given type of the component</param>
 /// <param name="pComponent">Given instance of component</param>
 /// <param name="pEntityName">Given ID of the entity</param>
-void ECSManager::SetComponent(const ComponentType & pComponentType, const std::shared_ptr<IComponent> pComponent, const int & pEntityID)
+void ECSManager::SetComponent(const ComponentType & pComponentType, const std::shared_ptr<const IComponent> pComponent, const int & pEntityID)
 {
 	switch (pComponentType)
 	{
 	case COMPONENT_TRANSFORM:
-		mTransforms[pEntityID].second = *dynamic_pointer_cast<Transform>(pComponent);
+		mTransforms[pEntityID].second = *dynamic_pointer_cast<const Transform>(pComponent);
 		break;
 	case COMPONENT_VELOCITY:
-		mVelocities[pEntityID].second = *dynamic_pointer_cast<Velocity>(pComponent);
+		mVelocities[pEntityID].second = *dynamic_pointer_cast<const Velocity>(pComponent);
 		break;
 	case COMPONENT_BOXCOLLIDER:
-		mBoxColliders[pEntityID].second = *dynamic_pointer_cast<BoxCollider>(pComponent);
+		mBoxColliders[pEntityID].second = *dynamic_pointer_cast<const BoxCollider>(pComponent);
 		break;
 	case COMPONENT_SPHERECOLLIDER:
-		mSphereColliders[pEntityID].second = *dynamic_pointer_cast<SphereCollider>(pComponent);
+		mSphereColliders[pEntityID].second = *dynamic_pointer_cast<const SphereCollider>(pComponent);
 		break;
 	case COMPONENT_GEOMETRY:
-		mGeometries[pEntityID].second = *dynamic_pointer_cast<Geometry>(pComponent);
+		mGeometries[pEntityID].second = *dynamic_pointer_cast<const Geometry>(pComponent);
 		break;
 	case COMPONENT_TEXTURE:
-		mTextures[pEntityID].second = *dynamic_pointer_cast<Texture>(pComponent);
+		mTextures[pEntityID].second = *dynamic_pointer_cast<const Texture>(pComponent);
 		break;
 	case COMPONENT_SHADER:
-		mShaders[pEntityID].second = *dynamic_pointer_cast<Shader>(pComponent);
+		mShaders[pEntityID].second = *dynamic_pointer_cast<const Shader>(pComponent);
 		break;
 	case COMPONENT_CAMERA:
-		mCameras[pEntityID].second = *dynamic_pointer_cast<Camera>(pComponent);
+		mCameras[pEntityID].second = *dynamic_pointer_cast<const Camera>(pComponent);
 		break;
 	case COMPONENT_LIGHT:
-		mLights[pEntityID].second = *dynamic_pointer_cast<Light>(pComponent);
+		mLights[pEntityID].second = *dynamic_pointer_cast<const Light>(pComponent);
 		break;
 	case COMPONENT_GRAVITY:
-		mGravities[pEntityID].second = *dynamic_pointer_cast<Gravity>(pComponent);
+		mGravities[pEntityID].second = *dynamic_pointer_cast<const Gravity>(pComponent);
 		break;
 	case COMPONENT_AUDIO:
-		mAudios[pEntityID].second = *dynamic_pointer_cast<Audio>(pComponent);
+		mAudios[pEntityID].second = *dynamic_pointer_cast<const Audio>(pComponent);
 		break;
 	case COMPONENT_AI:
-		mAIs[pEntityID].second = *dynamic_pointer_cast<AI>(pComponent);
+		mAIs[pEntityID].second = *dynamic_pointer_cast<const AI>(pComponent);
 		break;
 	}
 }
