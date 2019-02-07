@@ -2,5 +2,5 @@
 
 struct IComponent
 {
-	virtual ~IComponent();
+	virtual ~IComponent() = default;
 };
