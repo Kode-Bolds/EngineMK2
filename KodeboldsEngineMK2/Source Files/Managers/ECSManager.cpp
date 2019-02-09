@@ -37,22 +37,22 @@ void ECSManager::RemoveEntity(const Entity & pEntity)
 }
 
 /// <summary>
-/// Finds an entities ID based on a given name
+/// Finds an entity based on a given name
 /// </summary>
 /// <param name="pEntityName">Given name of the entity</param>
-/// <returns>ID of the entity</returns>
-const int& ECSManager::FindEntityID(const std::string & pEntityName) const
+/// <returns>Entity that matches given name</returns>
+const std::shared_ptr<Entity> ECSManager::FindEntityByName(const std::string & pEntityName) const
 {
-	//Finds if an entity with this name already exists and returns an iterator to the entity if it does otherwise returns an iterator pointing to the end of the vector
+	//Finds if an entity with this name already exists then returns an iterator to the entity if it does
 	auto entity = find_if(mEntities.begin(), mEntities.end(), [&](const Entity& entity) {return entity.mName == pEntityName; });
 
 	if (entity != mEntities.end())
 	{
-		return entity->mID;
+		return make_shared<Entity>(entity);
 	}
 	else
 	{
-		return -1;
+		return nullptr;
 	}
 }
 
@@ -141,73 +141,73 @@ void ECSManager::DestroyEntity(const std::string & pEntityName)
 /// <param name="pEntityName">Given name of the entity to add the component to</param>
 void ECSManager::AddComponent(const ComponentType& pComponentType, const std::shared_ptr<const IComponent> pComponent, const std::string & pEntityName)
 {
-	int entityID = FindEntityID(pEntityName);
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
 
-	//If entityID is found, adds the new component to the component vector of the appropriate type and modifies the entities component mask appropriately
+	//If entity is found, adds the new component to the component vector of the appropriate type and modifies the entities component mask appropriately
 	//Then assigns entity to systems that may be interested in that entity with the addition of the new component
-	if (entityID != -1)
+	if (entity)
 	{
 		switch (pComponentType)
 		{
 		case COMPONENT_TRANSFORM:
-			mTransforms.push_back(pair<int, Transform>(entityID, *dynamic_pointer_cast<const Transform>(pComponent)));
-			mEntities[entityID].mComponentMask |= COMPONENT_TRANSFORM;
-			AssignEntity(mEntities[entityID]);
+			mTransforms.push_back(pair<int, Transform>(entity->mID, *dynamic_pointer_cast<const Transform>(pComponent)));
+			entity->mComponentMask |= COMPONENT_TRANSFORM;
+			AssignEntity(*entity);
 			break;
 		case COMPONENT_VELOCITY:
-			mVelocities.push_back(pair<int, Velocity>(entityID, *dynamic_pointer_cast<const Velocity>(pComponent)));
-			mEntities[entityID].mComponentMask |= COMPONENT_VELOCITY;
-			AssignEntity(mEntities[entityID]);
+			mVelocities.push_back(pair<int, Velocity>(entity->mID, *dynamic_pointer_cast<const Velocity>(pComponent)));
+			entity->mComponentMask |= COMPONENT_VELOCITY;
+			AssignEntity(*entity);
 			break;
 		case COMPONENT_BOXCOLLIDER:
-			mBoxColliders.push_back(pair<int, BoxCollider>(entityID, *dynamic_pointer_cast<const BoxCollider>(pComponent)));
-			mEntities[entityID].mComponentMask |= COMPONENT_BOXCOLLIDER;
-			AssignEntity(mEntities[entityID]);
+			mBoxColliders.push_back(pair<int, BoxCollider>(entity->mID, *dynamic_pointer_cast<const BoxCollider>(pComponent)));
+			entity->mComponentMask |= COMPONENT_BOXCOLLIDER;
+			AssignEntity(*entity);
 			break;
 		case COMPONENT_SPHERECOLLIDER:
-			mSphereColliders.push_back(pair<int, SphereCollider>(entityID, *dynamic_pointer_cast<const SphereCollider>(pComponent)));
-			mEntities[entityID].mComponentMask |= COMPONENT_SPHERECOLLIDER;
-			AssignEntity(mEntities[entityID]);
+			mSphereColliders.push_back(pair<int, SphereCollider>(entity->mID, *dynamic_pointer_cast<const SphereCollider>(pComponent)));
+			entity->mComponentMask |= COMPONENT_SPHERECOLLIDER;
+			AssignEntity(*entity);
 			break;
 		case COMPONENT_GEOMETRY:
-			mGeometries.push_back(pair<int, Geometry>(entityID, *dynamic_pointer_cast<const Geometry>(pComponent)));
-			mEntities[entityID].mComponentMask |= COMPONENT_GEOMETRY;
-			AssignEntity(mEntities[entityID]);
+			mGeometries.push_back(pair<int, Geometry>(entity->mID, *dynamic_pointer_cast<const Geometry>(pComponent)));
+			entity->mComponentMask |= COMPONENT_GEOMETRY;
+			AssignEntity(*entity);
 			break;
 		case COMPONENT_TEXTURE:
-			mTextures.push_back(pair<int, Texture>(entityID, *dynamic_pointer_cast<const Texture>(pComponent)));
-			mEntities[entityID].mComponentMask |= COMPONENT_TEXTURE;
-			AssignEntity(mEntities[entityID]);
+			mTextures.push_back(pair<int, Texture>(entity->mID, *dynamic_pointer_cast<const Texture>(pComponent)));
+			entity->mComponentMask |= COMPONENT_TEXTURE;
+			AssignEntity(*entity);
 			break;
 		case COMPONENT_SHADER:
-			mShaders.push_back(pair<int, Shader>(entityID, *dynamic_pointer_cast<const Shader>(pComponent)));
-			mEntities[entityID].mComponentMask |= COMPONENT_SHADER;
-			AssignEntity(mEntities[entityID]);
+			mShaders.push_back(pair<int, Shader>(entity->mID, *dynamic_pointer_cast<const Shader>(pComponent)));
+			entity->mComponentMask |= COMPONENT_SHADER;
+			AssignEntity(*entity);
 			break;
 		case COMPONENT_CAMERA:
-			mCameras.push_back(pair<int, Camera>(entityID, *dynamic_pointer_cast<const Camera>(pComponent)));
-			mEntities[entityID].mComponentMask |= COMPONENT_CAMERA;
-			AssignEntity(mEntities[entityID]);
+			mCameras.push_back(pair<int, Camera>(entity->mID, *dynamic_pointer_cast<const Camera>(pComponent)));
+			entity->mComponentMask  |= COMPONENT_CAMERA;
+			AssignEntity(*entity);
 			break;
 		case COMPONENT_LIGHT:
-			mLights.push_back(pair<int, Light>(entityID, *dynamic_pointer_cast<const Light>(pComponent)));
-			mEntities[entityID].mComponentMask |= COMPONENT_LIGHT;
-			AssignEntity(mEntities[entityID]);
+			mLights.push_back(pair<int, Light>(entity->mID, *dynamic_pointer_cast<const Light>(pComponent)));
+			entity->mComponentMask |= COMPONENT_LIGHT;
+			AssignEntity(*entity);
 			break;
 		case COMPONENT_GRAVITY:
-			mGravities.push_back(pair<int, Gravity>(entityID, *dynamic_pointer_cast<const Gravity>(pComponent)));
-			mEntities[entityID].mComponentMask |= COMPONENT_GRAVITY;
-			AssignEntity(mEntities[entityID]);
+			mGravities.push_back(pair<int, Gravity>(entity->mID, *dynamic_pointer_cast<const Gravity>(pComponent)));
+			entity->mComponentMask |= COMPONENT_GRAVITY;
+			AssignEntity(*entity);
 			break;
 		case COMPONENT_AUDIO:
-			mAudios.push_back(pair<int, Audio>(entityID, *dynamic_pointer_cast<const Audio>(pComponent)));
-			mEntities[entityID].mComponentMask |= COMPONENT_AUDIO;
-			AssignEntity(mEntities[entityID]);
+			mAudios.push_back(pair<int, Audio>(entity->mID, *dynamic_pointer_cast<const Audio>(pComponent)));
+			entity->mComponentMask |= COMPONENT_AUDIO;
+			AssignEntity(*entity);
 			break;
 		case COMPONENT_AI:
-			mAIs.push_back(pair<int, AI>(entityID, *dynamic_pointer_cast<const AI>(pComponent)));
-			mEntities[entityID].mComponentMask |= COMPONENT_AI;
-			AssignEntity(mEntities[entityID]);
+			mAIs.push_back(pair<int, AI>(entity->mID, *dynamic_pointer_cast<const AI>(pComponent)));
+			entity->mComponentMask |= COMPONENT_AI;
+			AssignEntity(*entity);
 			break;
 		}
 	}
@@ -220,73 +220,73 @@ void ECSManager::AddComponent(const ComponentType& pComponentType, const std::sh
 /// <param name="pEntityName">Given name entity to remove the component from</param>
 void ECSManager::RemoveComponent(const ComponentType & pComponentType, const std::string & pEntityName)
 {
-	int entityID = FindEntityID(pEntityName);
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
 
 	//If entityID is found, removes the component from the component vector of the appropriate type and modifies the entities component mask appropriately
 	//Then checks if entity needs reassigning from systems that may no longer be interested in that entity with the removal of the component
-	if (entityID != -1)
+	if (entity)
 	{
 		switch (pComponentType)
 		{
 		case COMPONENT_TRANSFORM:
-			mTransforms.erase(remove_if(mTransforms.begin(), mTransforms.end(), [&](const pair<int, Transform>& pair) {return pair.first == entityID; }));
+			mTransforms.erase(remove_if(mTransforms.begin(), mTransforms.end(), [&](const pair<int, Transform>& pair) {return pair.first == entity->mID; }));
 			//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
-			AssignEntity(mEntities[entityID]);
+			AssignEntity(*entity);
 			break;
 		case COMPONENT_VELOCITY:
-			mVelocities.erase(remove_if(mVelocities.begin(), mVelocities.end(), [&](const pair<int, Velocity>& pair) {return pair.first == entityID; }));
+			mVelocities.erase(remove_if(mVelocities.begin(), mVelocities.end(), [&](const pair<int, Velocity>& pair) {return pair.first == entity->mID; }));
 			//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
-			AssignEntity(mEntities[entityID]);
+			AssignEntity(*entity);
 			break;
 		case COMPONENT_BOXCOLLIDER:
-			mBoxColliders.erase(remove_if(mBoxColliders.begin(), mBoxColliders.end(), [&](const pair<int, BoxCollider>& pair) {return pair.first == entityID; }));
+			mBoxColliders.erase(remove_if(mBoxColliders.begin(), mBoxColliders.end(), [&](const pair<int, BoxCollider>& pair) {return pair.first == entity->mID; }));
 			//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
-			AssignEntity(mEntities[entityID]);
+			AssignEntity(*entity);
 			break;
 		case COMPONENT_SPHERECOLLIDER:
-			mSphereColliders.erase(remove_if(mSphereColliders.begin(), mSphereColliders.end(), [&](const pair<int, SphereCollider>& pair) {return pair.first == entityID; }));
+			mSphereColliders.erase(remove_if(mSphereColliders.begin(), mSphereColliders.end(), [&](const pair<int, SphereCollider>& pair) {return pair.first == entity->mID; }));
 			//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
-			AssignEntity(mEntities[entityID]);
+			AssignEntity(*entity);
 			break;
 		case COMPONENT_GEOMETRY:
-			mGeometries.erase(remove_if(mGeometries.begin(), mGeometries.end(), [&](const pair<int, Geometry>& pair) {return pair.first == entityID; }));
+			mGeometries.erase(remove_if(mGeometries.begin(), mGeometries.end(), [&](const pair<int, Geometry>& pair) {return pair.first == entity->mID; }));
 			//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
-			AssignEntity(mEntities[entityID]);
+			AssignEntity(*entity);
 			break;
 		case COMPONENT_TEXTURE:
-			mTextures.erase(remove_if(mTextures.begin(), mTextures.end(), [&](const pair<int, Texture>& pair) {return pair.first == entityID; }));
+			mTextures.erase(remove_if(mTextures.begin(), mTextures.end(), [&](const pair<int, Texture>& pair) {return pair.first == entity->mID; }));
 			//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
-			AssignEntity(mEntities[entityID]);
+			AssignEntity(*entity);
 			break;
 		case COMPONENT_SHADER:
-			mShaders.erase(remove_if(mShaders.begin(), mShaders.end(), [&](const pair<int, Shader>& pair) {return pair.first == entityID; }));
+			mShaders.erase(remove_if(mShaders.begin(), mShaders.end(), [&](const pair<int, Shader>& pair) {return pair.first == entity->mID; }));
 			//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
-			AssignEntity(mEntities[entityID]);
+			AssignEntity(*entity);
 			break;
 		case COMPONENT_CAMERA:
-			mCameras.erase(remove_if(mCameras.begin(), mCameras.end(), [&](const pair<int, Camera>& pair) {return pair.first == entityID; }));
+			mCameras.erase(remove_if(mCameras.begin(), mCameras.end(), [&](const pair<int, Camera>& pair) {return pair.first == entity->mID; }));
 			//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
-			AssignEntity(mEntities[entityID]);
+			AssignEntity(*entity);
 			break;
 		case COMPONENT_LIGHT:
-			mLights.erase(remove_if(mLights.begin(), mLights.end(), [&](const pair<int, Light>& pair) {return pair.first == entityID; }));
+			mLights.erase(remove_if(mLights.begin(), mLights.end(), [&](const pair<int, Light>& pair) {return pair.first == entity->mID; }));
 			//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
-			AssignEntity(mEntities[entityID]);
+			AssignEntity(*entity);
 			break;
 		case COMPONENT_GRAVITY:
-			mGravities.erase(remove_if(mGravities.begin(), mGravities.end(), [&](const pair<int, Gravity>& pair) {return pair.first == entityID; }));
+			mGravities.erase(remove_if(mGravities.begin(), mGravities.end(), [&](const pair<int, Gravity>& pair) {return pair.first == entity->mID; }));
 			//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
-			AssignEntity(mEntities[entityID]);
+			AssignEntity(*entity);
 			break;
 		case COMPONENT_AUDIO:
-			mAudios.erase(remove_if(mAudios.begin(), mAudios.end(), [&](const pair<int, Audio>& pair) {return pair.first == entityID; }));
+			mAudios.erase(remove_if(mAudios.begin(), mAudios.end(), [&](const pair<int, Audio>& pair) {return pair.first == entity->mID; }));
 			//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
-			AssignEntity(mEntities[entityID]);
+			AssignEntity(*entity);
 			break;
 		case COMPONENT_AI:
-			mAIs.erase(remove_if(mAIs.begin(), mAIs.end(), [&](const pair<int, AI>& pair) {return pair.first == entityID; }));
+			mAIs.erase(remove_if(mAIs.begin(), mAIs.end(), [&](const pair<int, AI>& pair) {return pair.first == entity->mID; }));
 			//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
-			AssignEntity(mEntities[entityID]);
+			AssignEntity(*entity);
 			break;
 		}
 	}
@@ -333,7 +333,10 @@ void ECSManager::ProcessSystems()
 /// <returns>Modifiable handle to AI component</returns>
 AI & ECSManager::AIComp(const int & pEntityID)
 {
-	return mAIs[pEntityID].second;
+	//Finds the ID/Component pair for the given entity ID
+	auto comp = find_if(mAIs.begin(), mAIs.end(), [&](const pair<int, AI>& pair) {return pair.first == pEntityID; });
+
+	return comp->second;
 }
 
 /// <summary>
@@ -343,10 +346,16 @@ AI & ECSManager::AIComp(const int & pEntityID)
 /// <returns>Modifiable handle to the AI component</returns>
 AI & ECSManager::AIComp(const std::string & pEntityName)
 {
-	int entityID = FindEntityID(pEntityName);
-	if (entityID != -1)
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
 	{
-		return mAIs[entityID].second;
+		//Finds the ID/Component pair for the given entity ID
+		auto comp = find_if(mAIs.begin(), mAIs.end(), [&](const pair<int, AI>& pair) {return pair.first == entity->mID; });
+
+		if (comp != mAIs.end())
+		{
+			return comp->second;
+		}
 	}
 }
 
@@ -357,7 +366,13 @@ AI & ECSManager::AIComp(const std::string & pEntityName)
 /// <returns>Modifiable handle to Audio component</returns>
 Audio & ECSManager::AudioComp(const int & pEntityID)
 {
-	return mAudios[pEntityID].second;
+	//Finds the ID/Component pair for the given entity ID
+	auto comp = find_if(mAudios.begin(), mAudios.end(), [&](const pair<int, Audio>& pair) {return pair.first == pEntityID; });
+
+	if (comp != mAudios.end())
+	{
+		return comp->second;
+	}
 }
 
 /// <summary>
@@ -367,10 +382,16 @@ Audio & ECSManager::AudioComp(const int & pEntityID)
 /// <returns>Modifiable handle to the Audio component</returns>
 Audio & ECSManager::AudioComp(const std::string & pEntityName)
 {
-	int entityID = FindEntityID(pEntityName);
-	if (entityID != -1)
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
 	{
-		return mAudios[entityID].second;
+		//Finds the ID/Component pair for the given entity ID
+		auto comp = find_if(mAudios.begin(), mAudios.end(), [&](const pair<int, Audio>& pair) {return pair.first == entity->mID; });
+
+		if (comp != mAudios.end())
+		{
+			return comp->second;
+		}
 	}
 }
 
@@ -381,7 +402,13 @@ Audio & ECSManager::AudioComp(const std::string & pEntityName)
 /// <returns>Modifiable handle to BoxCollider component</returns>
 BoxCollider & ECSManager::BoxColliderComp(const int & pEntityID)
 {
-	return mBoxColliders[pEntityID].second;
+	//Finds the ID/Component pair for the given entity ID
+	auto comp = find_if(mBoxColliders.begin(), mBoxColliders.end(), [&](const pair<int, BoxCollider>& pair) {return pair.first == pEntityID; });
+
+	if (comp != mBoxColliders.end())
+	{
+		return comp->second;
+	}
 }
 
 /// <summary>
@@ -391,10 +418,16 @@ BoxCollider & ECSManager::BoxColliderComp(const int & pEntityID)
 /// <returns>Modifiable handle to the BoxCollider component</returns>
 BoxCollider & ECSManager::BoxColliderComp(const std::string & pEntityName)
 {
-	int entityID = FindEntityID(pEntityName);
-	if (entityID != -1)
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
 	{
-		return mBoxColliders[entityID].second;
+		//Finds the ID/Component pair for the given entity ID
+		auto comp = find_if(mBoxColliders.begin(), mBoxColliders.end(), [&](const pair<int, BoxCollider>& pair) {return pair.first == entity->mID; });
+
+		if (comp != mBoxColliders.end())
+		{
+			return comp->second;
+		}
 	}
 }
 
@@ -405,7 +438,13 @@ BoxCollider & ECSManager::BoxColliderComp(const std::string & pEntityName)
 /// <returns>Modifiable handle to Camera component</returns>
 Camera & ECSManager::CameraComp(const int & pEntityID)
 {
-	return mCameras[pEntityID].second;
+	//Finds the ID/Component pair for the given entity ID
+	auto comp = find_if(mCameras.begin(), mCameras.end(), [&](const pair<int, Camera>& pair) {return pair.first == pEntityID; });
+
+	if (comp != mCameras.end())
+	{
+		return comp->second;
+	}
 }
 
 /// <summary>
@@ -415,10 +454,16 @@ Camera & ECSManager::CameraComp(const int & pEntityID)
 /// <returns>Modifiable handle to the Camera component</returns>
 Camera & ECSManager::CameraComp(const std::string pEntityName)
 {
-	int entityID = FindEntityID(pEntityName);
-	if (entityID != -1)
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
 	{
-		return mCameras[entityID].second;
+		//Finds the ID/Component pair for the given entity ID
+		auto comp = find_if(mCameras.begin(), mCameras.end(), [&](const pair<int, Camera>& pair) {return pair.first == entity->mID; });
+
+		if (comp != mCameras.end())
+		{
+			return comp->second;
+		}
 	}
 }
 
@@ -429,7 +474,13 @@ Camera & ECSManager::CameraComp(const std::string pEntityName)
 /// <returns>Modifiable handle to Geometry component</returns>
 Geometry & ECSManager::GeometryComp(const int & pEntityID)
 {
-	return mGeometries[pEntityID].second;
+	//Finds the ID/Component pair for the given entity ID
+	auto comp = find_if(mGeometries.begin(), mGeometries.end(), [&](const pair<int, Geometry>& pair) {return pair.first == pEntityID; });
+
+	if (comp != mGeometries.end())
+	{
+		return comp->second;
+	}
 }
 
 /// <summary>
@@ -439,10 +490,16 @@ Geometry & ECSManager::GeometryComp(const int & pEntityID)
 /// <returns>Modifiable handle to the Geometry component</returns>
 Geometry & ECSManager::GeometryComp(const std::string & pEntityName)
 {
-	int entityID = FindEntityID(pEntityName);
-	if (entityID != -1)
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
 	{
-		return mGeometries[entityID].second;
+		//Finds the ID/Component pair for the given entity ID
+		auto comp = find_if(mGeometries.begin(), mGeometries.end(), [&](const pair<int, Geometry>& pair) {return pair.first == entity->mID; });
+
+		if (comp != mGeometries.end())
+		{
+			return comp->second;
+		}
 	}
 }
 
@@ -453,7 +510,13 @@ Geometry & ECSManager::GeometryComp(const std::string & pEntityName)
 /// <returns>Modifiable handle to Gravity component</returns>
 Gravity & ECSManager::GravityComp(const int & pEntityID)
 {
-	return mGravities[pEntityID].second;
+	//Finds the ID/Component pair for the given entity ID
+	auto comp = find_if(mGravities.begin(), mGravities.end(), [&](const pair<int, Gravity>& pair) {return pair.first == pEntityID; });
+
+	if (comp != mGravities.end())
+	{
+		return comp->second;
+	}
 }
 
 /// <summary>
@@ -463,10 +526,16 @@ Gravity & ECSManager::GravityComp(const int & pEntityID)
 /// <returns>Modifiable handle to the Gravity component</returns>
 Gravity & ECSManager::GravityComp(const std::string & pEntityName)
 {
-	int entityID = FindEntityID(pEntityName);
-	if (entityID != -1)
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
 	{
-		return mGravities[entityID].second;
+		//Finds the ID/Component pair for the given entity ID
+		auto comp = find_if(mGravities.begin(), mGravities.end(), [&](const pair<int, Gravity>& pair) {return pair.first == entity->mID; });
+
+		if (comp != mGravities.end())
+		{
+			return comp->second;
+		}
 	}
 }
 
@@ -477,7 +546,13 @@ Gravity & ECSManager::GravityComp(const std::string & pEntityName)
 /// <returns>Modifiable handle to AI component</returns>
 Light & ECSManager::LightComp(const int & pEntityID)
 {
-	return mLights[pEntityID].second;
+	//Finds the ID/Component pair for the given entity ID
+	auto comp = find_if(mLights.begin(), mLights.end(), [&](const pair<int, Light>& pair) {return pair.first == pEntityID; });
+
+	if (comp != mLights.end())
+	{
+		return comp->second;
+	}
 }
 
 /// <summary>
@@ -487,10 +562,16 @@ Light & ECSManager::LightComp(const int & pEntityID)
 /// <returns>Modifiable handle to the Light component</returns>
 Light & ECSManager::LightComp(const std::string & pEntityName)
 {
-	int entityID = FindEntityID(pEntityName);
-	if (entityID != -1)
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
 	{
-		return mLights[entityID].second;
+		//Finds the ID/Component pair for the given entity ID
+		auto comp = find_if(mLights.begin(), mLights.end(), [&](const pair<int, Light>& pair) {return pair.first == entity->mID; });
+
+		if (comp != mLights.end())
+		{
+			return comp->second;
+		}
 	}
 }
 
@@ -501,7 +582,13 @@ Light & ECSManager::LightComp(const std::string & pEntityName)
 /// <returns>Modifiable handle to Shader component</returns>
 Shader & ECSManager::ShaderComp(const int & pEntityID)
 {
-	return mShaders[pEntityID].second;
+	//Finds the ID/Component pair for the given entity ID
+	auto comp = find_if(mShaders.begin(), mShaders.end(), [&](const pair<int, Shader>& pair) {return pair.first == pEntityID; });
+
+	if (comp != mShaders.end())
+	{
+		return comp->second;
+	}
 }
 
 /// <summary>
@@ -511,10 +598,16 @@ Shader & ECSManager::ShaderComp(const int & pEntityID)
 /// <returns>Modifiable handle to the Shader component</returns>
 Shader & ECSManager::ShaderComp(const std::string & pEntityName)
 {
-	int entityID = FindEntityID(pEntityName);
-	if (entityID != -1)
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
 	{
-		return mShaders[entityID].second;
+		//Finds the ID/Component pair for the given entity ID
+		auto comp = find_if(mShaders.begin(), mShaders.end(), [&](const pair<int, Shader>& pair) {return pair.first == entity->mID; });
+
+		if (comp != mShaders.end())
+		{
+			return comp->second;
+		}
 	}
 }
 
@@ -525,7 +618,13 @@ Shader & ECSManager::ShaderComp(const std::string & pEntityName)
 /// <returns>Modifiable handle to SphereCollider component</returns>
 SphereCollider & ECSManager::SphereColliderComp(const int & pEntityID)
 {
-	return mSphereColliders[pEntityID].second;
+	//Finds the ID/Component pair for the given entity ID
+	auto comp = find_if(mSphereColliders.begin(), mSphereColliders.end(), [&](const pair<int, SphereCollider>& pair) {return pair.first == pEntityID; });
+
+	if (comp != mSphereColliders.end())
+	{
+		return comp->second;
+	}
 }
 
 /// <summary>
@@ -535,10 +634,16 @@ SphereCollider & ECSManager::SphereColliderComp(const int & pEntityID)
 /// <returns>Modifiable handle to the SphereCollider component</returns>
 SphereCollider & ECSManager::SphereColliderComp(const std::string & pEntityName)
 {
-	int entityID = FindEntityID(pEntityName);
-	if (entityID != -1)
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
 	{
-		return mSphereColliders[entityID].second;
+		//Finds the ID/Component pair for the given entity ID
+		auto comp = find_if(mSphereColliders.begin(), mSphereColliders.end(), [&](const pair<int, SphereCollider>& pair) {return pair.first == entity->mID; });
+
+		if (comp != mSphereColliders.end())
+		{
+			return comp->second;
+		}
 	}
 }
 
@@ -549,7 +654,13 @@ SphereCollider & ECSManager::SphereColliderComp(const std::string & pEntityName)
 /// <returns>Modifiable handle to Texture component</returns>
 Texture & ECSManager::TextureComp(const int & pEntityID)
 {
-	return mTextures[pEntityID].second;
+	//Finds the ID/Component pair for the given entity ID
+	auto comp = find_if(mTextures.begin(), mTextures.end(), [&](const pair<int, Texture>& pair) {return pair.first == pEntityID; });
+
+	if (comp != mTextures.end())
+	{
+		return comp->second;
+	}
 }
 
 /// <summary>
@@ -559,10 +670,16 @@ Texture & ECSManager::TextureComp(const int & pEntityID)
 /// <returns>Modifiable handle to the Texture component</returns>
 Texture & ECSManager::TextureComp(const std::string & pEntityName)
 {
-	int entityID = FindEntityID(pEntityName);
-	if (entityID != -1)
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
 	{
-		return mTextures[entityID].second;
+		//Finds the ID/Component pair for the given entity ID
+		auto comp = find_if(mTextures.begin(), mTextures.end(), [&](const pair<int, Texture>& pair) {return pair.first == entity->mID; });
+
+		if (comp != mTextures.end())
+		{
+			return comp->second;
+		}
 	}
 }
 
@@ -573,7 +690,13 @@ Texture & ECSManager::TextureComp(const std::string & pEntityName)
 /// <returns>Modifiable handle to Transform component</returns>
 Transform & ECSManager::TransformComp(const int & pEntityID)
 {
-	return mTransforms[pEntityID].second;
+	//Finds the ID/Component pair for the given entity ID
+	auto comp = find_if(mTransforms.begin(), mTransforms.end(), [&](const pair<int, Transform>& pair) {return pair.first == pEntityID; });
+
+	if (comp != mTransforms.end())
+	{
+		return comp->second;
+	}
 }
 
 /// <summary>
@@ -583,10 +706,16 @@ Transform & ECSManager::TransformComp(const int & pEntityID)
 /// <returns>Modifiable handle to the Transform component</returns>
 Transform & ECSManager::TransformComp(const std::string & pEntityName)
 {
-	int entityID = FindEntityID(pEntityName);
-	if (entityID != -1)
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
 	{
-		return mTransforms[entityID].second;
+		//Finds the ID/Component pair for the given entity ID
+		auto comp = find_if(mTransforms.begin(), mTransforms.end(), [&](const pair<int, Transform>& pair) {return pair.first == entity->mID; });
+
+		if (comp != mTransforms.end())
+		{
+			return comp->second;
+		}
 	}
 }
 
@@ -597,7 +726,13 @@ Transform & ECSManager::TransformComp(const std::string & pEntityName)
 /// <returns>Modifiable handle to Velocity component</returns>
 Velocity & ECSManager::VelocityComp(const int & pEntityID)
 {
-	return mVelocities[pEntityID].second;
+	//Finds the ID/Component pair for the given entity ID
+	auto comp = find_if(mVelocities.begin(), mVelocities.end(), [&](const pair<int, Velocity>& pair) {return pair.first == pEntityID; });
+
+	if (comp != mVelocities.end())
+	{
+		return comp->second;
+	}
 }
 
 /// <summary>
@@ -607,9 +742,15 @@ Velocity & ECSManager::VelocityComp(const int & pEntityID)
 /// <returns>Modifiable handle to the Velocity component</returns>
 Velocity & ECSManager::VelocityComp(const std::string & pEntityName)
 {
-	int entityID = FindEntityID(pEntityName);
-	if (entityID != -1)
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
 	{
-		return mVelocities[entityID].second;
+		//Finds the ID/Component pair for the given entity ID
+		auto comp = find_if(mVelocities.begin(), mVelocities.end(), [&](const pair<int, AI>& pair) {return pair.first == entity->mID; });
+
+		if (comp != mVelocities.end())
+		{
+			return comp->second;
+		}
 	}
 }
