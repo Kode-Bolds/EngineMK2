@@ -1,21 +1,14 @@
 #pragma once
 #include <string>
-#include <d3d11.h>
 #include <vector>
+#include "../../Vertex.h"
+#include <fstream>
+#include <tuple>
 
 class ObjLoader
 {
-	//std::vector<unsigned> mIndices;
-	//std::vector<std::tuple<float,float,float>> mVertices;
-	//std::vector<unsigned> mTexIndices;
-	//std::vector<float, float> mTexCoords;
-	//std::vector<unsigned> mNormalIndices;
-	//std::vector<float, float> mNormals;
-
 public:
-	ObjLoader();
-	~ObjLoader();
 
-	//std::pair<std::vector<unsigned>, std::vector<>> LoadObject(std::string& pFilename);
+	static std::pair<std::vector<unsigned>, std::vector<Vertex>> LoadObject(const std::string& pFilename);
 };
 
