@@ -45,9 +45,6 @@
     <ClInclude Include="Header Files\Components\Geometry.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Header Files\Components\IComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Header Files\Components\Light.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
