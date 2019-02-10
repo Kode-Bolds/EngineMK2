@@ -3,11 +3,12 @@
 #include <vector>
 #include "../../Vertex.h"
 #include <fstream>
+#include <tuple>
 
-static class ObjLoader
+class ObjLoader
 {
 public:
 
-	static std::pair<std::vector<unsigned>, std::vector<Vertex>> LoadObject(std::string& pFilename);
+	static std::pair<std::vector<unsigned>, std::vector<Vertex>> LoadObject(const std::string& pFilename);
 };
 

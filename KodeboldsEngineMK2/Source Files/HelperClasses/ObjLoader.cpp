@@ -1,10 +1,9 @@
 #include "ObjLoader.h"
-#include <tuple>
 
 using namespace std;
 using namespace DirectX;
 
-pair<vector<unsigned>, vector<Vertex>> ObjLoader::LoadObject(string & pFilename)
+pair<vector<unsigned>, vector<Vertex>> ObjLoader::LoadObject(const string & pFilename)
 {
 	vector<unsigned> indices;
 	vector<Vertex> vertices;
@@ -18,7 +17,7 @@ pair<vector<unsigned>, vector<Vertex>> ObjLoader::LoadObject(string & pFilename)
 
 	ifstream fin(pFilename);
 
-	while (!fin.eof)
+	while (!fin.eof())
 	{
 		string type;
 		fin >> type;
@@ -69,11 +68,11 @@ pair<vector<unsigned>, vector<Vertex>> ObjLoader::LoadObject(string & pFilename)
 				else
 				{
 					//if it has been created then add the same index again
-					indices.push_back(index - addedInd.begin());
+					indices.push_back(static_cast<int>(index - addedInd.begin()));
 				}
 			}
 		}
 	}
 
-
+	return make_pair(indices, vertices);
 }
