@@ -10,12 +10,12 @@ void ECSManager::AssignEntity(const Entity & pEntity)
 {
 	for (auto & system : mRenderSystems)
 	{
-		system->AssignEntity(pEntity.mID);
+		system->AssignEntity(pEntity);
 	}
 
 	for (auto & system : mUpdateSystems)
 	{
-		system->AssignEntity(pEntity.mID);
+		system->AssignEntity(pEntity);
 	}
 }
 
@@ -223,7 +223,7 @@ void ECSManager::RemoveAudioComp(const std::string & pEntityName)
 	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
-		mAudios.erase(remove_if(mAudios.begin(), mAudios.end(), [&](const pair<int, AI>& pair) {return pair.first == entity->mID; }));
+		mAudios.erase(remove_if(mAudios.begin(), mAudios.end(), [&](const pair<int, Audio>& pair) {return pair.first == entity->mID; }));
 		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
 		AssignEntity(*entity);
 	}
@@ -547,7 +547,7 @@ void ECSManager::RemoveVelocityComp(const std::string & pEntityName)
 AI & ECSManager::AIComp(const int & pEntityID)
 {
 	//Finds the ID/Component pair for the given entity ID
-	auto comp = find_if(mAIs.begin(), mAIs.end(), [&](const pair<int, AI>& pair) {return pair.first == pEntityID; });
+	auto comp = find_if(mAIs.begin(), mAIs.end(), [&](const pair<int, Velocity>& pair) {return pair.first == pEntityID; });
 
 	return comp->second;
 }
