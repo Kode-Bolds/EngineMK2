@@ -1,5 +1,4 @@
 #pragma once
-#include "IComponent.h"
 #include "ComponentType.h"
 #include "Audio.h"
 #include "AI.h"

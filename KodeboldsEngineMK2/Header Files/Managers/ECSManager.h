@@ -44,11 +44,34 @@ public:
 
 	void CreateEntity(const std::string& pEntityName);
 	void DestroyEntity(const std::string& pEntityName);
-	void AddComponent(const ComponentType& pComponentType, const std::shared_ptr<const IComponent> pComponent, const std::string& pEntityName);
-	void RemoveComponent(const ComponentType& pComponentType, const std::string& pEntityName);
 	void AddUpdateSystem(const std::shared_ptr<ISystem> pSystem);
 	void AddRenderSystem(const std::shared_ptr<ISystem> pSystem);
 	void ProcessSystems();
+
+	void AddAIComp(const AI& pAI, const std::string& pEntityName);
+	void RemoveAIComp(const std::string& pEntityName);
+	void AddAudioComp(const Audio& pAudio, const std::string& pEntityName);
+	void RemoveAudioComp(const std::string& pEntityName);
+	void AddBoxColliderComp(const BoxCollider& pBoxCollider, const std::string& pEntityName);
+	void RemoveBoxColliderComp(const std::string& pEntityName);
+	void AddCameraComp(const Camera& pCamera, const std::string& pEntityName);
+	void RemoveCameraComp(const std::string& pEntityName);
+	void AddGeometryComp(const Geometry& pGeometry, const std::string& pEntityName);
+	void RemoveGeometryComp(const std::string& pEntityName);
+	void AddGravityComp(const Gravity& pGravity, const std::string& pEntityName);
+	void RemoveGravityComp(const std::string& pEntityName);
+	void AddLightComp(const Light& pLight, const std::string& pEntityName);
+	void RemoveLightComp(const std::string& pEntityName);
+	void AddShaderComp(const Shader& pShader, const std::string& pEntityName);
+	void RemoveShaderComp(const std::string& pEntityName);
+	void AddSphereColliderComp(const SphereCollider& pSphereCollider, const std::string& pEntityName);
+	void RemoveSphereColliderComp(const std::string& pEntityName);
+	void AddTextureComp(const Texture& pTexture, const std::string& pEntityName);
+	void RemoveTextureComp(const std::string& pEntityName);
+	void AddTransformComp(const Transform& pTransform, const std::string& pEntityName);
+	void RemoveTransformComp(const std::string& pEntityName);
+	void AddVelocityComp(const Velocity& pVelocity, const std::string& pEntityName);
+	void RemoveVelocityComp(const std::string& pEntityName);
 
 	AI& AIComp(const int& pEntityID);
 	AI& AIComp(const std::string& pEntityName);

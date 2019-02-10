@@ -35,7 +35,6 @@
     <ClInclude Include="Header Files\Components\ComponentType.h" />
     <ClInclude Include="Header Files\Components\Geometry.h" />
     <ClInclude Include="Header Files\Components\Gravity.h" />
-    <ClInclude Include="Header Files\Components\IComponent.h" />
     <ClInclude Include="Header Files\Components\Light.h" />
     <ClInclude Include="Header Files\Components\Shader.h" />
     <ClInclude Include="Header Files\Components\SphereCollider.h" />
