@@ -14,5 +14,5 @@ std::pair<std::shared_ptr<ID3D11Buffer>, std::shared_ptr<ID3D11Buffer>> Resource
 std::shared_ptr<ResourceManager> ResourceManager::Instance()
 {
 	static shared_ptr<ResourceManager> instance{new ResourceManager};
-	return mInstance;
+	return instance;
 }

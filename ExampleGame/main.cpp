@@ -86,3 +86,28 @@ HRESULT InitWindow(const HINSTANCE pHInstance, const int pNCmdShow)
 
 	return static_cast<HRESULT>(0L);
 }
+
+LRESULT CALLBACK WndProc(const HWND hWnd, const UINT message, const WPARAM wParam, const LPARAM lParam)
+{
+
+	switch (message)
+	{
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		break;
+
+	case WM_ACTIVATEAPP:
+		break;
+
+	case WM_KEYDOWN:
+	case WM_SYSKEYDOWN:
+	case WM_KEYUP:
+	case WM_SYSKEYUP:
+		break;
+
+	default:
+		return DefWindowProc(hWnd, message, wParam, lParam);
+	}
+
+	return 0;
+}

@@ -31,6 +31,7 @@ private:
 
 	void AssignEntity(const Entity& pEntity);
 	void RemoveEntity(const Entity& pEntity);
+	const std::shared_ptr<Entity> FindEntityByName(const std::string& pEntityName) const;
 
 public:
 	~ECSManager();
@@ -48,8 +49,29 @@ public:
 	void AddUpdateSystem(const std::shared_ptr<ISystem> pSystem);
 	void AddRenderSystem(const std::shared_ptr<ISystem> pSystem);
 	void ProcessSystems();
-	const std::shared_ptr<const IComponent> GetComponent(const ComponentType& pComponentType, const std::string& pEntityName) const;
-	void SetComponent(const ComponentType& pComponentType, const std::shared_ptr<const IComponent> pComponent, const std::string pEntityName);
-	const std::shared_ptr<const IComponent> GetComponent(const ComponentType& pComponentType, const int& pEntityID) const;
-	void SetComponent(const ComponentType& pComponentType, const std::shared_ptr<const IComponent> pComponent, const int& pEntityID);
+
+	AI& AIComp(const int& pEntityID);
+	AI& AIComp(const std::string& pEntityName);
+	Audio& AudioComp(const int& pEntityID);
+	Audio& AudioComp(const std::string& pEntityName);
+	BoxCollider& BoxColliderComp(const int& pEntityID);
+	BoxCollider& BoxColliderComp(const std::string& pEntityName);
+	Camera& CameraComp(const int& pEntityID);
+	Camera& CameraComp(const std::string pEntityName);
+	Geometry& GeometryComp(const int& pEntityID);
+	Geometry& GeometryComp(const std::string& pEntityName);
+	Gravity& GravityComp(const int& pEntityID);
+	Gravity& GravityComp(const std::string& pEntityName);
+	Light& LightComp(const int& pEntityID);
+	Light& LightComp(const std::string& pEntityName);
+	Shader& ShaderComp(const int& pEntityID);
+	Shader& ShaderComp(const std::string& pEntityName);
+	SphereCollider& SphereColliderComp(const int& pEntityID);
+	SphereCollider& SphereColliderComp(const std::string& pEntityName);
+	Texture& TextureComp(const int& pEntityID);
+	Texture& TextureComp(const std::string& pEntityName);
+	Transform& TransformComp(const int& pEntityID);
+	Transform& TransformComp(const std::string& pEntityName);
+	Velocity& VelocityComp(const int& pEntityID);
+	Velocity& VelocityComp(const std::string& pEntityName);
 };

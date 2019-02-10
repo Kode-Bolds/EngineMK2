@@ -8,8 +8,6 @@
 
 class ResourceManager final
 {
-	static std::shared_ptr<ResourceManager> mInstance;
-
 	std::vector< std::pair< std::string, std::shared_ptr< ID3D11ShaderResourceView >>> mTextures{};
 	std::vector< std::pair< std::string, std::pair< std::shared_ptr< ID3D11Buffer >, std::shared_ptr< ID3D11Buffer >>>> mGeometries{};
 	std::vector< std::pair< std::string, std::shared_ptr< ID3D11Buffer >>> mInstances{};
