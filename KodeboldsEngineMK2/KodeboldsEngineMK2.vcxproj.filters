@@ -1,36 +1,126 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Source Files\HelperClasses\ObjLoader.cpp" />
-    <ClCompile Include="Source Files\Managers\ECSManager.cpp" />
-    <ClCompile Include="Source Files\Managers\InputManager.cpp" />
-    <ClCompile Include="Source Files\Managers\ResourceManager.cpp" />
-    <ClCompile Include="Source Files\HelperClasses\Scene.cpp" />
-    <ClCompile Include="Source Files\Managers\SceneManager.cpp" />
+    <ClCompile Include="Source Files\Managers\ECSManager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Managers\InputManager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\HelperClasses\ObjLoader.cpp">
+      <Filter>Source Files\HelperClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Managers\ResourceManager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\HelperClasses\Scene.cpp">
+      <Filter>Source Files\HelperClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Managers\SceneManager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Header Files\Components\AI.h" />
-    <ClInclude Include="Header Files\Components\Audio.h" />
-    <ClInclude Include="Header Files\Components\BoxCollider.h" />
-    <ClInclude Include="Header Files\Components\Camera.h" />
-    <ClInclude Include="Header Files\Components\Components.h" />
-    <ClInclude Include="Header Files\Components\ComponentType.h" />
-    <ClInclude Include="Header Files\Components\Geometry.h" />
-    <ClInclude Include="Header Files\Components\Gravity.h" />
-    <ClInclude Include="Header Files\Components\IComponent.h" />
-    <ClInclude Include="Header Files\Components\Light.h" />
-    <ClInclude Include="Header Files\Components\Shader.h" />
-    <ClInclude Include="Header Files\Components\SphereCollider.h" />
-    <ClInclude Include="Header Files\Components\Texture.h" />
-    <ClInclude Include="Header Files\Components\Transform.h" />
-    <ClInclude Include="Header Files\Components\Velocity.h" />
-    <ClInclude Include="Header Files\HelperClasses\ObjLoader.h" />
-    <ClInclude Include="Header Files\Managers\ECSManager.h" />
-    <ClInclude Include="Header Files\Managers\Entity.h" />
-    <ClInclude Include="Header Files\Managers\InputManager.h" />
-    <ClInclude Include="Header Files\Managers\ResourceManager.h" />
-    <ClInclude Include="Header Files\HelperClasses\Scene.h" />
-    <ClInclude Include="Header Files\Managers\SceneManager.h" />
-    <ClInclude Include="Header Files\Systems\ISystem.h" />
+    <ClInclude Include="Header Files\Components\AI.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\Audio.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\BoxCollider.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\Camera.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\Components.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\ComponentType.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\Gravity.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\Geometry.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\IComponent.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\Light.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\Shader.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\SphereCollider.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\Texture.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\Transform.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\Velocity.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Systems\ISystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\ObjLoader.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\Scene.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Managers\ECSManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Managers\InputManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Managers\ResourceManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Managers\Entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Managers\SceneManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{bc0ebd36-4beb-4981-bead-2311f507eb99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{f8a7bf6c-0ed2-4188-b350-8cdeab5a1ba7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Components">
+      <UniqueIdentifier>{7c622a62-ed5a-4f33-972d-51e9c47c2a44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Systems">
+      <UniqueIdentifier>{e677d032-7231-491b-96e5-eb6ef50b166f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\HelperClasses">
+      <UniqueIdentifier>{97a4865f-6db7-4c0f-bea8-f4f163c455b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Managers">
+      <UniqueIdentifier>{7c3694f9-4a42-420f-bb49-25e31ffb4338}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Components">
+      <UniqueIdentifier>{ed6f643a-8661-4667-b668-4d02755e519e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\HelperClasses">
+      <UniqueIdentifier>{f6073586-2a37-44b1-bff9-75bd24763291}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Managers">
+      <UniqueIdentifier>{4253dc08-5287-41ec-861e-7bb3217728cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Systems">
+      <UniqueIdentifier>{ac071894-4324-4026-9b95-f999edf7cc06}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
