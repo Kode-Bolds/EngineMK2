@@ -25,6 +25,7 @@
     <ClCompile Include="Source Files\Managers\ResourceManager.cpp" />
     <ClCompile Include="Source Files\HelperClasses\Scene.cpp" />
     <ClCompile Include="Source Files\Managers\SceneManager.cpp" />
+    <ClCompile Include="Source Files\Systems\MovementSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\Components\AI.h" />
@@ -49,6 +50,7 @@
     <ClInclude Include="Header Files\HelperClasses\Scene.h" />
     <ClInclude Include="Header Files\Managers\SceneManager.h" />
     <ClInclude Include="Header Files\Systems\ISystem.h" />
+    <ClInclude Include="Header Files\Systems\MovementSystem.h" />
     <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

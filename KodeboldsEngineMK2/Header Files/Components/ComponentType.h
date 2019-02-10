@@ -22,6 +22,11 @@ ComponentType operator| (ComponentType a, ComponentType b)
 	return static_cast<ComponentType>(static_cast<short>(a) | static_cast<short>(b));
 }
 
+ComponentType operator& (ComponentType a, ComponentType b)
+{
+	return static_cast<ComponentType>(static_cast<short>(a) & static_cast<short>(b));
+}
+
 ComponentType& operator|= (ComponentType& a, ComponentType b)
 {
 	return a = a | b;
