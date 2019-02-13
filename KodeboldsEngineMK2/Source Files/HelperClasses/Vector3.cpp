@@ -49,6 +49,35 @@ float Vector3::Dot(const Vector3 & b) const
 /// <summary>
 /// 
 /// </summary>
+/// <param name="pScalar"></param>
+/// <returns></returns>
+Vector3& Vector3::Multiply(float pScalar)
+{
+	x *= pScalar;
+	y *= pScalar;
+	z *= pScalar;
+	return *this;
+}
+
+Vector3 & Vector3::Clamp(float pMagnitude)
+{
+	float magnitude = this->Magnitude();
+	if (magnitude > pMagnitude)
+	{
+		float scale = pMagnitude / magnitude;
+		return this->Multiply(scale);
+	}
+	return *this;
+}
+
+Vector3 & Vector3::Normalise()
+{
+	return this->Clamp(1);
+}
+
+/// <summary>
+/// 
+/// </summary>
 /// <param name="rhs"></param>
 /// <returns></returns>
 Vector3 & Vector3::operator+=(const Vector3 & rhs)
@@ -70,4 +99,9 @@ Vector3 & Vector3::operator-=(const Vector3 & rhs)
 	y -= rhs.y;
 	z -= rhs.z;
 	return *this;
+}
+
+Vector3 & Vector3::operator*=(const float& rhs)
+{
+	return this->Multiply(rhs);
 }
