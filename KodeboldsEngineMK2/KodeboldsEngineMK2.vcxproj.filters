@@ -22,6 +22,9 @@
     <ClCompile Include="Source Files\Systems\MovementSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="Source Files\HelperClasses\Vector3.cpp">
+      <Filter>Source Files\HelperClasses</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\Components\AI.h">
@@ -84,17 +87,20 @@
     <ClInclude Include="Header Files\Managers\ResourceManager.h">
       <Filter>Header Files\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="Header Files\Managers\Entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Header Files\Managers\SceneManager.h">
       <Filter>Header Files\Managers</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\Systems\MovementSystem.h">
       <Filter>Header Files\Systems</Filter>
-     </ClInclude>
-    <ClInclude Include="Vertex.h">
-      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\DataStructs\Entity.h">
+      <Filter>Header Files\DataStructs</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\DataStructs\Vertex.h">
+      <Filter>Header Files\DataStructs</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\Vector3.h">
+      <Filter>Header Files\HelperClasses</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -127,6 +133,9 @@
     </Filter>
     <Filter Include="Source Files\Systems">
       <UniqueIdentifier>{ac071894-4324-4026-9b95-f999edf7cc06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DataStructs">
+      <UniqueIdentifier>{bb7a16b2-7c29-4528-9e61-6ea87cd38892}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

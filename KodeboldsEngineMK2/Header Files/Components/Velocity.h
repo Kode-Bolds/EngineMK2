@@ -1,9 +1,10 @@
 #pragma once
 #include <DirectXMath.h>
+#include "Vector3.h"
 
 struct Velocity
 {
-	DirectX::XMFLOAT3 mVelocity;
-	DirectX::XMFLOAT3 mAcceleration;
+	Vector3 mVelocity;
+	Vector3 mAcceleration;
 	float maxSpeed;
 };
