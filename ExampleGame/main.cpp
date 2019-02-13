@@ -1,4 +1,9 @@
 #include <windows.h>
+#include "Managers/Managers.h"
+#include "Systems/Systems.h"
+#include "DataStructs/Entity.h"
+#include "Components/Components.h"
+#include "HelperClasses/Scene.h"
 
 HINSTANCE g_hInst = nullptr;
 HWND g_hWnd = nullptr;
