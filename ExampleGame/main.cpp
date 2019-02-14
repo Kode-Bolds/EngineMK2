@@ -1,9 +1,10 @@
 #include <windows.h>
-#include "Managers/Managers.h"
-#include "Systems/Systems.h"
-#include "DataStructs/Entity.h"
-#include "Components/Components.h"
-#include "HelperClasses/Scene.h"
+#include "Managers.h"
+#include "Systems.h"
+#include "Entity.h"
+#include "Components.h"
+#include "Vector3.h"
+#include <memory>
 
 HINSTANCE g_hInst = nullptr;
 HWND g_hWnd = nullptr;
@@ -28,6 +29,12 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	{
 		return 0;
 	}
+
+	std::shared_ptr<ECSManager> ecsManager = ECSManager::Instance();
+	ecsManager->CreateEntity("Test");
+	ecsManager->CreateEntity("Test");
+	ecsManager->CreateEntity("Test");
+	ecsManager->CreateEntity("Test");
 
 	//Main message loop
 	MSG msg = { 0 };

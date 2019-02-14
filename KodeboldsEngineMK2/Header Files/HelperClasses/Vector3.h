@@ -25,7 +25,7 @@ public:
 	Vector3& operator*=(const float& rhs);
 };
 
-//+/- operators implemented using the += and -= operators
-Vector3 operator+(Vector3 lhs, const Vector3& rhs){ lhs += rhs; return lhs; }
-Vector3 operator-(Vector3 lhs, const Vector3& rhs){	lhs -= rhs;	return lhs; }
-Vector3 operator*(Vector3 lhs, const float& rhs) { lhs *= rhs;	return lhs; }
+// +/-/* operators implemented using the +=, *= and -= operators
+inline Vector3 operator+(Vector3 lhs, const Vector3& rhs){ lhs += rhs; return lhs; }
+inline Vector3 operator-(Vector3 lhs, const Vector3& rhs){	lhs -= rhs;	return lhs; }
+inline Vector3 operator*(Vector3 lhs, const float& rhs) { lhs *= rhs;	return lhs; }
