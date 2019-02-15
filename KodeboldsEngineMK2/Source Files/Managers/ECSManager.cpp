@@ -41,14 +41,14 @@ void ECSManager::RemoveEntity(const Entity & pEntity)
 /// </summary>
 /// <param name="pEntityName">Given name of the entity</param>
 /// <returns>Entity that matches given name</returns>
-const std::shared_ptr<Entity> ECSManager::FindEntityByName(const std::string & pEntityName) const
+Entity* const ECSManager::FindEntityByName(const std::string & pEntityName)
 {
 	//Finds if an entity with this name already exists then returns an iterator to the entity if it does
 	auto entity = find_if(mEntities.begin(), mEntities.end(), [&](const Entity& entity) {return entity.mName == pEntityName; });
 
 	if (entity != mEntities.end())
 	{
-		return make_shared<Entity>(*entity);
+		return &*entity;
 	}
 	else
 	{
@@ -62,19 +62,19 @@ const std::shared_ptr<Entity> ECSManager::FindEntityByName(const std::string & p
 /// </summary>
 ECSManager::ECSManager()
 {
-		mEntities.resize(1000);
-		mTransforms.resize(1000);
-		mVelocities.resize(1000);
-		mBoxColliders.resize(1000);
-		mSphereColliders.resize(1000);
-		mGeometries.resize(1000);
-		mTextures.resize(1000);
-		mShaders.resize(1000);
-		mCameras.resize(1000);
-		mLights.resize(1000);
-		mGravities.resize(1000);
-		mAudios.resize(1000);
-		mAIs.resize(1000);
+		mEntities.reserve(1000);
+		mTransforms.reserve(1000);
+		mVelocities.reserve(1000);
+		mBoxColliders.reserve(1000);
+		mSphereColliders.reserve(1000);
+		mGeometries.reserve(1000);
+		mTextures.reserve(1000);
+		mShaders.reserve(1000);
+		mCameras.reserve(1000);
+		mLights.reserve(1000);
+		mGravities.reserve(1000);
+		mAudios.reserve(1000);
+		mAIs.reserve(1000);
 }
 
 /// <summary>
@@ -174,7 +174,7 @@ void ECSManager::ProcessSystems()
 /// <param name="pEntityName">Given name of the entity</param>
 void ECSManager::AddAIComp(const AI & pAI, const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		mAIs.push_back(pair<int, AI>(entity->mID, pAI));
@@ -189,7 +189,7 @@ void ECSManager::AddAIComp(const AI & pAI, const std::string & pEntityName)
 /// <param name="pEntityName">Given name of the entity</param>
 void ECSManager::RemoveAIComp(const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		mAIs.erase(remove_if(mAIs.begin(), mAIs.end(), [&](const pair<int, AI>& pair) {return pair.first == entity->mID; }));
@@ -205,7 +205,7 @@ void ECSManager::RemoveAIComp(const std::string & pEntityName)
 /// <param name="pEntityName">Given name of the entity</param>
 void ECSManager::AddAudioComp(const Audio & pAudio, const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		mAudios.push_back(pair<int, Audio>(entity->mID, pAudio));
@@ -220,7 +220,7 @@ void ECSManager::AddAudioComp(const Audio & pAudio, const std::string & pEntityN
 /// <param name="pEntityName">Given name of the entity</param>
 void ECSManager::RemoveAudioComp(const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		mAudios.erase(remove_if(mAudios.begin(), mAudios.end(), [&](const pair<int, Audio>& pair) {return pair.first == entity->mID; }));
@@ -236,7 +236,7 @@ void ECSManager::RemoveAudioComp(const std::string & pEntityName)
 /// <param name="pEntityName">Given name of the entity</param>
 void ECSManager::AddBoxColliderComp(const BoxCollider & pBoxCollider, const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		mBoxColliders.push_back(pair<int, BoxCollider>(entity->mID, pBoxCollider));
@@ -251,7 +251,7 @@ void ECSManager::AddBoxColliderComp(const BoxCollider & pBoxCollider, const std:
 /// <param name="pEntityName">Given name of the entity</param>
 void ECSManager::RemoveBoxColliderComp(const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		mBoxColliders.erase(remove_if(mBoxColliders.begin(), mBoxColliders.end(), [&](const pair<int, BoxCollider>& pair) {return pair.first == entity->mID; }));
@@ -267,7 +267,7 @@ void ECSManager::RemoveBoxColliderComp(const std::string & pEntityName)
 /// <param name="pEntityName">Given name of the entity</param>
 void ECSManager::AddCameraComp(const Camera & pCamera, const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		mCameras.push_back(pair<int, Camera>(entity->mID, pCamera));
@@ -282,7 +282,7 @@ void ECSManager::AddCameraComp(const Camera & pCamera, const std::string & pEnti
 /// <param name="pEntityName">Given name of the entity</param>
 void ECSManager::RemoveCameraComp(const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		mCameras.erase(remove_if(mCameras.begin(), mCameras.end(), [&](const pair<int, Camera>& pair) {return pair.first == entity->mID; }));
@@ -298,7 +298,7 @@ void ECSManager::RemoveCameraComp(const std::string & pEntityName)
 /// <param name="pEntityName">Given name of the entity</param>
 void ECSManager::AddGeometryComp(const Geometry & pGeometry, const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		mGeometries.push_back(pair<int, Geometry>(entity->mID, pGeometry));
@@ -313,7 +313,7 @@ void ECSManager::AddGeometryComp(const Geometry & pGeometry, const std::string &
 /// <param name="pEntityName">Given name of the entity</param>
 void ECSManager::RemoveGeometryComp(const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		mGeometries.erase(remove_if(mGeometries.begin(), mGeometries.end(), [&](const pair<int, Geometry>& pair) {return pair.first == entity->mID; }));
@@ -329,7 +329,7 @@ void ECSManager::RemoveGeometryComp(const std::string & pEntityName)
 /// <param name="pEntityName">Given name of the entity</param>
 void ECSManager::AddGravityComp(const Gravity & pGravity, const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		mGravities.push_back(pair<int, Gravity>(entity->mID, pGravity));
@@ -344,7 +344,7 @@ void ECSManager::AddGravityComp(const Gravity & pGravity, const std::string & pE
 /// <param name="pEntityName">Given name of the entity</param>
 void ECSManager::RemoveGravityComp(const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		mGravities.erase(remove_if(mGravities.begin(), mGravities.end(), [&](const pair<int, Gravity>& pair) {return pair.first == entity->mID; }));
@@ -360,7 +360,7 @@ void ECSManager::RemoveGravityComp(const std::string & pEntityName)
 /// <param name="pEntityName">Given name of the entity</param>
 void ECSManager::AddLightComp(const Light & pLight, const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		mLights.push_back(pair<int, Light>(entity->mID, pLight));
@@ -375,7 +375,7 @@ void ECSManager::AddLightComp(const Light & pLight, const std::string & pEntityN
 /// <param name="pEntityName">Given name of the entity</param>
 void ECSManager::RemoveLightComp(const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		mLights.erase(remove_if(mLights.begin(), mLights.end(), [&](const pair<int, Light>& pair) {return pair.first == entity->mID; }));
@@ -391,7 +391,7 @@ void ECSManager::RemoveLightComp(const std::string & pEntityName)
 /// <param name="pEntityName">Given name of the entity</param>
 void ECSManager::AddShaderComp(const Shader & pShader, const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		mShaders.push_back(pair<int, Shader>(entity->mID, pShader));
@@ -406,7 +406,7 @@ void ECSManager::AddShaderComp(const Shader & pShader, const std::string & pEnti
 /// <param name="pEntityName">Given name of the entity</param>
 void ECSManager::RemoveShaderComp(const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		mShaders.erase(remove_if(mShaders.begin(), mShaders.end(), [&](const pair<int, Shader>& pair) {return pair.first == entity->mID; }));
@@ -422,7 +422,7 @@ void ECSManager::RemoveShaderComp(const std::string & pEntityName)
 /// <param name="pEntityName">Given name of the entity</param>
 void ECSManager::AddSphereColliderComp(const SphereCollider & pSphereCollider, const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		mSphereColliders.push_back(pair<int, SphereCollider>(entity->mID, pSphereCollider));
@@ -437,7 +437,7 @@ void ECSManager::AddSphereColliderComp(const SphereCollider & pSphereCollider, c
 /// <param name="pEntityName">Given name of the entity</param>
 void ECSManager::RemoveSphereColliderComp(const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		mSphereColliders.erase(remove_if(mSphereColliders.begin(), mSphereColliders.end(), [&](const pair<int, SphereCollider>& pair) {return pair.first == entity->mID; }));
@@ -453,7 +453,7 @@ void ECSManager::RemoveSphereColliderComp(const std::string & pEntityName)
 /// <param name="pEntityName">Given name of the entity</param>
 void ECSManager::AddTextureComp(const Texture & pTexture, const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		mTextures.push_back(pair<int, Texture>(entity->mID, pTexture));
@@ -468,7 +468,7 @@ void ECSManager::AddTextureComp(const Texture & pTexture, const std::string & pE
 /// <param name="pEntityName">Given name of the entity</param>
 void ECSManager::RemoveTextureComp(const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		mTextures.erase(remove_if(mTextures.begin(), mTextures.end(), [&](const pair<int, Texture>& pair) {return pair.first == entity->mID; }));
@@ -484,7 +484,7 @@ void ECSManager::RemoveTextureComp(const std::string & pEntityName)
 /// <param name="pEntityName">Given name of the entity</param>
 void ECSManager::AddTransformComp(const Transform & pTransform, const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		mTransforms.push_back(pair<int, Transform>(entity->mID, pTransform));
@@ -499,7 +499,7 @@ void ECSManager::AddTransformComp(const Transform & pTransform, const std::strin
 /// <param name="pEntityName">Given name of the entity</param>
 void ECSManager::RemoveTransformComp(const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		mTransforms.erase(remove_if(mTransforms.begin(), mTransforms.end(), [&](const pair<int, Transform>& pair) {return pair.first == entity->mID; }));
@@ -515,7 +515,7 @@ void ECSManager::RemoveTransformComp(const std::string & pEntityName)
 /// <param name="pEntityName">Given name of the entity</param>
 void ECSManager::AddVelocityComp(const Velocity & pVelocity, const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		mVelocities.push_back(pair<int, Velocity>(entity->mID, pVelocity));
@@ -530,7 +530,7 @@ void ECSManager::AddVelocityComp(const Velocity & pVelocity, const std::string &
 /// <param name="pEntityName">Given name of the entity</param>
 void ECSManager::RemoveVelocityComp(const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		mVelocities.erase(remove_if(mVelocities.begin(), mVelocities.end(), [&](const pair<int, Velocity>& pair) {return pair.first == entity->mID; }));
@@ -559,7 +559,7 @@ AI & ECSManager::AIComp(const int & pEntityID)
 /// <returns>Modifiable handle to the AI component</returns>
 AI & ECSManager::AIComp(const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		//Finds the ID/Component pair for the given entity ID
@@ -595,7 +595,7 @@ Audio & ECSManager::AudioComp(const int & pEntityID)
 /// <returns>Modifiable handle to the Audio component</returns>
 Audio & ECSManager::AudioComp(const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		//Finds the ID/Component pair for the given entity ID
@@ -631,7 +631,7 @@ BoxCollider & ECSManager::BoxColliderComp(const int & pEntityID)
 /// <returns>Modifiable handle to the BoxCollider component</returns>
 BoxCollider & ECSManager::BoxColliderComp(const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		//Finds the ID/Component pair for the given entity ID
@@ -667,7 +667,7 @@ Camera & ECSManager::CameraComp(const int & pEntityID)
 /// <returns>Modifiable handle to the Camera component</returns>
 Camera & ECSManager::CameraComp(const std::string pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		//Finds the ID/Component pair for the given entity ID
@@ -703,7 +703,7 @@ Geometry & ECSManager::GeometryComp(const int & pEntityID)
 /// <returns>Modifiable handle to the Geometry component</returns>
 Geometry & ECSManager::GeometryComp(const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		//Finds the ID/Component pair for the given entity ID
@@ -739,7 +739,7 @@ Gravity & ECSManager::GravityComp(const int & pEntityID)
 /// <returns>Modifiable handle to the Gravity component</returns>
 Gravity & ECSManager::GravityComp(const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		//Finds the ID/Component pair for the given entity ID
@@ -775,7 +775,7 @@ Light & ECSManager::LightComp(const int & pEntityID)
 /// <returns>Modifiable handle to the Light component</returns>
 Light & ECSManager::LightComp(const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		//Finds the ID/Component pair for the given entity ID
@@ -811,7 +811,7 @@ Shader & ECSManager::ShaderComp(const int & pEntityID)
 /// <returns>Modifiable handle to the Shader component</returns>
 Shader & ECSManager::ShaderComp(const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		//Finds the ID/Component pair for the given entity ID
@@ -847,7 +847,7 @@ SphereCollider & ECSManager::SphereColliderComp(const int & pEntityID)
 /// <returns>Modifiable handle to the SphereCollider component</returns>
 SphereCollider & ECSManager::SphereColliderComp(const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		//Finds the ID/Component pair for the given entity ID
@@ -883,7 +883,7 @@ Texture & ECSManager::TextureComp(const int & pEntityID)
 /// <returns>Modifiable handle to the Texture component</returns>
 Texture & ECSManager::TextureComp(const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		//Finds the ID/Component pair for the given entity ID
@@ -919,7 +919,7 @@ Transform & ECSManager::TransformComp(const int & pEntityID)
 /// <returns>Modifiable handle to the Transform component</returns>
 Transform & ECSManager::TransformComp(const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		//Finds the ID/Component pair for the given entity ID
@@ -955,7 +955,7 @@ Velocity & ECSManager::VelocityComp(const int & pEntityID)
 /// <returns>Modifiable handle to the Velocity component</returns>
 Velocity & ECSManager::VelocityComp(const std::string & pEntityName)
 {
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
 	{
 		//Finds the ID/Component pair for the given entity ID

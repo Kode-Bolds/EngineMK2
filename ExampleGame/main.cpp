@@ -1,10 +1,11 @@
 #include <windows.h>
-#include "Managers.h"
-#include "Systems.h"
-#include "Entity.h"
-#include "Components.h"
-#include "Vector3.h"
 #include <memory>
+#include "Managers.h"
+#include "Vector3.h"
+#include "Systems.h"
+#include "Components.h"
+
+#pragma comment(lib, "KodeboldsEngineMK2.lib")
 
 HINSTANCE g_hInst = nullptr;
 HWND g_hWnd = nullptr;
@@ -30,11 +31,45 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 		return 0;
 	}
 
+	//Testing vector3 class
+	Vector3 v1(1.0f, 1.0f, 1.0f);
+	Vector3 v2(1.0f, 1.0f, 1.0f);
+
+	v2.X() = 1;
+	v2.Y() = 1;
+	v2.Z() = 1;
+
+	v1 = v2 + v1;
+	//v2 = v1 + ((v1 * 2) - v2);
+
+	//Testing ECS Manager and movement system
 	std::shared_ptr<ECSManager> ecsManager = ECSManager::Instance();
+	std::shared_ptr<ISystem> moveSystPtr = std::make_shared<MovementSystem>();
+	ecsManager->AddUpdateSystem(moveSystPtr);
+
 	ecsManager->CreateEntity("Test");
-	ecsManager->CreateEntity("Test");
-	ecsManager->CreateEntity("Test");
-	ecsManager->CreateEntity("Test");
+	ecsManager->CreateEntity("Test1");
+	ecsManager->CreateEntity("Test2");
+	ecsManager->CreateEntity("Test3");
+
+	//Testing transform component
+	Transform transform;
+	transform.mTranslation = v1;
+
+	ecsManager->AddTransformComp(transform, "Test");
+	ecsManager->AddTransformComp(transform, "Test1");
+	ecsManager->AddTransformComp(transform, "Test2");
+	ecsManager->AddTransformComp(transform, "Test3");
+
+	//Testing velocity component
+	Vector3 velocityV(0.0f, 0.0f, 0.0f);
+	Vector3 acceleration(0.1f, 0.0f, 0.0f);
+	Velocity velocity{velocityV, acceleration, 1.0f};
+
+	ecsManager->AddVelocityComp(velocity, "Test");
+	ecsManager->AddVelocityComp(velocity, "Test1");
+	ecsManager->AddVelocityComp(velocity, "Test2");
+	ecsManager->AddVelocityComp(velocity, "Test3");
 
 	//Main message loop
 	MSG msg = { 0 };
@@ -47,7 +82,8 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 		}
 		else
 		{
-
+			//Testing movement system
+			ecsManager->ProcessSystems();
 		}
 	}
 
