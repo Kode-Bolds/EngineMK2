@@ -31,7 +31,7 @@ private:
 
 	void AssignEntity(const Entity& pEntity);
 	void RemoveEntity(const Entity& pEntity);
-	Entity* const FindEntityByName(const std::string& pEntityName);
+	std::shared_ptr<Entity> FindEntityByName(const std::string& pEntityName);
 
 public:
 	~ECSManager();
