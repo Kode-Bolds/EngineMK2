@@ -3,10 +3,36 @@
 /// <summary>
 /// 
 /// </summary>
+Vector3::Vector3()
+	:mX(0), mY(0), mZ(0)
+{
+}
+
+/// <summary>
+/// 
+/// </summary>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <param name="z"></param>
+Vector3::Vector3(const float x, const float y, const float z)
+	:mX(x), mY(y), mZ(z)
+{
+}
+
+/// <summary>
+/// 
+/// </summary>
+Vector3::~Vector3()
+{
+}
+
+/// <summary>
+/// 
+/// </summary>
 /// <returns></returns>
 float & Vector3::X()
 {
-	return x;
+	return mX;
 }
 
 /// <summary>
@@ -15,7 +41,7 @@ float & Vector3::X()
 /// <returns></returns>
 float & Vector3::Y()
 {
-	return y;
+	return mY;
 }
 
 /// <summary>
@@ -24,7 +50,7 @@ float & Vector3::Y()
 /// <returns></returns>
 float & Vector3::Z()
 {
-	return z;
+	return mZ;
 }
 
 /// <summary>
@@ -33,7 +59,7 @@ float & Vector3::Z()
 /// <returns></returns>
 float Vector3::Magnitude() const
 {
-	return sqrt((x * x) + (y * y) + (z * z));
+	return sqrt((mX * mX) + (mY * mY) + (mZ * mZ));
 }
 
 /// <summary>
@@ -43,20 +69,7 @@ float Vector3::Magnitude() const
 /// <returns></returns>
 float Vector3::Dot(const Vector3 & b) const
 {
-	return (x * b.x) + (y * b.y) + (z * b.z);
-}
-
-/// <summary>
-/// 
-/// </summary>
-/// <param name="pScalar"></param>
-/// <returns></returns>
-Vector3& Vector3::Multiply(float pScalar)
-{
-	x *= pScalar;
-	y *= pScalar;
-	z *= pScalar;
-	return *this;
+	return (mX * b.mX) + (mY * b.mY) + (mZ * b.mZ);
 }
 
 /// <summary>
@@ -70,7 +83,7 @@ Vector3 & Vector3::Clamp(float pMagnitude)
 	if (magnitude > pMagnitude)
 	{
 		float scale = pMagnitude / magnitude;
-		return this->Multiply(scale);
+		return *this *= scale;
 	}
 	return *this;
 }
@@ -91,9 +104,9 @@ Vector3 & Vector3::Normalise()
 /// <returns></returns>
 Vector3 & Vector3::operator+=(const Vector3 & rhs)
 {
-	x += rhs.x;
-	y += rhs.y;
-	z += rhs.z;
+	mX += rhs.mX;
+	mY += rhs.mY;
+	mZ += rhs.mZ;
 	return *this;
 }
 
@@ -104,9 +117,9 @@ Vector3 & Vector3::operator+=(const Vector3 & rhs)
 /// <returns></returns>
 Vector3 & Vector3::operator-=(const Vector3 & rhs)
 {
-	x -= rhs.x;
-	y -= rhs.y;
-	z -= rhs.z;
+	mX -= rhs.mX;
+	mY -= rhs.mY;
+	mZ -= rhs.mZ;
 	return *this;
 }
 
@@ -117,5 +130,8 @@ Vector3 & Vector3::operator-=(const Vector3 & rhs)
 /// <returns></returns>
 Vector3 & Vector3::operator*=(const float& rhs)
 {
-	return this->Multiply(rhs);
+	mX *= rhs;
+	mY *= rhs;
+	mZ *= rhs;
+	return *this;
 }

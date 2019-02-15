@@ -24,9 +24,9 @@ void MovementSystem::AssignEntity(const Entity & pEntity)
 	auto entity = find_if(mEntities.begin(), mEntities.end(), [&](const Entity& entity) {return entity.mID == pEntity.mID; });
 	if (entity == mEntities.end())
 	{
-		if ((entity->mComponentMask & mMask) == mMask)
+		if ((pEntity.mComponentMask & mMask) == mMask)
 		{
-			mEntities.push_back(*entity);
+			mEntities.push_back(pEntity);
 		}
 	}
 }
@@ -51,7 +51,7 @@ void MovementSystem::Process()
 		if ((entity.mComponentMask & ComponentType::COMPONENT_GRAVITY) == ComponentType::COMPONENT_GRAVITY)
 		{
 			//Modify acceleration by gravity
-			ecsManager->VelocityComp(entity.mID).mAcceleration.Y() += -9.81; //Maybe make this something like 0.981 or similar to scale it down? Multiply by delta time from scene manager
+			ecsManager->VelocityComp(entity.mID).mAcceleration.Y() += -9.81f; //Maybe make this something like 0.981 or similar to scale it down? Multiply by delta time from scene manager
 		}
 
 		//Modify velocity by acceleration
