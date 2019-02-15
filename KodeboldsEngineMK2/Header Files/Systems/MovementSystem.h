@@ -2,7 +2,7 @@
 #include "ECSManager.h"
 #include "Components.h"
 #include "ISystem.h"
-//#include <DirectXMath.h>
+#include "Vector3.h"
 
 class MovementSystem : public ISystem
 {

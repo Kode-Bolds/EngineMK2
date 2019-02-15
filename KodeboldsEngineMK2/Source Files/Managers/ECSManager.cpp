@@ -48,7 +48,7 @@ const std::shared_ptr<Entity> ECSManager::FindEntityByName(const std::string & p
 
 	if (entity != mEntities.end())
 	{
-		return make_shared<Entity>(entity);
+		return make_shared<Entity>(*entity);
 	}
 	else
 	{
@@ -547,7 +547,7 @@ void ECSManager::RemoveVelocityComp(const std::string & pEntityName)
 AI & ECSManager::AIComp(const int & pEntityID)
 {
 	//Finds the ID/Component pair for the given entity ID
-	auto comp = find_if(mAIs.begin(), mAIs.end(), [&](const pair<int, Velocity>& pair) {return pair.first == pEntityID; });
+	auto comp = find_if(mAIs.begin(), mAIs.end(), [&](const pair<int, AI>& pair) {return pair.first == pEntityID; });
 
 	return comp->second;
 }
@@ -959,7 +959,7 @@ Velocity & ECSManager::VelocityComp(const std::string & pEntityName)
 	if (entity)
 	{
 		//Finds the ID/Component pair for the given entity ID
-		auto comp = find_if(mVelocities.begin(), mVelocities.end(), [&](const pair<int, AI>& pair) {return pair.first == entity->mID; });
+		auto comp = find_if(mVelocities.begin(), mVelocities.end(), [&](const pair<int, Velocity>& pair) {return pair.first == entity->mID; });
 
 		if (comp != mVelocities.end())
 		{
