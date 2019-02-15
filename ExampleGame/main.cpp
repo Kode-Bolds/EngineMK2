@@ -1,10 +1,10 @@
 #include <windows.h>
-#include "Managers.h"
-#include "Systems.h"
-#include "Entity.h"
-#include "Components.h"
-#include "Vector3.h"
 #include <memory>
+#include "Managers.h"
+#include "Vector3.h"
+#include "Systems.h"
+
+#pragma comment(lib, "KodeboldsEngineMK2.lib")
 
 HINSTANCE g_hInst = nullptr;
 HWND g_hWnd = nullptr;
@@ -35,6 +35,22 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	ecsManager->CreateEntity("Test");
 	ecsManager->CreateEntity("Test");
 	ecsManager->CreateEntity("Test");
+
+	Vector3 v1;
+
+	v1.X() = 1;
+	v1.Y() = 1;
+	v1.Z() = 1;
+
+	Vector3 v2;
+
+	v2.X() = 1;
+	v2.Y() = 1;
+	v2.Z() = 1;
+
+	v2 = v1 + v1;
+
+	MovementSystem moveSyst;
 
 	//Main message loop
 	MSG msg = { 0 };
