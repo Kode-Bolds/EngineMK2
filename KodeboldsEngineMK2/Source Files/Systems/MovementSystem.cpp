@@ -1,13 +1,23 @@
 #include "MovementSystem.h"
 
+/// <summary>
+/// 
+/// </summary>
 MovementSystem::MovementSystem() : ISystem(ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_VELOCITY)
 {
 }
 
+/// <summary>
+/// 
+/// </summary>
 MovementSystem::~MovementSystem()
 {
 }
 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="pEntity"></param>
 void MovementSystem::AssignEntity(const Entity & pEntity)
 {
 	//Finds if an entity that matches given entities ID exists and returns it
@@ -21,11 +31,18 @@ void MovementSystem::AssignEntity(const Entity & pEntity)
 	}
 }
 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="pEntityID"></param>
 void MovementSystem::RemoveEntity(const int & pEntityID)
 {
 	mEntities.erase(remove_if(mEntities.begin(), mEntities.end(), [&](const Entity& entity) {return entity.mID == pEntityID; }));
 }
 
+/// <summary>
+/// 
+/// </summary>
 void MovementSystem::Process()
 {
 	for(Entity entity : mEntities)
@@ -34,7 +51,7 @@ void MovementSystem::Process()
 		if ((entity.mComponentMask & ComponentType::COMPONENT_GRAVITY) == ComponentType::COMPONENT_GRAVITY)
 		{
 			//Modify acceleration by gravity
-			ecsManager->VelocityComp(entity.mID).mAcceleration.Y += -9.81; //Maybe make this something like 0.981 or similar to scale it down? Multiply by delta time from scene manager
+			ecsManager->VelocityComp(entity.mID).mAcceleration.Y() += -9.81; //Maybe make this something like 0.981 or similar to scale it down? Multiply by delta time from scene manager
 		}
 
 		//Modify velocity by acceleration
@@ -43,7 +60,7 @@ void MovementSystem::Process()
 		//Clamp velocity magnitude to max speed of entity
 		if (ecsManager->VelocityComp(entity.mID).mVelocity.Magnitude() > ecsManager->VelocityComp(entity.mID).maxSpeed)
 		{
-			//Clamp magnitude here
+			ecsManager->VelocityComp(entity.mID).mVelocity.Clamp(ecsManager->VelocityComp(entity.mID).maxSpeed);
 		}
 
 		//Modify translation by velocity

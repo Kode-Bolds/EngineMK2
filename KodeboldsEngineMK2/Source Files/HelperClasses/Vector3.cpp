@@ -59,6 +59,11 @@ Vector3& Vector3::Multiply(float pScalar)
 	return *this;
 }
 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="pMagnitude"></param>
+/// <returns></returns>
 Vector3 & Vector3::Clamp(float pMagnitude)
 {
 	float magnitude = this->Magnitude();
@@ -70,6 +75,10 @@ Vector3 & Vector3::Clamp(float pMagnitude)
 	return *this;
 }
 
+/// <summary>
+/// 
+/// </summary>
+/// <returns></returns>
 Vector3 & Vector3::Normalise()
 {
 	return this->Clamp(1);
@@ -101,6 +110,11 @@ Vector3 & Vector3::operator-=(const Vector3 & rhs)
 	return *this;
 }
 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="rhs"></param>
+/// <returns></returns>
 Vector3 & Vector3::operator*=(const float& rhs)
 {
 	return this->Multiply(rhs);

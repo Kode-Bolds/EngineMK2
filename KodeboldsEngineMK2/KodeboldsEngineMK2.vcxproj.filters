@@ -102,6 +102,12 @@
     <ClInclude Include="Header Files\HelperClasses\Vector3.h">
       <Filter>Header Files\HelperClasses</Filter>
     </ClInclude>
+    <ClInclude Include="Header Files\Systems\Systems.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Managers\Managers.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
