@@ -1,10 +1,11 @@
 #pragma once
+#include <windows.h>
+#include <DirectXMath.h>
 #include <vector>
 #include <string>
-#include <DirectXMath.h>
 #include <Keyboard.h>
 #include <Mouse.h>
-#include <Windows.h>
+#include <memory>
 
 class InputManager
 {
