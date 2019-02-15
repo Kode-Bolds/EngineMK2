@@ -20,11 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\HelperClasses\ObjLoader.cpp" />
+    <ClCompile Include="Source Files\HelperClasses\Vector3.cpp" />
     <ClCompile Include="Source Files\Managers\ECSManager.cpp" />
     <ClCompile Include="Source Files\Managers\InputManager.cpp" />
     <ClCompile Include="Source Files\Managers\ResourceManager.cpp" />
     <ClCompile Include="Source Files\HelperClasses\Scene.cpp" />
     <ClCompile Include="Source Files\Managers\SceneManager.cpp" />
+    <ClCompile Include="Source Files\Systems\MovementSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\Components\AI.h" />
@@ -35,21 +37,23 @@
     <ClInclude Include="Header Files\Components\ComponentType.h" />
     <ClInclude Include="Header Files\Components\Geometry.h" />
     <ClInclude Include="Header Files\Components\Gravity.h" />
-    <ClInclude Include="Header Files\Components\IComponent.h" />
     <ClInclude Include="Header Files\Components\Light.h" />
     <ClInclude Include="Header Files\Components\Shader.h" />
     <ClInclude Include="Header Files\Components\SphereCollider.h" />
     <ClInclude Include="Header Files\Components\Texture.h" />
     <ClInclude Include="Header Files\Components\Transform.h" />
     <ClInclude Include="Header Files\Components\Velocity.h" />
+    <ClInclude Include="Header Files\DataStructs\Entity.h" />
+    <ClInclude Include="Header Files\DataStructs\Vertex.h" />
     <ClInclude Include="Header Files\HelperClasses\ObjLoader.h" />
+    <ClInclude Include="Header Files\HelperClasses\Vector3.h" />
     <ClInclude Include="Header Files\Managers\ECSManager.h" />
-    <ClInclude Include="Header Files\Managers\Entity.h" />
     <ClInclude Include="Header Files\Managers\InputManager.h" />
     <ClInclude Include="Header Files\Managers\ResourceManager.h" />
     <ClInclude Include="Header Files\HelperClasses\Scene.h" />
     <ClInclude Include="Header Files\Managers\SceneManager.h" />
     <ClInclude Include="Header Files\Systems\ISystem.h" />
+    <ClInclude Include="Header Files\Systems\MovementSystem.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -109,7 +113,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>"Header Files";"Header Files\Systems";"Header Files\HelperClasses";"Header Files\Managers";"Header Files\Components";</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"Header Files";"Header Files\Systems";"Header Files\HelperClasses";"Header Files\Managers";"Header Files\Components";"Header Files\DataStructs";</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -121,7 +125,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>"Header Files";"Header Files\Systems";"Header Files\HelperClasses";"Header Files\Managers";"Header Files\Components";</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"Header Files";"Header Files\Systems";"Header Files\HelperClasses";"Header Files\Managers";"Header Files\Components";"Header Files\DataStructs";</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -135,7 +139,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>"Header Files";"Header Files\Systems";"Header Files\HelperClasses";"Header Files\Managers";"Header Files\Components";</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"Header Files";"Header Files\Systems";"Header Files\HelperClasses";"Header Files\Managers";"Header Files\Components";"Header Files\DataStructs";</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -151,7 +155,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>"Header Files";"Header Files\Systems";"Header Files\HelperClasses";"Header Files\Managers";"Header Files\Components";</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"Header Files";"Header Files\Systems";"Header Files\HelperClasses";"Header Files\Managers";"Header Files\Components";"Header Files\DataStructs";</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

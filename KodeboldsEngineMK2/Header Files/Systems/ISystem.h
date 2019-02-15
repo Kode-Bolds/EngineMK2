@@ -5,12 +5,14 @@
 
 class ISystem
 {
-private:
+protected:
 	std::vector<Entity> mEntities;
-	ComponentType mMask;
+	const ComponentType mMask;
+	ISystem(ComponentType pMask) : mMask(pMask) {};
 
 public:
+	virtual ~ISystem() {};
 	virtual void Process() = 0;
-	virtual void AssignEntity(const int& pEntity) = 0;
-	virtual void RemoveEntity(const int& pEntity) = 0;
+	virtual void AssignEntity(const Entity& pEntity) = 0;
+	virtual void RemoveEntity(const int& pEntityID) = 0;
 };

@@ -1,6 +1,6 @@
 #pragma once
 
-enum ComponentType
+enum class ComponentType : short //?????????
 {
 	COMPONENT_NONE = 0,
 	COMPONENT_TRANSFORM = 1 << 0,
@@ -19,7 +19,12 @@ enum ComponentType
 
 ComponentType operator| (ComponentType a, ComponentType b)
 {
-	return static_cast<ComponentType>(static_cast<int>(a) | static_cast<int>(b));
+	return static_cast<ComponentType>(static_cast<short>(a) | static_cast<short>(b));
+}
+
+ComponentType operator& (ComponentType a, ComponentType b)
+{
+	return static_cast<ComponentType>(static_cast<short>(a) & static_cast<short>(b));
 }
 
 ComponentType& operator|= (ComponentType& a, ComponentType b)

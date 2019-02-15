@@ -5,6 +5,7 @@
 #include <d3dcompiler.h>
 #include <directxmath.h>
 #include <string>
+#include "ObjLoader.h"
 
 class ResourceManager final
 {

@@ -10,12 +10,12 @@ void ECSManager::AssignEntity(const Entity & pEntity)
 {
 	for (auto & system : mRenderSystems)
 	{
-		system->AssignEntity(pEntity.mID);
+		system->AssignEntity(pEntity);
 	}
 
 	for (auto & system : mUpdateSystems)
 	{
-		system->AssignEntity(pEntity.mID);
+		system->AssignEntity(pEntity);
 	}
 }
 
@@ -110,14 +110,14 @@ void ECSManager::CreateEntity(const std::string & pEntityName)
 	//If the iterator is not pointing to the end of the vector, appends (nameCount) to the end of the given name and creates a new entity with that name, then iterates the name count by 1
 	if (entityName != mEntityNames.end())
 	{
-		newEntity = Entity{ pEntityName + "(" + to_string(entityName->second) + ")", static_cast<int>(mEntities.size()), COMPONENT_NONE };
+		newEntity = Entity{ pEntityName + "(" + to_string(entityName->second) + ")", static_cast<int>(mEntities.size()), ComponentType::COMPONENT_NONE };
 		mEntities.push_back(newEntity);
 		entityName->second++;
 	}
 	//Else creates entity with given name and adds name to name vector with count 1
 	else
 	{
-		newEntity = Entity{ pEntityName, static_cast<int>(mEntities.size()), COMPONENT_NONE };
+		newEntity = Entity{ pEntityName, static_cast<int>(mEntities.size()), ComponentType::COMPONENT_NONE };
 		mEntities.push_back(newEntity);
 		mEntityNames.push_back(std::pair<string, int>(pEntityName, 1));
 	}
@@ -131,165 +131,6 @@ void ECSManager::DestroyEntity(const std::string & pEntityName)
 {
 	//Finds the entity with the matching name and removes it from the entities vector
 	mEntities.erase(remove_if(mEntities.begin(), mEntities.end(), [&](const Entity& entity) {return entity.mName == pEntityName; }));
-}
-
-/// <summary>
-/// Adds the given component of the given type to the given entity
-/// </summary>
-/// <param name="pComponentType">Given type of the component to add</param>
-/// <param name="pComponent">Pointer to the given component to add</param>
-/// <param name="pEntityName">Given name of the entity to add the component to</param>
-void ECSManager::AddComponent(const ComponentType& pComponentType, const std::shared_ptr<const IComponent> pComponent, const std::string & pEntityName)
-{
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
-
-	//If entity is found, adds the new component to the component vector of the appropriate type and modifies the entities component mask appropriately
-	//Then assigns entity to systems that may be interested in that entity with the addition of the new component
-	if (entity)
-	{
-		switch (pComponentType)
-		{
-		case COMPONENT_TRANSFORM:
-			mTransforms.push_back(pair<int, Transform>(entity->mID, *dynamic_pointer_cast<const Transform>(pComponent)));
-			entity->mComponentMask |= COMPONENT_TRANSFORM;
-			AssignEntity(*entity);
-			break;
-		case COMPONENT_VELOCITY:
-			mVelocities.push_back(pair<int, Velocity>(entity->mID, *dynamic_pointer_cast<const Velocity>(pComponent)));
-			entity->mComponentMask |= COMPONENT_VELOCITY;
-			AssignEntity(*entity);
-			break;
-		case COMPONENT_BOXCOLLIDER:
-			mBoxColliders.push_back(pair<int, BoxCollider>(entity->mID, *dynamic_pointer_cast<const BoxCollider>(pComponent)));
-			entity->mComponentMask |= COMPONENT_BOXCOLLIDER;
-			AssignEntity(*entity);
-			break;
-		case COMPONENT_SPHERECOLLIDER:
-			mSphereColliders.push_back(pair<int, SphereCollider>(entity->mID, *dynamic_pointer_cast<const SphereCollider>(pComponent)));
-			entity->mComponentMask |= COMPONENT_SPHERECOLLIDER;
-			AssignEntity(*entity);
-			break;
-		case COMPONENT_GEOMETRY:
-			mGeometries.push_back(pair<int, Geometry>(entity->mID, *dynamic_pointer_cast<const Geometry>(pComponent)));
-			entity->mComponentMask |= COMPONENT_GEOMETRY;
-			AssignEntity(*entity);
-			break;
-		case COMPONENT_TEXTURE:
-			mTextures.push_back(pair<int, Texture>(entity->mID, *dynamic_pointer_cast<const Texture>(pComponent)));
-			entity->mComponentMask |= COMPONENT_TEXTURE;
-			AssignEntity(*entity);
-			break;
-		case COMPONENT_SHADER:
-			mShaders.push_back(pair<int, Shader>(entity->mID, *dynamic_pointer_cast<const Shader>(pComponent)));
-			entity->mComponentMask |= COMPONENT_SHADER;
-			AssignEntity(*entity);
-			break;
-		case COMPONENT_CAMERA:
-			mCameras.push_back(pair<int, Camera>(entity->mID, *dynamic_pointer_cast<const Camera>(pComponent)));
-			entity->mComponentMask  |= COMPONENT_CAMERA;
-			AssignEntity(*entity);
-			break;
-		case COMPONENT_LIGHT:
-			mLights.push_back(pair<int, Light>(entity->mID, *dynamic_pointer_cast<const Light>(pComponent)));
-			entity->mComponentMask |= COMPONENT_LIGHT;
-			AssignEntity(*entity);
-			break;
-		case COMPONENT_GRAVITY:
-			mGravities.push_back(pair<int, Gravity>(entity->mID, *dynamic_pointer_cast<const Gravity>(pComponent)));
-			entity->mComponentMask |= COMPONENT_GRAVITY;
-			AssignEntity(*entity);
-			break;
-		case COMPONENT_AUDIO:
-			mAudios.push_back(pair<int, Audio>(entity->mID, *dynamic_pointer_cast<const Audio>(pComponent)));
-			entity->mComponentMask |= COMPONENT_AUDIO;
-			AssignEntity(*entity);
-			break;
-		case COMPONENT_AI:
-			mAIs.push_back(pair<int, AI>(entity->mID, *dynamic_pointer_cast<const AI>(pComponent)));
-			entity->mComponentMask |= COMPONENT_AI;
-			AssignEntity(*entity);
-			break;
-		}
-	}
-}
-
-/// <summary>
-/// Removes the component of the given type from the given entity
-/// </summary>
-/// <param name="pComponentType">Given type of the component to remove</param>
-/// <param name="pEntityName">Given name entity to remove the component from</param>
-void ECSManager::RemoveComponent(const ComponentType & pComponentType, const std::string & pEntityName)
-{
-	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
-
-	//If entityID is found, removes the component from the component vector of the appropriate type and modifies the entities component mask appropriately
-	//Then checks if entity needs reassigning from systems that may no longer be interested in that entity with the removal of the component
-	if (entity)
-	{
-		switch (pComponentType)
-		{
-		case COMPONENT_TRANSFORM:
-			mTransforms.erase(remove_if(mTransforms.begin(), mTransforms.end(), [&](const pair<int, Transform>& pair) {return pair.first == entity->mID; }));
-			//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
-			AssignEntity(*entity);
-			break;
-		case COMPONENT_VELOCITY:
-			mVelocities.erase(remove_if(mVelocities.begin(), mVelocities.end(), [&](const pair<int, Velocity>& pair) {return pair.first == entity->mID; }));
-			//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
-			AssignEntity(*entity);
-			break;
-		case COMPONENT_BOXCOLLIDER:
-			mBoxColliders.erase(remove_if(mBoxColliders.begin(), mBoxColliders.end(), [&](const pair<int, BoxCollider>& pair) {return pair.first == entity->mID; }));
-			//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
-			AssignEntity(*entity);
-			break;
-		case COMPONENT_SPHERECOLLIDER:
-			mSphereColliders.erase(remove_if(mSphereColliders.begin(), mSphereColliders.end(), [&](const pair<int, SphereCollider>& pair) {return pair.first == entity->mID; }));
-			//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
-			AssignEntity(*entity);
-			break;
-		case COMPONENT_GEOMETRY:
-			mGeometries.erase(remove_if(mGeometries.begin(), mGeometries.end(), [&](const pair<int, Geometry>& pair) {return pair.first == entity->mID; }));
-			//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
-			AssignEntity(*entity);
-			break;
-		case COMPONENT_TEXTURE:
-			mTextures.erase(remove_if(mTextures.begin(), mTextures.end(), [&](const pair<int, Texture>& pair) {return pair.first == entity->mID; }));
-			//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
-			AssignEntity(*entity);
-			break;
-		case COMPONENT_SHADER:
-			mShaders.erase(remove_if(mShaders.begin(), mShaders.end(), [&](const pair<int, Shader>& pair) {return pair.first == entity->mID; }));
-			//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
-			AssignEntity(*entity);
-			break;
-		case COMPONENT_CAMERA:
-			mCameras.erase(remove_if(mCameras.begin(), mCameras.end(), [&](const pair<int, Camera>& pair) {return pair.first == entity->mID; }));
-			//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
-			AssignEntity(*entity);
-			break;
-		case COMPONENT_LIGHT:
-			mLights.erase(remove_if(mLights.begin(), mLights.end(), [&](const pair<int, Light>& pair) {return pair.first == entity->mID; }));
-			//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
-			AssignEntity(*entity);
-			break;
-		case COMPONENT_GRAVITY:
-			mGravities.erase(remove_if(mGravities.begin(), mGravities.end(), [&](const pair<int, Gravity>& pair) {return pair.first == entity->mID; }));
-			//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
-			AssignEntity(*entity);
-			break;
-		case COMPONENT_AUDIO:
-			mAudios.erase(remove_if(mAudios.begin(), mAudios.end(), [&](const pair<int, Audio>& pair) {return pair.first == entity->mID; }));
-			//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
-			AssignEntity(*entity);
-			break;
-		case COMPONENT_AI:
-			mAIs.erase(remove_if(mAIs.begin(), mAIs.end(), [&](const pair<int, AI>& pair) {return pair.first == entity->mID; }));
-			//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
-			AssignEntity(*entity);
-			break;
-		}
-	}
 }
 
 /// <summary>
@@ -327,6 +168,378 @@ void ECSManager::ProcessSystems()
 }
 
 /// <summary>
+/// Adds an AI component to the entity with a given name
+/// </summary>
+/// <param name="pAI">AI component to add</param>
+/// <param name="pEntityName">Given name of the entity</param>
+void ECSManager::AddAIComp(const AI & pAI, const std::string & pEntityName)
+{
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
+	{
+		mAIs.push_back(pair<int, AI>(entity->mID, pAI));
+		entity->mComponentMask |= ComponentType::COMPONENT_AI;
+		AssignEntity(*entity);
+	}
+}
+
+/// <summary>
+/// Removes an AI component from the entity with a given name
+/// </summary>
+/// <param name="pEntityName">Given name of the entity</param>
+void ECSManager::RemoveAIComp(const std::string & pEntityName)
+{
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
+	{
+		mAIs.erase(remove_if(mAIs.begin(), mAIs.end(), [&](const pair<int, AI>& pair) {return pair.first == entity->mID; }));
+		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		AssignEntity(*entity);
+	}
+}
+
+/// <summary>
+/// Adds an Audio component to the entity with a given name
+/// </summary>
+/// <param name="pAudio">Audio component to add</param>
+/// <param name="pEntityName">Given name of the entity</param>
+void ECSManager::AddAudioComp(const Audio & pAudio, const std::string & pEntityName)
+{
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
+	{
+		mAudios.push_back(pair<int, Audio>(entity->mID, pAudio));
+		entity->mComponentMask |= ComponentType::COMPONENT_AUDIO;
+		AssignEntity(*entity);
+	}
+}
+
+/// <summary>
+/// Removes an Audio component from the entity with a given name
+/// </summary>
+/// <param name="pEntityName">Given name of the entity</param>
+void ECSManager::RemoveAudioComp(const std::string & pEntityName)
+{
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
+	{
+		mAudios.erase(remove_if(mAudios.begin(), mAudios.end(), [&](const pair<int, Audio>& pair) {return pair.first == entity->mID; }));
+		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		AssignEntity(*entity);
+	}
+}
+
+/// <summary>
+/// Adds a BoxCollider component to the entity with a given name
+/// </summary>
+/// <param name="pBoxCollider">BoxCollider component to add</param>
+/// <param name="pEntityName">Given name of the entity</param>
+void ECSManager::AddBoxColliderComp(const BoxCollider & pBoxCollider, const std::string & pEntityName)
+{
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
+	{
+		mBoxColliders.push_back(pair<int, BoxCollider>(entity->mID, pBoxCollider));
+		entity->mComponentMask |= ComponentType::COMPONENT_BOXCOLLIDER;
+		AssignEntity(*entity);
+	}
+}
+
+/// <summary>
+/// Removes a BoxCollider component from the entity with a given name
+/// </summary>
+/// <param name="pEntityName">Given name of the entity</param>
+void ECSManager::RemoveBoxColliderComp(const std::string & pEntityName)
+{
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
+	{
+		mBoxColliders.erase(remove_if(mBoxColliders.begin(), mBoxColliders.end(), [&](const pair<int, BoxCollider>& pair) {return pair.first == entity->mID; }));
+		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		AssignEntity(*entity);
+	}
+}
+
+/// <summary>
+/// Adds a Camera component to the entity with a given name
+/// </summary>
+/// <param name="pCamera">Camera component to add</param>
+/// <param name="pEntityName">Given name of the entity</param>
+void ECSManager::AddCameraComp(const Camera & pCamera, const std::string & pEntityName)
+{
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
+	{
+		mCameras.push_back(pair<int, Camera>(entity->mID, pCamera));
+		entity->mComponentMask |= ComponentType::COMPONENT_CAMERA;
+		AssignEntity(*entity);
+	}
+}
+
+/// <summary>
+/// Removes a Camera component from the entity with a given name
+/// </summary>
+/// <param name="pEntityName">Given name of the entity</param>
+void ECSManager::RemoveCameraComp(const std::string & pEntityName)
+{
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
+	{
+		mCameras.erase(remove_if(mCameras.begin(), mCameras.end(), [&](const pair<int, Camera>& pair) {return pair.first == entity->mID; }));
+		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		AssignEntity(*entity);
+	}
+}
+
+/// <summary>
+/// Adds a Geometry component to the entity with a given name
+/// </summary>
+/// <param name="pGeometry">Geometry component to add</param>
+/// <param name="pEntityName">Given name of the entity</param>
+void ECSManager::AddGeometryComp(const Geometry & pGeometry, const std::string & pEntityName)
+{
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
+	{
+		mGeometries.push_back(pair<int, Geometry>(entity->mID, pGeometry));
+		entity->mComponentMask |= ComponentType::COMPONENT_GEOMETRY;
+		AssignEntity(*entity);
+	}
+}
+
+/// <summary>
+/// Removes a Geometry component from the entity with a given name
+/// </summary>
+/// <param name="pEntityName">Given name of the entity</param>
+void ECSManager::RemoveGeometryComp(const std::string & pEntityName)
+{
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
+	{
+		mGeometries.erase(remove_if(mGeometries.begin(), mGeometries.end(), [&](const pair<int, Geometry>& pair) {return pair.first == entity->mID; }));
+		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		AssignEntity(*entity);
+	}
+}
+
+/// <summary>
+/// Adds a Gravity component to the entity with a given name
+/// </summary>
+/// <param name="pGravity">Gravity component to add</param>
+/// <param name="pEntityName">Given name of the entity</param>
+void ECSManager::AddGravityComp(const Gravity & pGravity, const std::string & pEntityName)
+{
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
+	{
+		mGravities.push_back(pair<int, Gravity>(entity->mID, pGravity));
+		entity->mComponentMask |= ComponentType::COMPONENT_GRAVITY;
+		AssignEntity(*entity);
+	}
+}
+
+/// <summary>
+/// Removes a Gravity component from the entity with a given name
+/// </summary>
+/// <param name="pEntityName">Given name of the entity</param>
+void ECSManager::RemoveGravityComp(const std::string & pEntityName)
+{
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
+	{
+		mGravities.erase(remove_if(mGravities.begin(), mGravities.end(), [&](const pair<int, Gravity>& pair) {return pair.first == entity->mID; }));
+		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		AssignEntity(*entity);
+	}
+}
+
+/// <summary>
+/// Adds a Light component to the entity with a given name
+/// </summary>
+/// <param name="pLight">Light component to add</param>
+/// <param name="pEntityName">Given name of the entity</param>
+void ECSManager::AddLightComp(const Light & pLight, const std::string & pEntityName)
+{
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
+	{
+		mLights.push_back(pair<int, Light>(entity->mID, pLight));
+		entity->mComponentMask |= ComponentType::COMPONENT_LIGHT;
+		AssignEntity(*entity);
+	}
+}
+
+/// <summary>
+/// Removes a light component from the entity with a given name
+/// </summary>
+/// <param name="pEntityName">Given name of the entity</param>
+void ECSManager::RemoveLightComp(const std::string & pEntityName)
+{
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
+	{
+		mLights.erase(remove_if(mLights.begin(), mLights.end(), [&](const pair<int, Light>& pair) {return pair.first == entity->mID; }));
+		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		AssignEntity(*entity);
+	}
+}
+
+/// <summary>
+/// Adds a Shader component to the entity with a given name
+/// </summary>
+/// <param name="pShader">Shader component to add</param>
+/// <param name="pEntityName">Given name of the entity</param>
+void ECSManager::AddShaderComp(const Shader & pShader, const std::string & pEntityName)
+{
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
+	{
+		mShaders.push_back(pair<int, Shader>(entity->mID, pShader));
+		entity->mComponentMask |= ComponentType::COMPONENT_SHADER;
+		AssignEntity(*entity);
+	}
+}
+
+/// <summary>
+/// Removes a Shader component from the entity with a given name
+/// </summary>
+/// <param name="pEntityName">Given name of the entity</param>
+void ECSManager::RemoveShaderComp(const std::string & pEntityName)
+{
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
+	{
+		mShaders.erase(remove_if(mShaders.begin(), mShaders.end(), [&](const pair<int, Shader>& pair) {return pair.first == entity->mID; }));
+		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		AssignEntity(*entity);
+	}
+}
+
+/// <summary>
+/// Adds a SphereCollider component to the entity with a given name
+/// </summary>
+/// <param name="pSphereCollider">SphereCollider component to add</param>
+/// <param name="pEntityName">Given name of the entity</param>
+void ECSManager::AddSphereColliderComp(const SphereCollider & pSphereCollider, const std::string & pEntityName)
+{
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
+	{
+		mSphereColliders.push_back(pair<int, SphereCollider>(entity->mID, pSphereCollider));
+		entity->mComponentMask |= ComponentType::COMPONENT_SPHERECOLLIDER;
+		AssignEntity(*entity);
+	}
+}
+
+/// <summary>
+/// Removes a SphereCollider component from the entity with a given name
+/// </summary>
+/// <param name="pEntityName">Given name of the entity</param>
+void ECSManager::RemoveSphereColliderComp(const std::string & pEntityName)
+{
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
+	{
+		mSphereColliders.erase(remove_if(mSphereColliders.begin(), mSphereColliders.end(), [&](const pair<int, SphereCollider>& pair) {return pair.first == entity->mID; }));
+		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		AssignEntity(*entity);
+	}
+}
+
+/// <summary>
+/// Adds a Texture component to the entity with a given name
+/// </summary>
+/// <param name="pTexture">Texture component to add</param>
+/// <param name="pEntityName">Given name of the entity</param>
+void ECSManager::AddTextureComp(const Texture & pTexture, const std::string & pEntityName)
+{
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
+	{
+		mTextures.push_back(pair<int, Texture>(entity->mID, pTexture));
+		entity->mComponentMask |= ComponentType::COMPONENT_TEXTURE;
+		AssignEntity(*entity);
+	}
+}
+
+/// <summary>
+/// Removes a Texture component from the entity with a given name
+/// </summary>
+/// <param name="pEntityName">Given name of the entity</param>
+void ECSManager::RemoveTextureComp(const std::string & pEntityName)
+{
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
+	{
+		mTextures.erase(remove_if(mTextures.begin(), mTextures.end(), [&](const pair<int, Texture>& pair) {return pair.first == entity->mID; }));
+		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		AssignEntity(*entity);
+	}
+}
+
+/// <summary>
+/// Adds a Transform component to the entity with a given name
+/// </summary>
+/// <param name="pTransform">Transform component to add</param>
+/// <param name="pEntityName">Given name of the entity</param>
+void ECSManager::AddTransformComp(const Transform & pTransform, const std::string & pEntityName)
+{
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
+	{
+		mTransforms.push_back(pair<int, Transform>(entity->mID, pTransform));
+		entity->mComponentMask |= ComponentType::COMPONENT_TRANSFORM;
+		AssignEntity(*entity);
+	}
+}
+
+/// <summary>
+/// Removes a Transform component from the entity with a given name
+/// </summary>
+/// <param name="pEntityName">Given name of the entity</param>
+void ECSManager::RemoveTransformComp(const std::string & pEntityName)
+{
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
+	{
+		mTransforms.erase(remove_if(mTransforms.begin(), mTransforms.end(), [&](const pair<int, Transform>& pair) {return pair.first == entity->mID; }));
+		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		AssignEntity(*entity);
+	}
+}
+
+/// <summary>
+/// Adds a Velocity component to the entity with a given name
+/// </summary>
+/// <param name="pVelocity">Velocity component to add</param>
+/// <param name="pEntityName">Given name of the entity</param>
+void ECSManager::AddVelocityComp(const Velocity & pVelocity, const std::string & pEntityName)
+{
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
+	{
+		mVelocities.push_back(pair<int, Velocity>(entity->mID, pVelocity));
+		entity->mComponentMask |= ComponentType::COMPONENT_VELOCITY;
+		AssignEntity(*entity);
+	}
+}
+
+/// <summary>
+/// Removes a Velocity component from the entity with a given name
+/// </summary>
+/// <param name="pEntityName">Given name of the entity</param>
+void ECSManager::RemoveVelocityComp(const std::string & pEntityName)
+{
+	std::shared_ptr<Entity> entity = FindEntityByName(pEntityName);
+	if (entity)
+	{
+		mVelocities.erase(remove_if(mVelocities.begin(), mVelocities.end(), [&](const pair<int, Velocity>& pair) {return pair.first == entity->mID; }));
+		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		AssignEntity(*entity);
+	}
+}
+
+/// <summary>
 /// Returns a modifiable handle to the AI component associated with the given entity ID
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
@@ -334,7 +547,7 @@ void ECSManager::ProcessSystems()
 AI & ECSManager::AIComp(const int & pEntityID)
 {
 	//Finds the ID/Component pair for the given entity ID
-	auto comp = find_if(mAIs.begin(), mAIs.end(), [&](const pair<int, AI>& pair) {return pair.first == pEntityID; });
+	auto comp = find_if(mAIs.begin(), mAIs.end(), [&](const pair<int, Velocity>& pair) {return pair.first == pEntityID; });
 
 	return comp->second;
 }
