@@ -187,18 +187,18 @@ void ECSManager::DestroyEntity(const std::string & pEntityName)
 /// Adds the given system to the update system vector
 /// </summary>
 /// <param name="pSystem">Pointer to the given system</param>
-void ECSManager::AddUpdateSystem(ISystem* const pSystem)
+void ECSManager::AddUpdateSystem(shared_ptr<ISystem> pSystem)
 {
-	mRenderSystems.push_back(unique_ptr<ISystem>(pSystem));
+	mUpdateSystems.push_back(pSystem);
 }
 
 /// <summary>
 /// Adds the given system to the render system vector
 /// </summary>
 /// <param name="pSystem">Pointer to the given system</param>
-void ECSManager::AddRenderSystem(ISystem* const pSystem)
+void ECSManager::AddRenderSystem(shared_ptr<ISystem> pSystem)
 {
-	mRenderSystems.push_back(unique_ptr<ISystem>(pSystem));
+	mRenderSystems.push_back(pSystem);
 }
 
 /// <summary>

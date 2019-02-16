@@ -24,8 +24,8 @@ private:
 	std::vector<std::pair<int, Gravity>> mGravities;
 	std::vector<std::pair<int, Audio>> mAudios;
 	std::vector<std::pair<int, AI>> mAIs;
-	std::vector<std::unique_ptr<ISystem>> mRenderSystems;
-	std::vector<std::unique_ptr<ISystem>> mUpdateSystems;
+	std::vector<std::shared_ptr<ISystem>> mRenderSystems;
+	std::vector<std::shared_ptr<ISystem>> mUpdateSystems;
 	int mEntityID;
 
 	ECSManager();
@@ -48,8 +48,8 @@ public:
 	void DestroyEntity(const std::string& pEntityName);
 
 	//System management
-	void AddUpdateSystem(ISystem* const pSystem);
-	void AddRenderSystem(ISystem* const pSystem);
+	void AddUpdateSystem(std::shared_ptr<ISystem> pSystem);
+	void AddRenderSystem(std::shared_ptr<ISystem> pSystem);
 	void ProcessSystems();
 
 	//Add/Remove methods for components
