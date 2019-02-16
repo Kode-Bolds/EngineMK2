@@ -25,6 +25,9 @@
     <ClCompile Include="Source Files\HelperClasses\Vector3.cpp">
       <Filter>Source Files\HelperClasses</Filter>
     </ClCompile>
+    <ClCompile Include="Source Files\Systems\RenderSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\Components\AI.h">
@@ -107,6 +110,9 @@
     </ClInclude>
     <ClInclude Include="Header Files\Managers\Managers.h">
       <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Systems\RenderSystem.h">
+      <Filter>Header Files\Systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
