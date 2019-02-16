@@ -20,23 +20,6 @@ void ECSManager::AssignEntity(const Entity & pEntity)
 }
 
 /// <summary>
-/// Removes given entity from all appropriate systems
-/// </summary>
-/// <param name="pEntity">The given entity to remove from systems</param>
-void ECSManager::RemoveEntity(const Entity & pEntity)
-{
-	for (auto & system : mRenderSystems)
-	{
-		system->RemoveEntity(pEntity.mID);
-	}
-
-	for (auto & system : mUpdateSystems)
-	{
-		system->RemoveEntity(pEntity.mID);
-	}
-}
-
-/// <summary>
 /// Finds an entity based on a given name
 /// </summary>
 /// <param name="pEntityName">Given name of the entity</param>
@@ -61,6 +44,7 @@ Entity* const ECSManager::FindEntityByName(const std::string & pEntityName)
 /// Resizes entity and component vectors upon construction to a reasonably large size to avoid performance overhead of resizing
 /// </summary>
 ECSManager::ECSManager()
+	:mEntityID(0)
 {
 		mEntities.reserve(1000);
 		mTransforms.reserve(1000);
@@ -110,45 +94,111 @@ void ECSManager::CreateEntity(const std::string & pEntityName)
 	//If the iterator is not pointing to the end of the vector, appends (nameCount) to the end of the given name and creates a new entity with that name, then iterates the name count by 1
 	if (entityName != mEntityNames.end())
 	{
-		newEntity = Entity{ pEntityName + "(" + to_string(entityName->second) + ")", static_cast<int>(mEntities.size()), ComponentType::COMPONENT_NONE };
+		newEntity = Entity{ pEntityName + "(" + to_string(entityName->second) + ")", mEntityID, ComponentType::COMPONENT_NONE };
 		mEntities.push_back(newEntity);
 		entityName->second++;
+		mEntityID++;
 	}
 	//Else creates entity with given name and adds name to name vector with count 1
 	else
 	{
-		newEntity = Entity{ pEntityName, static_cast<int>(mEntities.size()), ComponentType::COMPONENT_NONE };
+		newEntity = Entity{ pEntityName, mEntityID, ComponentType::COMPONENT_NONE };
 		mEntities.push_back(newEntity);
 		mEntityNames.push_back(std::pair<string, int>(pEntityName, 1));
+		mEntityID++;
 	}
 }
 
 /// <summary>
-/// Destroys an entity with the given name
+/// Destroys an entity with the given name and all components owned by it
 /// </summary>
 /// <param name="pEntityName">Given name of the entity to delete</param>
 void ECSManager::DestroyEntity(const std::string & pEntityName)
 {
+	Entity* entity = FindEntityByName(pEntityName);
+
+	//Removes all components owned by this entity
+	//AI Comp
+	if ((entity->mComponentMask & ComponentType::COMPONENT_AI) == ComponentType::COMPONENT_AI)
+	{
+		RemoveAIComp(pEntityName);
+	}
+	//Audio Comp
+	if ((entity->mComponentMask & ComponentType::COMPONENT_AUDIO) == ComponentType::COMPONENT_AUDIO)
+	{
+		RemoveAudioComp(pEntityName);
+	}
+	//BoxCollider Comp
+	if ((entity->mComponentMask & ComponentType::COMPONENT_BOXCOLLIDER) == ComponentType::COMPONENT_BOXCOLLIDER)
+	{
+		RemoveBoxColliderComp(pEntityName);
+	}
+	//Camera Comp
+	if ((entity->mComponentMask & ComponentType::COMPONENT_CAMERA) == ComponentType::COMPONENT_CAMERA)
+	{
+		RemoveCameraComp(pEntityName);
+	}
+	//Geometry Comp
+	if ((entity->mComponentMask & ComponentType::COMPONENT_GEOMETRY) == ComponentType::COMPONENT_GEOMETRY)
+	{
+		RemoveGeometryComp(pEntityName);
+	}
+	//Gravity Comp
+	if ((entity->mComponentMask & ComponentType::COMPONENT_GRAVITY) == ComponentType::COMPONENT_GRAVITY)
+	{
+		RemoveGravityComp(pEntityName);
+	}
+	//Light Comp
+	if ((entity->mComponentMask & ComponentType::COMPONENT_LIGHT) == ComponentType::COMPONENT_LIGHT)
+	{
+		RemoveLightComp(pEntityName);
+	}
+	//Shader Comp
+	if ((entity->mComponentMask & ComponentType::COMPONENT_SHADER) == ComponentType::COMPONENT_SHADER)
+	{
+		RemoveShaderComp(pEntityName);
+	}
+	//SphereCollider Comp
+	if ((entity->mComponentMask & ComponentType::COMPONENT_SPHERECOLLIDER) == ComponentType::COMPONENT_SPHERECOLLIDER)
+	{
+		RemoveSphereColliderComp(pEntityName);
+	}
+	//Texture Comp
+	if ((entity->mComponentMask & ComponentType::COMPONENT_TEXTURE) == ComponentType::COMPONENT_TEXTURE)
+	{
+		RemoveTextureComp(pEntityName);
+	}
+	//Transform Comp
+	if ((entity->mComponentMask & ComponentType::COMPONENT_TRANSFORM) == ComponentType::COMPONENT_TRANSFORM)
+	{
+		RemoveTransformComp(pEntityName);
+	}
+	//Velocity Comp
+	if ((entity->mComponentMask & ComponentType::COMPONENT_VELOCITY) == ComponentType::COMPONENT_VELOCITY)
+	{
+		RemoveVelocityComp(pEntityName);
+	}
+
 	//Finds the entity with the matching name and removes it from the entities vector
-	mEntities.erase(remove_if(mEntities.begin(), mEntities.end(), [&](const Entity& entity) {return entity.mName == pEntityName; }));
+	mEntities.erase(remove_if(mEntities.begin(), mEntities.end(), [&](const Entity& entity) {return entity.mName == pEntityName; }), mEntities.end());
 }
 
 /// <summary>
 /// Adds the given system to the update system vector
 /// </summary>
 /// <param name="pSystem">Pointer to the given system</param>
-void ECSManager::AddUpdateSystem(const std::shared_ptr<ISystem> pSystem)
+void ECSManager::AddUpdateSystem(ISystem* const pSystem)
 {
-	mUpdateSystems.push_back(pSystem);
+	mRenderSystems.push_back(unique_ptr<ISystem>(pSystem));
 }
 
 /// <summary>
 /// Adds the given system to the render system vector
 /// </summary>
 /// <param name="pSystem">Pointer to the given system</param>
-void ECSManager::AddRenderSystem(const std::shared_ptr<ISystem> pSystem)
+void ECSManager::AddRenderSystem(ISystem* const pSystem)
 {
-	mRenderSystems.push_back(pSystem);
+	mRenderSystems.push_back(unique_ptr<ISystem>(pSystem));
 }
 
 /// <summary>
@@ -503,7 +553,7 @@ void ECSManager::RemoveTransformComp(const std::string & pEntityName)
 	if (entity)
 	{
 		mTransforms.erase(remove_if(mTransforms.begin(), mTransforms.end(), [&](const pair<int, Transform>& pair) {return pair.first == entity->mID; }));
-		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		entity->mComponentMask |= ComponentType::COMPONENT_TRANSFORM;
 		AssignEntity(*entity);
 	}
 }

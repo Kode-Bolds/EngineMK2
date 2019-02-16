@@ -14,6 +14,5 @@ public:
 	virtual ~MovementSystem();
 
 	void AssignEntity(const Entity& pEntity) override;
-	void RemoveEntity(const int& pEntityID) override;
 	void Process() override;
 };
