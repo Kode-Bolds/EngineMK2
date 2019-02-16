@@ -29,15 +29,13 @@ void MovementSystem::AssignEntity(const Entity & pEntity)
 			mEntities.push_back(pEntity);
 		}
 	}
-}
-
-/// <summary>
-/// 
-/// </summary>
-/// <param name="pEntityID"></param>
-void MovementSystem::RemoveEntity(const int & pEntityID)
-{
-	mEntities.erase(remove_if(mEntities.begin(), mEntities.end(), [&](const Entity& entity) {return entity.mID == pEntityID; }));
+	else
+	{
+		if (!((pEntity.mComponentMask & mMask) == mMask))
+		{
+			mEntities.erase(remove_if(mEntities.begin(), mEntities.end(), [&](const Entity& entity) {return entity.mID == pEntity.mID; }), mEntities.end());
+		}
+	}
 }
 
 /// <summary>
@@ -45,7 +43,7 @@ void MovementSystem::RemoveEntity(const int & pEntityID)
 /// </summary>
 void MovementSystem::Process()
 {
-	for(Entity entity : mEntities)
+	for(Entity& entity : mEntities)
 	{		
 		//Check if entity has gravity component
 		if ((entity.mComponentMask & ComponentType::COMPONENT_GRAVITY) == ComponentType::COMPONENT_GRAVITY)

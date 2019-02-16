@@ -44,8 +44,8 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 
 	//Testing ECS Manager and movement system
 	std::shared_ptr<ECSManager> ecsManager = ECSManager::Instance();
-	std::shared_ptr<ISystem> moveSystPtr = std::make_shared<MovementSystem>();
-	ecsManager->AddUpdateSystem(moveSystPtr);
+	ISystem* systPointer = &MovementSystem();
+	ecsManager->AddUpdateSystem(systPointer);
 
 	ecsManager->CreateEntity("Test");
 	ecsManager->CreateEntity("Test1");
@@ -70,6 +70,8 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	ecsManager->AddVelocityComp(velocity, "Test1");
 	ecsManager->AddVelocityComp(velocity, "Test2");
 	ecsManager->AddVelocityComp(velocity, "Test3");
+
+	ecsManager->RemoveTransformComp("Test");
 
 	//Main message loop
 	MSG msg = { 0 };

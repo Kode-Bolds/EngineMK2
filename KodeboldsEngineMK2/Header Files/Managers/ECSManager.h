@@ -24,30 +24,35 @@ private:
 	std::vector<std::pair<int, Gravity>> mGravities;
 	std::vector<std::pair<int, Audio>> mAudios;
 	std::vector<std::pair<int, AI>> mAIs;
-	std::vector<std::shared_ptr<ISystem>> mRenderSystems;
-	std::vector<std::shared_ptr<ISystem>> mUpdateSystems;
+	std::vector<std::unique_ptr<ISystem>> mRenderSystems;
+	std::vector<std::unique_ptr<ISystem>> mUpdateSystems;
+	int mEntityID;
 
 	ECSManager();
 
+	//Entity management
 	void AssignEntity(const Entity& pEntity);
-	void RemoveEntity(const Entity& pEntity);
-	std::shared_ptr<Entity> FindEntityByName(const std::string& pEntityName);
+	Entity* const FindEntityByName(const std::string& pEntityName);
 
 public:
 	~ECSManager();
 
-	//Deleted so no copies of the singleton instance can be made
+	//Singleton pattern
+	//Deleted copy constructor and assignment operator so no copies of the singleton instance can be made
 	ECSManager(ECSManager const&) = delete;
-	ECSManager& operator=(ECSManager const&) = delete;
-	
+	ECSManager& operator=(ECSManager const&) = delete;	
 	static std::shared_ptr<ECSManager> Instance();
 
+	//Entity creation
 	void CreateEntity(const std::string& pEntityName);
 	void DestroyEntity(const std::string& pEntityName);
-	void AddUpdateSystem(const std::shared_ptr<ISystem> pSystem);
-	void AddRenderSystem(const std::shared_ptr<ISystem> pSystem);
+
+	//System management
+	void AddUpdateSystem(ISystem* const pSystem);
+	void AddRenderSystem(ISystem* const pSystem);
 	void ProcessSystems();
 
+	//Add/Remove methods for components
 	void AddAIComp(const AI& pAI, const std::string& pEntityName);
 	void RemoveAIComp(const std::string& pEntityName);
 	void AddAudioComp(const Audio& pAudio, const std::string& pEntityName);
@@ -73,6 +78,7 @@ public:
 	void AddVelocityComp(const Velocity& pVelocity, const std::string& pEntityName);
 	void RemoveVelocityComp(const std::string& pEntityName);
 
+	//Get/Set methods return non-const refs
 	AI& AIComp(const int& pEntityID);
 	AI& AIComp(const std::string& pEntityName);
 	Audio& AudioComp(const int& pEntityID);

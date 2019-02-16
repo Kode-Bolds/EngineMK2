@@ -2,7 +2,7 @@
 
 A game engine written in C++ and DirectX, developed by the Kode-Bolds.
 
-Team members - Anthony Beacock, Dean Barnard, Jakob Scrivenererererer.
+Team members - Anthony Beacock, Dean Barnard, Jakob Scrivener.
 
 ## Project Management
 * Trello - https://trello.com/b/7fnsqyau/kodeboldsengine

@@ -14,5 +14,4 @@ public:
 	virtual ~ISystem() {};
 	virtual void Process() = 0;
 	virtual void AssignEntity(const Entity& pEntity) = 0;
-	virtual void RemoveEntity(const int& pEntityID) = 0;
 };
