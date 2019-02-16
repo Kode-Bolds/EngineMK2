@@ -78,7 +78,7 @@ public:
 	void AddVelocityComp(const Velocity& pVelocity, const std::string& pEntityName);
 	void RemoveVelocityComp(const std::string& pEntityName);
 
-	//Get/Set methods return non-const refs
+	//Accessors
 	AI& AIComp(const int& pEntityID);
 	AI& AIComp(const std::string& pEntityName);
 	Audio& AudioComp(const int& pEntityID);

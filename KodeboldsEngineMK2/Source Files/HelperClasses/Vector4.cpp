@@ -1,10 +1,10 @@
-#include "Vector3.h"
+#include "Vector4.h"
 
 /// <summary>
 /// 
 /// </summary>
-Vector3::Vector3()
-	:mX(0), mY(0), mZ(0)
+Vector4::Vector4()
+	:mX(0), mY(0), mZ(0), mW(0)
 {
 }
 
@@ -14,15 +14,15 @@ Vector3::Vector3()
 /// <param name="x"></param>
 /// <param name="y"></param>
 /// <param name="z"></param>
-Vector3::Vector3(const float x, const float y, const float z)
-	:mX(x), mY(y), mZ(z)
+Vector4::Vector4(const float x, const float y, const float z, const float w)
+	:mX(x), mY(y), mZ(z), mW(w)
 {
 }
 
 /// <summary>
 /// 
 /// </summary>
-Vector3::~Vector3()
+Vector4::~Vector4()
 {
 }
 
@@ -30,7 +30,7 @@ Vector3::~Vector3()
 /// 
 /// </summary>
 /// <returns></returns>
-float & Vector3::X()
+float & Vector4::X()
 {
 	return mX;
 }
@@ -39,7 +39,16 @@ float & Vector3::X()
 /// 
 /// </summary>
 /// <returns></returns>
-float & Vector3::Y()
+const float & Vector4::X() const
+{
+	return mX;
+}
+
+/// <summary>
+/// 
+/// </summary>
+/// <returns></returns>
+float & Vector4::Y()
 {
 	return mY;
 }
@@ -48,7 +57,16 @@ float & Vector3::Y()
 /// 
 /// </summary>
 /// <returns></returns>
-float & Vector3::Z()
+const float & Vector4::Y() const
+{
+	return mY;
+}
+
+/// <summary>
+/// 
+/// </summary>
+/// <returns></returns>
+float & Vector4::Z()
 {
 	return mZ;
 }
@@ -57,7 +75,34 @@ float & Vector3::Z()
 /// 
 /// </summary>
 /// <returns></returns>
-float Vector3::Magnitude() const
+const float & Vector4::Z() const
+{
+	return mZ;
+}
+
+/// <summary>
+/// 
+/// </summary>
+/// <returns></returns>
+float & Vector4::W()
+{
+	return mW;
+}
+
+/// <summary>
+/// 
+/// </summary>
+/// <returns></returns>
+const float & Vector4::W() const
+{
+	return mW;
+}
+
+/// <summary>
+/// 
+/// </summary>
+/// <returns></returns>
+float Vector4::Magnitude() const
 {
 	return sqrt((mX * mX) + (mY * mY) + (mZ * mZ));
 }
@@ -67,7 +112,7 @@ float Vector3::Magnitude() const
 /// </summary>
 /// <param name="b"></param>
 /// <returns></returns>
-float Vector3::Dot(const Vector3 & b) const
+float Vector4::Dot(const Vector4 & b) const
 {
 	return (mX * b.mX) + (mY * b.mY) + (mZ * b.mZ);
 }
@@ -77,7 +122,7 @@ float Vector3::Dot(const Vector3 & b) const
 /// </summary>
 /// <param name="pMagnitude"></param>
 /// <returns></returns>
-Vector3 & Vector3::Clamp(float pMagnitude)
+Vector4 & Vector4::Clamp(float pMagnitude)
 {
 	float magnitude = this->Magnitude();
 	if (magnitude > pMagnitude)
@@ -92,7 +137,7 @@ Vector3 & Vector3::Clamp(float pMagnitude)
 /// 
 /// </summary>
 /// <returns></returns>
-Vector3 & Vector3::Normalise()
+Vector4 & Vector4::Normalise()
 {
 	return this->Clamp(1);
 }
@@ -102,11 +147,12 @@ Vector3 & Vector3::Normalise()
 /// </summary>
 /// <param name="rhs"></param>
 /// <returns></returns>
-Vector3 & Vector3::operator+=(const Vector3 & rhs)
+Vector4 & Vector4::operator+=(const Vector4 & rhs)
 {
 	mX += rhs.mX;
 	mY += rhs.mY;
 	mZ += rhs.mZ;
+	mW += rhs.mW;
 	return *this;
 }
 
@@ -115,11 +161,12 @@ Vector3 & Vector3::operator+=(const Vector3 & rhs)
 /// </summary>
 /// <param name="rhs"></param>
 /// <returns></returns>
-Vector3 & Vector3::operator-=(const Vector3 & rhs)
+Vector4 & Vector4::operator-=(const Vector4 & rhs)
 {
 	mX -= rhs.mX;
 	mY -= rhs.mY;
 	mZ -= rhs.mZ;
+	mW -= rhs.mW;
 	return *this;
 }
 
@@ -128,10 +175,11 @@ Vector3 & Vector3::operator-=(const Vector3 & rhs)
 /// </summary>
 /// <param name="rhs"></param>
 /// <returns></returns>
-Vector3 & Vector3::operator*=(const float& rhs)
+Vector4 & Vector4::operator*=(const float& rhs)
 {
 	mX *= rhs;
 	mY *= rhs;
 	mZ *= rhs;
+	mW *= rhs;
 	return *this;
 }

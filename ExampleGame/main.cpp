@@ -1,9 +1,10 @@
 #include <windows.h>
 #include <memory>
 #include "Managers.h"
-#include "Vector3.h"
+#include "Vector4.h"
 #include "Systems.h"
 #include "Components.h"
+#include "Matrix4.h"
 
 #pragma comment(lib, "KodeboldsEngineMK2.lib")
 
@@ -31,9 +32,9 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 		return 0;
 	}
 
-	//Testing vector3 class
-	Vector3 v1(1.0f, 1.0f, 1.0f);
-	Vector3 v2(1.0f, 1.0f, 1.0f);
+	//Testing vector4 class
+	Vector4 v1(1.0f, 1.0f, 1.0f, 0.0f);
+	Vector4 v2(1.0f, 1.0f, 1.0f, 0.0f);
 
 	v2.X() = 1;
 	v2.Y() = 1;
@@ -41,6 +42,9 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 
 	v1 = v2 + v1;
 	//v2 = v1 + ((v1 * 2) - v2);
+
+	//Testing matrix4 class
+	Matrix4 m1;
 
 	//Testing ECS Manager and movement system
 	std::shared_ptr<ECSManager> ecsManager = ECSManager::Instance();
@@ -62,8 +66,8 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	ecsManager->AddTransformComp(transform, "Test3");
 
 	//Testing velocity component
-	Vector3 velocityV(0.0f, 0.0f, 0.0f);
-	Vector3 acceleration(0.1f, 0.0f, 0.0f);
+	Vector4 velocityV(0.0f, 0.0f, 0.0f, 0.0f);
+	Vector4 acceleration(0.1f, 0.0f, 0.0f, 0.0f);
 	Velocity velocity{velocityV, acceleration, 1.0f};
 
 	ecsManager->AddVelocityComp(velocity, "Test");
@@ -71,7 +75,8 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	ecsManager->AddVelocityComp(velocity, "Test2");
 	ecsManager->AddVelocityComp(velocity, "Test3");
 
-	ecsManager->RemoveTransformComp("Test");
+	//NEED TO FIND OUT HOW TO DO THE OPPOSITE OF |= TO REMOVE COMPONENT FROM ENTITY MASK
+	//ecsManager->RemoveTransformComp("Test");
 
 	//Main message loop
 	MSG msg = { 0 };
