@@ -40,6 +40,7 @@ public:
 	static Matrix4 RotationMatrixX(const float& pAngle);
 	static Matrix4 RotationMatrixY(const float& pAngle);
 	static Matrix4 RotationMatrixZ(const float& pAngle);
+	static Matrix4 RotationMatrixAxis(const float& pAngle, const Vector4& pAxis);
 	static Matrix4 TranslationMatrix(const Vector4& pVector);
 	static Matrix4 ScaleMatrix(const Vector4& pVector);
 
