@@ -149,6 +149,26 @@ Matrix4 Matrix4::ScaleMatrix(const Vector4 & pVector)
 /// <returns></returns>
 Matrix4 & Matrix4::operator*=(const Matrix4 & rhs)
 {
+	m11 = mRows[0].Dot(Vector4(rhs._11(), rhs._21(), rhs._31(), rhs._41()));
+	m12 = mRows[0].Dot(Vector4(rhs._12(), rhs._22(), rhs._32(), rhs._42()));
+	m13 = mRows[0].Dot(Vector4(rhs._13(), rhs._23(), rhs._33(), rhs._43()));
+	m14 = mRows[0].Dot(Vector4(rhs._14(), rhs._24(), rhs._34(), rhs._44()));
+
+	m21 = mRows[2].Dot(Vector4(rhs._11(), rhs._21(), rhs._31(), rhs._41()));
+	m22 = mRows[2].Dot(Vector4(rhs._12(), rhs._22(), rhs._32(), rhs._42()));
+	m23 = mRows[2].Dot(Vector4(rhs._13(), rhs._23(), rhs._33(), rhs._43()));
+	m24 = mRows[2].Dot(Vector4(rhs._14(), rhs._24(), rhs._34(), rhs._44()));
+
+	m31 = mRows[3].Dot(Vector4(rhs._11(), rhs._21(), rhs._31(), rhs._41()));
+	m32 = mRows[3].Dot(Vector4(rhs._12(), rhs._22(), rhs._32(), rhs._42()));
+	m33 = mRows[3].Dot(Vector4(rhs._13(), rhs._23(), rhs._33(), rhs._43()));
+	m34 = mRows[3].Dot(Vector4(rhs._14(), rhs._24(), rhs._34(), rhs._44()));
+
+	m41 = mRows[4].Dot(Vector4(rhs._11(), rhs._21(), rhs._31(), rhs._41()));
+	m42 = mRows[4].Dot(Vector4(rhs._12(), rhs._22(), rhs._32(), rhs._42()));
+	m43 = mRows[4].Dot(Vector4(rhs._13(), rhs._23(), rhs._33(), rhs._43()));
+	m44 = mRows[4].Dot(Vector4(rhs._14(), rhs._24(), rhs._34(), rhs._44()));
+
 	return *this;
 }
 

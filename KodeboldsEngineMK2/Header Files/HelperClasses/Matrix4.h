@@ -30,7 +30,7 @@ public:
 	~Matrix4();
 
 	//Accessors
-	//Column 1				  //Column 2                 //Column 3               //Column 4
+	//Column 1				  //Column 2                //Column 3                //Column 4
 	const float& _11() const; const float& _12() const; const float& _13() const; const float& _14() const; //Row 1
 	const float& _21() const; const float& _22() const; const float& _23() const; const float& _24() const; //Row 2
 	const float& _31() const; const float& _32() const; const float& _33() const; const float& _34() const; //Row 3
