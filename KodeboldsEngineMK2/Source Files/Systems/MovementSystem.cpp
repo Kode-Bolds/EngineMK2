@@ -22,19 +22,13 @@ void MovementSystem::AssignEntity(const Entity & pEntity)
 {
 	//Finds if an entity that matches given entities ID exists and returns it
 	auto entity = find_if(mEntities.begin(), mEntities.end(), [&](const Entity& entity) {return entity.mID == pEntity.mID; });
-	if (entity == mEntities.end())
+	if (entity == mEntities.end() && (pEntity.mComponentMask & mMask) == mMask)
 	{
-		if ((pEntity.mComponentMask & mMask) == mMask)
-		{
-			mEntities.push_back(pEntity);
-		}
+		mEntities.push_back(pEntity);
 	}
 	else
 	{
-		if (!((pEntity.mComponentMask & mMask) == mMask))
-		{
-			mEntities.erase(remove_if(mEntities.begin(), mEntities.end(), [&](const Entity& entity) {return entity.mID == pEntity.mID; }), mEntities.end());
-		}
+		mEntities.erase(remove_if(mEntities.begin(), mEntities.end(), [&](const Entity& entity) {return entity.mID == pEntity.mID; }), mEntities.end());
 	}
 }
 
