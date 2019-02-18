@@ -1,7 +1,7 @@
 #include "Matrix4.h"
 
 /// <summary>
-/// 
+/// Default constructor that initialises the matrix to an identity matrix
 /// </summary>
 Matrix4::Matrix4()
 	:mRows{Vector4(1, 0, 0, 0), Vector4(0, 1, 0, 0), Vector4(0, 0, 1, 0), Vector4(0, 0, 0, 1)}
@@ -109,6 +109,26 @@ Matrix4 Matrix4::RotationMatrixZ(const float & pAngle)
 		0, 0, 1, 0,
 		0, 0, 0, 1);
 
+	return matrix;
+}
+
+/// <summary>
+/// 
+/// </summary>
+/// <param name="pAngle"></param>
+/// <param name="pAxis"></param>
+/// <returns></returns>
+Matrix4 Matrix4::RotationMatrixAxis(const float & pAngle, const Vector4 & pAxis)
+{
+	float s = sin(pAngle);
+	float c = cos(pAngle);
+
+	Matrix4 matrix(
+		//Column 1                                           // Column 2                                          //Column 3                                           //Column 4
+		(c + (pAxis.X() * pAxis.X())) * (1 - c),             ((pAxis.X() * pAxis.Y()) * (1 - c)) - (pAxis.Z * s), ((pAxis.X() * pAxis.Z()) * (1 - c)) + (pAxis.Y * s), 0,
+		((pAxis.Y() * pAxis.X()) * (1 - c)) + (pAxis.Z * s), (c + (pAxis.Y() * pAxis.Y())) * (1 - c),             ((pAxis.Y() * pAxis.Z()) * (1 - c)) - (pAxis.X * s), 0,
+		((pAxis.Z() * pAxis.X()) * (1 - c)) - (pAxis.Y * s), ((pAxis.Z() * pAxis.Y()) * (1 - c)) + (pAxis.X * s), (c + (pAxis.Z() * pAxis.Z())) * (1 - c),             0,
+		0,                                                   0,                                                   0,                                                   1);
 	return matrix;
 }
 
