@@ -1,14 +1,14 @@
 #pragma once
 #include <DirectXMath.h>
-#include "Vector3.h"
+#include "Vector4.h"
 
 struct Transform
 {
 	DirectX::XMFLOAT4X4 mTransform;
-	Vector3 mTranslation;
-	Vector3 mRotation;
-	Vector3 mScale;
-	Vector3 mForward;
-	Vector3 mRight;
-	Vector3 mUp;
+	Vector4 mTranslation;
+	Vector4 mRotation;
+	Vector4 mScale;
+	Vector4 mForward;
+	Vector4 mRight;
+	Vector4 mUp;
 };
