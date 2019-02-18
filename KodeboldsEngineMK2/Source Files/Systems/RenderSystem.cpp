@@ -14,6 +14,27 @@ RenderSystem::~RenderSystem()
 {
 }
 
+void RenderSystem::InitDevice(const HWND & pWindow)
+{
+}
+
+void RenderSystem::Cleanup()
+{
+	//delete the remaining directx pointers
+	if (mDepthStencilState) mDepthStencilState->Release();
+	if (mDefaultRasterizerState) mDefaultRasterizerState->Release();
+	if (mTexSampler) mTexSampler->Release();
+	if (mConstantBuffer) mConstantBuffer->Release();
+	if (mConstantBufferUniform) mConstantBufferUniform->Release();
+	if (mDepthStencil) mDepthStencil->Release();
+	if (mDepthStencilView) mDepthStencilView->Release();
+	if (mRenderTargetView) mRenderTargetView->Release();
+	if (mSwapChain) mSwapChain->Release();
+	if (mContext) mContext->ClearState();
+	if (mContext) mContext->Release();
+	if (mDevice) mDevice->Release();
+}
+
 /// <summary>
 /// 
 /// </summary>
@@ -64,4 +85,9 @@ void RenderSystem::AssignEntity(const Entity & pEntity)
 
 void RenderSystem::Process()
 {
+	for (Entity& entity : mEntities)
+	{
+
+
+	}
 }
