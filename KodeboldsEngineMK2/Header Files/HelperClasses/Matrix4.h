@@ -43,6 +43,7 @@ public:
 	static Matrix4 RotationMatrixAxis(const float& pAngle, const Vector4& pAxis);
 	static Matrix4 TranslationMatrix(const Vector4& pVector);
 	static Matrix4 ScaleMatrix(const Vector4& pVector);
+	static Matrix4 Transpose(const Matrix4& pMatrix);
 
 	//Operator overloads
 	Matrix4& operator*=(const Matrix4& rhs);
