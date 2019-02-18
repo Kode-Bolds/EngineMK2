@@ -12,7 +12,6 @@ HINSTANCE g_hInst = nullptr;
 HWND g_hWnd = nullptr;
 
 HRESULT InitWindow(HINSTANCE pHInstance, int pNCmdShow);
-LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 /// <summary>
 /// Entry point to the program. Initializes everything and goes into a message processing loop.
@@ -31,6 +30,10 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	{
 		return 0;
 	}
+	
+	// Testing Input Manager
+	std::shared_ptr<InputManager> inputManager = InputManager::Instance();
+	
 
 	//Testing vector4 class
 	Vector4 v1(1.0f, 1.0f, 1.0f, 0.0f);
@@ -109,7 +112,7 @@ HRESULT InitWindow(const HINSTANCE pHInstance, const int pNCmdShow)
 	WNDCLASSEX wcex;
 	wcex.cbSize = sizeof(WNDCLASSEX);
 	wcex.style = CS_HREDRAW | CS_VREDRAW;
-	wcex.lpfnWndProc = WndProc;
+	wcex.lpfnWndProc = InputManager::WndProc;
 	wcex.cbClsExtra = 0;
 	wcex.cbWndExtra = 0;
 	wcex.hInstance = pHInstance;
@@ -140,29 +143,4 @@ HRESULT InitWindow(const HINSTANCE pHInstance, const int pNCmdShow)
 	ShowWindow(g_hWnd, pNCmdShow);
 
 	return static_cast<HRESULT>(0L);
-}
-
-LRESULT CALLBACK WndProc(const HWND hWnd, const UINT message, const WPARAM wParam, const LPARAM lParam)
-{
-
-	switch (message)
-	{
-	case WM_DESTROY:
-		PostQuitMessage(0);
-		break;
-
-	case WM_ACTIVATEAPP:
-		break;
-
-	case WM_KEYDOWN:
-	case WM_SYSKEYDOWN:
-	case WM_KEYUP:
-	case WM_SYSKEYUP:
-		break;
-
-	default:
-		return DefWindowProc(hWnd, message, wParam, lParam);
-	}
-
-	return 0;
 }

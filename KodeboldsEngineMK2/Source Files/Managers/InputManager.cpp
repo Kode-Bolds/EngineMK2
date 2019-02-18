@@ -4,9 +4,7 @@ InputManager::InputManager()
 {
 	mKeyboard = std::make_shared<DirectX::Keyboard>();
 	mMouse = std::make_shared<DirectX::Mouse>();
-
 }
-
 
 InputManager::~InputManager()
 {
@@ -18,13 +16,22 @@ std::shared_ptr<InputManager> InputManager::Instance()
 	return instance;
 }
 
+const std::vector<std::pair<InputManager::KEYBOARD_BUTTONS, bool>> InputManager::KeyPresses() const
+{
+	return std::vector<std::pair<KEYBOARD_BUTTONS, bool>>();
+}
 
-const void InputManager::CenterCursor() const
+const std::vector<std::pair<InputManager::MOUSE_BUTTONS, bool>> InputManager::MousePresses() const
+{
+	return std::vector<std::pair<MOUSE_BUTTONS, bool>>();
+}
+
+void InputManager::CenterCursor()
 {
 	//SetCursorPos(CLIENT_WIDTH / 2, CLIENT_HEIGHT / 2);
 }
 
-const void InputManager::CursorVisible(bool pVisible) const
+void InputManager::CursorVisible(bool pVisible)
 {
 	if (pVisible) { mMouse->SetVisible(true); }
 	else { mMouse->SetVisible(true); }
@@ -86,53 +93,260 @@ void InputManager::Update()
 
 void InputManager::KeyboardInput()
 {
+	keyboardButtonPresses.clear();
+
 	auto state = mKeyboard->GetState();
 	mKeyboardTracker.Update(state);
 
+
 	HeldDownKeys(state); // Registers every frame that a key is pressed
 	SinglePressKeys(); // Registers once
+	ReleasedKeys();
+}
 
+const void InputManager::MouseInput() {
+
+	mouseButtonPresses.clear();
+
+	auto state = mMouse->GetState();
+	mMouseTracker.Update(state);
+
+	mMousePosition = DirectX::XMFLOAT2(mMouse->GetState().x, mMouse->GetState().y);
+
+	// Scroll wheel
+	mMouseWheelValue = mMouse->GetState().scrollWheelValue;
+
+	// Buttons
+	using ButtonState = DirectX::Mouse::ButtonStateTracker::ButtonState;
+
+	// Allows mouse buttons to be held down
+	if (mMouseTracker.leftButton == ButtonState::HELD) { pressedMouseButton = MOUSE_BUTTONS::MOUSE_BUTTON_LEFT; mouseButtonState = MOUSE_BUTTON_STATE::MOUSE_HELD; }
+	if (mMouseTracker.rightButton == ButtonState::HELD) { pressedMouseButton = MOUSE_BUTTONS::MOUSE_BUTTON_RIGHT; mouseButtonState = MOUSE_BUTTON_STATE::MOUSE_HELD; }
+	if (mMouseTracker.middleButton == ButtonState::HELD) { pressedMouseButton = MOUSE_BUTTONS::MOUSE_BUTTON_MIDDLE; mouseButtonState = MOUSE_BUTTON_STATE::MOUSE_HELD; }
+
+	// single mouse button presses
+	if (mMouseTracker.leftButton == ButtonState::PRESSED) { pressedMouseButton = MOUSE_BUTTONS::MOUSE_BUTTON_LEFT; mouseButtonState = MOUSE_BUTTON_STATE::MOUSE_DOWN; }
+	if (mMouseTracker.rightButton == ButtonState::PRESSED) { pressedMouseButton = MOUSE_BUTTONS::MOUSE_BUTTON_RIGHT; mouseButtonState = MOUSE_BUTTON_STATE::MOUSE_DOWN; }
+	if (mMouseTracker.middleButton == ButtonState::PRESSED) { pressedMouseButton = MOUSE_BUTTONS::MOUSE_BUTTON_MIDDLE; mouseButtonState = MOUSE_BUTTON_STATE::MOUSE_DOWN; }
+
+	// single mouse button releases
+	if (mMouseTracker.leftButton == ButtonState::RELEASED) { pressedMouseButton = MOUSE_BUTTONS::MOUSE_BUTTON_LEFT; mouseButtonState = MOUSE_BUTTON_STATE::MOUSE_UP; }
+	if (mMouseTracker.rightButton == ButtonState::RELEASED) { pressedMouseButton = MOUSE_BUTTONS::MOUSE_BUTTON_RIGHT; mouseButtonState = MOUSE_BUTTON_STATE::MOUSE_UP; }
+	if (mMouseTracker.middleButton == ButtonState::RELEASED) { pressedMouseButton = MOUSE_BUTTONS::MOUSE_BUTTON_MIDDLE; mouseButtonState = MOUSE_BUTTON_STATE::MOUSE_UP; }
+}
+
+const void InputManager::ReleasedKeys() const
+{
+	if (mKeyboardTracker.released.A) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_A; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.B) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_B; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.C) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_C; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.D) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_D; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.E) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_E; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.F) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.G) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_G; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.H) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_H; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.I) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_I; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.J) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_J; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.K) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_K; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.L) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_L; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.M) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_M; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.N) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_N; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.O) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_O; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.P) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_P; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.Q) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_Q; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.R) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_R; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.S) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_S; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.T) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_T; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.U) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_U; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.V) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_V; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.W) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_W; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.X) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_X; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.Y) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_Y; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.Z) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_Z; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+
+	if (mKeyboardTracker.released.NumPad0) { pressedKeyboardButton = KEYBOARD_BUTTONS::NUM_PAD_KEY_0; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.NumPad1) { pressedKeyboardButton = KEYBOARD_BUTTONS::NUM_PAD_KEY_1; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.NumPad2) { pressedKeyboardButton = KEYBOARD_BUTTONS::NUM_PAD_KEY_2; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.NumPad3) { pressedKeyboardButton = KEYBOARD_BUTTONS::NUM_PAD_KEY_3; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.NumPad4) { pressedKeyboardButton = KEYBOARD_BUTTONS::NUM_PAD_KEY_4; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.NumPad5) { pressedKeyboardButton = KEYBOARD_BUTTONS::NUM_PAD_KEY_5; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.NumPad6) { pressedKeyboardButton = KEYBOARD_BUTTONS::NUM_PAD_KEY_6; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.NumPad7) { pressedKeyboardButton = KEYBOARD_BUTTONS::NUM_PAD_KEY_7; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.NumPad8) { pressedKeyboardButton = KEYBOARD_BUTTONS::NUM_PAD_KEY_8; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.NumPad9) { pressedKeyboardButton = KEYBOARD_BUTTONS::NUM_PAD_KEY_9; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+
+	if (mKeyboardTracker.released.D0) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_0; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.D1) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_1; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.D2) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_2; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.D3) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_3; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.D4) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_4; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.D5) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_5; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.D6) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_6; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.D7) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_7; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.D8) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_8; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.D9) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_9; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+
+	if (mKeyboardTracker.released.Add) {}
+	if (mKeyboardTracker.released.Apps) {}
+	if (mKeyboardTracker.released.Attn) {}
+	if (mKeyboardTracker.released.Back) {}
+	if (mKeyboardTracker.released.BrowserBack) {}
+	if (mKeyboardTracker.released.BrowserFavorites) {}
+	if (mKeyboardTracker.released.BrowserForward) {}
+	if (mKeyboardTracker.released.BrowserHome) {}
+	if (mKeyboardTracker.released.BrowserRefresh) {}
+	if (mKeyboardTracker.released.BrowserSearch) {}
+	if (mKeyboardTracker.released.BrowserStop) {}
+	if (mKeyboardTracker.released.CapsLock) {}
+	if (mKeyboardTracker.released.Crsel) {}
+
+	if (mKeyboardTracker.released.Decimal) {}
+	if (mKeyboardTracker.released.Delete) {}
+	if (mKeyboardTracker.released.Divide) {}
+	if (mKeyboardTracker.released.Down) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_DOWN_ARROW; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.End) {}
+	if (mKeyboardTracker.released.Enter) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_ENTER; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.EraseEof) {}
+	if (mKeyboardTracker.released.Escape) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_ESC; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.Execute) {}
+	if (mKeyboardTracker.released.Exsel) {}
+
+	if (mKeyboardTracker.released.F1) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F1; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.F2) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F2; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.F3) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F3; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.F4) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F4; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.F5) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F5; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.F6) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F6; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.F7) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F7; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.F8) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F8; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.F9) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F9; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.F10) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F10; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.F11) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F11; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.F12) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F12; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.F13) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F13; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.F14) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F14; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.F15) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F15; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.F16) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F16; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.F17) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F17; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.F18) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F18; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.F19) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F19; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.F20) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F20; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+
+	if (mKeyboardTracker.released.Help) {}
+	if (mKeyboardTracker.released.Home) {}
+	if (mKeyboardTracker.released.ImeConvert) {}
+	if (mKeyboardTracker.released.ImeNoConvert) {}
+	if (mKeyboardTracker.released.Insert) {}
+	if (mKeyboardTracker.released.Kana) {}
+	if (mKeyboardTracker.released.Kanji) {}
+	if (mKeyboardTracker.released.LaunchApplication1) {}
+	if (mKeyboardTracker.released.LaunchApplication2) {}
+	if (mKeyboardTracker.released.LaunchMail) {}
+	if (mKeyboardTracker.released.Left) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_LEFT_ARROW; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.LeftAlt) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_LEFT_ALT; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.LeftControl) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_LEFT_CTRL; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.LeftShift) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_LEFT_SHIFT; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.LeftWindows) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_LEFT_WINDOWS; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.MediaNextTrack) {}
+	if (mKeyboardTracker.released.MediaPlayPause) {}
+	if (mKeyboardTracker.released.MediaPreviousTrack) {}
+	if (mKeyboardTracker.released.MediaStop) {}
+	if (mKeyboardTracker.released.Multiply) {}
+	if (mKeyboardTracker.released.Oem8) {}
+	if (mKeyboardTracker.released.OemAuto) {}
+	if (mKeyboardTracker.released.OemBackslash) {}
+	if (mKeyboardTracker.released.OemClear) {}
+	if (mKeyboardTracker.released.OemCloseBrackets) {}
+	if (mKeyboardTracker.released.OemComma) {}
+	if (mKeyboardTracker.released.OemCopy) {}
+	if (mKeyboardTracker.released.OemEnlW) {}
+	if (mKeyboardTracker.released.OemMinus) {}
+	if (mKeyboardTracker.released.OemOpenBrackets) {}
+	if (mKeyboardTracker.released.OemPeriod) {}
+	if (mKeyboardTracker.released.OemPipe) {}
+	if (mKeyboardTracker.released.OemPlus) {}
+	if (mKeyboardTracker.released.OemQuestion) {}
+	if (mKeyboardTracker.released.OemQuotes) {}
+	if (mKeyboardTracker.released.OemSemicolon) {}
+	if (mKeyboardTracker.released.OemTilde) {}
+	if (mKeyboardTracker.released.PageDown) {}
+	if (mKeyboardTracker.released.Pa1) {}
+	if (mKeyboardTracker.released.PageUp) {}
+	if (mKeyboardTracker.released.Pause) {}
+	if (mKeyboardTracker.released.Play) {}
+	if (mKeyboardTracker.released.Print) {}
+	if (mKeyboardTracker.released.PrintScreen) {}
+	if (mKeyboardTracker.released.ProcessKey) {}
+	if (mKeyboardTracker.released.Right) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_RIGHT_ARROW; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.RightAlt) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_RIGHT_ALT; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.RightControl) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_RIGHT_CTRL; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.RightShift) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_RIGHT_SHIFT; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.RightWindows) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_RIGHT_WINDOWS; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.Scroll) {}
+	if (mKeyboardTracker.released.Select) {}
+	if (mKeyboardTracker.released.SelectMedia) {}
+	if (mKeyboardTracker.released.Separator) {}
+	if (mKeyboardTracker.released.Sleep) {}
+	if (mKeyboardTracker.released.Space) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_SPACE; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.Subtract) {}
+	if (mKeyboardTracker.released.Tab) {}
+	if (mKeyboardTracker.released.Up) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_UP_ARROW; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
+	if (mKeyboardTracker.released.VolumeDown) {}
+	if (mKeyboardTracker.released.VolumeUp) {}
+	if (mKeyboardTracker.released.VolumeMute) {}
+	if (mKeyboardTracker.released.Zoom) {}
 }
 
 const void InputManager::SinglePressKeys() const
 {
-	if (mKeyboardTracker.pressed.A) {}
-	if (mKeyboardTracker.pressed.B) {}
-	if (mKeyboardTracker.pressed.C) {}
-	if (mKeyboardTracker.pressed.D) {}
-	if (mKeyboardTracker.pressed.E) {}
-	if (mKeyboardTracker.pressed.F) {}
-	if (mKeyboardTracker.pressed.G) {}
-	if (mKeyboardTracker.pressed.H) {}
-	if (mKeyboardTracker.pressed.I) {}
-	if (mKeyboardTracker.pressed.J) {}
-	if (mKeyboardTracker.pressed.K) {}
-	if (mKeyboardTracker.pressed.L) {}
-	if (mKeyboardTracker.pressed.M) {}
-	if (mKeyboardTracker.pressed.N) {}
-	if (mKeyboardTracker.pressed.O) {}
-	if (mKeyboardTracker.pressed.P) {}
-	if (mKeyboardTracker.pressed.Q) {}
-	if (mKeyboardTracker.pressed.R) {}
-	if (mKeyboardTracker.pressed.S) {}
-	if (mKeyboardTracker.pressed.T) {}
-	if (mKeyboardTracker.pressed.U) {}
-	if (mKeyboardTracker.pressed.V) {}
-	if (mKeyboardTracker.pressed.W) {}
-	if (mKeyboardTracker.pressed.X) {}
-	if (mKeyboardTracker.pressed.Y) {}
-	if (mKeyboardTracker.pressed.Z) {}
+	if (mKeyboardTracker.pressed.A) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_A; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.B) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_B; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.C) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_C; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.D) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_D; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.E) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_E; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.F) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.G) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_G; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.H) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_H; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.I) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_I; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.J) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_J; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.K) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_K; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.L) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_L; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.M) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_M; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.N) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_N; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.O) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_O; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.P) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_P; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.Q) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_Q; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.R) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_R; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.S) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_S; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.T) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_T; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.U) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_U; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.V) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_V; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.W) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_W; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.X) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_X; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.Y) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_Y; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.Z) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_Z; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
 
-	if (mKeyboardTracker.pressed.NumPad0) {}
-	if (mKeyboardTracker.pressed.NumPad1) {}
-	if (mKeyboardTracker.pressed.NumPad2) {}
-	if (mKeyboardTracker.pressed.NumPad3) {}
-	if (mKeyboardTracker.pressed.NumPad4) {}
-	if (mKeyboardTracker.pressed.NumPad5) {}
-	if (mKeyboardTracker.pressed.NumPad6) {}
-	if (mKeyboardTracker.pressed.NumPad7) {}
-	if (mKeyboardTracker.pressed.NumPad8) {}
-	if (mKeyboardTracker.pressed.NumPad9) {}
+	if (mKeyboardTracker.pressed.NumPad0) { pressedKeyboardButton = KEYBOARD_BUTTONS::NUM_PAD_KEY_0; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.NumPad1) { pressedKeyboardButton = KEYBOARD_BUTTONS::NUM_PAD_KEY_1; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.NumPad2) { pressedKeyboardButton = KEYBOARD_BUTTONS::NUM_PAD_KEY_2; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.NumPad3) { pressedKeyboardButton = KEYBOARD_BUTTONS::NUM_PAD_KEY_3; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.NumPad4) { pressedKeyboardButton = KEYBOARD_BUTTONS::NUM_PAD_KEY_4; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.NumPad5) { pressedKeyboardButton = KEYBOARD_BUTTONS::NUM_PAD_KEY_5; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.NumPad6) { pressedKeyboardButton = KEYBOARD_BUTTONS::NUM_PAD_KEY_6; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.NumPad7) { pressedKeyboardButton = KEYBOARD_BUTTONS::NUM_PAD_KEY_7; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.NumPad8) { pressedKeyboardButton = KEYBOARD_BUTTONS::NUM_PAD_KEY_8; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.NumPad9) { pressedKeyboardButton = KEYBOARD_BUTTONS::NUM_PAD_KEY_9; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+
+	if (mKeyboardTracker.pressed.D0) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_0; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.D1) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_1; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.D2) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_2; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.D3) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_3; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.D4) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_4; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.D5) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_5; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.D6) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_6; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.D7) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_7; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.D8) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_8; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.D9) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_9; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
 
 	if (mKeyboardTracker.pressed.Add) {}
 	if (mKeyboardTracker.pressed.Apps) {}
@@ -147,47 +361,38 @@ const void InputManager::SinglePressKeys() const
 	if (mKeyboardTracker.pressed.BrowserStop) {}
 	if (mKeyboardTracker.pressed.CapsLock) {}
 	if (mKeyboardTracker.pressed.Crsel) {}
-	if (mKeyboardTracker.pressed.D0) {}
-	if (mKeyboardTracker.pressed.D1) {}
-	if (mKeyboardTracker.pressed.D2) {}
-	if (mKeyboardTracker.pressed.D3) {}
-	if (mKeyboardTracker.pressed.D4) {}
-	if (mKeyboardTracker.pressed.D5) {}
-	if (mKeyboardTracker.pressed.D6) {}
-	if (mKeyboardTracker.pressed.D7) {}
-	if (mKeyboardTracker.pressed.D8) {}
-	if (mKeyboardTracker.pressed.D9) {}
+
 	if (mKeyboardTracker.pressed.Decimal) {}
 	if (mKeyboardTracker.pressed.Delete) {}
 	if (mKeyboardTracker.pressed.Divide) {}
-	if (mKeyboardTracker.pressed.Down) {}
+	if (mKeyboardTracker.pressed.Down) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_DOWN_ARROW; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
 	if (mKeyboardTracker.pressed.End) {}
-	if (mKeyboardTracker.pressed.Enter) {}
+	if (mKeyboardTracker.pressed.Enter) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_ENTER; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
 	if (mKeyboardTracker.pressed.EraseEof) {}
-	if (mKeyboardTracker.pressed.Escape) {}
+	if (mKeyboardTracker.pressed.Escape) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_ESC; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
 	if (mKeyboardTracker.pressed.Execute) {}
 	if (mKeyboardTracker.pressed.Exsel) {}
 
-	if (mKeyboardTracker.pressed.F1) {}
-	if (mKeyboardTracker.pressed.F2) {}
-	if (mKeyboardTracker.pressed.F3) {}
-	if (mKeyboardTracker.pressed.F4) {}
-	if (mKeyboardTracker.pressed.F5) {}
-	if (mKeyboardTracker.pressed.F6) {}
-	if (mKeyboardTracker.pressed.F7) {}
-	if (mKeyboardTracker.pressed.F8) {}
-	if (mKeyboardTracker.pressed.F9) {}
-	if (mKeyboardTracker.pressed.F10) {}
-	if (mKeyboardTracker.pressed.F11) {}
-	if (mKeyboardTracker.pressed.F12) {}
-	if (mKeyboardTracker.pressed.F13) {}
-	if (mKeyboardTracker.pressed.F14) {}
-	if (mKeyboardTracker.pressed.F15) {}
-	if (mKeyboardTracker.pressed.F16) {}
-	if (mKeyboardTracker.pressed.F17) {}
-	if (mKeyboardTracker.pressed.F18) {}
-	if (mKeyboardTracker.pressed.F19) {}
-	if (mKeyboardTracker.pressed.F20) {}
+	if (mKeyboardTracker.pressed.F1) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F1; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.F2) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F2; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.F3) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F3; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.F4) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F4; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.F5) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F5; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.F6) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F6; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.F7) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F7; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.F8) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F8; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.F9) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F9; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.F10) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F10; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.F11) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F11; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.F12) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F12; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.F13) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F13; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.F14) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F14; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.F15) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F15; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.F16) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F16; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.F17) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F17; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.F18) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F18; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.F19) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F19; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.F20) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_F20; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
 
 	if (mKeyboardTracker.pressed.Help) {}
 	if (mKeyboardTracker.pressed.Home) {}
@@ -199,11 +404,11 @@ const void InputManager::SinglePressKeys() const
 	if (mKeyboardTracker.pressed.LaunchApplication1) {}
 	if (mKeyboardTracker.pressed.LaunchApplication2) {}
 	if (mKeyboardTracker.pressed.LaunchMail) {}
-	if (mKeyboardTracker.pressed.Left) {}
-	if (mKeyboardTracker.pressed.LeftAlt) {}
-	if (mKeyboardTracker.pressed.LeftControl) {}
-	if (mKeyboardTracker.pressed.LeftShift) {}
-	if (mKeyboardTracker.pressed.LeftWindows) {}
+	if (mKeyboardTracker.pressed.Left) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_LEFT_ARROW; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.LeftAlt) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_LEFT_ALT; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.LeftControl) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_LEFT_CTRL; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.LeftShift) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_LEFT_SHIFT; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.LeftWindows) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_LEFT_WINDOWS; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
 	if (mKeyboardTracker.pressed.MediaNextTrack) {}
 	if (mKeyboardTracker.pressed.MediaPlayPause) {}
 	if (mKeyboardTracker.pressed.MediaPreviousTrack) {}
@@ -234,27 +439,27 @@ const void InputManager::SinglePressKeys() const
 	if (mKeyboardTracker.pressed.Print) {}
 	if (mKeyboardTracker.pressed.PrintScreen) {}
 	if (mKeyboardTracker.pressed.ProcessKey) {}
-	if (mKeyboardTracker.pressed.Right) {}
-	if (mKeyboardTracker.pressed.RightAlt) {}
-	if (mKeyboardTracker.pressed.RightControl) {}
-	if (mKeyboardTracker.pressed.RightShift) {}
-	if (mKeyboardTracker.pressed.RightWindows) {}
+	if (mKeyboardTracker.pressed.Right) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_RIGHT_ARROW; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.RightAlt) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_RIGHT_ALT; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.RightControl) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_RIGHT_CTRL; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.RightShift) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_RIGHT_SHIFT; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.RightWindows) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_RIGHT_WINDOWS; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
 	if (mKeyboardTracker.pressed.Scroll) {}
 	if (mKeyboardTracker.pressed.Select) {}
 	if (mKeyboardTracker.pressed.SelectMedia) {}
 	if (mKeyboardTracker.pressed.Separator) {}
 	if (mKeyboardTracker.pressed.Sleep) {}
-	if (mKeyboardTracker.pressed.Space) {}
+	if (mKeyboardTracker.pressed.Space) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_SPACE; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
 	if (mKeyboardTracker.pressed.Subtract) {}
 	if (mKeyboardTracker.pressed.Tab) {}
-	if (mKeyboardTracker.pressed.Up) {}
+	if (mKeyboardTracker.pressed.Up) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_UP_ARROW; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
 	if (mKeyboardTracker.pressed.VolumeDown) {}
 	if (mKeyboardTracker.pressed.VolumeUp) {}
 	if (mKeyboardTracker.pressed.VolumeMute) {}
 	if (mKeyboardTracker.pressed.Zoom) {}
 }
 
-const void InputManager::HeldDownKeys(DirectX::Keyboard::State &state)const
+const void InputManager::HeldDownKeys(DirectX::Keyboard::State &state) const
 {
 	if (state.A) {}
 	if (state.B) {}
@@ -413,29 +618,3 @@ const void InputManager::HeldDownKeys(DirectX::Keyboard::State &state)const
 	if (state.VolumeMute) {}
 	if (state.Zoom) {}
 }
-
-const void InputManager::MouseInput() {
-
-	auto state = mMouse->GetState();
-	mMouseTracker.Update(state);
-
-	mMousePosition = DirectX::XMFLOAT2(mMouse->GetState().x, mMouse->GetState().y);
-
-	// Scroll wheel
-	mMouseWheelValue = mMouse->GetState().scrollWheelValue;
-
-	// Buttons
-	using ButtonState = DirectX::Mouse::ButtonStateTracker::ButtonState;
-
-	// Allows mouse buttons to be held down
-	if (state.leftButton) {}
-	if (state.rightButton) {}
-	if (state.middleButton) {}
-
-	// single mouse button presses
-	if (mMouseTracker.leftButton == ButtonState::PRESSED) {}
-	if (mMouseTracker.rightButton == ButtonState::PRESSED) {}
-	if (mMouseTracker.middleButton == ButtonState::PRESSED) {}
-}
-
-
