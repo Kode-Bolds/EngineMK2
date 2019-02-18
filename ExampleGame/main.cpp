@@ -5,6 +5,8 @@
 #include "Systems.h"
 #include "Components.h"
 #include "Matrix4.h"
+#include "TestScene.h"
+#include "TestScene2.h"
 
 #pragma comment(lib, "KodeboldsEngineMK2.lib")
 
@@ -78,6 +80,16 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	//NEED TO FIND OUT HOW TO DO THE OPPOSITE OF |= TO REMOVE COMPONENT FROM ENTITY MASK
 	//ecsManager->RemoveTransformComp("Test");
 
+
+	//Testing scene manager
+	std::shared_ptr<SceneManager> sceneManager = SceneManager::Instance();
+
+	Scene testScene = TestScene();
+	sceneManager->LoadScene(testScene);
+
+	Scene testScene2 = TestScene2();
+	sceneManager->LoadScene(testScene2);
+
 	//Main message loop
 	MSG msg = { 0 };
 	while (WM_QUIT != msg.message)
@@ -89,8 +101,16 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 		}
 		else
 		{
+			//Testing scene manager
+			sceneManager->Update();
+
 			//Testing movement system
 			ecsManager->ProcessSystems();
+
+			sceneManager->Render();
+
+			double dt = sceneManager->DeltaTime();
+			double time = sceneManager->Time();
 		}
 	}
 
