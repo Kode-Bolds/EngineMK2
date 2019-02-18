@@ -11,20 +11,20 @@ private:
 	std::chrono::high_resolution_clock::time_point mCurrentTime;
 	std::chrono::high_resolution_clock::time_point mPreviousTime;
 
-	static std::unique_ptr<SceneManager> mInstance;
-	std::shared_ptr<Scene> mScene;
+	Scene* mScene;
 	int mFps = 0;
 
 	SceneManager();
 
+public:
+	~SceneManager();
+
 	const void Render();
 	const void Update();
 	const void LoadScene(Scene & pScene);
-	const float DeltaTime() const;
-	const float Time() const;
+	const double DeltaTime() const;
+	const double Time() const;
 	const int Fps();
-public:
-	~SceneManager();
 
 	//Singleton pattern
 	//Deleted copy constructor and assignment operator so no copies of the singleton instance can be made
