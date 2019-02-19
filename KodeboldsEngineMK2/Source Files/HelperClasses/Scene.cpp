@@ -17,8 +17,3 @@ void Scene::OnLoad()
 Scene::Scene()
 {
 }
-
-
-Scene::~Scene()
-{
-}

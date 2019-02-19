@@ -12,24 +12,31 @@ const void SceneManager::Update()
 
 	mScene->Update();
 
+	// Average the fps over n frames.
+	mAverageDeltaTime = 0;
+	for (auto i = 0; i < mLast50Frames.size() - 1; i++)
+	{
+		mLast50Frames[i] = mLast50Frames[i + 1];
+	}
+	mLast50Frames[mLast50Frames.size() - 1] = DeltaTime();
+
+	for (auto i = 0; i < mLast50Frames.size(); i++)
+	{
+		mAverageDeltaTime += mLast50Frames[i];
+	}
+	mAverageDeltaTime = mAverageDeltaTime / mLast50Frames.size();
+
+	mFps = 1 / mAverageDeltaTime;
+
+
+
 	mPreviousTime = mCurrentTime;
 }
 
-const void SceneManager::LoadScene(Scene& pScene)
-{
-	//Set start time of scene
-	mStartTime = std::chrono::high_resolution_clock::now();
-
-	// unload current scene
-	mScene = nullptr;
-
-	// load new scene
-	mScene = &pScene;
-}
-
-const double SceneManager::DeltaTime() const
+const double SceneManager::DeltaTime()
 {
 	return mDeltaTime.count() / pow(10, 9); // (or 1e+9)
+
 }
 
 const double SceneManager::Time() const
@@ -40,8 +47,6 @@ const double SceneManager::Time() const
 
 const int SceneManager::Fps()
 {
-	// TODO: Average the fps over n frames.
-	mFps = 1 / DeltaTime();
 	return mFps;
 }
 
