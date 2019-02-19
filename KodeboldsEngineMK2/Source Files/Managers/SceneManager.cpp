@@ -12,23 +12,31 @@ const void SceneManager::Update()
 
 	mScene->Update();
 
+	// Average the fps over n frames.
+	mAverageDeltaTime = 0;
+	for (auto i = 0; i < mLast50Frames.size() - 1; i++)
+	{
+		mLast50Frames[i] = mLast50Frames[i + 1];
+	}
+	mLast50Frames[mLast50Frames.size() - 1] = DeltaTime();
+
+	for (auto i = 0; i < mLast50Frames.size(); i++)
+	{
+		mAverageDeltaTime += mLast50Frames[i];
+	}
+	mAverageDeltaTime = mAverageDeltaTime / mLast50Frames.size();
+
+	mFps = 1 / mAverageDeltaTime;
+
+
+
 	mPreviousTime = mCurrentTime;
 }
 
-const void SceneManager::LoadScene(Scene& pScene)
+const double SceneManager::DeltaTime()
 {
-	mStartTime = std::chrono::high_resolution_clock::now();
+	return mDeltaTime.count() / pow(10, 9); // (or 1e+9)
 
-	// unload current scene
-	mScene = nullptr; // TODO: DOES THIS CAUSE A MEMORY LEAK?
-
-	// load new scene
-	mScene = &pScene;
-}
-
-const double SceneManager::DeltaTime() const
-{
-	return static_cast<double>(std::chrono::duration_cast<std::chrono::seconds>(mDeltaTime).count()); // (or 1e+9)
 }
 
 const double SceneManager::Time() const
@@ -39,8 +47,6 @@ const double SceneManager::Time() const
 
 const int SceneManager::Fps()
 {
-	// TODO: Average the fps over n frames.
-	mFps = 1 / DeltaTime();
 	return mFps;
 }
 

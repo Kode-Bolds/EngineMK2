@@ -84,11 +84,9 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	//Testing scene manager
 	std::shared_ptr<SceneManager> sceneManager = SceneManager::Instance();
 
-	Scene testScene = TestScene();
-	sceneManager->LoadScene(testScene);
+	sceneManager->LoadScene<TestScene>();
 
-	Scene testScene2 = TestScene2();
-	sceneManager->LoadScene(testScene2);
+	sceneManager->LoadScene<TestScene2>();
 
 	//Main message loop
 	MSG msg = { 0 };
@@ -101,15 +99,15 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 		}
 		else
 		{
-			//Testing scene manager
-			sceneManager->Update();
-
 			//Testing movement system
 			ecsManager->ProcessSystems();
 
+			//Testing scene manager
+			sceneManager->Update();
 			sceneManager->Render();
 
 			double dt = sceneManager->DeltaTime();
+			int fps = sceneManager->Fps();
 			double time = sceneManager->Time();
 		}
 	}
