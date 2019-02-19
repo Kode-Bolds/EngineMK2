@@ -4,8 +4,15 @@
 class TestScene :
 	public Scene
 {
+private:
+
+
 public:
 	TestScene();
-	~TestScene();
+	virtual ~TestScene();
+
+	void Update() override;
+	void Render() override;
+	void OnLoad() override;
 };
 

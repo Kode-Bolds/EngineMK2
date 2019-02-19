@@ -6,7 +6,7 @@
 class SceneManager
 {
 private:
-	std::chrono::high_resolution_clock::duration mDeltaTime;
+	std::chrono::nanoseconds mDeltaTime;
 	std::chrono::high_resolution_clock::time_point mStartTime;
 	std::chrono::high_resolution_clock::time_point mCurrentTime;
 	std::chrono::high_resolution_clock::time_point mPreviousTime;

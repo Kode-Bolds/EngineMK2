@@ -17,10 +17,11 @@ const void SceneManager::Update()
 
 const void SceneManager::LoadScene(Scene& pScene)
 {
+	//Set start time of scene
 	mStartTime = std::chrono::high_resolution_clock::now();
 
 	// unload current scene
-	mScene = nullptr; // TODO: DOES THIS CAUSE A MEMORY LEAK?
+	mScene = nullptr;
 
 	// load new scene
 	mScene = &pScene;
@@ -28,7 +29,7 @@ const void SceneManager::LoadScene(Scene& pScene)
 
 const double SceneManager::DeltaTime() const
 {
-	return static_cast<double>(std::chrono::duration_cast<std::chrono::seconds>(mDeltaTime).count()); // (or 1e+9)
+	return mDeltaTime.count() / pow(10, 9); // (or 1e+9)
 }
 
 const double SceneManager::Time() const
