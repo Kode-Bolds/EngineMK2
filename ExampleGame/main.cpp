@@ -77,8 +77,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	ecsManager->AddVelocityComp(velocity, "Test2");
 	ecsManager->AddVelocityComp(velocity, "Test3");
 
-	//NEED TO FIND OUT HOW TO DO THE OPPOSITE OF |= TO REMOVE COMPONENT FROM ENTITY MASK
-	//ecsManager->RemoveTransformComp("Test");
+	ecsManager->RemoveTransformComp("Test");
 
 
 	//Testing scene manager
