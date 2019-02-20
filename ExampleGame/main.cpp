@@ -69,7 +69,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 
 	//Testing velocity component
 	Vector4 velocityV(0.0f, 0.0f, 0.0f, 0.0f);
-	Vector4 acceleration(0.1f, 0.0f, 0.0f, 0.0f);
+	Vector4 acceleration(10.0f, 0.0f, 0.0f, 0.0f);
 	Velocity velocity{velocityV, acceleration, 1.0f};
 
 	ecsManager->AddVelocityComp(velocity, "Test");
@@ -77,7 +77,10 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	ecsManager->AddVelocityComp(velocity, "Test2");
 	ecsManager->AddVelocityComp(velocity, "Test3");
 
-	ecsManager->RemoveTransformComp("Test");
+	Gravity gravity;
+	ecsManager->AddGravityComp(gravity, "Test");
+
+	ecsManager->RemoveTransformComp("Test1");
 
 
 	//Testing scene manager
@@ -86,6 +89,10 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	sceneManager->LoadScene<TestScene>();
 
 	sceneManager->LoadScene<TestScene2>();
+
+
+
+	Velocity velocity2;
 
 	//Main message loop
 	MSG msg = { 0 };
@@ -100,6 +107,8 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 		{
 			//Testing movement system
 			ecsManager->ProcessSystems();
+
+			velocity2 = *ecsManager->VelocityComp("Test");
 
 			//Testing scene manager
 			sceneManager->Update();
