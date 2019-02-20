@@ -243,7 +243,7 @@ void ECSManager::RemoveAIComp(const std::string & pEntityName)
 	if (entity)
 	{
 		mAIs.erase(remove_if(mAIs.begin(), mAIs.end(), [&](const pair<int, AI>& pair) {return pair.first == entity->mID; }));
-		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		entity->mComponentMask = entity->mComponentMask &= ~ComponentType::COMPONENT_AI; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 		AssignEntity(*entity);
 	}
 }
@@ -274,7 +274,7 @@ void ECSManager::RemoveAudioComp(const std::string & pEntityName)
 	if (entity)
 	{
 		mAudios.erase(remove_if(mAudios.begin(), mAudios.end(), [&](const pair<int, Audio>& pair) {return pair.first == entity->mID; }));
-		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		entity->mComponentMask = entity->mComponentMask &= ~ComponentType::COMPONENT_AUDIO; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 		AssignEntity(*entity);
 	}
 }
@@ -305,7 +305,7 @@ void ECSManager::RemoveBoxColliderComp(const std::string & pEntityName)
 	if (entity)
 	{
 		mBoxColliders.erase(remove_if(mBoxColliders.begin(), mBoxColliders.end(), [&](const pair<int, BoxCollider>& pair) {return pair.first == entity->mID; }));
-		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		entity->mComponentMask = entity->mComponentMask &= ~ComponentType::COMPONENT_BOXCOLLIDER; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 		AssignEntity(*entity);
 	}
 }
@@ -336,7 +336,7 @@ void ECSManager::RemoveCameraComp(const std::string & pEntityName)
 	if (entity)
 	{
 		mCameras.erase(remove_if(mCameras.begin(), mCameras.end(), [&](const pair<int, Camera>& pair) {return pair.first == entity->mID; }));
-		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		entity->mComponentMask = entity->mComponentMask &= ~ComponentType::COMPONENT_CAMERA; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 		AssignEntity(*entity);
 	}
 }
@@ -367,7 +367,7 @@ void ECSManager::RemoveGeometryComp(const std::string & pEntityName)
 	if (entity)
 	{
 		mGeometries.erase(remove_if(mGeometries.begin(), mGeometries.end(), [&](const pair<int, Geometry>& pair) {return pair.first == entity->mID; }));
-		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		entity->mComponentMask = entity->mComponentMask &= ~ComponentType::COMPONENT_GEOMETRY; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 		AssignEntity(*entity);
 	}
 }
@@ -398,7 +398,7 @@ void ECSManager::RemoveGravityComp(const std::string & pEntityName)
 	if (entity)
 	{
 		mGravities.erase(remove_if(mGravities.begin(), mGravities.end(), [&](const pair<int, Gravity>& pair) {return pair.first == entity->mID; }));
-		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		entity->mComponentMask = entity->mComponentMask &= ~ComponentType::COMPONENT_GRAVITY; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 		AssignEntity(*entity);
 	}
 }
@@ -429,7 +429,7 @@ void ECSManager::RemoveLightComp(const std::string & pEntityName)
 	if (entity)
 	{
 		mLights.erase(remove_if(mLights.begin(), mLights.end(), [&](const pair<int, Light>& pair) {return pair.first == entity->mID; }));
-		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		entity->mComponentMask = entity->mComponentMask &= ~ComponentType::COMPONENT_LIGHT; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 		AssignEntity(*entity);
 	}
 }
@@ -460,7 +460,7 @@ void ECSManager::RemoveShaderComp(const std::string & pEntityName)
 	if (entity)
 	{
 		mShaders.erase(remove_if(mShaders.begin(), mShaders.end(), [&](const pair<int, Shader>& pair) {return pair.first == entity->mID; }));
-		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		entity->mComponentMask = entity->mComponentMask &= ~ComponentType::COMPONENT_SHADER; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 		AssignEntity(*entity);
 	}
 }
@@ -491,7 +491,7 @@ void ECSManager::RemoveSphereColliderComp(const std::string & pEntityName)
 	if (entity)
 	{
 		mSphereColliders.erase(remove_if(mSphereColliders.begin(), mSphereColliders.end(), [&](const pair<int, SphereCollider>& pair) {return pair.first == entity->mID; }));
-		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		entity->mComponentMask = entity->mComponentMask &= ~ComponentType::COMPONENT_SPHERECOLLIDER; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 		AssignEntity(*entity);
 	}
 }
@@ -522,7 +522,7 @@ void ECSManager::RemoveTextureComp(const std::string & pEntityName)
 	if (entity)
 	{
 		mTextures.erase(remove_if(mTextures.begin(), mTextures.end(), [&](const pair<int, Texture>& pair) {return pair.first == entity->mID; }));
-		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		entity->mComponentMask = entity->mComponentMask &= ~ComponentType::COMPONENT_TEXTURE; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 		AssignEntity(*entity);
 	}
 }
@@ -553,7 +553,7 @@ void ECSManager::RemoveTransformComp(const std::string & pEntityName)
 	if (entity)
 	{
 		mTransforms.erase(remove_if(mTransforms.begin(), mTransforms.end(), [&](const pair<int, Transform>& pair) {return pair.first == entity->mID; }));
-		entity->mComponentMask |= ComponentType::COMPONENT_TRANSFORM;
+		entity->mComponentMask = entity->mComponentMask &= ~ComponentType::COMPONENT_TRANSFORM; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 		AssignEntity(*entity);
 	}
 }
@@ -584,7 +584,7 @@ void ECSManager::RemoveVelocityComp(const std::string & pEntityName)
 	if (entity)
 	{
 		mVelocities.erase(remove_if(mVelocities.begin(), mVelocities.end(), [&](const pair<int, Velocity>& pair) {return pair.first == entity->mID; }));
-		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		entity->mComponentMask = entity->mComponentMask &= ~ComponentType::COMPONENT_VELOCITY; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 		AssignEntity(*entity);
 	}
 }
