@@ -6,6 +6,9 @@
 #include "Vector4.h"
 #include <d3d11shader.h>
 #include <d3d11.h>
+#include <d3d11_1.h>
+#include "Result.h"
+#include <wrl.h>
 
 class RenderSystem : public ISystem
 {
@@ -19,23 +22,25 @@ private:
 	/// </summary>
 	D3D_DRIVER_TYPE mDriverType = D3D_DRIVER_TYPE_NULL;
 	D3D_FEATURE_LEVEL mFeatureLevel = D3D_FEATURE_LEVEL_11_0;
-	ID3D11Device* mDevice = nullptr;
-	ID3D11DeviceContext* mContext = nullptr;
-	IDXGISwapChain* mSwapChain = nullptr;
-	ID3D11RenderTargetView* mRenderTargetView = nullptr;
-	ID3D11Texture2D* mDepthStencil = nullptr;
-	ID3D11DepthStencilView* mDepthStencilView = nullptr;
-	ID3D11DepthStencilState* mDepthStencilState = nullptr;
-	ID3D11Buffer* mConstantBuffer = nullptr;
-	ID3D11Buffer* mConstantBufferUniform = nullptr;
-	ID3D11SamplerState* mTexSampler = nullptr;
-	ID3D11RasterizerState* mDefaultRasterizerState = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11Device> mDevice = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11Device1> mDevice1 = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> mContext = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext1> mContext1 = nullptr;
+	Microsoft::WRL::ComPtr<IDXGISwapChain> mSwapChain = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> mRenderTargetView = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> mDepthStencil = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> mDepthStencilView = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> mDepthStencilState = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> mConstantBuffer = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> mConstantBufferUniform = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11SamplerState> mTexSampler = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11RasterizerState> mDefaultRasterizerState = nullptr;
 
 public:
 	explicit RenderSystem(const HWND& pWindow);
 	virtual ~RenderSystem();
 
-	void InitDevice(const HWND& pWindow);
+	HRESULT InitDevice(const HWND& pWindow);
 	void CreateConstantBuffers();
 	void Cleanup();
 
