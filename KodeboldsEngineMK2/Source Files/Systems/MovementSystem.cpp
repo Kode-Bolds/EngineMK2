@@ -50,7 +50,7 @@ void MovementSystem::Process()
 		if ((entity.mComponentMask & ComponentType::COMPONENT_GRAVITY) == ComponentType::COMPONENT_GRAVITY)
 		{
 			//Modify velocity by gravity acceleration
-			mEcsManager->VelocityComp(entity.mID)->mVelocity.Y() += gravityAccel * mSceneManager->DeltaTime();
+			mEcsManager->VelocityComp(entity.mID)->mVelocity.Y += gravityAccel * mSceneManager->DeltaTime();
 		}
 
 		//Modify velocity by acceleration
