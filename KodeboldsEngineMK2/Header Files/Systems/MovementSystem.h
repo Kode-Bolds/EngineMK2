@@ -1,5 +1,6 @@
 #pragma once
 #include "ECSManager.h"
+#include "SceneManager.h"
 #include "Components.h"
 #include "ISystem.h"
 #include "Vector4.h"
@@ -7,7 +8,10 @@
 class MovementSystem : public ISystem
 {
 private:
-	std::shared_ptr<ECSManager> ecsManager = ECSManager::Instance();
+	const float gravityAccel = -9.81f;
+
+	std::shared_ptr<ECSManager> mEcsManager = ECSManager::Instance();
+	std::shared_ptr<SceneManager> mSceneManager = SceneManager::Instance();
 
 public:
 	MovementSystem();

@@ -25,11 +25,11 @@
     <ClCompile Include="Source Files\Systems\RenderSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\HelperClasses\Vector4.cpp">
-      <Filter>Source Files\HelperClasses</Filter>
+    <ClCompile Include="Source Files\KodeBoldsMath\Matrix4.cpp">
+      <Filter>Source Files\KodeBoldsMath</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\HelperClasses\Matrix4.cpp">
-      <Filter>Source Files\HelperClasses</Filter>
+    <ClCompile Include="Source Files\KodeBoldsMath\Vector4.cpp">
+      <Filter>Source Files\KodeBoldsMath</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -114,11 +114,14 @@
     <ClInclude Include="Header Files\Systems\RenderSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="Header Files\HelperClasses\Vector4.h">
-      <Filter>Header Files\HelperClasses</Filter>
+    <ClInclude Include="Header Files\KodeBoldsMath\Matrix4.h">
+      <Filter>Header Files\KodeBoldsMath</Filter>
     </ClInclude>
-    <ClInclude Include="Header Files\HelperClasses\Matrix4.h">
-      <Filter>Header Files\HelperClasses</Filter>
+    <ClInclude Include="Header Files\KodeBoldsMath\Vector4.h">
+      <Filter>Header Files\KodeBoldsMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\KodeBoldsMath\KodeBoldsMath.h">
+      <Filter>Header Files\KodeBoldsMath</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\DataStructs\Result.h">
       <Filter>Header Files\DataStructs</Filter>
@@ -157,6 +160,12 @@
     </Filter>
     <Filter Include="Header Files\DataStructs">
       <UniqueIdentifier>{bb7a16b2-7c29-4528-9e61-6ea87cd38892}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\KodeBoldsMath">
+      <UniqueIdentifier>{e6c5287b-1dd7-4c6d-be0d-da6837691a67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\KodeBoldsMath">
+      <UniqueIdentifier>{96c02329-d0ce-41c8-9dff-9a02239e23a6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

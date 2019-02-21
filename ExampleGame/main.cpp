@@ -7,6 +7,7 @@
 #include "Matrix4.h"
 #include "TestScene.h"
 #include "TestScene2.h"
+#include "KodeBoldsMath.h"
 
 #pragma comment(lib, "KodeboldsEngineMK2.lib")
 
@@ -38,15 +39,16 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	Vector4 v1(1.0f, 1.0f, 1.0f, 0.0f);
 	Vector4 v2(1.0f, 1.0f, 1.0f, 0.0f);
 
-	v2.X() = 1;
-	v2.Y() = 1;
-	v2.Z() = 1;
+	v2.X = 1;
+	v2.Y = 1;
+	v2.Z = 1;
 
 	v1 = v2 + v1;
 	//v2 = v1 + ((v1 * 2) - v2);
 
 	//Testing matrix4 class
 	Matrix4 m1;
+	m1 = KodeBoldsMath::Transpose(m1);
 
 	//Testing ECS Manager and movement system
 	std::shared_ptr<ECSManager> ecsManager = ECSManager::Instance();
@@ -69,7 +71,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 
 	//Testing velocity component
 	Vector4 velocityV(0.0f, 0.0f, 0.0f, 0.0f);
-	Vector4 acceleration(0.1f, 0.0f, 0.0f, 0.0f);
+	Vector4 acceleration(10.0f, 0.0f, 0.0f, 0.0f);
 	Velocity velocity{velocityV, acceleration, 1.0f};
 
 	ecsManager->AddVelocityComp(velocity, "Test");
@@ -77,8 +79,10 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	ecsManager->AddVelocityComp(velocity, "Test2");
 	ecsManager->AddVelocityComp(velocity, "Test3");
 
-	//NEED TO FIND OUT HOW TO DO THE OPPOSITE OF |= TO REMOVE COMPONENT FROM ENTITY MASK
-	//ecsManager->RemoveTransformComp("Test");
+	Gravity gravity;
+	ecsManager->AddGravityComp(gravity, "Test");
+
+	ecsManager->RemoveTransformComp("Test1");
 
 
 	//Testing scene manager
@@ -87,6 +91,10 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	sceneManager->LoadScene<TestScene>();
 
 	sceneManager->LoadScene<TestScene2>();
+
+
+
+	Velocity velocity2;
 
 	//Main message loop
 	MSG msg = { 0 };
@@ -101,6 +109,8 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 		{
 			//Testing movement system
 			ecsManager->ProcessSystems();
+
+			velocity2 = *ecsManager->VelocityComp("Test");
 
 			//Testing scene manager
 			sceneManager->Update();

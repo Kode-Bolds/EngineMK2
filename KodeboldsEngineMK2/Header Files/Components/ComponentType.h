@@ -17,8 +17,12 @@ enum class ComponentType : short //?????????
 	COMPONENT_AI = 1 << 11
 };
 
-inline ComponentType operator| (ComponentType a, ComponentType b){ return static_cast<ComponentType>(static_cast<short>(a) | static_cast<short>(b)); }
+inline ComponentType operator| (const ComponentType& lhs, const ComponentType& rhs) { return static_cast<ComponentType>(static_cast<short>(lhs) | static_cast<short>(rhs)); }
 
-inline ComponentType operator& (ComponentType a, ComponentType b){ return static_cast<ComponentType>(static_cast<short>(a) & static_cast<short>(b)); }
+inline ComponentType operator& (const ComponentType& lhs, const ComponentType& rhs) { return static_cast<ComponentType>(static_cast<short>(lhs) & static_cast<short>(rhs)); }
 
-inline ComponentType& operator|= (ComponentType& a, ComponentType b){ return a = a | b; }
+inline ComponentType& operator|= (ComponentType& lhs, const ComponentType& rhs) { return lhs = lhs | rhs; }
+
+inline ComponentType& operator&= (ComponentType& lhs, const ComponentType& rhs) { return lhs = lhs & rhs; }
+
+inline ComponentType operator~(const ComponentType& rhs) { return static_cast<ComponentType>(~static_cast<int>(rhs)); }
