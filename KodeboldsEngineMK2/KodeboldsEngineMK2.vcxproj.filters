@@ -123,9 +123,6 @@
     <ClInclude Include="Header Files\KodeBoldsMath\KodeBoldsMath.h">
       <Filter>Header Files\KodeBoldsMath</Filter>
     </ClInclude>
-    <ClInclude Include="Header Files\DataStructs\Result.h">
-      <Filter>Header Files\DataStructs</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">

@@ -11,8 +11,8 @@
 
 #pragma comment(lib, "KodeboldsEngineMK2.lib")
 
-HINSTANCE g_hInst = nullptr;
-HWND g_hWnd = nullptr;
+HINSTANCE hInst = nullptr;
+HWND hWnd = nullptr;
 
 HRESULT InitWindow(HINSTANCE pHInstance, int pNCmdShow);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -53,7 +53,9 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	//Testing ECS Manager and movement system
 	std::shared_ptr<ECSManager> ecsManager = ECSManager::Instance();
 	std::shared_ptr<ISystem> systPointer = std::make_shared<MovementSystem>();
+	std::shared_ptr<ISystem> renderer = std::make_shared<RenderSystem>(hWnd);
 	ecsManager->AddUpdateSystem(systPointer);
+	ecsManager->AddRenderSystem(renderer);
 
 	ecsManager->CreateEntity("Test");
 	ecsManager->CreateEntity("Test1");
@@ -153,19 +155,19 @@ HRESULT InitWindow(const HINSTANCE pHInstance, const int pNCmdShow)
 	}
 
 	// Create window
-	g_hInst = pHInstance;
+	hInst = pHInstance;
 	RECT rc = { 0, 0, 1600, 900 };
 	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
-	g_hWnd = CreateWindow(L"Example Game", L"Example Game",
+	hWnd = CreateWindow(L"Example Game", L"Example Game",
 		WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
 		CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, pHInstance,
 		nullptr);
-	if (!g_hWnd)
+	if (!hWnd)
 	{
 		return static_cast<HRESULT>(0x80004005L);
 	}
 
-	ShowWindow(g_hWnd, pNCmdShow);
+	ShowWindow(hWnd, pNCmdShow);
 
 	return static_cast<HRESULT>(0L);
 }
