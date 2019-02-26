@@ -8,6 +8,8 @@
 #include <d3d11.h>
 #include <d3d11_1.h>
 #include <wrl.h>
+#include <directxcolors.h>
+#include "ResourceManager.h"
 
 class RenderSystem : public ISystem
 {
@@ -18,6 +20,7 @@ private:
 	UINT mWidth{};
 	UINT mHeight{};
 	std::shared_ptr<ECSManager> mEcsManager = ECSManager::Instance();
+	std::shared_ptr<ResourceManager>  mResourceManager = ResourceManager::Instance();
 	const Entity* mActiveCamera;
 
 	/// <summary>
@@ -39,8 +42,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11SamplerState> mTexSampler = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState> mDefaultRasterizerState = nullptr;
 
-
-
 public:
 	explicit RenderSystem(const HWND& pWindow);
 	virtual ~RenderSystem();
@@ -58,4 +59,10 @@ public:
 
 	void AssignEntity(const Entity& pEntity) override;
 	void Process() override;
+
+	void ClearView() const;
+	void SwapBuffers() const;
+	void LoadGeometry(const Entity& pEntity) const;
+	void LoadShaders(const Entity& entity) const;
+	void LoadTexture(const Entity& entity) const;
 };
