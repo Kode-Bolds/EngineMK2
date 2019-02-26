@@ -1,29 +1,17 @@
 #pragma once
 #include <cmath>
 
-class Vector4
+struct Vector4
 {
-private:
-	float mX;
-	float mY;
-	float mZ;
-	float mW;
+	float X;
+	float Y;
+	float Z;
+	float W;
 
-public:
 	//Structors
 	Vector4();
 	Vector4(const float x, const float y, const float z, const float w);
 	~Vector4();
-
-	//Accessors
-	float& X();
-	const float& X() const;
-	float& Y();
-	const float& Y() const;
-	float& Z();
-	const float& Z() const;
-	float& W();
-	const float& W() const;
 
 	//Maths methods
 	float Magnitude() const;

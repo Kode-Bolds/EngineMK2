@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source Files\HelperClasses\Matrix4.cpp" />
     <ClCompile Include="Source Files\HelperClasses\ObjLoader.cpp" />
-    <ClCompile Include="Source Files\HelperClasses\Vector4.cpp" />
+    <ClCompile Include="Source Files\KodeBoldsMath\Matrix4.cpp" />
+    <ClCompile Include="Source Files\KodeBoldsMath\Vector4.cpp" />
     <ClCompile Include="Source Files\Managers\ECSManager.cpp" />
     <ClCompile Include="Source Files\Managers\InputManager.cpp" />
     <ClCompile Include="Source Files\Managers\ResourceManager.cpp" />
@@ -47,9 +47,10 @@
     <ClInclude Include="Header Files\Components\Velocity.h" />
     <ClInclude Include="Header Files\DataStructs\Entity.h" />
     <ClInclude Include="Header Files\DataStructs\Vertex.h" />
-    <ClInclude Include="Header Files\HelperClasses\Matrix4.h" />
     <ClInclude Include="Header Files\HelperClasses\ObjLoader.h" />
-    <ClInclude Include="Header Files\HelperClasses\Vector4.h" />
+    <ClInclude Include="Header Files\KodeBoldsMath\KodeBoldsMath.h" />
+    <ClInclude Include="Header Files\KodeBoldsMath\Matrix4.h" />
+    <ClInclude Include="Header Files\KodeBoldsMath\Vector4.h" />
     <ClInclude Include="Header Files\Managers\ECSManager.h" />
     <ClInclude Include="Header Files\Managers\InputManager.h" />
     <ClInclude Include="Header Files\Managers\Managers.h" />
@@ -133,11 +134,14 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>"Header Files";"Header Files\Systems";"Header Files\HelperClasses";"Header Files\Managers";"Header Files\Components";"Header Files\DataStructs";</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"Header Files";"Header Files\KodeBoldsMath";"Header Files\Systems";"Header Files\HelperClasses";"Header Files\Managers";"Header Files\Components";"Header Files\DataStructs";</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -145,11 +149,14 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>"Header Files";"Header Files\Systems";"Header Files\HelperClasses";"Header Files\Managers";"Header Files\Components";"Header Files\DataStructs";</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"Header Files";"Header Files\KodeBoldsMath";"Header Files\Systems";"Header Files\HelperClasses";"Header Files\Managers";"Header Files\Components";"Header Files\DataStructs";</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -159,13 +166,16 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>"Header Files";"Header Files\Systems";"Header Files\HelperClasses";"Header Files\Managers";"Header Files\Components";"Header Files\DataStructs";</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"Header Files";"Header Files\KodeBoldsMath";"Header Files\Systems";"Header Files\HelperClasses";"Header Files\Managers";"Header Files\Components";"Header Files\DataStructs";</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -175,13 +185,16 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>"Header Files";"Header Files\Systems";"Header Files\HelperClasses";"Header Files\Managers";"Header Files\Components";"Header Files\DataStructs";</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"Header Files";"Header Files\KodeBoldsMath";"Header Files\Systems";"Header Files\HelperClasses";"Header Files\Managers";"Header Files\Components";"Header Files\DataStructs";</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

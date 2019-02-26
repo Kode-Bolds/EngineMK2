@@ -7,11 +7,12 @@
 #include "Matrix4.h"
 #include "TestScene.h"
 #include "TestScene2.h"
+#include "KodeBoldsMath.h"
 
 #pragma comment(lib, "KodeboldsEngineMK2.lib")
 
-HINSTANCE g_hInst = nullptr;
-HWND g_hWnd = nullptr;
+HINSTANCE hInst = nullptr;
+HWND hWnd = nullptr;
 
 HRESULT InitWindow(HINSTANCE pHInstance, int pNCmdShow);
 
@@ -41,20 +42,23 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	Vector4 v1(1.0f, 1.0f, 1.0f, 0.0f);
 	Vector4 v2(1.0f, 1.0f, 1.0f, 0.0f);
 
-	v2.X() = 1;
-	v2.Y() = 1;
-	v2.Z() = 1;
+	v2.X = 1;
+	v2.Y = 1;
+	v2.Z = 1;
 
 	v1 = v2 + v1;
 	//v2 = v1 + ((v1 * 2) - v2);
 
 	//Testing matrix4 class
 	Matrix4 m1;
+	m1 = KodeBoldsMath::Transpose(m1);
 
 	//Testing ECS Manager and movement system
 	std::shared_ptr<ECSManager> ecsManager = ECSManager::Instance();
 	std::shared_ptr<ISystem> systPointer = std::make_shared<MovementSystem>();
+	std::shared_ptr<ISystem> renderer = std::make_shared<RenderSystem>(hWnd);
 	ecsManager->AddUpdateSystem(systPointer);
+	ecsManager->AddRenderSystem(renderer);
 
 	ecsManager->CreateEntity("Test");
 	ecsManager->CreateEntity("Test1");
@@ -72,7 +76,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 
 	//Testing velocity component
 	Vector4 velocityV(0.0f, 0.0f, 0.0f, 0.0f);
-	Vector4 acceleration(0.1f, 0.0f, 0.0f, 0.0f);
+	Vector4 acceleration(10.0f, 0.0f, 0.0f, 0.0f);
 	Velocity velocity{velocityV, acceleration, 1.0f};
 
 	ecsManager->AddVelocityComp(velocity, "Test");
@@ -80,18 +84,22 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	ecsManager->AddVelocityComp(velocity, "Test2");
 	ecsManager->AddVelocityComp(velocity, "Test3");
 
-	//NEED TO FIND OUT HOW TO DO THE OPPOSITE OF |= TO REMOVE COMPONENT FROM ENTITY MASK
-	//ecsManager->RemoveTransformComp("Test");
+	Gravity gravity;
+	ecsManager->AddGravityComp(gravity, "Test");
+
+	ecsManager->RemoveTransformComp("Test1");
 
 
 	//Testing scene manager
 	std::shared_ptr<SceneManager> sceneManager = SceneManager::Instance();
 
-	Scene testScene = TestScene();
-	sceneManager->LoadScene(testScene);
+	sceneManager->LoadScene<TestScene>();
 
-	Scene testScene2 = TestScene2();
-	sceneManager->LoadScene(testScene2);
+	sceneManager->LoadScene<TestScene2>();
+
+
+
+	Velocity velocity2;
 
 	//Main message loop
 	MSG msg = { 0 };
@@ -104,15 +112,17 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 		}
 		else
 		{
-			//Testing scene manager
-			sceneManager->Update();
-
 			//Testing movement system
 			ecsManager->ProcessSystems();
 
+			velocity2 = *ecsManager->VelocityComp("Test");
+
+			//Testing scene manager
+			sceneManager->Update();
 			sceneManager->Render();
 
 			double dt = sceneManager->DeltaTime();
+			int fps = sceneManager->Fps();
 			double time = sceneManager->Time();
 		}
 	}
@@ -148,19 +158,19 @@ HRESULT InitWindow(const HINSTANCE pHInstance, const int pNCmdShow)
 	}
 
 	// Create window
-	g_hInst = pHInstance;
+	hInst = pHInstance;
 	RECT rc = { 0, 0, 1600, 900 };
 	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
-	g_hWnd = CreateWindow(L"Example Game", L"Example Game",
+	hWnd = CreateWindow(L"Example Game", L"Example Game",
 		WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
 		CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, pHInstance,
 		nullptr);
-	if (!g_hWnd)
+	if (!hWnd)
 	{
 		return static_cast<HRESULT>(0x80004005L);
 	}
 
-	ShowWindow(g_hWnd, pNCmdShow);
+	ShowWindow(hWnd, pNCmdShow);
 
 	return static_cast<HRESULT>(0L);
 }

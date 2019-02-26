@@ -243,7 +243,7 @@ void ECSManager::RemoveAIComp(const std::string & pEntityName)
 	if (entity)
 	{
 		mAIs.erase(remove_if(mAIs.begin(), mAIs.end(), [&](const pair<int, AI>& pair) {return pair.first == entity->mID; }));
-		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		entity->mComponentMask = entity->mComponentMask &= ~ComponentType::COMPONENT_AI; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 		AssignEntity(*entity);
 	}
 }
@@ -274,7 +274,7 @@ void ECSManager::RemoveAudioComp(const std::string & pEntityName)
 	if (entity)
 	{
 		mAudios.erase(remove_if(mAudios.begin(), mAudios.end(), [&](const pair<int, Audio>& pair) {return pair.first == entity->mID; }));
-		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		entity->mComponentMask = entity->mComponentMask &= ~ComponentType::COMPONENT_AUDIO; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 		AssignEntity(*entity);
 	}
 }
@@ -305,7 +305,7 @@ void ECSManager::RemoveBoxColliderComp(const std::string & pEntityName)
 	if (entity)
 	{
 		mBoxColliders.erase(remove_if(mBoxColliders.begin(), mBoxColliders.end(), [&](const pair<int, BoxCollider>& pair) {return pair.first == entity->mID; }));
-		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		entity->mComponentMask = entity->mComponentMask &= ~ComponentType::COMPONENT_BOXCOLLIDER; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 		AssignEntity(*entity);
 	}
 }
@@ -336,7 +336,7 @@ void ECSManager::RemoveCameraComp(const std::string & pEntityName)
 	if (entity)
 	{
 		mCameras.erase(remove_if(mCameras.begin(), mCameras.end(), [&](const pair<int, Camera>& pair) {return pair.first == entity->mID; }));
-		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		entity->mComponentMask = entity->mComponentMask &= ~ComponentType::COMPONENT_CAMERA; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 		AssignEntity(*entity);
 	}
 }
@@ -367,7 +367,7 @@ void ECSManager::RemoveGeometryComp(const std::string & pEntityName)
 	if (entity)
 	{
 		mGeometries.erase(remove_if(mGeometries.begin(), mGeometries.end(), [&](const pair<int, Geometry>& pair) {return pair.first == entity->mID; }));
-		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		entity->mComponentMask = entity->mComponentMask &= ~ComponentType::COMPONENT_GEOMETRY; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 		AssignEntity(*entity);
 	}
 }
@@ -398,7 +398,7 @@ void ECSManager::RemoveGravityComp(const std::string & pEntityName)
 	if (entity)
 	{
 		mGravities.erase(remove_if(mGravities.begin(), mGravities.end(), [&](const pair<int, Gravity>& pair) {return pair.first == entity->mID; }));
-		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		entity->mComponentMask = entity->mComponentMask &= ~ComponentType::COMPONENT_GRAVITY; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 		AssignEntity(*entity);
 	}
 }
@@ -429,7 +429,7 @@ void ECSManager::RemoveLightComp(const std::string & pEntityName)
 	if (entity)
 	{
 		mLights.erase(remove_if(mLights.begin(), mLights.end(), [&](const pair<int, Light>& pair) {return pair.first == entity->mID; }));
-		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		entity->mComponentMask = entity->mComponentMask &= ~ComponentType::COMPONENT_LIGHT; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 		AssignEntity(*entity);
 	}
 }
@@ -460,7 +460,7 @@ void ECSManager::RemoveShaderComp(const std::string & pEntityName)
 	if (entity)
 	{
 		mShaders.erase(remove_if(mShaders.begin(), mShaders.end(), [&](const pair<int, Shader>& pair) {return pair.first == entity->mID; }));
-		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		entity->mComponentMask = entity->mComponentMask &= ~ComponentType::COMPONENT_SHADER; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 		AssignEntity(*entity);
 	}
 }
@@ -491,7 +491,7 @@ void ECSManager::RemoveSphereColliderComp(const std::string & pEntityName)
 	if (entity)
 	{
 		mSphereColliders.erase(remove_if(mSphereColliders.begin(), mSphereColliders.end(), [&](const pair<int, SphereCollider>& pair) {return pair.first == entity->mID; }));
-		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		entity->mComponentMask = entity->mComponentMask &= ~ComponentType::COMPONENT_SPHERECOLLIDER; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 		AssignEntity(*entity);
 	}
 }
@@ -522,7 +522,7 @@ void ECSManager::RemoveTextureComp(const std::string & pEntityName)
 	if (entity)
 	{
 		mTextures.erase(remove_if(mTextures.begin(), mTextures.end(), [&](const pair<int, Texture>& pair) {return pair.first == entity->mID; }));
-		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		entity->mComponentMask = entity->mComponentMask &= ~ComponentType::COMPONENT_TEXTURE; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 		AssignEntity(*entity);
 	}
 }
@@ -553,7 +553,7 @@ void ECSManager::RemoveTransformComp(const std::string & pEntityName)
 	if (entity)
 	{
 		mTransforms.erase(remove_if(mTransforms.begin(), mTransforms.end(), [&](const pair<int, Transform>& pair) {return pair.first == entity->mID; }));
-		entity->mComponentMask |= ComponentType::COMPONENT_TRANSFORM;
+		entity->mComponentMask = entity->mComponentMask &= ~ComponentType::COMPONENT_TRANSFORM; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 		AssignEntity(*entity);
 	}
 }
@@ -584,7 +584,7 @@ void ECSManager::RemoveVelocityComp(const std::string & pEntityName)
 	if (entity)
 	{
 		mVelocities.erase(remove_if(mVelocities.begin(), mVelocities.end(), [&](const pair<int, Velocity>& pair) {return pair.first == entity->mID; }));
-		//MODIFY MASK HERE "POSSIBLY |= AGAIN?"
+		entity->mComponentMask = entity->mComponentMask &= ~ComponentType::COMPONENT_VELOCITY; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 		AssignEntity(*entity);
 	}
 }
@@ -594,12 +594,16 @@ void ECSManager::RemoveVelocityComp(const std::string & pEntityName)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to AI component</returns>
-AI & ECSManager::AIComp(const int & pEntityID)
+AI * const ECSManager::AIComp(const int & pEntityID)
 {
 	//Finds the ID/Component pair for the given entity ID
 	auto comp = find_if(mAIs.begin(), mAIs.end(), [&](const pair<int, AI>& pair) {return pair.first == pEntityID; });
 
-	return comp->second;
+	if (comp != mAIs.end())
+	{
+		return &comp->second;
+	}
+	return nullptr;
 }
 
 /// <summary>
@@ -607,7 +611,7 @@ AI & ECSManager::AIComp(const int & pEntityID)
 /// </summary>
 /// <param name="pEntityName">Given entity name</param>
 /// <returns>Modifiable handle to the AI component</returns>
-AI & ECSManager::AIComp(const std::string & pEntityName)
+AI * const ECSManager::AIComp(const std::string & pEntityName)
 {
 	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
@@ -617,9 +621,11 @@ AI & ECSManager::AIComp(const std::string & pEntityName)
 
 		if (comp != mAIs.end())
 		{
-			return comp->second;
+			return &comp->second;
 		}
+		return nullptr;
 	}
+	return nullptr;
 }
 
 /// <summary>
@@ -627,15 +633,16 @@ AI & ECSManager::AIComp(const std::string & pEntityName)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to Audio component</returns>
-Audio & ECSManager::AudioComp(const int & pEntityID)
+Audio * const ECSManager::AudioComp(const int & pEntityID)
 {
 	//Finds the ID/Component pair for the given entity ID
 	auto comp = find_if(mAudios.begin(), mAudios.end(), [&](const pair<int, Audio>& pair) {return pair.first == pEntityID; });
 
 	if (comp != mAudios.end())
 	{
-		return comp->second;
+		return &comp->second;
 	}
+	return nullptr;
 }
 
 /// <summary>
@@ -643,7 +650,7 @@ Audio & ECSManager::AudioComp(const int & pEntityID)
 /// </summary>
 /// <param name="pEntityName">Given entity name</param>
 /// <returns>Modifiable handle to the Audio component</returns>
-Audio & ECSManager::AudioComp(const std::string & pEntityName)
+Audio * const ECSManager::AudioComp(const std::string & pEntityName)
 {
 	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
@@ -653,9 +660,11 @@ Audio & ECSManager::AudioComp(const std::string & pEntityName)
 
 		if (comp != mAudios.end())
 		{
-			return comp->second;
+			return &comp->second;
 		}
+		return nullptr;
 	}
+	return nullptr;
 }
 
 /// <summary>
@@ -663,15 +672,16 @@ Audio & ECSManager::AudioComp(const std::string & pEntityName)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to BoxCollider component</returns>
-BoxCollider & ECSManager::BoxColliderComp(const int & pEntityID)
+BoxCollider * const ECSManager::BoxColliderComp(const int & pEntityID)
 {
 	//Finds the ID/Component pair for the given entity ID
 	auto comp = find_if(mBoxColliders.begin(), mBoxColliders.end(), [&](const pair<int, BoxCollider>& pair) {return pair.first == pEntityID; });
 
 	if (comp != mBoxColliders.end())
 	{
-		return comp->second;
+		return &comp->second;
 	}
+	return nullptr;
 }
 
 /// <summary>
@@ -679,7 +689,7 @@ BoxCollider & ECSManager::BoxColliderComp(const int & pEntityID)
 /// </summary>
 /// <param name="pEntityName">Given entity name</param>
 /// <returns>Modifiable handle to the BoxCollider component</returns>
-BoxCollider & ECSManager::BoxColliderComp(const std::string & pEntityName)
+BoxCollider * const ECSManager::BoxColliderComp(const std::string & pEntityName)
 {
 	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
@@ -689,9 +699,11 @@ BoxCollider & ECSManager::BoxColliderComp(const std::string & pEntityName)
 
 		if (comp != mBoxColliders.end())
 		{
-			return comp->second;
+			return &comp->second;
 		}
+		return nullptr;
 	}
+	return nullptr;
 }
 
 /// <summary>
@@ -699,15 +711,16 @@ BoxCollider & ECSManager::BoxColliderComp(const std::string & pEntityName)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to Camera component</returns>
-Camera & ECSManager::CameraComp(const int & pEntityID)
+Camera * const ECSManager::CameraComp(const int & pEntityID)
 {
 	//Finds the ID/Component pair for the given entity ID
 	auto comp = find_if(mCameras.begin(), mCameras.end(), [&](const pair<int, Camera>& pair) {return pair.first == pEntityID; });
 
 	if (comp != mCameras.end())
 	{
-		return comp->second;
+		return &comp->second;
 	}
+	return nullptr;
 }
 
 /// <summary>
@@ -715,7 +728,7 @@ Camera & ECSManager::CameraComp(const int & pEntityID)
 /// </summary>
 /// <param name="pEntityName">Given entity name</param>
 /// <returns>Modifiable handle to the Camera component</returns>
-Camera & ECSManager::CameraComp(const std::string pEntityName)
+Camera * const ECSManager::CameraComp(const std::string pEntityName)
 {
 	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
@@ -725,9 +738,11 @@ Camera & ECSManager::CameraComp(const std::string pEntityName)
 
 		if (comp != mCameras.end())
 		{
-			return comp->second;
+			return &comp->second;
 		}
+		return nullptr;
 	}
+	return nullptr;
 }
 
 /// <summary>
@@ -735,15 +750,16 @@ Camera & ECSManager::CameraComp(const std::string pEntityName)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to Geometry component</returns>
-Geometry & ECSManager::GeometryComp(const int & pEntityID)
+Geometry * const ECSManager::GeometryComp(const int & pEntityID)
 {
 	//Finds the ID/Component pair for the given entity ID
 	auto comp = find_if(mGeometries.begin(), mGeometries.end(), [&](const pair<int, Geometry>& pair) {return pair.first == pEntityID; });
 
 	if (comp != mGeometries.end())
 	{
-		return comp->second;
+		return &comp->second;
 	}
+	return nullptr;
 }
 
 /// <summary>
@@ -751,7 +767,7 @@ Geometry & ECSManager::GeometryComp(const int & pEntityID)
 /// </summary>
 /// <param name="pEntityName">Given entity name</param>
 /// <returns>Modifiable handle to the Geometry component</returns>
-Geometry & ECSManager::GeometryComp(const std::string & pEntityName)
+Geometry * const ECSManager::GeometryComp(const std::string & pEntityName)
 {
 	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
@@ -761,9 +777,11 @@ Geometry & ECSManager::GeometryComp(const std::string & pEntityName)
 
 		if (comp != mGeometries.end())
 		{
-			return comp->second;
+			return &comp->second;
 		}
+		return nullptr;
 	}
+	return nullptr;
 }
 
 /// <summary>
@@ -771,15 +789,16 @@ Geometry & ECSManager::GeometryComp(const std::string & pEntityName)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to Gravity component</returns>
-Gravity & ECSManager::GravityComp(const int & pEntityID)
+Gravity * const ECSManager::GravityComp(const int & pEntityID)
 {
 	//Finds the ID/Component pair for the given entity ID
 	auto comp = find_if(mGravities.begin(), mGravities.end(), [&](const pair<int, Gravity>& pair) {return pair.first == pEntityID; });
 
 	if (comp != mGravities.end())
 	{
-		return comp->second;
+		return &comp->second;
 	}
+	return nullptr;
 }
 
 /// <summary>
@@ -787,7 +806,7 @@ Gravity & ECSManager::GravityComp(const int & pEntityID)
 /// </summary>
 /// <param name="pEntityName">Given entity name</param>
 /// <returns>Modifiable handle to the Gravity component</returns>
-Gravity & ECSManager::GravityComp(const std::string & pEntityName)
+Gravity * const ECSManager::GravityComp(const std::string & pEntityName)
 {
 	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
@@ -797,9 +816,11 @@ Gravity & ECSManager::GravityComp(const std::string & pEntityName)
 
 		if (comp != mGravities.end())
 		{
-			return comp->second;
+			return &comp->second;
 		}
+		return nullptr;
 	}
+	return nullptr;
 }
 
 /// <summary>
@@ -807,15 +828,16 @@ Gravity & ECSManager::GravityComp(const std::string & pEntityName)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to AI component</returns>
-Light & ECSManager::LightComp(const int & pEntityID)
+Light * const ECSManager::LightComp(const int & pEntityID)
 {
 	//Finds the ID/Component pair for the given entity ID
 	auto comp = find_if(mLights.begin(), mLights.end(), [&](const pair<int, Light>& pair) {return pair.first == pEntityID; });
 
 	if (comp != mLights.end())
 	{
-		return comp->second;
+		return &comp->second;
 	}
+	return nullptr;
 }
 
 /// <summary>
@@ -823,7 +845,7 @@ Light & ECSManager::LightComp(const int & pEntityID)
 /// </summary>
 /// <param name="pEntityName">Given entity name</param>
 /// <returns>Modifiable handle to the Light component</returns>
-Light & ECSManager::LightComp(const std::string & pEntityName)
+Light * const ECSManager::LightComp(const std::string & pEntityName)
 {
 	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
@@ -833,9 +855,11 @@ Light & ECSManager::LightComp(const std::string & pEntityName)
 
 		if (comp != mLights.end())
 		{
-			return comp->second;
+			return &comp->second;
 		}
+		return nullptr;
 	}
+	return nullptr;
 }
 
 /// <summary>
@@ -843,15 +867,16 @@ Light & ECSManager::LightComp(const std::string & pEntityName)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to Shader component</returns>
-Shader & ECSManager::ShaderComp(const int & pEntityID)
+Shader * const ECSManager::ShaderComp(const int & pEntityID)
 {
 	//Finds the ID/Component pair for the given entity ID
 	auto comp = find_if(mShaders.begin(), mShaders.end(), [&](const pair<int, Shader>& pair) {return pair.first == pEntityID; });
 
 	if (comp != mShaders.end())
 	{
-		return comp->second;
+		return &comp->second;
 	}
+	return nullptr;
 }
 
 /// <summary>
@@ -859,7 +884,7 @@ Shader & ECSManager::ShaderComp(const int & pEntityID)
 /// </summary>
 /// <param name="pEntityName">Given entity name</param>
 /// <returns>Modifiable handle to the Shader component</returns>
-Shader & ECSManager::ShaderComp(const std::string & pEntityName)
+Shader * const ECSManager::ShaderComp(const std::string & pEntityName)
 {
 	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
@@ -869,9 +894,11 @@ Shader & ECSManager::ShaderComp(const std::string & pEntityName)
 
 		if (comp != mShaders.end())
 		{
-			return comp->second;
+			return &comp->second;
 		}
+		return nullptr;
 	}
+	return nullptr;
 }
 
 /// <summary>
@@ -879,15 +906,16 @@ Shader & ECSManager::ShaderComp(const std::string & pEntityName)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to SphereCollider component</returns>
-SphereCollider & ECSManager::SphereColliderComp(const int & pEntityID)
+SphereCollider * const ECSManager::SphereColliderComp(const int & pEntityID)
 {
 	//Finds the ID/Component pair for the given entity ID
 	auto comp = find_if(mSphereColliders.begin(), mSphereColliders.end(), [&](const pair<int, SphereCollider>& pair) {return pair.first == pEntityID; });
 
 	if (comp != mSphereColliders.end())
 	{
-		return comp->second;
+		return &comp->second;
 	}
+	return nullptr;
 }
 
 /// <summary>
@@ -895,7 +923,7 @@ SphereCollider & ECSManager::SphereColliderComp(const int & pEntityID)
 /// </summary>
 /// <param name="pEntityName">Given entity name</param>
 /// <returns>Modifiable handle to the SphereCollider component</returns>
-SphereCollider & ECSManager::SphereColliderComp(const std::string & pEntityName)
+SphereCollider * const ECSManager::SphereColliderComp(const std::string & pEntityName)
 {
 	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
@@ -905,9 +933,11 @@ SphereCollider & ECSManager::SphereColliderComp(const std::string & pEntityName)
 
 		if (comp != mSphereColliders.end())
 		{
-			return comp->second;
+			return &comp->second;
 		}
+		return nullptr;
 	}
+	return nullptr;
 }
 
 /// <summary>
@@ -915,15 +945,16 @@ SphereCollider & ECSManager::SphereColliderComp(const std::string & pEntityName)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to Texture component</returns>
-Texture & ECSManager::TextureComp(const int & pEntityID)
+Texture * const ECSManager::TextureComp(const int & pEntityID)
 {
 	//Finds the ID/Component pair for the given entity ID
 	auto comp = find_if(mTextures.begin(), mTextures.end(), [&](const pair<int, Texture>& pair) {return pair.first == pEntityID; });
 
 	if (comp != mTextures.end())
 	{
-		return comp->second;
+		return &comp->second;
 	}
+	return nullptr;
 }
 
 /// <summary>
@@ -931,7 +962,7 @@ Texture & ECSManager::TextureComp(const int & pEntityID)
 /// </summary>
 /// <param name="pEntityName">Given entity name</param>
 /// <returns>Modifiable handle to the Texture component</returns>
-Texture & ECSManager::TextureComp(const std::string & pEntityName)
+Texture * const ECSManager::TextureComp(const std::string & pEntityName)
 {
 	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
@@ -941,9 +972,11 @@ Texture & ECSManager::TextureComp(const std::string & pEntityName)
 
 		if (comp != mTextures.end())
 		{
-			return comp->second;
+			return &comp->second;
 		}
+		return nullptr;
 	}
+	return nullptr;
 }
 
 /// <summary>
@@ -951,15 +984,16 @@ Texture & ECSManager::TextureComp(const std::string & pEntityName)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to Transform component</returns>
-Transform & ECSManager::TransformComp(const int & pEntityID)
+Transform * const ECSManager::TransformComp(const int & pEntityID)
 {
 	//Finds the ID/Component pair for the given entity ID
 	auto comp = find_if(mTransforms.begin(), mTransforms.end(), [&](const pair<int, Transform>& pair) {return pair.first == pEntityID; });
 
 	if (comp != mTransforms.end())
 	{
-		return comp->second;
+		return &comp->second;
 	}
+	return nullptr;
 }
 
 /// <summary>
@@ -967,7 +1001,7 @@ Transform & ECSManager::TransformComp(const int & pEntityID)
 /// </summary>
 /// <param name="pEntityName">Given entity name</param>
 /// <returns>Modifiable handle to the Transform component</returns>
-Transform & ECSManager::TransformComp(const std::string & pEntityName)
+Transform * const ECSManager::TransformComp(const std::string & pEntityName)
 {
 	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
@@ -977,9 +1011,11 @@ Transform & ECSManager::TransformComp(const std::string & pEntityName)
 
 		if (comp != mTransforms.end())
 		{
-			return comp->second;
+			return &comp->second;
 		}
+		return nullptr;
 	}
+	return nullptr;
 }
 
 /// <summary>
@@ -987,15 +1023,16 @@ Transform & ECSManager::TransformComp(const std::string & pEntityName)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to Velocity component</returns>
-Velocity & ECSManager::VelocityComp(const int & pEntityID)
+Velocity * const ECSManager::VelocityComp(const int & pEntityID)
 {
 	//Finds the ID/Component pair for the given entity ID
 	auto comp = find_if(mVelocities.begin(), mVelocities.end(), [&](const pair<int, Velocity>& pair) {return pair.first == pEntityID; });
 
 	if (comp != mVelocities.end())
 	{
-		return comp->second;
+		return &comp->second;
 	}
+	return nullptr;
 }
 
 /// <summary>
@@ -1003,7 +1040,7 @@ Velocity & ECSManager::VelocityComp(const int & pEntityID)
 /// </summary>
 /// <param name="pEntityName">Given entity name</param>
 /// <returns>Modifiable handle to the Velocity component</returns>
-Velocity & ECSManager::VelocityComp(const std::string & pEntityName)
+Velocity * const ECSManager::VelocityComp(const std::string & pEntityName)
 {
 	Entity* entity = FindEntityByName(pEntityName);
 	if (entity)
@@ -1013,7 +1050,9 @@ Velocity & ECSManager::VelocityComp(const std::string & pEntityName)
 
 		if (comp != mVelocities.end())
 		{
-			return comp->second;
+			return &comp->second;
 		}
+		return nullptr;
 	}
+	return nullptr;
 }
