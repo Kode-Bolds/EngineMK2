@@ -3,23 +3,18 @@
 using namespace std;
 
 //TODO: Test singleton pattern works
-ResourceManager::ResourceManager()
-{
-	if (!mInstance)
-	{
-		mInstance = make_shared<ResourceManager>(this);
-	}
-	else
-	{
-		delete this;
-	}
-}
 
-ResourceManager::~ResourceManager()
+ResourceManager::ResourceManager() = default;
+ResourceManager::~ResourceManager() = default;
+
+std::pair<std::shared_ptr<ID3D11Buffer>, std::shared_ptr<ID3D11Buffer>> ResourceManager::LoadGeometry(const std::string & pFilename)
 {
+	auto geometry = ObjLoader::LoadObject(pFilename);
+	return std::pair<std::shared_ptr<ID3D11Buffer>, std::shared_ptr<ID3D11Buffer>>();
 }
 
 std::shared_ptr<ResourceManager> ResourceManager::Instance()
 {
-	return mInstance;
+	static shared_ptr<ResourceManager> instance{new ResourceManager};
+	return instance;
 }

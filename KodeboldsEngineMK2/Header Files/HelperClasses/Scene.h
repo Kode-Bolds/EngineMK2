@@ -1,12 +1,13 @@
 #pragma once
 class Scene
 {
-private:
-public:
+protected:
 	Scene();
-	~Scene();
-	void Render();
-	void Update();
-	void OnLoad();
+
+public:
+	virtual ~Scene() {};
+	virtual void Render() = 0;
+	virtual void Update() = 0;
+	virtual void OnLoad() = 0;
 };
 
