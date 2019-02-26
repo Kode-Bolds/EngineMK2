@@ -17,10 +17,11 @@ public:
 	ResourceManager();
 	~ResourceManager();
 
+	static std::shared_ptr< ResourceManager > Instance();
+
 	std::shared_ptr< ID3D11ShaderResourceView > LoadTexture(string filename);
 	std::pair< std::shared_ptr< ID3D11Buffer >, std::shared_ptr< ID3D11Buffer >> LoadGeometry(string filename);
 	//AUDIOBUFFER LoadAudio(string filename);
 	std::pair< std::shared_ptr< ID3D11VertexShader >, std::shared_ptr< ID3D11PixelShader >> LoadShader(string filename);
-	static std::shared_ptr< ResourceManager > Instance();
 };
 

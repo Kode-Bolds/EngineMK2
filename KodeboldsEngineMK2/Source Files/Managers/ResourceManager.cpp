@@ -15,7 +15,6 @@ ResourceManager::ResourceManager()
 	}
 }
 
-
 ResourceManager::~ResourceManager()
 {
 }
