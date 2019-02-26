@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{FD2E5450-E1CF-461E-8D84-97EC221501E7}</ProjectGuid>
     <RootNamespace>ExampleGame</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -77,7 +77,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>"Header Files";"../KodeboldsEngineMK2/Header Files/Components";"../KodeboldsEngineMK2/Header Files/DataStructs";"../KodeboldsEngineMK2/Header Files/HelperClasses";"../KodeboldsEngineMK2/Header Files/Managers";"../KodeboldsEngineMK2/Header Files/Systems";"../KodeboldsEngineMK2/Header Files/KodeBoldsMath";</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -90,7 +90,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>"Header Files";"../KodeboldsEngineMK2/Header Files/Components";"../KodeboldsEngineMK2/Header Files/DataStructs";"../KodeboldsEngineMK2/Header Files/HelperClasses";"../KodeboldsEngineMK2/Header Files/Managers";"../KodeboldsEngineMK2/Header Files/Systems";"../KodeboldsEngineMK2/Header Files/KodeBoldsMath";</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>

@@ -3,6 +3,7 @@
 using namespace std;
 
 //TODO: Test singleton pattern works
+
 ResourceManager::ResourceManager() = default;
 ResourceManager::~ResourceManager() = default;
 
