@@ -22,17 +22,21 @@ void MovementSystem::AssignEntity(const Entity & pEntity)
 {
 	//Finds if an entity that matches given entities ID exists and returns it
 	auto entity = find_if(mEntities.begin(), mEntities.end(), [&](const Entity& entity) {return entity.mID == pEntity.mID; });
+
 	if ((pEntity.mComponentMask & mMask) == mMask)
 	{
+		//If entity is not already assigned to this system add it to list
 		if (entity == mEntities.end())
 		{
 			mEntities.push_back(pEntity);
 		}
+		//If entity is already assigned to this system update it's mask
 		else
 		{
 			entity->mComponentMask = pEntity.mComponentMask;
 		}
 	}
+	//If entity mask does not match system mask, remove from list
 	else
 	{
 		mEntities.erase(remove_if(mEntities.begin(), mEntities.end(), [&](const Entity& entity) {return entity.mID == pEntity.mID; }), mEntities.end());
@@ -44,13 +48,13 @@ void MovementSystem::AssignEntity(const Entity & pEntity)
 /// </summary>
 void MovementSystem::Process()
 {
-	for(Entity& entity : mEntities)
+	for(const Entity& entity : mEntities)
 	{		
 		//Check if entity has gravity component
 		if ((entity.mComponentMask & ComponentType::COMPONENT_GRAVITY) == ComponentType::COMPONENT_GRAVITY)
 		{
 			//Modify velocity by gravity acceleration
-			mEcsManager->VelocityComp(entity.mID)->mVelocity.Y += gravityAccel * mSceneManager->DeltaTime();
+			mEcsManager->VelocityComp(entity.mID)->mVelocity.Y += mGravityAccel * mSceneManager->DeltaTime();
 		}
 
 		//Modify velocity by acceleration
