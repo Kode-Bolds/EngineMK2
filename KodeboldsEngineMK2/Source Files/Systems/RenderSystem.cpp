@@ -438,7 +438,7 @@ void RenderSystem::SwapBuffers() const
 /// <param name="pEntity"></param>
 void RenderSystem::LoadGeometry(const Entity& pEntity) const
 {
-	auto geometry = mResourceManager->LoadGeometry(mEcsManager->GeometryComp(pEntity.mID)->mFilename);
+	auto geometry = mResourceManager->LoadGeometry(mEcsManager->GeometryComp(pEntity.mID)->mFilename, this);
 	// Set vertex buffer
 	const UINT stride = sizeof(Vertex);
 	const UINT offset = 0;

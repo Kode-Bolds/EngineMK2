@@ -3,7 +3,7 @@
 using namespace std;
 using namespace DirectX;
 
-pair<vector<unsigned>, vector<Vertex>> ObjLoader::LoadObject(const string & pFilename)
+pair<vector<unsigned>, vector<Vertex>> ObjLoader::LoadObject(const wstring & pFilename)
 {
 	vector<unsigned> indices;
 	vector<Vertex> vertices;

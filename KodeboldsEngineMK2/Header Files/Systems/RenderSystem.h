@@ -63,6 +63,10 @@ public:
 	void ClearView() const;
 	void SwapBuffers() const;
 	void LoadGeometry(const Entity& pEntity) const;
-	void LoadShaders(const Entity& entity) const;
-	void LoadTexture(const Entity& entity) const;
+	void LoadShaders(const Entity& pEntity) const;
+	void LoadTexture(const Entity& pEntity) const;
+
+	Microsoft::WRL::ComPtr<ID3D11Device> Device() const { return mDevice; }
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> Context() const { return mContext; }
+
 };
