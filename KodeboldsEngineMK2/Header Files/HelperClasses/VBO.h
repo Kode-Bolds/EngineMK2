@@ -7,10 +7,10 @@ class RenderSystem;
 class VBO
 {
 protected:
-	VBO();
+	VBO() = default;
 
 public:
-	virtual ~VBO();
+	virtual ~VBO() = default;
 
 	virtual HRESULT Create(const RenderSystem* pRenderer, const std::wstring& pFilename) = 0;
 	virtual void Load(const RenderSystem* pRenderer) const = 0;
