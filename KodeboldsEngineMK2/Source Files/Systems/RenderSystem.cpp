@@ -438,13 +438,7 @@ void RenderSystem::SwapBuffers() const
 /// <param name="pEntity"></param>
 void RenderSystem::LoadGeometry(const Entity& pEntity) const
 {
-	auto geometry = mResourceManager->LoadGeometry(mEcsManager->GeometryComp(pEntity.mID)->mFilename, this);
-	// Set vertex buffer
-	const UINT stride = sizeof(Vertex);
-	const UINT offset = 0;
-	mContext->IASetVertexBuffers(0, 1, geometry.first.GetAddressOf(), &stride, &offset);
-
-	// Set index buffer
-	mContext->IASetIndexBuffer(geometry.second.Get(), DXGI_FORMAT_R16_UINT, 0);
+	const auto geometry = mResourceManager->LoadGeometry(mEcsManager->GeometryComp(pEntity.mID)->mFilename, this);
+	geometry->Load(this);
 }
 

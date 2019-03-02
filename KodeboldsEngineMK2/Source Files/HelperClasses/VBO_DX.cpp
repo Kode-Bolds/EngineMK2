@@ -1,4 +1,6 @@
 #include "VBO_DX.h"
+#include "RenderSystem.h"
+
 
 VBO_DX::VBO_DX() = default;
 VBO_DX::~VBO_DX() = default;
@@ -39,4 +41,15 @@ HRESULT VBO_DX::Create(const RenderSystem * pRenderer, const std::wstring& pFile
 		return hr;
 
 	return hr;
+}
+
+void VBO_DX::Load(const RenderSystem* pRenderer) const
+{
+	// Set vertex buffer
+	const UINT stride = sizeof(Vertex);
+	const UINT offset = 0;
+	pRenderer->Context()->IASetVertexBuffers(0, 1, mVertices.GetAddressOf(), &stride, &offset);
+
+	// Set index buffer
+	pRenderer->Context()->IASetIndexBuffer(mIndices.Get(), DXGI_FORMAT_R16_UINT, 0);
 }

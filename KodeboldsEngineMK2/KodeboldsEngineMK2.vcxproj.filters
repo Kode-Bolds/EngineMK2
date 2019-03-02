@@ -13,9 +13,6 @@
     <ClCompile Include="Source Files\Managers\ResourceManager.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\HelperClasses\Scene.cpp">
-      <Filter>Source Files\HelperClasses</Filter>
-    </ClCompile>
     <ClCompile Include="Source Files\Managers\SceneManager.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
@@ -35,6 +32,12 @@
       <Filter>Source Files\HelperClasses</Filter>
     </ClCompile>
     <ClCompile Include="Source Files\HelperClasses\VBO.cpp">
+	  <Filter>Source Files\HelperClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\HelperClasses\TextureObject_DX.cpp">
+      <Filter>Source Files\HelperClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\HelperClasses\ShaderObject_DX.cpp">
       <Filter>Source Files\HelperClasses</Filter>
     </ClCompile>
   </ItemGroup>
@@ -133,6 +136,18 @@
       <Filter>Header Files\HelperClasses</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\HelperClasses\VBO_DX.h">
+	  <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\TextureObject_DX.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\TextureObject.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\ShaderObject.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\ShaderObject_DX.h">
       <Filter>Header Files\HelperClasses</Filter>
     </ClInclude>
   </ItemGroup>

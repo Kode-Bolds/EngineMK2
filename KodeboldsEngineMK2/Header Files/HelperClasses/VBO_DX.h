@@ -1,5 +1,9 @@
 #pragma once
 #include "VBO.h"
+#include <d3d11.h>
+#include "ObjLoader.h"
+
+class RenderSystem;
 
 class VBO_DX :
 	public VBO
@@ -13,6 +17,8 @@ public:
 	~VBO_DX();
 
 	HRESULT Create(const RenderSystem* pRenderer, const std::wstring& pFilename) override;
+	void Load(const RenderSystem* pRenderer) const override;
+
 	Microsoft::WRL::ComPtr<ID3D11Buffer> Vertices() const { return mVertices; }
 	Microsoft::WRL::ComPtr<ID3D11Buffer> Indices() const { return mIndices; }
 };

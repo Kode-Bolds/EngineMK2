@@ -42,10 +42,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11SamplerState> mTexSampler = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState> mDefaultRasterizerState = nullptr;
 
-public:
-	explicit RenderSystem(const HWND& pWindow);
-	virtual ~RenderSystem();
-
 	HRESULT Init();
 	HRESULT CreateDevice();
 	HRESULT CreateSwapChain();
@@ -57,15 +53,18 @@ public:
 	HRESULT CreateConstantBuffers();
 	void Cleanup();
 
-	void AssignEntity(const Entity& pEntity) override;
-	void Process() override;
-
 	void ClearView() const;
 	void SwapBuffers() const;
 	void LoadGeometry(const Entity& pEntity) const;
 	void LoadShaders(const Entity& pEntity) const;
 	void LoadTexture(const Entity& pEntity) const;
+public:
+	explicit RenderSystem(const HWND& pWindow);
+	virtual ~RenderSystem();
 
+
+	void AssignEntity(const Entity& pEntity) override;
+	void Process() override;
 	Microsoft::WRL::ComPtr<ID3D11Device> Device() const { return mDevice; }
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> Context() const { return mContext; }
 

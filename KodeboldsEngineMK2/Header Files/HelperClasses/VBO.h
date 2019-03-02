@@ -1,5 +1,6 @@
 #pragma once
-#include "VBO.h"
+#include <wrl.h>
+#include <string>
 
 class RenderSystem;
 
@@ -12,6 +13,7 @@ public:
 	virtual ~VBO();
 
 	virtual HRESULT Create(const RenderSystem* pRenderer, const std::wstring& pFilename) = 0;
+	virtual void Load(const RenderSystem* pRenderer) const = 0;
 	//virtual void* Vertices() const = 0;
 	//virtual void* Indices() const = 0;
 };

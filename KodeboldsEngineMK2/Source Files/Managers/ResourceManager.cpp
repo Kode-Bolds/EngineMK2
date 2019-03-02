@@ -8,7 +8,7 @@ using namespace std;
 ResourceManager::ResourceManager() = default;
 ResourceManager::~ResourceManager() = default;
 
-const VBO& ResourceManager::LoadGeometry(const std::wstring& pFilename, const RenderSystem* pRenderer)
+const VBO* ResourceManager::LoadGeometry(const std::wstring& pFilename, const RenderSystem* pRenderer)
 {
 	auto hr{ S_OK };
 	//find and return from map
@@ -20,8 +20,8 @@ const VBO& ResourceManager::LoadGeometry(const std::wstring& pFilename, const Re
 		}
 	}
 	//else create a new geometry
-	VBO_DX newGeometry;
-	newGeometry.Create(pRenderer, pFilename);
+	VBO_DX* newGeometry{};
+	newGeometry->Create(pRenderer, pFilename);
 	//add it to the map
 	mGeometries.emplace_back(make_pair(pFilename, newGeometry));
 	//return the last thing in the dictionary (the newly created geometry)

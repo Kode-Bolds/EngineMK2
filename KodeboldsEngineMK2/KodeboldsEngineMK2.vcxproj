@@ -22,12 +22,13 @@
     <ClCompile Include="Source Files\HelperClasses\ObjLoader.cpp" />
     <ClCompile Include="Source Files\HelperClasses\VBO.cpp" />
     <ClCompile Include="Source Files\HelperClasses\VBO_DX.cpp" />
+    <ClCompile Include="Source Files\HelperClasses\ShaderObject_DX.cpp" />
+    <ClCompile Include="Source Files\HelperClasses\TextureObject_DX.cpp" />
     <ClCompile Include="Source Files\KodeBoldsMath\Matrix4.cpp" />
     <ClCompile Include="Source Files\KodeBoldsMath\Vector4.cpp" />
     <ClCompile Include="Source Files\Managers\ECSManager.cpp" />
     <ClCompile Include="Source Files\Managers\InputManager.cpp" />
     <ClCompile Include="Source Files\Managers\ResourceManager.cpp" />
-    <ClCompile Include="Source Files\HelperClasses\Scene.cpp" />
     <ClCompile Include="Source Files\Managers\SceneManager.cpp" />
     <ClCompile Include="Source Files\Systems\MovementSystem.cpp" />
     <ClCompile Include="Source Files\Systems\RenderSystem.cpp" />
@@ -52,6 +53,10 @@
     <ClInclude Include="Header Files\HelperClasses\ObjLoader.h" />
     <ClInclude Include="Header Files\HelperClasses\VBO.h" />
     <ClInclude Include="Header Files\HelperClasses\VBO_DX.h" />
+    <ClInclude Include="Header Files\HelperClasses\ShaderObject.h" />
+    <ClInclude Include="Header Files\HelperClasses\ShaderObject_DX.h" />
+    <ClInclude Include="Header Files\HelperClasses\TextureObject.h" />
+    <ClInclude Include="Header Files\HelperClasses\TextureObject_DX.h" />
     <ClInclude Include="Header Files\KodeBoldsMath\KodeBoldsMath.h" />
     <ClInclude Include="Header Files\KodeBoldsMath\Matrix4.h" />
     <ClInclude Include="Header Files\KodeBoldsMath\Vector4.h" />
