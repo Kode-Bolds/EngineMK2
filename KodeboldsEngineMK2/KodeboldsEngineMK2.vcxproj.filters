@@ -13,9 +13,6 @@
     <ClCompile Include="Source Files\Managers\ResourceManager.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\HelperClasses\Scene.cpp">
-      <Filter>Source Files\HelperClasses</Filter>
-    </ClCompile>
     <ClCompile Include="Source Files\Managers\SceneManager.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
@@ -30,6 +27,12 @@
     </ClCompile>
     <ClCompile Include="Source Files\KodeBoldsMath\Vector4.cpp">
       <Filter>Source Files\KodeBoldsMath</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\HelperClasses\TextureObject_DX.cpp">
+      <Filter>Source Files\HelperClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\HelperClasses\ShaderObject_DX.cpp">
+      <Filter>Source Files\HelperClasses</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -122,6 +125,18 @@
     </ClInclude>
     <ClInclude Include="Header Files\KodeBoldsMath\KodeBoldsMath.h">
       <Filter>Header Files\KodeBoldsMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\TextureObject_DX.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\TextureObject.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\ShaderObject.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\ShaderObject_DX.h">
+      <Filter>Header Files\HelperClasses</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
