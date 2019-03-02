@@ -2,11 +2,17 @@
 #include "ShaderObject.h"
 #include "RenderSystem.h"
 #include <d3dcompiler.h>
+#include <wrl.h>
+#include <d3d11.h>
 
 class ShaderObject_DX :
 	public ShaderObject
 {
 private:
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mVertex;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mPixel;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> mLayout;
+
 	HRESULT CompileShader(const std::wstring & pFilename, const std::string& pEntryPoint, const std::string& pShaderModel, ID3DBlob** const ppBlobOut) const;
 
 public:
@@ -15,7 +21,5 @@ public:
 
 	HRESULT CreateVertex(const RenderSystem* pRenderer, const std::wstring& pFilename, const std::string& pEntryPoint, const std::string& pShaderModel) override;
 	HRESULT CreatePixel(const RenderSystem* pRenderer, const std::wstring& pFilename, const std::string& pEntryPoint, const std::string& pShaderModel) override;
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> VertexShader() override;
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> PixelShader() override;
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> InputLayout() override;
+	void Load(const RenderSystem* pRenderer) override;
 };
