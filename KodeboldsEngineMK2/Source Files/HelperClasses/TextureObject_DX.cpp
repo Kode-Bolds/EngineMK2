@@ -1,3 +1,4 @@
+#pragma once
 #include "TextureObject_DX.h"
 #include "RenderSystem.h"
 
@@ -28,7 +29,7 @@ HRESULT TextureObject_DX::Create(const RenderSystem* pRenderer, const std::vecto
 	if (!pFilenames[0].empty())
 	{
 		//Create shader resource for diffuse texture from file and store pointer to it
-		hr = DirectX::CreateDDSTextureFromFile(pRenderer->Device(), pFilenames[0], nullptr, mTextures[0].GetAddressOf());
+		hr = DirectX::CreateDDSTextureFromFile(pRenderer->Device().Get(), pFilenames[0].c_str(), nullptr, mTextures[0].GetAddressOf());
 		if (FAILED(hr))
 		{
 			return hr;
@@ -38,7 +39,7 @@ HRESULT TextureObject_DX::Create(const RenderSystem* pRenderer, const std::vecto
 	if (!pFilenames[1].empty())
 	{
 		//Create shader resource for normal map texture from file and store pointer to it
-		hr = DirectX::CreateDDSTextureFromFile(pRenderer->Device(), pFilenames[1], nullptr, mTextures[1].GetAddressOf());
+		hr = DirectX::CreateDDSTextureFromFile(pRenderer->Device().Get(), pFilenames[1].c_str(), nullptr, mTextures[1].GetAddressOf());
 		if (FAILED(hr))
 		{
 			return hr;
@@ -48,7 +49,7 @@ HRESULT TextureObject_DX::Create(const RenderSystem* pRenderer, const std::vecto
 	if (!pFilenames[2].empty())
 	{
 		//Create shader resource for height map texture from file and store pointer to it
-		hr = DirectX::CreateDDSTextureFromFile(pRenderer->Device(), pFilenames[2], nullptr, mTextures[2].GetAddressOf());
+		hr = DirectX::CreateDDSTextureFromFile(pRenderer->Device().Get(), pFilenames[2].c_str(), nullptr, mTextures[2].GetAddressOf());
 		if (FAILED(hr))
 		{
 			return hr;

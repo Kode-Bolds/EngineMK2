@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
-#include "RenderSystem.h"
+#include <vector>
+
+class RenderSystem;
 
 class ShaderObject
 {
