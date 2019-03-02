@@ -1,18 +1,16 @@
 #pragma once
-#include <wrl.h>
-#include <d3d11.h>
 #include <string>
-#include "RenderSystem.h"
+
+class RenderSystem;
 
 class TextureObject
 {
 protected:
 	TextureObject() {};
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mTexture;
 
 public:
 	virtual ~TextureObject() {};
 
-	virtual HRESULT Create(const RenderSystem* pRenderer, const std::wstring& pFilename) = 0;
-	virtual Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> Texture() = 0;
+	virtual HRESULT Create(const RenderSystem* pRenderer, const std::vector<std::wstring>& pFilenames) = 0;
+	virtual void Load(const RenderSystem* pRenderer) = 0;
 };

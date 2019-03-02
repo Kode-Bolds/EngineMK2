@@ -79,7 +79,7 @@ HRESULT ShaderObject_DX::CreateVertex(const RenderSystem* pRenderer, const std::
 
 	// Creates the vertex shader
 	ID3D11VertexShader* vertexShader = nullptr;
-	hr = pRenderer->Device()->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, &mVertex);
+	hr = pRenderer->Device()->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, mVertex.GetAddressOf());
 	if (FAILED(hr))
 	{
 		pVSBlob->Release();
@@ -100,7 +100,7 @@ HRESULT ShaderObject_DX::CreateVertex(const RenderSystem* pRenderer, const std::
 
 	// Create the shader input layout
 	ID3D11InputLayout* vertexLayout = nullptr;
-	hr = pRenderer->Device()->CreateInputLayout(layout, numElements, pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), &mLayout);
+	hr = pRenderer->Device()->CreateInputLayout(layout, numElements, pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), mLayout.GetAddressOf());
 	pVSBlob->Release();
 	if (FAILED(hr))
 	{
@@ -133,7 +133,7 @@ HRESULT ShaderObject_DX::CreatePixel(const RenderSystem* pRenderer, const std::w
 
 	// Creates the pixel shader
 	ID3D11PixelShader* pixelShader = nullptr;
-	hr = pRenderer->Device()->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, &mPixel);
+	hr = pRenderer->Device()->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, mPixel.GetAddressOf());
 	pPSBlob->Release();
 	if (FAILED(hr))
 	{
@@ -146,26 +146,11 @@ HRESULT ShaderObject_DX::CreatePixel(const RenderSystem* pRenderer, const std::w
 /// <summary>
 /// 
 /// </summary>
-/// <returns></returns>
-Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> ShaderObject_DX::VertexShader()
+/// <param name="pRenderer"></param>
+void ShaderObject_DX::Load(const RenderSystem * pRenderer)
 {
-	return mVertex;
+	pRenderer->Context()->VSSetShader(mVertex.Get(), nullptr, 0);
+	pRenderer->Context()->IASetInputLayout(mLayout.Get());
+	pRenderer->Context()->PSSetShader(mPixel.Get(), nullptr, 0);
 }
 
-/// <summary>
-/// 
-/// </summary>
-/// <returns></returns>
-Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> ShaderObject_DX::PixelShader()
-{
-	return mPixel;
-}
-
-/// <summary>
-/// 
-/// </summary>
-/// <returns></returns>
-Microsoft::WRL::ComPtr<ID3D11InputLayout> ShaderObject_DX::InputLayout()
-{
-	return mLayout;
-}
