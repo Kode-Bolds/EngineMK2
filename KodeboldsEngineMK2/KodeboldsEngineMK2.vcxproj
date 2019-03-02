@@ -142,7 +142,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <ConformanceMode>false</ConformanceMode>
+      <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>"Header Files";"Header Files\KodeBoldsMath";"Header Files\Systems";"Header Files\HelperClasses";"Header Files\Managers";"Header Files\Components";"Header Files\DataStructs";</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -157,7 +157,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <ConformanceMode>false</ConformanceMode>
+      <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>"Header Files";"Header Files\KodeBoldsMath";"Header Files\Systems";"Header Files\HelperClasses";"Header Files\Managers";"Header Files\Components";"Header Files\DataStructs";</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
