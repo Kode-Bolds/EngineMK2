@@ -9,14 +9,16 @@
 #include "ObjLoader.h"
 #include <wrl/client.h>
 #include "VBO_DX.h"
+#include "ShaderObject_DX.h"
+#include "TextureObject_DX.h"
 
 class RenderSystem;
 
 class ResourceManager
 {
-	std::vector< std::pair< std::wstring, Microsoft::WRL::ComPtr< ID3D11ShaderResourceView >>> mTextures{};
+	std::vector< std::pair< std::wstring, TextureObject*>> mTextures{};
 	std::vector< std::pair< std::wstring, VBO*>> mGeometries{};
-	std::vector< std::pair< std::wstring, std::pair< Microsoft::WRL::ComPtr< ID3D11VertexShader >, Microsoft::WRL::ComPtr< ID3D11PixelShader >>>> mShaders{};
+	std::vector< std::pair< std::wstring, ShaderObject*>> mShaders{};
 	//std::vector< std::pair< std::wstring, Microsoft::WRL::ComPtr< ID3D11Buffer >>> mInstances{};
 	//std::vector< std::pair< string, AUDIOBUFFER>> mSounds;
 	ResourceManager();
