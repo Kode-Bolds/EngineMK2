@@ -9,6 +9,6 @@ class ObjLoader
 {
 public:
 
-	static std::pair<std::vector<unsigned>, std::vector<Vertex>> LoadObject(const std::string& pFilename);
+	static std::pair<std::vector<unsigned>, std::vector<Vertex>> LoadObject(const std::wstring& pFilename);
 };
 

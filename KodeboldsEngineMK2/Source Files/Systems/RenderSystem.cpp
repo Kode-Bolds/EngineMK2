@@ -410,9 +410,35 @@ void RenderSystem::AssignEntity(const Entity & pEntity)
 /// </summary>
 void RenderSystem::Process()
 {
-	for (Entity& entity : mEntities)
+	ClearView();
+	for (const Entity& entity : mEntities)
 	{
-
+		LoadGeometry(entity);
 
 	}
+
+	SwapBuffers();
 }
+
+
+void RenderSystem::ClearView() const
+{
+	mContext->ClearRenderTargetView(mRenderTargetView.Get(), DirectX::Colors::CornflowerBlue);
+	mContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
+}
+
+void RenderSystem::SwapBuffers() const
+{
+	mSwapChain->Present(1, 0);
+}
+
+/// <summary>
+/// Sets the given entities geometry buffers as the active buffers (does not create buffers that do not exist)
+/// </summary>
+/// <param name="pEntity"></param>
+void RenderSystem::LoadGeometry(const Entity& pEntity) const
+{
+	const auto geometry = mResourceManager->LoadGeometry(mEcsManager->GeometryComp(pEntity.mID)->mFilename, this);
+	geometry->Load(this);
+}
+
