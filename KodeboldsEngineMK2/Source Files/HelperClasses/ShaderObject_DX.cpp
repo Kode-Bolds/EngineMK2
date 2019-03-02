@@ -1,4 +1,6 @@
+#pragma once
 #include "ShaderObject_DX.h"
+#include "RenderSystem.h"
 
 /// <summary>
 /// 
