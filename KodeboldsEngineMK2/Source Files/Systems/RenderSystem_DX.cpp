@@ -451,7 +451,25 @@ void RenderSystem_DX::LoadShaders(const Entity & pEntity) const
 
 void RenderSystem_DX::LoadTexture(const Entity & pEntity) const
 {
-	const auto texture = mResourceManager->LoadTexture(this, mEcsManager->TextureComp(pEntity.mID)->mFilename);
-	texture->Load(this);
+	//Loads diffuse texture from texture component
+	auto texture = mResourceManager->LoadTexture(this, mEcsManager->TextureComp(pEntity.mID)->mDiffuse);
+	if (texture)
+	{
+		texture->Load(this, 0);
+	}
+
+	//Loads normal map texture from texture component
+	texture = mResourceManager->LoadTexture(this, mEcsManager->TextureComp(pEntity.mID)->mNormal);
+	if (texture)
+	{
+		texture->Load(this, 1);
+	}
+
+	//Loads height map texture from texture component
+	texture = mResourceManager->LoadTexture(this, mEcsManager->TextureComp(pEntity.mID)->mHeight);
+	if (texture)
+	{
+		texture->Load(this, 2);
+	}
 }
 

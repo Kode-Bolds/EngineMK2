@@ -21,11 +21,17 @@ const TextureObject * ResourceManager::LoadTexture(const RenderSystem_DX * pRend
 	}
 	//else create a new texture
 	TextureObject_DX* newTexture{};
-	newTexture->Create(pRenderer, pFilename);
-	//add it to the map
-	mTextures.emplace_back(make_pair(pFilename, newTexture));
-	//return the last thing in the dictionary (the newly created texture)
-	return mTextures.end()->second;
+	hr = newTexture->Create(pRenderer, pFilename);
+
+	if (!FAILED(hr))
+	{
+		//add it to the map
+		mTextures.emplace_back(make_pair(pFilename, newTexture));
+		//return the last thing in the dictionary (the newly created texture)
+		return mTextures.end()->second;
+	}
+
+	return nullptr;
 }
 
 const VBO* ResourceManager::LoadGeometry(const RenderSystem_DX * pRenderer, const std::wstring& pFilename)

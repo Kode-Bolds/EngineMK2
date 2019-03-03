@@ -5,9 +5,9 @@
 class RenderSystem : public ISystem
 {
 protected:
-	RenderSystem(const ComponentType pMask);
+	RenderSystem(const ComponentType& pMask);
 public:
-	virtual ~RenderSystem();
+	virtual ~RenderSystem() {};
 
 	virtual HRESULT Init() = 0;
 	virtual HRESULT CreateDevice() = 0;

@@ -29,32 +29,12 @@ HRESULT TextureObject_DX::Create(const RenderSystem_DX* pRenderer, const std::ws
 	if (!pFilename.empty())
 	{
 		//Create shader resource for diffuse texture from file and store pointer to it
-		hr = DirectX::CreateDDSTextureFromFile(pRenderer->Device().Get(), pFilename.c_str(), nullptr, mTextures[0].GetAddressOf());
+		hr = DirectX::CreateDDSTextureFromFile(pRenderer->Device().Get(), pFilename.c_str(), nullptr, mTexture.GetAddressOf());
 		if (FAILED(hr))
 		{
 			return hr;
 		}
 	}
-
-	//if (!pFilenames[1].empty())
-	//{
-	//	//Create shader resource for normal map texture from file and store pointer to it
-	//	hr = DirectX::CreateDDSTextureFromFile(pRenderer->Device().Get(), pFilenames[1].c_str(), nullptr, mTextures[1].GetAddressOf());
-	//	if (FAILED(hr))
-	//	{
-	//		return hr;
-	//	}
-	//}
-
-	//if (!pFilenames[2].empty())
-	//{
-	//	//Create shader resource for height map texture from file and store pointer to it
-	//	hr = DirectX::CreateDDSTextureFromFile(pRenderer->Device().Get(), pFilenames[2].c_str(), nullptr, mTextures[2].GetAddressOf());
-	//	if (FAILED(hr))
-	//	{
-	//		return hr;
-	//	}
-	//}
 
 	return hr;
 }
@@ -63,9 +43,7 @@ HRESULT TextureObject_DX::Create(const RenderSystem_DX* pRenderer, const std::ws
 /// 
 /// </summary>
 /// <param name="pRenderer"></param>
-void TextureObject_DX::Load(const RenderSystem_DX * pRenderer) const
+void TextureObject_DX::Load(const RenderSystem_DX * pRenderer, const int& pSlot) const
 {
-	pRenderer->Context()->PSSetShaderResources(0, 1, mTextures[0].GetAddressOf());
-	//pRenderer->Context()->PSSetShaderResources(1, 1, mTextures[1].GetAddressOf());
-	//pRenderer->Context()->PSSetShaderResources(2, 1, mTextures[2].GetAddressOf());
+	pRenderer->Context()->PSSetShaderResources(pSlot, 1, mTexture.GetAddressOf());
 }
