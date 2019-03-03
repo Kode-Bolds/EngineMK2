@@ -1,5 +1,7 @@
 #include "Matrix4.h"
 
+using namespace KodeBoldsMath;
+
 /// <summary>
 /// Default constructor that initialises the matrix to an identity matrix
 /// </summary>

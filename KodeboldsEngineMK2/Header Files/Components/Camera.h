@@ -3,7 +3,7 @@
 
 struct Camera
 {
-	Vector4 mLookAt;
-	Vector4 mUp;
-	Vector4 mRight;
+	KodeBoldsMath::Vector4 mLookAt;
+	KodeBoldsMath::Vector4 mUp;
+	KodeBoldsMath::Vector4 mRight;
 };

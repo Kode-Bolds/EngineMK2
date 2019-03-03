@@ -4,7 +4,7 @@
 
 struct Velocity
 {
-	Vector4 mVelocity;
-	Vector4 mAcceleration;
+	KodeBoldsMath::Vector4 mVelocity;
+	KodeBoldsMath::Vector4 mAcceleration;
 	float maxSpeed;
 };
