@@ -8,7 +8,27 @@ using namespace std;
 ResourceManager::ResourceManager() = default;
 ResourceManager::~ResourceManager() = default;
 
-const VBO* ResourceManager::LoadGeometry(const std::wstring& pFilename, const RenderSystem* pRenderer)
+const TextureObject * ResourceManager::LoadTexture(const RenderSystem_DX * pRenderer, const std::wstring & pFilename)
+{
+	auto hr{ S_OK };
+	//find and return from map
+	for (const auto& pair : mTextures)
+	{
+		if (pair.first == pFilename)
+		{
+			return pair.second;
+		}
+	}
+	//else create a new texture
+	TextureObject_DX* newTexture{};
+	newTexture->Create(pRenderer, pFilename);
+	//add it to the map
+	mTextures.emplace_back(make_pair(pFilename, newTexture));
+	//return the last thing in the dictionary (the newly created texture)
+	return mTextures.end()->second;
+}
+
+const VBO* ResourceManager::LoadGeometry(const RenderSystem_DX * pRenderer, const std::wstring& pFilename)
 {
 	auto hr{ S_OK };
 	//find and return from map
@@ -61,6 +81,27 @@ HRESULT CompileShaderFromFile(const WCHAR * const pFileName, const LPCSTR pEntry
 	if (errorBlob) errorBlob->Release();
 
 	return hr;
+}
+
+const ShaderObject * ResourceManager::LoadShader(const RenderSystem_DX * pRenderer, const std::wstring & pFilename)
+{
+	auto hr{ S_OK };
+	//find and return from map
+	for (const auto& pair : mShaders)
+	{
+		if (pair.first == pFilename)
+		{
+			return pair.second;
+		}
+	}
+	//else create a new shader
+	ShaderObject_DX* newShader{};
+	newShader->CreateVertex(pRenderer, pFilename, "VS", "vs_5_0");
+	newShader->CreatePixel(pRenderer, pFilename, "PS", "ps_5_0");
+	//add it to the map
+	mShaders.emplace_back(make_pair(pFilename, newShader));
+	//return the last thing in the dictionary (the newly created shader)
+	return mShaders.end()->second;
 }
 
 std::shared_ptr<ResourceManager> ResourceManager::Instance()

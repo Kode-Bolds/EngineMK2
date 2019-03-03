@@ -3,7 +3,7 @@
 #include <vector>
 #include <wrl.h>
 
-class RenderSystem;
+class RenderSystem_DX;
 
 class TextureObject
 {
@@ -13,6 +13,6 @@ protected:
 public:
 	virtual ~TextureObject() = default;
 
-	virtual HRESULT Create(const RenderSystem* pRenderer, const std::vector<std::wstring>& pFilenames) = 0;
-	virtual void Load(const RenderSystem* pRenderer) = 0;
+	virtual HRESULT Create(const RenderSystem_DX* pRenderer, const std::wstring& pFilenames) = 0;
+	virtual void Load(const RenderSystem_DX* pRenderer) const = 0;
 };

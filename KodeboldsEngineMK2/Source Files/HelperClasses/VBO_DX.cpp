@@ -1,5 +1,5 @@
 #include "VBO_DX.h"
-#include "RenderSystem.h"
+#include "RenderSystem_DX.h"
 
 
 VBO_DX::VBO_DX() = default;
@@ -10,7 +10,7 @@ VBO_DX::~VBO_DX() = default;
 /// </summary>
 /// <param name="pRenderer"> the renderer to use to create the buffers with </param>
 /// <param name="pFilename"> the filename of the geometry to load </param>
-HRESULT VBO_DX::Create(const RenderSystem * pRenderer, const std::wstring& pFilename)
+HRESULT VBO_DX::Create(const RenderSystem_DX * pRenderer, const std::wstring& pFilename)
 {
 	auto hr{ S_OK };
 
@@ -43,7 +43,7 @@ HRESULT VBO_DX::Create(const RenderSystem * pRenderer, const std::wstring& pFile
 	return hr;
 }
 
-void VBO_DX::Load(const RenderSystem* pRenderer) const
+void VBO_DX::Load(const RenderSystem_DX* pRenderer) const
 {
 	// Set vertex buffer
 	const UINT stride = sizeof(Vertex);

@@ -1,10 +1,10 @@
-#include "RenderSystem.h"
+#include "RenderSystem_DX.h"
 
 /// <summary>
 /// 
 /// </summary>
 /// <param name="pWindow"></param>
-RenderSystem::RenderSystem(const HWND& pWindow) : ISystem(ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_GEOMETRY | ComponentType::COMPONENT_SHADER), 
+RenderSystem_DX::RenderSystem_DX(const HWND& pWindow) : RenderSystem(ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_GEOMETRY | ComponentType::COMPONENT_SHADER), 
 	mWindow(pWindow), mActiveCamera(nullptr)
 {
 	if (FAILED(Init()))
@@ -16,13 +16,13 @@ RenderSystem::RenderSystem(const HWND& pWindow) : ISystem(ComponentType::COMPONE
 /// <summary>
 /// 
 /// </summary>
-RenderSystem::~RenderSystem() = default;
+RenderSystem_DX::~RenderSystem_DX() = default;
 
 /// <summary>
 /// 
 /// </summary>
 /// <returns></returns>
-HRESULT RenderSystem::Init()
+HRESULT RenderSystem_DX::Init()
 {
 	auto hr{ S_OK };
 
@@ -78,7 +78,7 @@ HRESULT RenderSystem::Init()
 /// 
 /// </summary>
 /// <returns></returns>
-HRESULT RenderSystem::CreateDevice()
+HRESULT RenderSystem_DX::CreateDevice()
 {
 	auto hr{ S_OK };
 
@@ -127,7 +127,7 @@ HRESULT RenderSystem::CreateDevice()
 /// 
 /// </summary>
 /// <returns></returns>
-HRESULT RenderSystem::CreateSwapChain()
+HRESULT RenderSystem_DX::CreateSwapChain()
 {
 	auto hr{ S_OK };
 
@@ -210,7 +210,7 @@ HRESULT RenderSystem::CreateSwapChain()
 /// 
 /// </summary>
 /// <returns></returns>
-HRESULT RenderSystem::CreateRenderTarget()
+HRESULT RenderSystem_DX::CreateRenderTarget()
 {
 	auto hr{ S_OK };
 
@@ -231,7 +231,7 @@ HRESULT RenderSystem::CreateRenderTarget()
 /// 
 /// </summary>
 /// <returns></returns>
-HRESULT RenderSystem::CreateDepth()
+HRESULT RenderSystem_DX::CreateDepth()
 {
 	auto hr{ S_OK };
 
@@ -281,7 +281,7 @@ HRESULT RenderSystem::CreateDepth()
 /// 
 /// </summary>
 /// <returns></returns>
-HRESULT RenderSystem::CreateRasterizer()
+HRESULT RenderSystem_DX::CreateRasterizer()
 {
 	auto hr{ S_OK };
 
@@ -299,7 +299,7 @@ HRESULT RenderSystem::CreateRasterizer()
 /// 
 /// </summary>
 /// <returns></returns>
-HRESULT RenderSystem::CreateSampler()
+HRESULT RenderSystem_DX::CreateSampler()
 {
 	auto hr{ S_OK };
 
@@ -319,7 +319,7 @@ HRESULT RenderSystem::CreateSampler()
 /// <summary>
 /// 
 /// </summary>
-void RenderSystem::CreateViewport() const
+void RenderSystem_DX::CreateViewport() const
 {
 	// Setup the viewport
 	D3D11_VIEWPORT vp;
@@ -332,7 +332,7 @@ void RenderSystem::CreateViewport() const
 	mContext->RSSetViewports(1, &vp);
 }
 
-HRESULT RenderSystem::CreateConstantBuffers()
+HRESULT RenderSystem_DX::CreateConstantBuffers()
 {
 	return E_NOTIMPL;
 }
@@ -340,7 +340,7 @@ HRESULT RenderSystem::CreateConstantBuffers()
 /// <summary>
 /// 
 /// </summary>
-void RenderSystem::Cleanup()
+void RenderSystem_DX::Cleanup()
 {
 }
 
@@ -348,7 +348,7 @@ void RenderSystem::Cleanup()
 /// 
 /// </summary>
 /// <param name="pEntity"></param>
-void RenderSystem::AssignEntity(const Entity & pEntity)
+void RenderSystem_DX::AssignEntity(const Entity & pEntity)
 {
 	//Finds if an entity that matches given entities ID exists and returns it
 	if ((pEntity.mComponentMask & mMask) == mMask)
@@ -408,26 +408,27 @@ void RenderSystem::AssignEntity(const Entity & pEntity)
 /// <summary>
 /// 
 /// </summary>
-void RenderSystem::Process()
+void RenderSystem_DX::Process()
 {
 	ClearView();
 	for (const Entity& entity : mEntities)
 	{
 		LoadGeometry(entity);
-
+		LoadTexture(entity);
+		LoadShaders(entity);
 	}
 
 	SwapBuffers();
 }
 
 
-void RenderSystem::ClearView() const
+void RenderSystem_DX::ClearView() const
 {
 	mContext->ClearRenderTargetView(mRenderTargetView.Get(), DirectX::Colors::CornflowerBlue);
 	mContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
-void RenderSystem::SwapBuffers() const
+void RenderSystem_DX::SwapBuffers() const
 {
 	mSwapChain->Present(1, 0);
 }
@@ -436,9 +437,21 @@ void RenderSystem::SwapBuffers() const
 /// Sets the given entities geometry buffers as the active buffers (does not create buffers that do not exist)
 /// </summary>
 /// <param name="pEntity"></param>
-void RenderSystem::LoadGeometry(const Entity& pEntity) const
+void RenderSystem_DX::LoadGeometry(const Entity& pEntity) const
 {
-	const auto geometry = mResourceManager->LoadGeometry(mEcsManager->GeometryComp(pEntity.mID)->mFilename, this);
+	const auto geometry = mResourceManager->LoadGeometry(this, mEcsManager->GeometryComp(pEntity.mID)->mFilename);
 	geometry->Load(this);
+}
+
+void RenderSystem_DX::LoadShaders(const Entity & pEntity) const
+{
+	const auto shader = mResourceManager->LoadShader(this, mEcsManager->ShaderComp(pEntity.mID)->mFilename);
+	shader->Load(this);
+}
+
+void RenderSystem_DX::LoadTexture(const Entity & pEntity) const
+{
+	const auto texture = mResourceManager->LoadTexture(this, mEcsManager->TextureComp(pEntity.mID)->mFilename);
+	texture->Load(this);
 }
 

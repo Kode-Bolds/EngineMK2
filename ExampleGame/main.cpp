@@ -53,7 +53,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	//Testing ECS Manager and movement system
 	std::shared_ptr<ECSManager> ecsManager = ECSManager::Instance();
 	std::shared_ptr<ISystem> systPointer = std::make_shared<MovementSystem>();
-	std::shared_ptr<ISystem> renderer = std::make_shared<RenderSystem>(hWnd);
+	std::shared_ptr<ISystem> renderer = std::make_shared<RenderSystem_DX>(hWnd);
 	ecsManager->AddUpdateSystem(systPointer);
 	ecsManager->AddRenderSystem(renderer);
 

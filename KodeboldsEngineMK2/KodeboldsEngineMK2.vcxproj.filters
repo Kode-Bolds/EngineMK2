@@ -19,9 +19,6 @@
     <ClCompile Include="Source Files\Systems\MovementSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\Systems\RenderSystem.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
     <ClCompile Include="Source Files\KodeBoldsMath\Matrix4.cpp">
       <Filter>Source Files\KodeBoldsMath</Filter>
     </ClCompile>
@@ -32,7 +29,7 @@
       <Filter>Source Files\HelperClasses</Filter>
     </ClCompile>
     <ClCompile Include="Source Files\HelperClasses\VBO.cpp">
-	  <Filter>Source Files\HelperClasses</Filter>
+      <Filter>Source Files\HelperClasses</Filter>
     </ClCompile>
     <ClCompile Include="Source Files\HelperClasses\TextureObject_DX.cpp">
       <Filter>Source Files\HelperClasses</Filter>
@@ -40,6 +37,13 @@
     <ClCompile Include="Source Files\HelperClasses\ShaderObject_DX.cpp">
       <Filter>Source Files\HelperClasses</Filter>
     </ClCompile>
+    <ClCompile Include="Source Files\Systems\RenderSystem_DX.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Systems\RenderSysten.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Header Files\Systems\RenderSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\Components\AI.h">
@@ -120,9 +124,6 @@
     <ClInclude Include="Header Files\Managers\Managers.h">
       <Filter>Header Files\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="Header Files\Systems\RenderSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
     <ClInclude Include="Header Files\KodeBoldsMath\Matrix4.h">
       <Filter>Header Files\KodeBoldsMath</Filter>
     </ClInclude>
@@ -136,7 +137,7 @@
       <Filter>Header Files\HelperClasses</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\HelperClasses\VBO_DX.h">
-	  <Filter>Header Files\HelperClasses</Filter>
+      <Filter>Header Files\HelperClasses</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\HelperClasses\TextureObject_DX.h">
       <Filter>Header Files\HelperClasses</Filter>
@@ -149,6 +150,12 @@
     </ClInclude>
     <ClInclude Include="Header Files\HelperClasses\ShaderObject_DX.h">
       <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Systems\RenderSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Systems\RenderSystem_DX.h">
+      <Filter>Header Files\Systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

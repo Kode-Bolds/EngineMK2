@@ -12,7 +12,7 @@
 #include "ShaderObject_DX.h"
 #include "TextureObject_DX.h"
 
-class RenderSystem;
+class RenderSystem_DX;
 
 class ResourceManager
 {
@@ -29,11 +29,10 @@ public:
 	ResourceManager(const ResourceManager& pResourceManager) = delete;
 	ResourceManager& operator=(ResourceManager const&) = delete;
 
-	Microsoft::WRL::ComPtr< ID3D11ShaderResourceView > LoadTexture(const std::string& pFilename);
-	const VBO* LoadGeometry(const std::wstring& pFilename, const RenderSystem* pRenderer);
+	const TextureObject* LoadTexture(const RenderSystem_DX* pRenderer, const std::wstring& pFilename);
+	const VBO* LoadGeometry(const RenderSystem_DX* pRenderer, const std::wstring& pFilename);
 	//AUDIOBUFFER LoadAudio(string filename);
-	std::pair< Microsoft::WRL::ComPtr< ID3D11VertexShader >, Microsoft::WRL::ComPtr< ID3D11PixelShader >> LoadShader(const std::string& pFilename);
-	static HRESULT CompileShaderFromFile(const WCHAR * const pFileName, const LPCSTR pEntryPoint, const LPCSTR pShaderModel, ID3DBlob** const pBlobOut);
+	const ShaderObject* LoadShader(const RenderSystem_DX* pRenderer, const std::wstring& pFilename);
 	static std::shared_ptr< ResourceManager > Instance();
 };
 

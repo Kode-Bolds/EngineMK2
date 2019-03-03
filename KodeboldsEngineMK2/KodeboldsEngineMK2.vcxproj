@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Header Files\Systems\RenderSystem.cpp" />
     <ClCompile Include="Source Files\HelperClasses\ObjLoader.cpp" />
     <ClCompile Include="Source Files\HelperClasses\VBO.cpp" />
     <ClCompile Include="Source Files\HelperClasses\VBO_DX.cpp" />
@@ -31,7 +32,8 @@
     <ClCompile Include="Source Files\Managers\ResourceManager.cpp" />
     <ClCompile Include="Source Files\Managers\SceneManager.cpp" />
     <ClCompile Include="Source Files\Systems\MovementSystem.cpp" />
-    <ClCompile Include="Source Files\Systems\RenderSystem.cpp" />
+    <ClCompile Include="Source Files\Systems\RenderSystem_DX.cpp" />
+    <ClCompile Include="Source Files\Systems\RenderSysten.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\Components\AI.h" />
@@ -69,6 +71,7 @@
     <ClInclude Include="Header Files\Systems\ISystem.h" />
     <ClInclude Include="Header Files\Systems\MovementSystem.h" />
     <ClInclude Include="Header Files\Systems\RenderSystem.h" />
+    <ClInclude Include="Header Files\Systems\RenderSystem_DX.h" />
     <ClInclude Include="Header Files\Systems\Systems.h" />
   </ItemGroup>
   <ItemGroup>
