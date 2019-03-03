@@ -1,6 +1,6 @@
 #pragma once
 #include "ShaderObject_DX.h"
-#include "RenderSystem.h"
+#include "RenderSystem_DX.h"
 
 /// <summary>
 /// 
@@ -65,7 +65,7 @@ ShaderObject_DX::~ShaderObject_DX()
 /// <param name="pEntryPoint"></param>
 /// <param name="pShaderModel"></param>
 /// <returns></returns>
-HRESULT ShaderObject_DX::CreateVertex(const RenderSystem* pRenderer, const std::wstring & pFilename, const std::string& pEntryPoint, const std::string& pShaderModel)
+HRESULT ShaderObject_DX::CreateVertex(const RenderSystem_DX* pRenderer, const std::wstring & pFilename, const std::string& pEntryPoint, const std::string& pShaderModel)
 {
 	HRESULT hr = S_OK;
 
@@ -119,7 +119,7 @@ HRESULT ShaderObject_DX::CreateVertex(const RenderSystem* pRenderer, const std::
 /// <param name="pEntryPoint"></param>
 /// <param name="pShaderModel"></param>
 /// <returns></returns>
-HRESULT ShaderObject_DX::CreatePixel(const RenderSystem* pRenderer, const std::wstring & pFilename, const std::string & pEntryPoint, const std::string & pShaderModel)
+HRESULT ShaderObject_DX::CreatePixel(const RenderSystem_DX* pRenderer, const std::wstring & pFilename, const std::string & pEntryPoint, const std::string & pShaderModel)
 {
 	HRESULT hr = S_OK;
 
@@ -149,7 +149,7 @@ HRESULT ShaderObject_DX::CreatePixel(const RenderSystem* pRenderer, const std::w
 /// 
 /// </summary>
 /// <param name="pRenderer"></param>
-void ShaderObject_DX::Load(const RenderSystem * pRenderer)
+void ShaderObject_DX::Load(const RenderSystem_DX * pRenderer) const 
 {
 	pRenderer->Context()->VSSetShader(mVertex.Get(), nullptr, 0);
 	pRenderer->Context()->IASetInputLayout(mLayout.Get());

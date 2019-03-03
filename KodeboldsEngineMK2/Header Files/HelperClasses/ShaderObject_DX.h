@@ -4,7 +4,7 @@
 #include <wrl.h>
 #include <d3d11.h>
 
-class RenderSystem;
+class RenderSystem_DX;
 
 class ShaderObject_DX :
 	public ShaderObject
@@ -20,7 +20,7 @@ public:
 	ShaderObject_DX();
 	virtual ~ShaderObject_DX();
 
-	HRESULT CreateVertex(const RenderSystem* pRenderer, const std::wstring& pFilename, const std::string& pEntryPoint, const std::string& pShaderModel) override;
-	HRESULT CreatePixel(const RenderSystem* pRenderer, const std::wstring& pFilename, const std::string& pEntryPoint, const std::string& pShaderModel) override;
-	void Load(const RenderSystem* pRenderer) override;
+	HRESULT CreateVertex(const RenderSystem_DX* pRenderer, const std::wstring& pFilename, const std::string& pEntryPoint, const std::string& pShaderModel) override;
+	HRESULT CreatePixel(const RenderSystem_DX* pRenderer, const std::wstring& pFilename, const std::string& pEntryPoint, const std::string& pShaderModel) override;
+	void Load(const RenderSystem_DX* pRenderer) const override;
 };
