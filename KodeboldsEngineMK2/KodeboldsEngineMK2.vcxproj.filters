@@ -40,10 +40,9 @@
     <ClCompile Include="Source Files\Systems\RenderSystem_DX.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\Systems\RenderSysten.cpp">
+    <ClCompile Include="Source Files\Systems\RenderSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="Header Files\Systems\RenderSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\Components\AI.h">

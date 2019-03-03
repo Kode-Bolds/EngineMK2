@@ -1,4 +1,6 @@
 struct Texture
 {
-	std::wstring mFilename;
+	std::wstring mDiffuse;
+	std::wstring mNormal;
+	std::wstring mHeight;
 };
