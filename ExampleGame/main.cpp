@@ -36,8 +36,8 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	}
 
 	//Testing vector4 class
-	Vector4 v1(1.0f, 1.0f, 1.0f, 0.0f);
-	Vector4 v2(1.0f, 1.0f, 1.0f, 0.0f);
+	KodeBoldsMath::Vector4 v1(1.0f, 1.0f, 1.0f, 0.0f);
+	KodeBoldsMath::Vector4 v2(1.0f, 1.0f, 1.0f, 0.0f);
 
 	v2.X = 1;
 	v2.Y = 1;
@@ -47,7 +47,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	//v2 = v1 + ((v1 * 2) - v2);
 
 	//Testing matrix4 class
-	Matrix4 m1;
+	KodeBoldsMath::Matrix4 m1;
 	m1 = KodeBoldsMath::Transpose(m1);
 
 	//Testing ECS Manager and movement system
@@ -72,8 +72,8 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	ecsManager->AddTransformComp(transform, "Test3");
 
 	//Testing velocity component
-	Vector4 velocityV(0.0f, 0.0f, 0.0f, 0.0f);
-	Vector4 acceleration(10.0f, 0.0f, 0.0f, 0.0f);
+	KodeBoldsMath::Vector4 velocityV(0.0f, 0.0f, 0.0f, 0.0f);
+	KodeBoldsMath::Vector4 acceleration(10.0f, 0.0f, 0.0f, 0.0f);
 	Velocity velocity{velocityV, acceleration, 1.0f};
 
 	ecsManager->AddVelocityComp(velocity, "Test");

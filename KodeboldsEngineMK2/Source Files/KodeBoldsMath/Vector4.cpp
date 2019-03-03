@@ -1,5 +1,7 @@
 #include "Vector4.h"
 
+using namespace KodeBoldsMath;
+
 /// <summary>
 /// Default constructor for Vector4, initialises all values to 0
 /// </summary>
