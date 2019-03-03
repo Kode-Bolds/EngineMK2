@@ -8,7 +8,7 @@ using namespace std;
 ResourceManager::ResourceManager() = default;
 ResourceManager::~ResourceManager() = default;
 
-const TextureObject * ResourceManager::LoadTexture(const RenderSystem_DX * pRenderer, const std::wstring & pFilename)
+const TextureObject * const ResourceManager::LoadTexture(const RenderSystem_DX * const pRenderer, const std::wstring & pFilename)
 {
 	auto hr{ S_OK };
 	//find and return from map
@@ -23,18 +23,18 @@ const TextureObject * ResourceManager::LoadTexture(const RenderSystem_DX * pRend
 	TextureObject_DX* newTexture{};
 	hr = newTexture->Create(pRenderer, pFilename);
 
-	if (!FAILED(hr))
+	if (FAILED(hr))
 	{
-		//add it to the map
-		mTextures.emplace_back(make_pair(pFilename, newTexture));
-		//return the last thing in the dictionary (the newly created texture)
-		return mTextures.end()->second;
+		return nullptr;
 	}
 
-	return nullptr;
+	//add it to the map
+	mTextures.emplace_back(make_pair(pFilename, newTexture));
+	//return the last thing in the dictionary (the newly created texture)
+	return mTextures.end()->second;
 }
 
-const VBO* ResourceManager::LoadGeometry(const RenderSystem_DX * pRenderer, const std::wstring& pFilename)
+const VBO * const ResourceManager::LoadGeometry(const RenderSystem_DX * const pRenderer, const std::wstring& pFilename)
 {
 	auto hr{ S_OK };
 	//find and return from map
@@ -47,49 +47,18 @@ const VBO* ResourceManager::LoadGeometry(const RenderSystem_DX * pRenderer, cons
 	}
 	//else create a new geometry
 	VBO_DX* newGeometry{};
-	newGeometry->Create(pRenderer, pFilename);
+	hr = newGeometry->Create(pRenderer, pFilename);
+	if (FAILED(hr))
+	{
+		return nullptr;
+	}
 	//add it to the map
 	mGeometries.emplace_back(make_pair(pFilename, newGeometry));
 	//return the last thing in the dictionary (the newly created geometry)
 	return mGeometries.end()->second;
 }
 
-HRESULT CompileShaderFromFile(const WCHAR * const pFileName, const LPCSTR pEntryPoint, const LPCSTR pShaderModel, ID3DBlob** const pBlobOut)
-{
-	auto hr{ S_OK };
-
-	DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
-#ifdef _DEBUG
-	// Set the D3DCOMPILE_DEBUG flag to embed debug information in the shaders.
-	// Setting this flag improves the shader debugging experience, but still allows 
-	// the shaders to be optimized and to run exactly the way they will run in 
-	// the release configuration of this program.
-	dwShaderFlags |= D3DCOMPILE_DEBUG;
-
-	// Disable optimizations to further improve shader debugging
-	dwShaderFlags |= D3DCOMPILE_SKIP_OPTIMIZATION;
-#endif
-
-
-
-	ID3DBlob* errorBlob = nullptr;
-	hr = D3DCompileFromFile(pFileName, nullptr, nullptr, pEntryPoint, pShaderModel,
-		dwShaderFlags, 0, pBlobOut, &errorBlob);
-	if (FAILED(hr))
-	{
-		if (errorBlob)
-		{
-			OutputDebugStringA(reinterpret_cast<const char*>(errorBlob->GetBufferPointer()));
-			errorBlob->Release();
-		}
-		return hr;
-	}
-	if (errorBlob) errorBlob->Release();
-
-	return hr;
-}
-
-const ShaderObject * ResourceManager::LoadShader(const RenderSystem_DX * pRenderer, const std::wstring & pFilename)
+const ShaderObject * const ResourceManager::LoadShader(const RenderSystem_DX * const pRenderer, const std::wstring & pFilename)
 {
 	auto hr{ S_OK };
 	//find and return from map
@@ -102,8 +71,16 @@ const ShaderObject * ResourceManager::LoadShader(const RenderSystem_DX * pRender
 	}
 	//else create a new shader
 	ShaderObject_DX* newShader{};
-	newShader->CreateVertex(pRenderer, pFilename, "VS", "vs_5_0");
-	newShader->CreatePixel(pRenderer, pFilename, "PS", "ps_5_0");
+	hr = newShader->CreateVertex(pRenderer, pFilename, "VS", "vs_5_0");
+	if (FAILED(hr))
+	{
+		return nullptr;
+	}
+	hr = newShader->CreatePixel(pRenderer, pFilename, "PS", "ps_5_0");
+	if (FAILED(hr))
+	{
+		return nullptr;
+	}
 	//add it to the map
 	mShaders.emplace_back(make_pair(pFilename, newShader));
 	//return the last thing in the dictionary (the newly created shader)

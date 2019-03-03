@@ -29,10 +29,10 @@ public:
 	ResourceManager(const ResourceManager& pResourceManager) = delete;
 	ResourceManager& operator=(ResourceManager const&) = delete;
 
-	const TextureObject* LoadTexture(const RenderSystem_DX* pRenderer, const std::wstring& pFilename);
-	const VBO* LoadGeometry(const RenderSystem_DX* pRenderer, const std::wstring& pFilename);
+	const TextureObject * const LoadTexture(const RenderSystem_DX * const pRenderer, const std::wstring& pFilename);
+	const VBO * const LoadGeometry(const RenderSystem_DX * const pRenderer, const std::wstring& pFilename);
 	//AUDIOBUFFER LoadAudio(string filename);
-	const ShaderObject* LoadShader(const RenderSystem_DX* pRenderer, const std::wstring& pFilename);
+	const ShaderObject * const LoadShader(const RenderSystem_DX * const pRenderer, const std::wstring& pFilename);
 	static std::shared_ptr< ResourceManager > Instance();
 };
 
