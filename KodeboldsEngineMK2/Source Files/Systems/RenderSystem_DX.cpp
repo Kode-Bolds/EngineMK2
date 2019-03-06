@@ -416,6 +416,9 @@ void RenderSystem_DX::Process()
 		LoadGeometry(entity);
 		LoadTexture(entity);
 		LoadShaders(entity);
+		//make a method to return pointer to values as array?
+		//add union to an array of floats?
+		//DirectX::XMFLOAT4X4(&(mEcsManager->TransformComp(entity.mID)->mTransform._11));
 	}
 
 	SwapBuffers();

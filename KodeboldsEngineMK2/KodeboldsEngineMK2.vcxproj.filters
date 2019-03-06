@@ -156,6 +156,15 @@
     <ClInclude Include="Header Files\Systems\RenderSystem_DX.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="Header Files\DataStructs\CullState.h">
+      <Filter>Header Files\DataStructs</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\DataStructs\BlendState.h">
+      <Filter>Header Files\DataStructs</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\DataStructs\DepthState.h">
+      <Filter>Header Files\DataStructs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">

@@ -33,6 +33,7 @@ public:
 	const VBO * const LoadGeometry(const RenderSystem_DX * const pRenderer, const std::wstring& pFilename);
 	//AUDIOBUFFER LoadAudio(string filename);
 	const ShaderObject * const LoadShader(const RenderSystem_DX * const pRenderer, const std::wstring& pFilename);
+
 	static std::shared_ptr< ResourceManager > Instance();
 };
 

@@ -1,3 +1,5 @@
+#pragma once
+
 struct Texture
 {
 	std::wstring mDiffuse;
