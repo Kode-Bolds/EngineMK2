@@ -294,11 +294,16 @@ HRESULT RenderSystem_DX::CreateRasterizer()
 	D3D11_RASTERIZER_DESC rasterizerDesc;
 	ZeroMemory(&rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
 	rasterizerDesc.FillMode = D3D11_FILL_SOLID;
-	rasterizerDesc.CullMode = D3D11_CULL_NONE;
+	rasterizerDesc.CullMode = D3D11_CULL_BACK;
 
 	hr = mDevice->CreateRasterizerState(&rasterizerDesc, mDefaultRasterizerState.GetAddressOf());
 
 	return hr;
+}
+
+HRESULT RenderSystem_DX::CreateBlend()
+{
+	return E_NOTIMPL;
 }
 
 /// <summary>
@@ -437,14 +442,20 @@ void RenderSystem_DX::Process()
 	SetLights();
 	for (const Entity& entity : mEntities)
 	{
-		LoadGeometry(entity);
+		auto geometry = LoadGeometry(entity);
 		LoadTexture(entity);
 		LoadShaders(entity);
 
 		//world
 		mCB.mWorld = XMFLOAT4X4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(entity.mID)->mTransform)));
 		mContext->UpdateSubresource(mConstantBuffer.Get(), 0, nullptr, &mCB, 0, 0);
-		
+
+		//mContext->OMSetBlendState()
+		//mContext->OMSetDepthStencilState(nullptr, 0);
+		mContext->RSSetState(mDefaultRasterizerState.Get());
+
+		//mContext->DrawIndexed(mEcsManager->GeometryComp(entity.mID)->)
+		geometry->Draw(this);
 	}
 
 	SwapBuffers();
@@ -466,10 +477,11 @@ void RenderSystem_DX::SwapBuffers() const
 /// Sets the given entities geometry buffers as the active buffers (does not create buffers that do not exist)
 /// </summary>
 /// <param name="pEntity"></param>
-void RenderSystem_DX::LoadGeometry(const Entity& pEntity) const
+const VBO * const RenderSystem_DX::LoadGeometry(const Entity& pEntity) const
 {
 	const auto geometry = mResourceManager->LoadGeometry(this, mEcsManager->GeometryComp(pEntity.mID)->mFilename);
 	geometry->Load(this);
+	return geometry;
 }
 
 void RenderSystem_DX::LoadShaders(const Entity & pEntity) const

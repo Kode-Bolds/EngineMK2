@@ -8,7 +8,7 @@ using namespace std;
 ResourceManager::ResourceManager() = default;
 ResourceManager::~ResourceManager() = default;
 
-const TextureObject * const ResourceManager::LoadTexture(const RenderSystem_DX * const pRenderer, const std::wstring & pFilename)
+const TextureObject * const ResourceManager::LoadTexture(const RenderSystem * const pRenderer, const std::wstring & pFilename)
 {
 	auto hr{ S_OK };
 	//find and return from map
@@ -34,7 +34,7 @@ const TextureObject * const ResourceManager::LoadTexture(const RenderSystem_DX *
 	return mTextures.end()->second;
 }
 
-const VBO * const ResourceManager::LoadGeometry(const RenderSystem_DX * const pRenderer, const std::wstring& pFilename)
+const VBO * const ResourceManager::LoadGeometry(const RenderSystem * const pRenderer, const std::wstring& pFilename)
 {
 	auto hr{ S_OK };
 	//find and return from map
@@ -58,7 +58,7 @@ const VBO * const ResourceManager::LoadGeometry(const RenderSystem_DX * const pR
 	return mGeometries.end()->second;
 }
 
-const ShaderObject * const ResourceManager::LoadShader(const RenderSystem_DX * const pRenderer, const std::wstring & pFilename)
+const ShaderObject * const ResourceManager::LoadShader(const RenderSystem * const pRenderer, const std::wstring & pFilename)
 {
 	auto hr{ S_OK };
 	//find and return from map

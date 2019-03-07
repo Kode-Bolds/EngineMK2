@@ -59,6 +59,7 @@ private:
 	HRESULT CreateRenderTarget() override;
 	HRESULT CreateDepth() override;
 	HRESULT CreateRasterizer() override;
+	HRESULT CreateBlend() override;
 	HRESULT CreateSampler() override;
 	void CreateViewport() const override;
 	HRESULT CreateConstantBuffers();
@@ -66,7 +67,7 @@ private:
 
 	void ClearView() const override;
 	void SwapBuffers() const override;
-	void LoadGeometry(const Entity& pEntity) const override;
+	const VBO * const LoadGeometry(const Entity& pEntity) const override;
 	void LoadShaders(const Entity& pEntity) const override;
 	void LoadTexture(const Entity& pEntity) const override;
 
