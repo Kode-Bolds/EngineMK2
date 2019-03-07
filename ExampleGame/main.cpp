@@ -5,11 +5,11 @@
 #include "Systems.h"
 #include "Components.h"
 #include "Matrix4.h"
-#include "TestScene.h"
-#include "TestScene2.h"
 #include "KodeBoldsMath.h"
 
 #pragma comment(lib, "KodeboldsEngineMK2.lib")
+
+using namespace KodeBoldsMath;
 
 HINSTANCE hInst = nullptr;
 HWND hWnd = nullptr;
@@ -36,19 +36,19 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	}
 
 	//Testing vector4 class
-	KodeBoldsMath::Vector4 v1(1.0f, 1.0f, 1.0f, 0.0f);
-	KodeBoldsMath::Vector4 v2(1.0f, 1.0f, 1.0f, 0.0f);
+	//KodeBoldsMath::Vector4 v1(1.0f, 1.0f, 1.0f, 0.0f);
+	//KodeBoldsMath::Vector4 v2(1.0f, 1.0f, 1.0f, 0.0f);
 
-	v2.X = 1;
-	v2.Y = 1;
-	v2.Z = 1;
+	//v2.X = 1;
+	//v2.Y = 1;
+	//v2.Z = 1;
 
-	v1 = v2 + v1;
+	//v1 = v2 + v1;
 	//v2 = v1 + ((v1 * 2) - v2);
 
 	//Testing matrix4 class
-	KodeBoldsMath::Matrix4 m1;
-	m1 = KodeBoldsMath::Transpose(m1);
+	//KodeBoldsMath::Matrix4 m1;
+	//m1 = KodeBoldsMath::Transpose(m1);
 
 	//Testing ECS Manager and movement system
 	std::shared_ptr<ECSManager> ecsManager = ECSManager::Instance();
@@ -57,42 +57,54 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	ecsManager->AddUpdateSystem(systPointer);
 	ecsManager->AddRenderSystem(renderer);
 
-	ecsManager->CreateEntity("Test");
-	ecsManager->CreateEntity("Test1");
-	ecsManager->CreateEntity("Test2");
-	ecsManager->CreateEntity("Test3");
+	ecsManager->CreateEntity("Cam");
+	ecsManager->CreateEntity("Cube");
+	ecsManager->CreateEntity("Light");
+	//ecsManager->CreateEntity("Test3");
 
 	//Testing transform component
 	Transform transform;
-	transform.mTranslation = v1;
+	transform.mTranslation = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+	ecsManager->AddTransformComp(transform, "Cam");
+	Camera camera{Vector4(0.0f, 0.0f, 5.0f, 1.0f), Vector4(0.0f, 1.0f, 0.0f, 1.0f), 60, 1, 500};
+	ecsManager->AddCameraComp(camera, "Cam");
 
-	ecsManager->AddTransformComp(transform, "Test");
-	ecsManager->AddTransformComp(transform, "Test1");
-	ecsManager->AddTransformComp(transform, "Test2");
-	ecsManager->AddTransformComp(transform, "Test3");
+	transform.mTranslation = Vector4(0.0f, 0.0f, 5.0f, 1.0f);
+	transform.mTransform = TranslationMatrix(transform.mTranslation);
+	ecsManager->AddTransformComp(transform, "Cube");
+	Geometry geometry{L"cube.obj"};
+	ecsManager->AddGeometryComp(geometry, "Cube");
+	Shader shader{L"defaultShader.fx", BlendState::NOBLEND, CullState::BACK, DepthState::NONE};
+	ecsManager->AddShaderComp(shader, "Cube");
+
+	transform.mTranslation = Vector4(0.0f, 5.0f, 0.0f, 1.0f);
+	ecsManager->AddTransformComp(transform, "Light");
+	Light light{Vector4(1.0f, 1.0f, 1.0f, 1.0f)};
+	ecsManager->AddLightComp(light, "Light");
+	//ecsManager->AddTransformComp(transform, "Test3");
 
 	//Testing velocity component
-	KodeBoldsMath::Vector4 velocityV(0.0f, 0.0f, 0.0f, 0.0f);
-	KodeBoldsMath::Vector4 acceleration(10.0f, 0.0f, 0.0f, 0.0f);
-	Velocity velocity{velocityV, acceleration, 1.0f};
+	//KodeBoldsMath::Vector4 velocityV(0.0f, 0.0f, 0.0f, 0.0f);
+	//KodeBoldsMath::Vector4 acceleration(10.0f, 0.0f, 0.0f, 0.0f);
+	//Velocity velocity{velocityV, acceleration, 1.0f};
 
-	ecsManager->AddVelocityComp(velocity, "Test");
+	/*ecsManager->AddVelocityComp(velocity, "Test");
 	ecsManager->AddVelocityComp(velocity, "Test1");
 	ecsManager->AddVelocityComp(velocity, "Test2");
-	ecsManager->AddVelocityComp(velocity, "Test3");
+	ecsManager->AddVelocityComp(velocity, "Test3");*/
 
-	Gravity gravity;
-	ecsManager->AddGravityComp(gravity, "Test");
+	//Gravity gravity;
+	//ecsManager->AddGravityComp(gravity, "Test");
 
-	ecsManager->RemoveTransformComp("Test1");
+	//ecsManager->RemoveTransformComp("Test1");
 
 
 	//Testing scene manager
-	std::shared_ptr<SceneManager> sceneManager = SceneManager::Instance();
+	//std::shared_ptr<SceneManager> sceneManager = SceneManager::Instance();
 
-	sceneManager->LoadScene<TestScene>();
+	//sceneManager->LoadScene<TestScene>();
 
-	sceneManager->LoadScene<TestScene2>();
+	//sceneManager->LoadScene<TestScene2>();
 
 
 
@@ -112,15 +124,15 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 			//Testing movement system
 			ecsManager->ProcessSystems();
 
-			velocity2 = *ecsManager->VelocityComp("Test");
+			//velocity2 = *ecsManager->VelocityComp("Test");
 
 			//Testing scene manager
-			sceneManager->Update();
-			sceneManager->Render();
+			//sceneManager->Update();
+			//sceneManager->Render();
 
-			double dt = sceneManager->DeltaTime();
-			int fps = sceneManager->Fps();
-			double time = sceneManager->Time();
+			//double dt = sceneManager->DeltaTime();
+			//int fps = sceneManager->Fps();
+			//double time = sceneManager->Time();
 		}
 	}
 

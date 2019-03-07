@@ -294,7 +294,7 @@ HRESULT RenderSystem_DX::CreateRasterizer()
 	D3D11_RASTERIZER_DESC rasterizerDesc;
 	ZeroMemory(&rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
 	rasterizerDesc.FillMode = D3D11_FILL_SOLID;
-	rasterizerDesc.CullMode = D3D11_CULL_BACK;
+	rasterizerDesc.CullMode = D3D11_CULL_NONE;
 
 	hr = mDevice->CreateRasterizerState(&rasterizerDesc, mDefaultRasterizerState.GetAddressOf());
 
@@ -348,6 +348,7 @@ HRESULT RenderSystem_DX::CreateConstantBuffers()
 	auto hr = S_OK;
 
 	D3D11_BUFFER_DESC bufferDesc;
+	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	bufferDesc.ByteWidth = sizeof(ConstantBuffer);
 	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -443,7 +444,7 @@ void RenderSystem_DX::Process()
 	for (const Entity& entity : mEntities)
 	{
 		auto geometry = LoadGeometry(entity);
-		LoadTexture(entity);
+		//LoadTexture(entity);
 		LoadShaders(entity);
 
 		//world
