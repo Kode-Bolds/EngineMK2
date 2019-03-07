@@ -1,11 +1,13 @@
 #include "RenderSystem_DX.h"
 
+using namespace DirectX;
+
 /// <summary>
 /// 
 /// </summary>
 /// <param name="pWindow"></param>
-RenderSystem_DX::RenderSystem_DX(const HWND& pWindow) : RenderSystem(ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_GEOMETRY | ComponentType::COMPONENT_SHADER), 
-	mWindow(pWindow), mActiveCamera(nullptr)
+RenderSystem_DX::RenderSystem_DX(const HWND& pWindow) : RenderSystem(ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_GEOMETRY | ComponentType::COMPONENT_SHADER),
+mWindow(pWindow), mActiveCamera(nullptr)
 {
 	if (FAILED(Init()))
 	{
@@ -69,7 +71,11 @@ HRESULT RenderSystem_DX::Init()
 	//#endif
 
 	//Create constant buffers
-	CreateConstantBuffers();
+	hr = CreateConstantBuffers();
+	if (FAILED(hr))
+	{
+		return hr;
+	}
 
 	return hr;
 }
@@ -334,7 +340,22 @@ void RenderSystem_DX::CreateViewport() const
 
 HRESULT RenderSystem_DX::CreateConstantBuffers()
 {
-	return E_NOTIMPL;
+	auto hr = S_OK;
+
+	D3D11_BUFFER_DESC bufferDesc;
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.ByteWidth = sizeof(ConstantBuffer);
+	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bufferDesc.CPUAccessFlags = 0;
+	hr = mDevice->CreateBuffer(&bufferDesc, nullptr, mConstantBuffer.GetAddressOf());
+	if (FAILED(hr))
+	{
+		return hr;
+	}
+	mContext->VSSetConstantBuffers(0, 1, mConstantBuffer.GetAddressOf());
+	mContext->PSSetConstantBuffers(0, 1, mConstantBuffer.GetAddressOf());
+
+	return hr;
 }
 
 /// <summary>
@@ -411,14 +432,19 @@ void RenderSystem_DX::AssignEntity(const Entity & pEntity)
 void RenderSystem_DX::Process()
 {
 	ClearView();
+	
+	SetViewProj();
+	SetLights();
 	for (const Entity& entity : mEntities)
 	{
 		LoadGeometry(entity);
 		LoadTexture(entity);
 		LoadShaders(entity);
-		//make a method to return pointer to values as array?
-		//add union to an array of floats?
-		//DirectX::XMFLOAT4X4(&(mEcsManager->TransformComp(entity.mID)->mTransform._11));
+
+		//world
+		mCB.mWorld = XMFLOAT4X4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(entity.mID)->mTransform)));
+		mContext->UpdateSubresource(mConstantBuffer.Get(), 0, nullptr, &mCB, 0, 0);
+		
 	}
 
 	SwapBuffers();
@@ -474,5 +500,33 @@ void RenderSystem_DX::LoadTexture(const Entity & pEntity) const
 	{
 		texture->Load(this, 2);
 	}
+}
+
+void RenderSystem_DX::SetViewProj()
+{
+	//view
+	const XMFLOAT4 position(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mActiveCamera->mID)->mTranslation)));
+	mCB.mCameraPosition = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mActiveCamera->mID)->mTranslation)));
+	const XMFLOAT4 lookAt(reinterpret_cast<float*>(&(mEcsManager->CameraComp(mActiveCamera->mID)->mLookAt)));
+	const XMFLOAT4 up(reinterpret_cast<float*>(&(mEcsManager->CameraComp(mActiveCamera->mID)->mUp)));
+
+	const XMVECTOR posVec = XMLoadFloat4(&position);
+	const XMVECTOR lookAtVec = XMLoadFloat4(&lookAt);
+	const XMVECTOR upVec = XMLoadFloat4(&up);
+
+	XMStoreFloat4x4(&mCB.mView, XMMatrixLookAtLH(posVec, lookAtVec, upVec));
+
+	//projection
+	const float fov = XMConvertToRadians(mEcsManager->CameraComp(mActiveCamera->mID)->mFOV);
+	const float aspectRatio = static_cast<float>(mWidth) / static_cast<float>(mHeight);
+	const float nearClip = mEcsManager->CameraComp(mActiveCamera->mID)->mNear;
+	const float farClip = mEcsManager->CameraComp(mActiveCamera->mID)->mFar;
+	XMStoreFloat4x4(&mCB.mProj, XMMatrixPerspectiveFovLH(fov, aspectRatio, nearClip, farClip));
+}
+
+void RenderSystem_DX::SetLights()
+{
+	mCB.mLightPosition = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mLights[0].mID)->mTranslation)));
+	mCB.mLightColour = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->LightComp(mLights[0].mID)->mColour)));
 }
 

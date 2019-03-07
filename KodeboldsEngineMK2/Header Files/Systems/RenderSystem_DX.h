@@ -12,6 +12,16 @@
 #include "ResourceManager.h"
 #include "RenderSystem.h"
 
+struct ConstantBuffer
+{
+	DirectX::XMFLOAT4X4 mWorld;
+	DirectX::XMFLOAT4X4 mView;
+	DirectX::XMFLOAT4X4 mProj;
+	DirectX::XMFLOAT4 mLightColour;
+	DirectX::XMFLOAT4 mLightPosition;
+	DirectX::XMFLOAT4 mCameraPosition;
+};
+
 class RenderSystem_DX : public RenderSystem
 {
 private:
@@ -22,6 +32,7 @@ private:
 	std::shared_ptr<ECSManager> mEcsManager = ECSManager::Instance();
 	std::shared_ptr<ResourceManager>  mResourceManager = ResourceManager::Instance();
 	const Entity* mActiveCamera;
+	ConstantBuffer mCB;
 
 	/// <summary>
 	/// DirectX pointers
@@ -58,6 +69,10 @@ private:
 	void LoadGeometry(const Entity& pEntity) const override;
 	void LoadShaders(const Entity& pEntity) const override;
 	void LoadTexture(const Entity& pEntity) const override;
+
+	void SetViewProj() override;
+	void SetLights() override;
+
 public:
 	explicit RenderSystem_DX(const HWND& pWindow);
 	virtual ~RenderSystem_DX();
