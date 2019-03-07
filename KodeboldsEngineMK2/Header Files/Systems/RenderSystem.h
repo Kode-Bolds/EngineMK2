@@ -6,6 +6,7 @@ class RenderSystem : public ISystem
 {
 protected:
 	RenderSystem(const ComponentType& pMask);
+
 public:
 	virtual ~RenderSystem() {};
 
@@ -24,4 +25,6 @@ public:
 	virtual void LoadGeometry(const Entity& pEntity) const = 0;
 	virtual void LoadShaders(const Entity& pEntity) const = 0;
 	virtual void LoadTexture(const Entity& pEntity) const = 0;
+	virtual void SetViewProj() = 0;
+	virtual void SetLights() = 0;
 };
