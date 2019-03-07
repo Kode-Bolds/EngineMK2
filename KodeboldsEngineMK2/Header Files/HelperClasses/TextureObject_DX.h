@@ -4,7 +4,7 @@
 #include <wrl.h>
 #include <d3d11.h>
 
-class RenderSystem_DX;
+class RenderSystem;
 
 class TextureObject_DX :
 	public TextureObject
@@ -16,6 +16,6 @@ public:
 	TextureObject_DX();
 	virtual ~TextureObject_DX();
 
-	HRESULT Create(const RenderSystem_DX* pRenderer, const std::wstring& pFilename) override;
-	void Load(const RenderSystem_DX* pRenderer, const int& pSlot) const override;
+	HRESULT Create(const RenderSystem* pRenderer, const std::wstring& pFilename) override;
+	void Load(const RenderSystem* pRenderer, const int& pSlot) const override;
 };

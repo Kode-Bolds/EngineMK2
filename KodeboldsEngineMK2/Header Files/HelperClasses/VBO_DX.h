@@ -16,8 +16,9 @@ public:
 	VBO_DX();
 	~VBO_DX();
 
-	HRESULT Create(const RenderSystem_DX* pRenderer, const std::wstring& pFilename) override;
-	void Load(const RenderSystem_DX* pRenderer) const override;
+	HRESULT Create(const RenderSystem* pRenderer, const std::wstring& pFilename) override;
+	void Load(const RenderSystem* pRenderer) const override;
+	void Draw(const RenderSystem* pRenderer) const override;
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer> Vertices() const { return mVertices; }
 	Microsoft::WRL::ComPtr<ID3D11Buffer> Indices() const { return mIndices; }
