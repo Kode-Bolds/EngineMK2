@@ -8,7 +8,7 @@
 class MovementSystem : public ISystem
 {
 private:
-	const float gravityAccel = -9.81f;
+	const float mGravityAccel = -9.81f;
 
 	std::shared_ptr<ECSManager> mEcsManager = ECSManager::Instance();
 	std::shared_ptr<SceneManager> mSceneManager = SceneManager::Instance();

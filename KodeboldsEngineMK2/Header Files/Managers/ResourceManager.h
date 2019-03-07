@@ -4,15 +4,22 @@
 #include <d3d11_1.h>
 #include <d3dcompiler.h>
 #include <directxmath.h>
+#include "DDSTextureLoader.h"
 #include <string>
 #include "ObjLoader.h"
+#include <wrl/client.h>
+#include "VBO_DX.h"
+#include "ShaderObject_DX.h"
+#include "TextureObject_DX.h"
 
-class ResourceManager final
+class RenderSystem_DX;
+
+class ResourceManager
 {
-	std::vector< std::pair< std::string, std::shared_ptr< ID3D11ShaderResourceView >>> mTextures{};
-	std::vector< std::pair< std::string, std::pair< std::shared_ptr< ID3D11Buffer >, std::shared_ptr< ID3D11Buffer >>>> mGeometries{};
-	std::vector< std::pair< std::string, std::shared_ptr< ID3D11Buffer >>> mInstances{};
-	std::vector< std::pair< std::string, std::pair< std::shared_ptr< ID3D11VertexShader >, std::shared_ptr< ID3D11PixelShader >>>> mShaders{};
+	std::vector< std::pair< std::wstring, TextureObject*>> mTextures{};
+	std::vector< std::pair< std::wstring, VBO*>> mGeometries{};
+	std::vector< std::pair< std::wstring, ShaderObject*>> mShaders{};
+	//std::vector< std::pair< std::wstring, Microsoft::WRL::ComPtr< ID3D11Buffer >>> mInstances{};
 	//std::vector< std::pair< string, AUDIOBUFFER>> mSounds;
 	ResourceManager();
 
@@ -22,10 +29,11 @@ public:
 	ResourceManager(const ResourceManager& pResourceManager) = delete;
 	ResourceManager& operator=(ResourceManager const&) = delete;
 
-	std::shared_ptr< ID3D11ShaderResourceView > LoadTexture(const std::string& pFilename);
-	std::pair< std::shared_ptr< ID3D11Buffer >, std::shared_ptr< ID3D11Buffer >> LoadGeometry(const std::string& pFilename);
+	const TextureObject * const LoadTexture(const RenderSystem * const pRenderer, const std::wstring& pFilename);
+	const VBO * const LoadGeometry(const RenderSystem * const pRenderer, const std::wstring& pFilename);
 	//AUDIOBUFFER LoadAudio(string filename);
-	std::pair< std::shared_ptr< ID3D11VertexShader >, std::shared_ptr< ID3D11PixelShader >> LoadShader(const std::string& pFilename);
+	const ShaderObject * const LoadShader(const RenderSystem * const pRenderer, const std::wstring& pFilename);
+
 	static std::shared_ptr< ResourceManager > Instance();
 };
 
