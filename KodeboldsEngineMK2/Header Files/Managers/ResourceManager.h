@@ -12,7 +12,7 @@
 #include "ShaderObject_DX.h"
 #include "TextureObject_DX.h"
 
-class RenderSystem_DX;
+class RenderSystem;
 
 class ResourceManager
 {

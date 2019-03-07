@@ -20,7 +20,7 @@ const TextureObject * const ResourceManager::LoadTexture(const RenderSystem * co
 		}
 	}
 	//else create a new texture
-	TextureObject_DX* newTexture{};
+	TextureObject* newTexture = new TextureObject_DX();
 	hr = newTexture->Create(pRenderer, pFilename);
 
 	if (FAILED(hr))
@@ -31,7 +31,7 @@ const TextureObject * const ResourceManager::LoadTexture(const RenderSystem * co
 	//add it to the map
 	mTextures.emplace_back(make_pair(pFilename, newTexture));
 	//return the last thing in the dictionary (the newly created texture)
-	return mTextures.end()->second;
+	return mTextures.back().second;
 }
 
 const VBO * const ResourceManager::LoadGeometry(const RenderSystem * const pRenderer, const std::wstring& pFilename)
@@ -46,7 +46,7 @@ const VBO * const ResourceManager::LoadGeometry(const RenderSystem * const pRend
 		}
 	}
 	//else create a new geometry
-	VBO_DX* newGeometry{};
+	VBO* newGeometry = new VBO_DX();
 	hr = newGeometry->Create(pRenderer, pFilename);
 	if (FAILED(hr))
 	{
@@ -55,7 +55,7 @@ const VBO * const ResourceManager::LoadGeometry(const RenderSystem * const pRend
 	//add it to the map
 	mGeometries.emplace_back(make_pair(pFilename, newGeometry));
 	//return the last thing in the dictionary (the newly created geometry)
-	return mGeometries.end()->second;
+	return mGeometries.back().second;
 }
 
 const ShaderObject * const ResourceManager::LoadShader(const RenderSystem * const pRenderer, const std::wstring & pFilename)
@@ -70,7 +70,7 @@ const ShaderObject * const ResourceManager::LoadShader(const RenderSystem * cons
 		}
 	}
 	//else create a new shader
-	ShaderObject_DX* newShader{};
+	ShaderObject* newShader = new ShaderObject_DX();
 	hr = newShader->CreateVertex(pRenderer, pFilename, "VS", "vs_5_0");
 	if (FAILED(hr))
 	{
@@ -84,7 +84,7 @@ const ShaderObject * const ResourceManager::LoadShader(const RenderSystem * cons
 	//add it to the map
 	mShaders.emplace_back(make_pair(pFilename, newShader));
 	//return the last thing in the dictionary (the newly created shader)
-	return mShaders.end()->second;
+	return mShaders.back().second;
 }
 
 std::shared_ptr<ResourceManager> ResourceManager::Instance()
