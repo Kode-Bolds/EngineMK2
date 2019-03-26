@@ -37,7 +37,7 @@ HRESULT VBO_DX::Create(const RenderSystem * pRenderer, const std::wstring& pFile
 	bd.ByteWidth = geometry.first.size() * sizeof(WORD);
 	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bd.CPUAccessFlags = 0;
-	initData.pSysMem = &(geometry.second[0]);
+	initData.pSysMem = &(geometry.first[0]);
 	hr = reinterpret_cast<const RenderSystem_DX*>(pRenderer)->Device()->CreateBuffer(&bd, &initData, mIndices.GetAddressOf());
 	if (FAILED(hr))
 		return hr;
