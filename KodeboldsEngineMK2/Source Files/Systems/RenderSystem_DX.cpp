@@ -455,7 +455,6 @@ void RenderSystem_DX::Process()
 		//mContext->OMSetDepthStencilState(nullptr, 0);
 		mContext->RSSetState(mDefaultRasterizerState.Get());
 
-		//mContext->DrawIndexed(mEcsManager->GeometryComp(entity.mID)->)
 		geometry->Draw(this);
 	}
 
@@ -465,7 +464,7 @@ void RenderSystem_DX::Process()
 
 void RenderSystem_DX::ClearView() const
 {
-	mContext->ClearRenderTargetView(mRenderTargetView.Get(), DirectX::Colors::CornflowerBlue);
+	mContext->ClearRenderTargetView(mRenderTargetView.Get(), Colors::CornflowerBlue);
 	mContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
