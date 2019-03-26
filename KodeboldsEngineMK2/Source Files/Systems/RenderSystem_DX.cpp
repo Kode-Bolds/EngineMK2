@@ -452,7 +452,7 @@ void RenderSystem_DX::Process()
 		mContext->UpdateSubresource(mConstantBuffer.Get(), 0, nullptr, &mCB, 0, 0);
 
 		//mContext->OMSetBlendState()
-		//mContext->OMSetDepthStencilState(nullptr, 0);
+		//mContext->OMSetDepthStencilState(NULL, 1);
 		mContext->RSSetState(mDefaultRasterizerState.Get());
 
 		//mContext->DrawIndexed(mEcsManager->GeometryComp(entity.mID)->)
