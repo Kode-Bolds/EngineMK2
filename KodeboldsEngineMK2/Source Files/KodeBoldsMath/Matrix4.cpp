@@ -73,7 +73,7 @@ Matrix4 & Matrix4::operator*=(const Matrix4 & rhs)
 
 	//Calculates dot product of the 2nd row with each column of the given matrix to get the new values for the 2nd row of the matrix
 	_21 = mRows[1].Dot(Vector4(rhs._11, rhs._21, rhs._31, rhs._41));
-	_21 = mRows[1].Dot(Vector4(rhs._12, rhs._22, rhs._32, rhs._42));
+	_22 = mRows[1].Dot(Vector4(rhs._12, rhs._22, rhs._32, rhs._42));
 	_23 = mRows[1].Dot(Vector4(rhs._13, rhs._23, rhs._33, rhs._43));
 	_24 = mRows[1].Dot(Vector4(rhs._14, rhs._24, rhs._34, rhs._44));
 
