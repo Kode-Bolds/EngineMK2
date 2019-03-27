@@ -527,14 +527,14 @@ void RenderSystem_DX::SetViewProj()
 	const XMVECTOR lookAtVec = XMLoadFloat4(&lookAt);
 	const XMVECTOR upVec = XMLoadFloat4(&up);
 
-	XMStoreFloat4x4(&mCB.mView, XMMatrixLookAtLH(posVec, lookAtVec, upVec));
+	XMStoreFloat4x4(&mCB.mView, XMMatrixTranspose(XMMatrixLookAtLH(posVec, lookAtVec, upVec)));
 
 	//projection
 	const float fov = XMConvertToRadians(mEcsManager->CameraComp(mActiveCamera->mID)->mFOV);
 	const float aspectRatio = static_cast<float>(mWidth) / static_cast<float>(mHeight);
 	const float nearClip = mEcsManager->CameraComp(mActiveCamera->mID)->mNear;
 	const float farClip = mEcsManager->CameraComp(mActiveCamera->mID)->mFar;
-	XMStoreFloat4x4(&mCB.mProj, XMMatrixPerspectiveFovLH(fov, aspectRatio, nearClip, farClip));
+	XMStoreFloat4x4(&mCB.mProj, XMMatrixTranspose(XMMatrixPerspectiveFovLH(fov, aspectRatio, nearClip, farClip)));
 }
 
 void RenderSystem_DX::SetLights()
