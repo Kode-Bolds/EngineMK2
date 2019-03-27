@@ -1,4 +1,5 @@
 #include "RenderSystem_DX.h"
+#include "KodeBoldsMath.h"
 
 using namespace DirectX;
 
@@ -452,7 +453,7 @@ void RenderSystem_DX::Process()
 		mContext->UpdateSubresource(mConstantBuffer.Get(), 0, nullptr, &mCB, 0, 0);
 
 		//mContext->OMSetBlendState()
-		//mContext->OMSetDepthStencilState(nullptr, 0);
+		//mContext->OMSetDepthStencilState(NULL, 1);
 		mContext->RSSetState(mDefaultRasterizerState.Get());
 
 		geometry->Draw(this);
@@ -526,7 +527,7 @@ void RenderSystem_DX::SetViewProj()
 	const XMVECTOR lookAtVec = XMLoadFloat4(&lookAt);
 	const XMVECTOR upVec = XMLoadFloat4(&up);
 
-	XMStoreFloat4x4(&mCB.mView, XMMatrixLookAtLH(posVec, lookAtVec, upVec));
+	XMStoreFloat4x4(&mCB.mView, XMMatrixTranspose(XMMatrixLookAtLH(posVec, lookAtVec, upVec)));
 
 	//projection
 	const float fov = XMConvertToRadians(mEcsManager->CameraComp(mActiveCamera->mID)->mFOV);
