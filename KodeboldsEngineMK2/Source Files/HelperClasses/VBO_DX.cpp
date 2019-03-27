@@ -34,7 +34,7 @@ HRESULT VBO_DX::Create(const RenderSystem * pRenderer, const std::wstring& pFile
 
 	//Create index buffer
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = geometry.first.size() * sizeof(WORD);
+	bd.ByteWidth = geometry.first.size() * sizeof(unsigned);
 	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 	initData.pSysMem = &(geometry.first[0]);

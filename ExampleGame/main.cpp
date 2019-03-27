@@ -62,17 +62,22 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	ecsManager->CreateEntity("Light");
 	//ecsManager->CreateEntity("Test3");
 
+	Vector4 v1(0.0f, 1.0f, 0.0f, 1.0f);
+	Vector4 v2(0.0f, 1.0f, 0.0f, 1.0f);
+
+	float dotP = v1.Dot(v2);
+
 	//Testing transform component
 	Transform transform;
-
-	transform.mTranslation = Vector4(0.0f, 0.0f, -1.0f, 1.0f);
+	transform.mTranslation = Vector4(0.0f, 0.0f, -5.0f, 1.0f);
 	ecsManager->AddTransformComp(transform, "Cam");
 	Camera camera{Vector4(0.0f, 0.0f, 1.0f, 1.0f), Vector4(0.0f, 1.0f, 0.0f, 1.0f), 60, 1, 500};
 	ecsManager->AddCameraComp(camera, "Cam");
 
 
 	transform.mTranslation = Vector4(0.0f, 0.0f, 5.0f, 1.0f);
-	transform.mTransform = TranslationMatrix(transform.mTranslation) * ScaleMatrix(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+	Matrix4 transformM = TranslationMatrix(transform.mTranslation);
+	transform.mTransform = RotationMatrixY(45);
 	ecsManager->AddTransformComp(transform, "Cube");
 	Geometry geometry{L"cube.obj"};
 	ecsManager->AddGeometryComp(geometry, "Cube");

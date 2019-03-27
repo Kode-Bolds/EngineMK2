@@ -534,7 +534,7 @@ void RenderSystem_DX::SetViewProj()
 	const float aspectRatio = static_cast<float>(mWidth) / static_cast<float>(mHeight);
 	const float nearClip = mEcsManager->CameraComp(mActiveCamera->mID)->mNear;
 	const float farClip = mEcsManager->CameraComp(mActiveCamera->mID)->mFar;
-	XMStoreFloat4x4(&mCB.mProj, XMMatrixPerspectiveFovLH(fov, aspectRatio, nearClip, farClip));
+	XMStoreFloat4x4(&mCB.mProj, XMMatrixTranspose(XMMatrixPerspectiveFovLH(fov, aspectRatio, nearClip, farClip)));
 }
 
 void RenderSystem_DX::SetLights()

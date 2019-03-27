@@ -45,7 +45,7 @@ float Vector4::Magnitude() const
 /// <returns>Dot product of the two vectors</returns>
 float Vector4::Dot(const Vector4 & b) const
 {
-	return (X * b.X) + (Y * b.Y) + (Z * b.Z);
+	return (X * b.X) + (Y * b.Y) + (Z * b.Z) + (W * b.W);
 }
 
 /// <summary>
