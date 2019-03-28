@@ -74,7 +74,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	Transform transform;
 	transform.mTranslation = Vector4(0.0f, 0.0f, -5.0f, 1.0f);
 	ecsManager->AddTransformComp(transform, "Cam");
-	Camera camera{Vector4(0.0f, 0.0f, 5.0f, 1.0f), Vector4(0.0f, 1.0f, 0.0f, 1.0f), 60, 1, 500};
+	Camera camera{Vector4(0.0f, 0.0f, 1.0f, 1.0f), Vector4(0.0f, 1.0f, 0.0f, 1.0f), 60, 1, 500};
 	ecsManager->AddCameraComp(camera, "Cam");
 
 	transform.mTranslation = Vector4(0.0f, 0.0f, 1.0f, 1.0f);
@@ -82,7 +82,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	ecsManager->AddTransformComp(transform, "Cube");
 	Geometry geometry{L"cube.obj"};
 	ecsManager->AddGeometryComp(geometry, "Cube");
-	Shader shader{L"defaultShader.fx", BlendState::NOBLEND, CullState::BACK, DepthState::NONE};
+	Shader shader{L"defaultShader.fx", BlendState::NOBLEND, CullState::NONE, DepthState::NONE};
 	ecsManager->AddShaderComp(shader, "Cube");
 
 	transform.mTranslation = Vector4(0.0f, 0.0f, -5.0f, 1.0f);
