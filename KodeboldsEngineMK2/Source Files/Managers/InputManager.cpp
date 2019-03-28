@@ -16,12 +16,12 @@ std::shared_ptr<InputManager> InputManager::Instance()
 	return instance;
 }
 
-const std::vector<std::pair<InputManager::KEYBOARD_BUTTONS, bool>> InputManager::KeyPresses() const
+const std::vector<std::pair<KEYBOARD_BUTTONS, bool>> InputManager::KeyPresses() const
 {
 	return std::vector<std::pair<KEYBOARD_BUTTONS, bool>>();
 }
 
-const std::vector<std::pair<InputManager::MOUSE_BUTTONS, bool>> InputManager::MousePresses() const
+const std::vector<std::pair<MOUSE_BUTTONS, bool>> InputManager::MousePresses() const
 {
 	return std::vector<std::pair<MOUSE_BUTTONS, bool>>();
 }
@@ -135,7 +135,7 @@ const void InputManager::MouseInput() {
 	if (mMouseTracker.middleButton == ButtonState::RELEASED) { pressedMouseButton = MOUSE_BUTTONS::MOUSE_BUTTON_MIDDLE; mouseButtonState = MOUSE_BUTTON_STATE::MOUSE_UP; }
 }
 
-const void InputManager::ReleasedKeys() const
+const void InputManager::ReleasedKeys()
 {
 	if (mKeyboardTracker.released.A) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_A; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
 	if (mKeyboardTracker.released.B) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_B; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_UP; }
@@ -297,7 +297,7 @@ const void InputManager::ReleasedKeys() const
 	if (mKeyboardTracker.released.Zoom) {}
 }
 
-const void InputManager::SinglePressKeys() const
+const void InputManager::SinglePressKeys()
 {
 	if (mKeyboardTracker.pressed.A) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_A; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
 	if (mKeyboardTracker.pressed.B) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_B; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
@@ -459,7 +459,7 @@ const void InputManager::SinglePressKeys() const
 	if (mKeyboardTracker.pressed.Zoom) {}
 }
 
-const void InputManager::HeldDownKeys(DirectX::Keyboard::State &state) const
+const void InputManager::HeldDownKeys(DirectX::Keyboard::State &state)
 {
 	if (state.A) {}
 	if (state.B) {}

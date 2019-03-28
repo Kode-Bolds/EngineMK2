@@ -35,7 +35,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	}
 	
 	// Testing Input Manager
-	std::shared_ptr<InputManager> inputManager = InputManager::Instance();
+	//std::shared_ptr<InputManager> inputManager = InputManager::Instance();
 	
 
 	//Testing vector4 class
@@ -80,7 +80,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	transform.mTranslation = Vector4(0.0f, 0.0f, 1.0f, 1.0f);
 	transform.mTransform *= TranslationMatrix(transform.mTranslation) * RotationMatrixX(DegreesToRadians(45)) * ScaleMatrix(Vector4(0.5f, 0.5f, 0.5f, 1.0f));
 	ecsManager->AddTransformComp(transform, "Cube");
-	Geometry geometry{L"cube.obj"};
+	Geometry geometry{L"test.obj"};
 	ecsManager->AddGeometryComp(geometry, "Cube");
 	Shader shader{L"defaultShader.fx", BlendState::NOBLEND, CullState::NONE, DepthState::NONE};
 	ecsManager->AddShaderComp(shader, "Cube");

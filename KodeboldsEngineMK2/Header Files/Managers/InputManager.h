@@ -7,34 +7,12 @@
 #include <Mouse.h>
 #include <memory>
 
-class InputManager
-{
-private:
-	InputManager();
-
-	std::shared_ptr<DirectX::Keyboard> mKeyboard;
-	DirectX::Keyboard::KeyboardStateTracker mKeyboardTracker;
-
-	std::shared_ptr<DirectX::Mouse> mMouse;
-	DirectX::Mouse::ButtonStateTracker mMouseTracker;
-
-	DirectX::XMFLOAT2 mMousePosition;
-	int mMouseWheelValue;
-
-	void Update();
-	void KeyboardInput();
-	const void SinglePressKeys() const;
-	const void ReleasedKeys() const;
-	const void HeldDownKeys(DirectX::Keyboard::State &state) const;
-	const void MouseInput();
-
-	enum MOUSE_BUTTONS
+	enum class MOUSE_BUTTONS
 	{
 		MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT, MOUSE_BUTTON_MIDDLE, NO_MOUSE_BUTTON,
 	};
-	static MOUSE_BUTTONS pressedMouseButton;
 
-	enum KEYBOARD_BUTTONS
+	enum class KEYBOARD_BUTTONS
 	{
 		// LETTERS
 		KEY_A, KEY_B, KEY_C, KEY_D, KEY_E, KEY_F, KEY_G, KEY_H, KEY_I, KEY_J, KEY_K, KEY_L, KEY_M,
@@ -57,19 +35,43 @@ private:
 
 		No_Keyboard_Button
 	};
-	static KEYBOARD_BUTTONS pressedKeyboardButton;
 
-	enum MOUSE_BUTTON_STATE
+	enum class MOUSE_BUTTON_STATE
 	{
 		MOUSE_DOWN, MOUSE_UP, MOUSE_HELD
 	};
-	static MOUSE_BUTTON_STATE mouseButtonState;
 
-	enum KEYBOARD_BUTTON_STATE
+	enum class KEYBOARD_BUTTON_STATE
 	{
 		KEY_DOWN, KEY_UP,
 	};
-	static KEYBOARD_BUTTON_STATE keyboardButtonState;
+
+class InputManager
+{
+private:
+	MOUSE_BUTTONS pressedMouseButton;
+	KEYBOARD_BUTTONS pressedKeyboardButton;
+	MOUSE_BUTTON_STATE mouseButtonState;
+	KEYBOARD_BUTTON_STATE keyboardButtonState;
+
+	InputManager();
+
+	std::shared_ptr<DirectX::Keyboard> mKeyboard;
+	DirectX::Keyboard::KeyboardStateTracker mKeyboardTracker;
+
+	std::shared_ptr<DirectX::Mouse> mMouse;
+	DirectX::Mouse::ButtonStateTracker mMouseTracker;
+
+	DirectX::XMFLOAT2 mMousePosition;
+	int mMouseWheelValue;
+
+	void Update();
+	void KeyboardInput();
+	const void SinglePressKeys();
+	const void ReleasedKeys();
+	const void HeldDownKeys(DirectX::Keyboard::State &state);
+	const void MouseInput();
+
 
 	std::vector<std::pair<KEYBOARD_BUTTONS, bool>> keyboardButtonPresses;
 	std::vector<std::pair<MOUSE_BUTTONS, bool>> mouseButtonPresses;
