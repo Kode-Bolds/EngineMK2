@@ -15,7 +15,6 @@ HINSTANCE hInst = nullptr;
 HWND hWnd = nullptr;
 
 HRESULT InitWindow(HINSTANCE pHInstance, int pNCmdShow);
-LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 /// <summary>
 /// Entry point to the program. Initializes everything and goes into a message processing loop.
@@ -34,6 +33,10 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	{
 		return 0;
 	}
+	
+	// Testing Input Manager
+	std::shared_ptr<InputManager> inputManager = InputManager::Instance();
+	
 
 	//Testing vector4 class
 	//KodeBoldsMath::Vector4 v1(1.0f, 1.0f, 1.0f, 0.0f);
@@ -74,17 +77,22 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	Camera camera{Vector4(0.0f, 0.0f, 1.0f, 1.0f), Vector4(0.0f, 1.0f, 0.0f, 1.0f), 60, 1, 500};
 	ecsManager->AddCameraComp(camera, "Cam");
 
+<<<<<<< HEAD
 
 	transform.mTranslation = Vector4(0.0f, 0.0f, 5.0f, 1.0f);
 	Matrix4 transformM = TranslationMatrix(transform.mTranslation);
 	transform.mTransform = RotationMatrixY(45);
+=======
+	transform.mTranslation = Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+	transform.mTransform *= TranslationMatrix(transform.mTranslation) * RotationMatrixX(DegreesToRadians(45)) * ScaleMatrix(Vector4(0.5f, 0.5f, 0.5f, 1.0f));
+>>>>>>> upstream/master
 	ecsManager->AddTransformComp(transform, "Cube");
 	Geometry geometry{L"cube.obj"};
 	ecsManager->AddGeometryComp(geometry, "Cube");
 	Shader shader{L"defaultShader.fx", BlendState::NOBLEND, CullState::NONE, DepthState::NONE};
 	ecsManager->AddShaderComp(shader, "Cube");
 
-	transform.mTranslation = Vector4(0.0f, 5.0f, 0.0f, 1.0f);
+	transform.mTranslation = Vector4(0.0f, 0.0f, -5.0f, 1.0f);
 	ecsManager->AddTransformComp(transform, "Light");
 	Light light{Vector4(1.0f, 1.0f, 1.0f, 1.0f)};
 	ecsManager->AddLightComp(light, "Light");
@@ -158,7 +166,7 @@ HRESULT InitWindow(const HINSTANCE pHInstance, const int pNCmdShow)
 	WNDCLASSEX wcex;
 	wcex.cbSize = sizeof(WNDCLASSEX);
 	wcex.style = CS_HREDRAW | CS_VREDRAW;
-	wcex.lpfnWndProc = WndProc;
+	wcex.lpfnWndProc = InputManager::WndProc;
 	wcex.cbClsExtra = 0;
 	wcex.cbWndExtra = 0;
 	wcex.hInstance = pHInstance;
@@ -189,29 +197,4 @@ HRESULT InitWindow(const HINSTANCE pHInstance, const int pNCmdShow)
 	ShowWindow(hWnd, pNCmdShow);
 
 	return static_cast<HRESULT>(0L);
-}
-
-LRESULT CALLBACK WndProc(const HWND hWnd, const UINT message, const WPARAM wParam, const LPARAM lParam)
-{
-
-	switch (message)
-	{
-	case WM_DESTROY:
-		PostQuitMessage(0);
-		break;
-
-	case WM_ACTIVATEAPP:
-		break;
-
-	case WM_KEYDOWN:
-	case WM_SYSKEYDOWN:
-	case WM_KEYUP:
-	case WM_SYSKEYUP:
-		break;
-
-	default:
-		return DefWindowProc(hWnd, message, wParam, lParam);
-	}
-
-	return 0;
 }

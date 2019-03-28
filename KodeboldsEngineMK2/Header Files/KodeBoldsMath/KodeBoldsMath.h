@@ -1,8 +1,10 @@
 #pragma once
 #include "Matrix4.h"
+#include <cmath>
 
 namespace KodeBoldsMath
 {
+	const double PI = 3.141592653589793238463;
 
 	/// <summary>
 	/// Creates a rotation matrix around the y axis with a given angle in radians
@@ -17,8 +19,8 @@ namespace KodeBoldsMath
 
 		Matrix4 matrix(
 			1, 0, 0, 0,
-			0, c, -s, 0,
-			0, s, c, 0,
+			0, c, s, 0,
+			0, -s, c, 0,
 			0, 0, 0, 1);
 
 		return matrix;
@@ -36,9 +38,9 @@ namespace KodeBoldsMath
 		float c = cos(pAngle);
 
 		Matrix4 matrix(
-			c, 0, s, 0,
+			c, 0, -s, 0,
 			0, 1, 0, 0,
-			-s, 0, c, 0,
+			s, 0, c, 0,
 			0, 0, 0, 1);
 
 		return matrix;
@@ -56,8 +58,8 @@ namespace KodeBoldsMath
 		float c = cos(pAngle);
 
 		Matrix4 matrix(
-			c, -s, 0, 0,
-			s, c, 0, 0,
+			c, s, 0, 0,
+			-s, c, 0, 0,
 			0, 0, 1, 0,
 			0, 0, 0, 1);
 
@@ -94,9 +96,9 @@ namespace KodeBoldsMath
 
 		Matrix4 matrix(
 			//Column 1             // Column 2            //Column 3             //Column 4
-			(c + xSqrd) * oneSubC, (xY * oneSubC) - zS, (xZ * oneSubC) + yS, 0,  //Row 1
-			(xY * oneSubC) + zS, (c + ySqrd) * oneSubC, (yZ * oneSubC) - xS, 0,  //Row 2
-			(xZ * oneSubC) - yS, (yZ * oneSubC) + xS, (c + zSqrd) * oneSubC, 0,  //Row 3
+			(c + xSqrd) * oneSubC, (xY * oneSubC) - zS,   (xZ * oneSubC) + yS,   0,  //Row 1
+			(xY * oneSubC) + zS,   (c + ySqrd) * oneSubC, (yZ * oneSubC) - xS,   0,  //Row 2
+			(xZ * oneSubC) - yS,   (yZ * oneSubC) + xS,   (c + zSqrd) * oneSubC, 0,  //Row 3
 			0, 0, 0, 1); //Row 4
 
 		return matrix;
@@ -148,5 +150,14 @@ namespace KodeBoldsMath
 			pMatrix._14, pMatrix._24, pMatrix._34, pMatrix._44);
 
 		return matrix;
+	}
+
+	/// <summary>
+	///  Converts given angle from degrees to radians
+	/// </summary>
+	/// <returns>Returns given angle in radians</returns>
+	static float DegreesToRadians(const float& pAngle)
+	{
+		return (pAngle * PI) / 180;
 	}
 }
