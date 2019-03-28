@@ -33,10 +33,10 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	{
 		return 0;
 	}
-	
+
 	// Testing Input Manager
-	//std::shared_ptr<InputManager> inputManager = InputManager::Instance();
-	
+	std::shared_ptr<InputManager> inputManager = InputManager::Instance();
+
 
 	//Testing vector4 class
 	//KodeBoldsMath::Vector4 v1(1.0f, 1.0f, 1.0f, 0.0f);
@@ -74,20 +74,21 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	Transform transform;
 	transform.mTranslation = Vector4(0.0f, 0.0f, -5.0f, 1.0f);
 	ecsManager->AddTransformComp(transform, "Cam");
-	Camera camera{Vector4(0.0f, 0.0f, 1.0f, 1.0f), Vector4(0.0f, 1.0f, 0.0f, 1.0f), 60, 1, 500};
+	Camera camera{ Vector4(0.0f, 0.0f, 1.0f, 1.0f), Vector4(0.0f, 1.0f, 0.0f, 1.0f), 60, 1, 500 };
 	ecsManager->AddCameraComp(camera, "Cam");
 
 	transform.mTranslation = Vector4(0.0f, 0.0f, 1.0f, 1.0f);
 	transform.mTransform *= TranslationMatrix(transform.mTranslation) * RotationMatrixX(DegreesToRadians(45)) * ScaleMatrix(Vector4(0.5f, 0.5f, 0.5f, 1.0f));
 	ecsManager->AddTransformComp(transform, "Cube");
+
 	Geometry geometry{L"cube.obj"};
 	ecsManager->AddGeometryComp(geometry, "Cube");
-	Shader shader{L"defaultShader.fx", BlendState::NOBLEND, CullState::NONE, DepthState::NONE};
+	Shader shader{ L"defaultShader.fx", BlendState::NOBLEND, CullState::NONE, DepthState::NONE };
 	ecsManager->AddShaderComp(shader, "Cube");
 
 	transform.mTranslation = Vector4(0.0f, 0.0f, -5.0f, 1.0f);
 	ecsManager->AddTransformComp(transform, "Light");
-	Light light{Vector4(1.0f, 1.0f, 1.0f, 1.0f)};
+	Light light{ Vector4(1.0f, 1.0f, 1.0f, 1.0f) };
 	ecsManager->AddLightComp(light, "Light");
 	//ecsManager->AddTransformComp(transform, "Test3");
 
@@ -108,7 +109,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 
 
 	//Testing scene manager
-	//std::shared_ptr<SceneManager> sceneManager = SceneManager::Instance();
+	std::shared_ptr<SceneManager> sceneManager = SceneManager::Instance();
 
 	//sceneManager->LoadScene<TestScene>();
 
@@ -131,6 +132,37 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 		{
 			//Testing movement system
 			ecsManager->ProcessSystems();
+
+			inputManager->Update();
+
+			auto keyPresses = inputManager->KeyPresses();
+			if (keyPresses.size() > 0)
+			{
+				auto A_KEY = std::find_if(keyPresses.begin(), keyPresses.end(), [&](const std::pair<KEYBOARD_BUTTONS, KEYBOARD_BUTTON_STATE>& key)
+				{
+					return key.first == KEYBOARD_BUTTONS::KEY_A && key.second == KEYBOARD_BUTTON_STATE::KEY_DOWN;
+				});
+				if (A_KEY != keyPresses.end())
+				{
+					ecsManager->TransformComp("Cam")->mTranslation += Vector4(1, 0, 0, 0)/* * sceneManager->DeltaTime()*/;
+					ecsManager->CameraComp("Cam")->mLookAt += Vector4(1, 0, 0, 0)/*  * sceneManager->DeltaTime()*/;
+				}
+			}
+
+			auto mousePresses = inputManager->MousePresses();
+			if (mousePresses.size() > 0)
+			{
+				auto LEFT_BUTTON = std::find_if(mousePresses.begin(), mousePresses.end(), [&](const std::pair<MOUSE_BUTTONS, MOUSE_BUTTON_STATE>& button)
+				{
+					return button.first == MOUSE_BUTTONS::MOUSE_BUTTON_LEFT && button.second == MOUSE_BUTTON_STATE::MOUSE_DOWN;
+				});
+				if (LEFT_BUTTON != mousePresses.end())
+				{
+					ecsManager->TransformComp("Cam")->mTranslation += Vector4(1, 0, 0, 0)/* * sceneManager->DeltaTime()*/;
+					ecsManager->CameraComp("Cam")->mLookAt += Vector4(1, 0, 0, 0)/*  * sceneManager->DeltaTime()*/;
+				}
+			}
+
 
 			//velocity2 = *ecsManager->VelocityComp("Test");
 
