@@ -77,15 +77,8 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	Camera camera{Vector4(0.0f, 0.0f, 1.0f, 1.0f), Vector4(0.0f, 1.0f, 0.0f, 1.0f), 60, 1, 500};
 	ecsManager->AddCameraComp(camera, "Cam");
 
-<<<<<<< HEAD
-
-	transform.mTranslation = Vector4(0.0f, 0.0f, 5.0f, 1.0f);
-	Matrix4 transformM = TranslationMatrix(transform.mTranslation);
-	transform.mTransform = RotationMatrixY(45);
-=======
 	transform.mTranslation = Vector4(0.0f, 0.0f, 1.0f, 1.0f);
 	transform.mTransform *= TranslationMatrix(transform.mTranslation) * RotationMatrixX(DegreesToRadians(45)) * ScaleMatrix(Vector4(0.5f, 0.5f, 0.5f, 1.0f));
->>>>>>> upstream/master
 	ecsManager->AddTransformComp(transform, "Cube");
 	Geometry geometry{L"cube.obj"};
 	ecsManager->AddGeometryComp(geometry, "Cube");
