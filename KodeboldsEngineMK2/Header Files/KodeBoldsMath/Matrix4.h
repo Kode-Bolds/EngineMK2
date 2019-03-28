@@ -1,5 +1,4 @@
 #pragma once
-#include <cmath>
 #include "Vector4.h"
 
 namespace KodeBoldsMath

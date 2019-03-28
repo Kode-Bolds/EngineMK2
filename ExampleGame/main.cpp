@@ -74,19 +74,18 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	Transform transform;
 	transform.mTranslation = Vector4(0.0f, 0.0f, -5.0f, 1.0f);
 	ecsManager->AddTransformComp(transform, "Cam");
-	Camera camera{Vector4(0.0f, 0.0f, 5.0f, 1.0f), Vector4(0.0f, 1.0f, 0.0f, 1.0f), 60, 1, 500};
+	Camera camera{Vector4(0.0f, 0.0f, 1.0f, 1.0f), Vector4(0.0f, 1.0f, 0.0f, 1.0f), 60, 1, 500};
 	ecsManager->AddCameraComp(camera, "Cam");
 
-	transform.mTranslation = Vector4(0.0f, 0.0f, 5.0f, 1.0f);
-	Matrix4 transformM = TranslationMatrix(transform.mTranslation);
-	transform.mTransform = RotationMatrixY(45);
+	transform.mTranslation = Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+	transform.mTransform *= TranslationMatrix(transform.mTranslation) * RotationMatrixX(DegreesToRadians(45)) * ScaleMatrix(Vector4(0.5f, 0.5f, 0.5f, 1.0f));
 	ecsManager->AddTransformComp(transform, "Cube");
 	Geometry geometry{L"test.obj"};
 	ecsManager->AddGeometryComp(geometry, "Cube");
-	Shader shader{L"defaultShader.fx", BlendState::NOBLEND, CullState::BACK, DepthState::NONE};
+	Shader shader{L"defaultShader.fx", BlendState::NOBLEND, CullState::NONE, DepthState::NONE};
 	ecsManager->AddShaderComp(shader, "Cube");
 
-	transform.mTranslation = Vector4(0.0f, 5.0f, 0.0f, 1.0f);
+	transform.mTranslation = Vector4(0.0f, 0.0f, -5.0f, 1.0f);
 	ecsManager->AddTransformComp(transform, "Light");
 	Light light{Vector4(1.0f, 1.0f, 1.0f, 1.0f)};
 	ecsManager->AddLightComp(light, "Light");
