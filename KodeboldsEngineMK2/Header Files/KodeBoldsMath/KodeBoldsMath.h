@@ -7,6 +7,19 @@ namespace KodeBoldsMath
 	const double PI = 3.141592653589793238463;
 
 	/// <summary>
+	/// Creates an identity matrix
+	/// </summary>
+	/// <returns>Returns an identity matrix</returns>
+	static Matrix4 Identity()
+	{
+		return Matrix4(
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1);
+	}
+
+	/// <summary>
 	/// Creates a rotation matrix around the y axis with a given angle in radians
 	/// </summary>
 	/// <param name="pAngle">Given angle of rotation</param>
@@ -159,5 +172,14 @@ namespace KodeBoldsMath
 	static float DegreesToRadians(const float& pAngle)
 	{
 		return (pAngle * PI) / 180;
+	}
+
+	/// <summary>
+	/// Converts given angle from radians to degrees
+	/// </summary>
+	/// <returns>REturns given angle in degrees</returns>
+	static float RadiansToDegrees(const float& pAngle)
+	{
+		return (pAngle * 180) / PI;
 	}
 }
