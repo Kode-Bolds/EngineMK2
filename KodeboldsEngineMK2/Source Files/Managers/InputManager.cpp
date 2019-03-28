@@ -16,14 +16,16 @@ std::shared_ptr<InputManager> InputManager::Instance()
 	return instance;
 }
 
-const std::vector<std::pair<KEYBOARD_BUTTONS, bool>> InputManager::KeyPresses() const
+const std::vector<std::pair<KEYBOARD_BUTTONS, KEYBOARD_BUTTON_STATE>> InputManager::KeyPresses() const
 {
-	return std::vector<std::pair<KEYBOARD_BUTTONS, bool>>();
+	/*return std::vector<std::pair<KEYBOARD_BUTTONS, bool>>();*/
+	return keyboardButtonPresses;
 }
 
-const std::vector<std::pair<MOUSE_BUTTONS, bool>> InputManager::MousePresses() const
+const std::vector<std::pair<MOUSE_BUTTONS, MOUSE_BUTTON_STATE>> InputManager::MousePresses() const
 {
-	return std::vector<std::pair<MOUSE_BUTTONS, bool>>();
+	//return std::vector<std::pair<MOUSE_BUTTONS, bool>>();
+	return mouseButtonPresses;
 }
 
 void InputManager::CenterCursor()
@@ -99,7 +101,7 @@ void InputManager::KeyboardInput()
 	mKeyboardTracker.Update(state);
 
 
-	HeldDownKeys(state); // Registers every frame that a key is pressed
+	//HeldDownKeys(state); // Registers every frame that a key is pressed
 	SinglePressKeys(); // Registers once
 	ReleasedKeys();
 }
@@ -125,7 +127,12 @@ const void InputManager::MouseInput() {
 	if (mMouseTracker.middleButton == ButtonState::HELD) { pressedMouseButton = MOUSE_BUTTONS::MOUSE_BUTTON_MIDDLE; mouseButtonState = MOUSE_BUTTON_STATE::MOUSE_HELD; }
 
 	// single mouse button presses
-	if (mMouseTracker.leftButton == ButtonState::PRESSED) { pressedMouseButton = MOUSE_BUTTONS::MOUSE_BUTTON_LEFT; mouseButtonState = MOUSE_BUTTON_STATE::MOUSE_DOWN; }
+	if (mMouseTracker.leftButton == ButtonState::PRESSED) {
+		pressedMouseButton = MOUSE_BUTTONS::MOUSE_BUTTON_LEFT;
+		mouseButtonState = MOUSE_BUTTON_STATE::MOUSE_DOWN;
+		mouseButtonPresses.push_back(std::pair<MOUSE_BUTTONS, MOUSE_BUTTON_STATE>(pressedMouseButton, mouseButtonState));
+	}
+
 	if (mMouseTracker.rightButton == ButtonState::PRESSED) { pressedMouseButton = MOUSE_BUTTONS::MOUSE_BUTTON_RIGHT; mouseButtonState = MOUSE_BUTTON_STATE::MOUSE_DOWN; }
 	if (mMouseTracker.middleButton == ButtonState::PRESSED) { pressedMouseButton = MOUSE_BUTTONS::MOUSE_BUTTON_MIDDLE; mouseButtonState = MOUSE_BUTTON_STATE::MOUSE_DOWN; }
 
@@ -299,7 +306,12 @@ const void InputManager::ReleasedKeys()
 
 const void InputManager::SinglePressKeys()
 {
-	if (mKeyboardTracker.pressed.A) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_A; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
+	if (mKeyboardTracker.pressed.A) {
+		pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_A;
+		keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN;
+		keyboardButtonPresses.push_back(std::pair<KEYBOARD_BUTTONS, KEYBOARD_BUTTON_STATE>(pressedKeyboardButton, keyboardButtonState));
+	}
+
 	if (mKeyboardTracker.pressed.B) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_B; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
 	if (mKeyboardTracker.pressed.C) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_C; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
 	if (mKeyboardTracker.pressed.D) { pressedKeyboardButton = KEYBOARD_BUTTONS::KEY_D; keyboardButtonState = KEYBOARD_BUTTON_STATE::KEY_DOWN; }
