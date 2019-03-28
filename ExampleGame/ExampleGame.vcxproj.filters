@@ -27,4 +27,7 @@
     <FxCompile Include="defaultShader.fx" />
     <FxCompile Include="defaultVS.hlsl" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>
