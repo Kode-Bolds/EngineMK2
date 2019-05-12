@@ -1,7 +1,8 @@
 #pragma once
 #include <cmath>
+#include "Vector3.h"
 
-namespace KodeBoldsMath
+namespace KodeboldsMath
 {
 	struct Vector4
 	{
@@ -15,9 +16,14 @@ namespace KodeBoldsMath
 		Vector4(const float x, const float y, const float z, const float w);
 		~Vector4();
 
+		//Accessors
+		Vector3 XYZ() { return Vector3(X, Y, Z); };
+		Vector2 XY() { return Vector2(X, Y); };
+		Vector2 XZ() { return Vector2(X, Z); };
+		Vector2 YZ() { return Vector2(Y, Z); };
+
 		//Maths methods
 		float Magnitude() const;
-		float Dot(const Vector4& b) const;
 		Vector4& Clamp(float pMagnitude);
 		Vector4& Normalise();
 

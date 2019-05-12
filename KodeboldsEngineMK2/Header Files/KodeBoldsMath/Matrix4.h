@@ -1,12 +1,13 @@
 #pragma once
 #include "Vector4.h"
 
-namespace KodeBoldsMath
+namespace KodeboldsMath
 {
 	struct Matrix4
 	{
 		union
 		{
+			float mElements[16];
 			Vector4 mRows[4];
 			struct
 			{

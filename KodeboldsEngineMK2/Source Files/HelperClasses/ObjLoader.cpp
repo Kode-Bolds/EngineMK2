@@ -1,16 +1,21 @@
 #include "ObjLoader.h"
 
 using namespace std;
-using namespace DirectX;
+using namespace KodeboldsMath;
 
+/// <summary>
+/// Loads vertices, indices, texcoords and normals into a Vertex struct from an obj file
+/// </summary>
+/// <param name="pFilename">File name of the obj file</param>
+/// <returns>Vertex containing the geometry data loaded from the obj file</returns>
 pair<vector<unsigned>, vector<Vertex>> ObjLoader::LoadObject(const wstring & pFilename)
 {
 	vector<unsigned> indices;
 	vector<Vertex> vertices;
 
-	vector<XMFLOAT3> positions;
-	vector<XMFLOAT2> texCoords;
-	vector<XMFLOAT3> normals;
+	vector<Vector3> positions;
+	vector<Vector2> texCoords;
+	vector<Vector3> normals;
 
 	vector<tuple<unsigned, unsigned, unsigned>> addedInd;
 	int indexCount = 0;
@@ -25,22 +30,22 @@ pair<vector<unsigned>, vector<Vertex>> ObjLoader::LoadObject(const wstring & pFi
 		if (type == "v")
 		{
 			//vertex position
-			XMFLOAT3 pos{};
-			fin >> pos.x >> pos.y >> pos.z;
+			Vector3 pos{};
+			fin >> pos.X >> pos.Y >> pos.Z;
 			positions.push_back(pos);
 		}
 		else if (type == "vt")
 		{
 			//vertex texture coordinates
-			XMFLOAT2 texCoord{};
-			fin >> texCoord.x >> texCoord.y;
+			Vector2 texCoord{};
+			fin >> texCoord.X >> texCoord.Y;
 			texCoords.push_back(texCoord);
 		}
 		else if (type == "vn")
 		{
 			//vertex normal
-			XMFLOAT3 norm{};
-			fin >> norm.x >> norm.y >> norm.z;
+			Vector3 norm{};
+			fin >> norm.X >> norm.Y >> norm.Z;
 			normals.push_back(norm);
 		}
 		else if (type == "f")
@@ -58,9 +63,9 @@ pair<vector<unsigned>, vector<Vertex>> ObjLoader::LoadObject(const wstring & pFi
 					//if it hasnt been created, add the vertex, and add a new index
 					addedInd.emplace_back(make_tuple(posIndex, texIndex, normIndex));
 					Vertex v{};
-					v.mPosition = positions[posIndex - 1];
-					v.mNormal = normals[normIndex - 1];
-					v.mTexCoords = texCoords[texIndex - 1];
+					v.position = positions[posIndex - 1];
+					v.normal = normals[normIndex - 1];
+					v.texCoords = texCoords[texIndex - 1];
 					vertices.push_back(v);
 					indices.push_back(indexCount);
 					++indexCount;

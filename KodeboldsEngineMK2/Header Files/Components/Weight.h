@@ -1,0 +1,4 @@
+struct Weight
+{
+	int weight;
+};

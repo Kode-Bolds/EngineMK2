@@ -3,13 +3,13 @@
 #include "RenderSystem_DX.h"
 
 /// <summary>
-/// 
+/// Compiles a shader from file
 /// </summary>
-/// <param name="pFilename"></param>
-/// <param name="pEntryPoint"></param>
-/// <param name="pShaderModel"></param>
-/// <param name="pBlobOut"></param>
-/// <returns></returns>
+/// <param name="pFilename">File name of the shader</param>
+/// <param name="pEntryPoint">Entry point of the shader</param>
+/// <param name="pShaderModel">Shader model of the shader</param>
+/// <param name="pBlobOut">D3DBlob containing the shader data</param>
+/// <returns>HRESULT status code</returns>
 HRESULT ShaderObject_DX::CompileShader(const std::wstring & pFilename, const std::string& pEntryPoint, const std::string& pShaderModel, ID3DBlob** const pBlobOut) const
 {
 	HRESULT hr = S_OK;
@@ -45,26 +45,26 @@ HRESULT ShaderObject_DX::CompileShader(const std::wstring & pFilename, const std
 }
 
 /// <summary>
-/// 
+/// Default constructor
 /// </summary>
 ShaderObject_DX::ShaderObject_DX()
 {
 }
 
 /// <summary>
-/// 
+/// Default destructor
 /// </summary>
 ShaderObject_DX::~ShaderObject_DX()
 {
 }
 
 /// <summary>
-/// 
+/// Creates a vertex shader and stores it in the shader object
 /// </summary>
-/// <param name="pFilename"></param>
-/// <param name="pEntryPoint"></param>
-/// <param name="pShaderModel"></param>
-/// <returns></returns>
+/// <param name="pFilename">File name of the vertex shader</param>
+/// <param name="pEntryPoint">Entry point of the vertex shader</param>
+/// <param name="pShaderModel">Shader model of the vertex shader</param>
+/// <returns>HRESULT status code</returns>
 HRESULT ShaderObject_DX::CreateVertex(const RenderSystem* pRenderer, const std::wstring & pFilename, const std::string& pEntryPoint, const std::string& pShaderModel)
 {
 	HRESULT hr = S_OK;
@@ -80,7 +80,6 @@ HRESULT ShaderObject_DX::CreateVertex(const RenderSystem* pRenderer, const std::
 	}
 
 	// Creates the vertex shader
-	ID3D11VertexShader* vertexShader = nullptr;
 	hr = reinterpret_cast<const RenderSystem_DX*>(pRenderer)->Device()->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, mVertex.GetAddressOf());
 	if (FAILED(hr))
 	{
@@ -94,14 +93,10 @@ HRESULT ShaderObject_DX::CreateVertex(const RenderSystem* pRenderer, const std::
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		//{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		//{ "BITANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		//{ "INSTANCEPOSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
 	};
 	UINT numElements = ARRAYSIZE(layout);
 
 	// Create the shader input layout
-	ID3D11InputLayout* vertexLayout = nullptr;
 	hr = reinterpret_cast<const RenderSystem_DX*>(pRenderer)->Device()->CreateInputLayout(layout, numElements, pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), mLayout.GetAddressOf());
 	pVSBlob->Release();
 	if (FAILED(hr))
@@ -113,12 +108,12 @@ HRESULT ShaderObject_DX::CreateVertex(const RenderSystem* pRenderer, const std::
 }
 
 /// <summary>
-/// 
+/// Creates a pixel shader and stores it in the shader object
 /// </summary>
-/// <param name="pFilename"></param>
-/// <param name="pEntryPoint"></param>
-/// <param name="pShaderModel"></param>
-/// <returns></returns>
+/// <param name="pFilename">File name of the pixel shader</param>
+/// <param name="pEntryPoint">Entry point of the pixel shader</param>
+/// <param name="pShaderModel">Shader model of the pixel shader</param>
+/// <returns>HRESULT status code</returns>
 HRESULT ShaderObject_DX::CreatePixel(const RenderSystem* pRenderer, const std::wstring & pFilename, const std::string & pEntryPoint, const std::string & pShaderModel)
 {
 	HRESULT hr = S_OK;
@@ -134,7 +129,6 @@ HRESULT ShaderObject_DX::CreatePixel(const RenderSystem* pRenderer, const std::w
 	}
 
 	// Creates the pixel shader
-	ID3D11PixelShader* pixelShader = nullptr;
 	hr = reinterpret_cast<const RenderSystem_DX*>(pRenderer)->Device()->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, mPixel.GetAddressOf());
 	pPSBlob->Release();
 	if (FAILED(hr))
@@ -146,9 +140,9 @@ HRESULT ShaderObject_DX::CreatePixel(const RenderSystem* pRenderer, const std::w
 }
 
 /// <summary>
-/// 
+/// Loads the shaders contained in the shader object into the buffers of the render system
 /// </summary>
-/// <param name="pRenderer"></param>
+/// <param name="pRenderer">Render system to assign the buffers to</param>
 void ShaderObject_DX::Load(const RenderSystem * pRenderer) const 
 {
 	reinterpret_cast<const RenderSystem_DX*>(pRenderer)->Context()->VSSetShader(mVertex.Get(), nullptr, 0);
