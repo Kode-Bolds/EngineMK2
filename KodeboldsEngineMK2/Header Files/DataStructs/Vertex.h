@@ -1,9 +1,9 @@
 #pragma once
-#include <directxmath.h>
+#include "KodeboldsMath.h"
 
 struct Vertex
 {
-	DirectX::XMFLOAT3 mPosition;
-	DirectX::XMFLOAT3 mNormal;
-	DirectX::XMFLOAT2 mTexCoords;
+	KodeboldsMath::Vector3 position;
+	KodeboldsMath::Vector3 normal;
+	KodeboldsMath::Vector2 texCoords;
 };

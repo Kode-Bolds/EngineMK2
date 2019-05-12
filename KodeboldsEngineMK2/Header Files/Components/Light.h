@@ -4,5 +4,5 @@
 struct Light
 {
 	//x, y, z for r, g, b and w for intensity
-	KodeBoldsMath::Vector4 mColour;
+	KodeboldsMath::Vector4 colour;
 };

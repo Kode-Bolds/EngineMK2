@@ -3,10 +3,10 @@
 
 struct Camera
 {
-	KodeBoldsMath::Vector4 mLookAt;
-	KodeBoldsMath::Vector4 mUp;
+	KodeboldsMath::Vector4 lookAt;
+	KodeboldsMath::Vector4 up;
 
-	float mFOV;
-	float mNear;
-	float mFar;
+	float FOV;
+	float nearPlane;
+	float farPlane;
 };

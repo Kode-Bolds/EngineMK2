@@ -1,6 +1,6 @@
 #include "Vector4.h"
 
-using namespace KodeBoldsMath;
+using namespace KodeboldsMath;
 
 /// <summary>
 /// Default constructor for Vector4, initialises all values to 0
@@ -36,16 +36,6 @@ Vector4::~Vector4()
 float Vector4::Magnitude() const
 {
 	return sqrt((X * X) + (Y * Y) + (Z * Z));
-}
-
-/// <summary>
-/// Calculates and returns the dot product between this vector and a given vector
-/// </summary>
-/// <param name="b">Given vector to do this vector with</param>
-/// <returns>Dot product of the two vectors</returns>
-float Vector4::Dot(const Vector4 & b) const
-{
-	return (X * b.X) + (Y * b.Y) + (Z * b.Z) + (W * b.W);
 }
 
 /// <summary>

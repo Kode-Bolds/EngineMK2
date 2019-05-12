@@ -43,6 +43,45 @@
     <ClCompile Include="Source Files\Systems\RenderSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="Source Files\KodeboldsMath\Vector2.cpp">
+      <Filter>Source Files\KodeBoldsMath</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\KodeboldsMath\Vector3.cpp">
+      <Filter>Source Files\KodeBoldsMath</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Managers\AntTweakManager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Managers\InputManager_DX.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Managers\InputManager_GL.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Managers\NetworkManager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Managers\ThreadManager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Systems\RenderSystem_GL.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\HelperClasses\ShaderObject_GL.cpp">
+      <Filter>Source Files\HelperClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\HelperClasses\Task.cpp">
+      <Filter>Source Files\HelperClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\HelperClasses\TextureObject_GL.cpp">
+      <Filter>Source Files\HelperClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\HelperClasses\Thread.cpp">
+      <Filter>Source Files\HelperClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\HelperClasses\VBO_GL.cpp">
+      <Filter>Source Files\HelperClasses</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\Components\AI.h">
@@ -124,13 +163,10 @@
       <Filter>Header Files\Managers</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\KodeBoldsMath\Matrix4.h">
-      <Filter>Header Files\KodeBoldsMath</Filter>
+      <Filter>Header Files\KodeboldsMath</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\KodeBoldsMath\Vector4.h">
-      <Filter>Header Files\KodeBoldsMath</Filter>
-    </ClInclude>
-    <ClInclude Include="Header Files\KodeBoldsMath\KodeBoldsMath.h">
-      <Filter>Header Files\KodeBoldsMath</Filter>
+      <Filter>Header Files\KodeboldsMath</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\HelperClasses\VBO.h">
       <Filter>Header Files\HelperClasses</Filter>
@@ -165,6 +201,57 @@
     <ClInclude Include="Header Files\DataStructs\DepthState.h">
       <Filter>Header Files\DataStructs</Filter>
     </ClInclude>
+    <ClInclude Include="Header Files\KodeboldsMath\KodeboldsMath.h">
+      <Filter>Header Files\KodeboldsMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\KodeboldsMath\Vector2.h">
+      <Filter>Header Files\KodeboldsMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\KodeboldsMath\Vector3.h">
+      <Filter>Header Files\KodeboldsMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Managers\AntTweakManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Managers\InputManager_DX.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Managers\InputManager_GL.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Managers\NetworkManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Managers\ThreadManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Systems\RenderSystem_GL.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\ShaderObject_GL.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\Task.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\TextureObject_GL.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\Thread.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\VBO_GL.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\Colour.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\Ray.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\Weight.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
@@ -185,9 +272,6 @@
     <Filter Include="Header Files\Managers">
       <UniqueIdentifier>{7c3694f9-4a42-420f-bb49-25e31ffb4338}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Components">
-      <UniqueIdentifier>{ed6f643a-8661-4667-b668-4d02755e519e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\HelperClasses">
       <UniqueIdentifier>{f6073586-2a37-44b1-bff9-75bd24763291}</UniqueIdentifier>
     </Filter>
@@ -200,11 +284,11 @@
     <Filter Include="Header Files\DataStructs">
       <UniqueIdentifier>{bb7a16b2-7c29-4528-9e61-6ea87cd38892}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\KodeBoldsMath">
-      <UniqueIdentifier>{e6c5287b-1dd7-4c6d-be0d-da6837691a67}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\KodeBoldsMath">
       <UniqueIdentifier>{96c02329-d0ce-41c8-9dff-9a02239e23a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\KodeboldsMath">
+      <UniqueIdentifier>{e6c5287b-1dd7-4c6d-be0d-da6837691a67}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -20,6 +20,7 @@ struct ConstantBuffer
 	DirectX::XMFLOAT4 mLightColour;
 	DirectX::XMFLOAT4 mLightPosition;
 	DirectX::XMFLOAT4 mCameraPosition;
+	DirectX::XMFLOAT4 colour;
 };
 
 class RenderSystem_DX : public RenderSystem
@@ -28,11 +29,15 @@ private:
 	std::vector<Entity> mLights;
 	HWND mWindow;
 	UINT mWidth{};
-	UINT mHeight{};
+	UINT height{};
 	std::shared_ptr<ECSManager> mEcsManager = ECSManager::Instance();
 	std::shared_ptr<ResourceManager>  mResourceManager = ResourceManager::Instance();
 	const Entity* mActiveCamera;
+	VBO* mGeometry;
 	ConstantBuffer mCB;
+
+	std::wstring mActiveGeometry;
+	std::wstring mActiveShader;
 
 	/// <summary>
 	/// DirectX pointers
@@ -67,7 +72,7 @@ private:
 
 	void ClearView() const override;
 	void SwapBuffers() const override;
-	const VBO * const LoadGeometry(const Entity& pEntity) const override;
+	VBO * const LoadGeometry(const Entity& pEntity) const override;
 	void LoadShaders(const Entity& pEntity) const override;
 	void LoadTexture(const Entity& pEntity) const override;
 
@@ -80,6 +85,7 @@ public:
 
 
 	void AssignEntity(const Entity& pEntity) override;
+	void ReAssignEntity(const Entity& pEntity) override;
 	void Process() override;
 	Microsoft::WRL::ComPtr<ID3D11Device> Device() const { return mDevice; }
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> Context() const { return mContext; }
