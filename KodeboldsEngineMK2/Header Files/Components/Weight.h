@@ -1,4 +1,0 @@
-struct Weight
-{
-	int weight;
-};

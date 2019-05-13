@@ -9,10 +9,7 @@ using namespace std;
 /// <param name="pEntity">The given entity to assign to systems</param>
 void ECSManager::AssignEntity(const Entity & pEntity)
 {
-	for (auto & system : mRenderSystems)
-	{
-		system->AssignEntity(pEntity);
-	}
+	mRenderSystem->AssignEntity(pEntity);
 
 	for (auto & system : mUpdateSystems)
 	{
@@ -26,10 +23,7 @@ void ECSManager::AssignEntity(const Entity & pEntity)
 /// <param name="pEntity">Entity to re-assign</param>
 void ECSManager::ReAssignEntity(const Entity & pEntity)
 {
-	for (auto & system : mRenderSystems)
-	{
-		system->ReAssignEntity(pEntity);
-	}
+	mRenderSystem->ReAssignEntity(pEntity);
 
 	for (auto & system : mUpdateSystems)
 	{
@@ -42,24 +36,23 @@ void ECSManager::ReAssignEntity(const Entity & pEntity)
 /// Resizes entity and component vectors upon construction to a reasonably large size to avoid performance overhead of resizing
 /// </summary>
 ECSManager::ECSManager()
-	:mEntityID(0), mTargetRenderingFrequency(60), mTargetNetworkingFrequency(10)
+	:mEntityID(0)
 {
-	mEntities.reserve(200000);
-	mAIs.resize(200000);
-	mAudios.resize(20000);
-	mBoxColliders.resize(200000);
-	mCameras.resize(200000);
-	mColours.resize(200000);
-	mGeometries.resize(200000);
-	mGravities.resize(200000);
-	mLights.resize(200000);
-	mRays.resize(200000);
-	mShaders.resize(200000);
-	mSphereColliders.resize(200000);
-	mTextures.resize(200000);
-	mTransforms.resize(200000);
-	mVelocities.resize(200000);
-	mWeights.resize(200000);
+	mEntities.reserve(MAX_ENTITIES);
+	mAIs.resize(MAX_ENTITIES);
+	mAudios.resize(MAX_ENTITIES);
+	mBoxColliders.resize(MAX_ENTITIES);
+	mCameras.resize(MAX_ENTITIES);
+	mColours.resize(MAX_ENTITIES);
+	mGeometries.resize(MAX_ENTITIES);
+	mGravities.resize(MAX_ENTITIES);
+	mLights.resize(MAX_ENTITIES);
+	mRays.resize(MAX_ENTITIES);
+	mShaders.resize(MAX_ENTITIES);
+	mSphereColliders.resize(MAX_ENTITIES);
+	mTextures.resize(MAX_ENTITIES);
+	mTransforms.resize(MAX_ENTITIES);
+	mVelocities.resize(MAX_ENTITIES);
 }
 
 /// <summary>
@@ -81,39 +74,12 @@ std::shared_ptr<ECSManager> ECSManager::Instance()
 }
 
 /// <summary>
-/// Get/Set method for the target rendering frequency
-/// </summary>
-/// <returns>Modifiable handle to </returns>
-int & ECSManager::TargetRenderingFrequency()
-{
-	return mTargetRenderingFrequency;
-}
-
-/// <summary>
-/// Get/Set method for the target networking frequency
-/// </summary>
-/// <returns>Modifiable handle to the networking frequency</returns>
-int & ECSManager::TargetNetworkingFrequency()
-{
-	return mTargetNetworkingFrequency;
-}
-
-/// <summary>
 /// Get method for the rendering frequency
 /// </summary>
 /// <returns>Rendering frequency</returns>
 const int& ECSManager::RenderingFrequency()
 {
 	return mRenderingFrequency;
-}
-
-/// <summary>
-/// Get method for the networking frequency
-/// </summary>
-/// <returns>Networking frequency</returns>
-const int& ECSManager::NetworkingFrequency()
-{
-	return mNetworkingFrequency;
 }
 
 /// <summary>
@@ -213,11 +179,6 @@ void ECSManager::DestroyEntity(const int pEntityID)
 	{
 		RemoveVelocityComp(pEntityID);
 	}
-	//Weight Comp
-	if ((entity->componentMask & ComponentType::COMPONENT_WEIGHT) == ComponentType::COMPONENT_WEIGHT)
-	{
-		RemoveWeightComp(pEntityID);
-	}
 
 	//Finds the entity with the matching ID and removes it from the entities vector
 	mEntities[pEntityID] = Entity{};
@@ -239,16 +200,10 @@ void ECSManager::AddUpdateSystem(shared_ptr<ISystem> pSystem)
 /// <param name="pSystem">Pointer to the given system</param>
 void ECSManager::AddRenderSystem(shared_ptr<ISystem> pSystem)
 {
-	mRenderSystems.push_back(pSystem);
-}
-
-/// <summary>
-/// Adds the given system to the network system vector
-/// </summary>
-/// <param name="pSystem">Pointer to the given system</param>
-void ECSManager::AddNetworkSystem(std::shared_ptr<ISystem> pSystem)
-{
-	mNetworkSystems.push_back(pSystem);
+	if (!mRenderSystem)
+	{
+		mRenderSystem = pSystem;
+	}
 }
 
 /// <summary>
@@ -256,86 +211,39 @@ void ECSManager::AddNetworkSystem(std::shared_ptr<ISystem> pSystem)
 /// </summary>
 void ECSManager::ProcessSystems()
 {
+	//Run update systems
 	for (auto & system : mUpdateSystems)
 	{
 		system->Process();
 	}
 
-	for (auto & system : mRenderSystems)
+	//If render task has already been assigned
+	if (mRenderTask)
 	{
-		//If render task has already been assigned
-		if (mRenderTask)
+		//Check if render task has been completed
+		if (mRenderTask->IsDone())
 		{
-			//Check if render task has been completed
-			if (mRenderTask->IsDone())
-			{
-				//Calculate time taken
-				mRenderFinish = std::chrono::high_resolution_clock::now();
-				mRenderTime = mRenderFinish - mRenderStart;
+			//Calculate time taken
+			mRenderFinish = std::chrono::high_resolution_clock::now();
+			mRenderTime = mRenderFinish - mRenderStart;
 
-				//Convert timings to miliseconds for frequency calculations
-				float targetMiliseconds = static_cast<float>(1000 / mTargetRenderingFrequency);
-				float renderTimeMiliseconds = static_cast<float>(mRenderTime.count() / pow(10, 6));
+			//Convert timings to miliseconds for frequency calculations
+			float renderTimeMiliseconds = static_cast<float>(mRenderTime.count() / pow(10, 6));
 
-				//If render task took longer than target frequency, create new task
-				//Else wait until the time meets the target frequency
-				if (renderTimeMiliseconds >= targetMiliseconds)
-				{
-					//Calculate the actual rendering frequency
-					mRenderingFrequency = static_cast<int>(1000 / renderTimeMiliseconds);
+			//Calculate the actual rendering frequency
+			mRenderingFrequency = static_cast<int>(1000 / renderTimeMiliseconds);
 
-					// Cleanup then create new task and set start time
-					mRenderTask->CleanUpTask();
-					mRenderTask = mThreadManager->AddTask(std::bind(&ISystem::Process, system), nullptr, nullptr, std::vector<int>{0});
-					mRenderStart = std::chrono::high_resolution_clock::now();
-				}
-			}
-		}
-		else
-		{
-			//Create render task and set start time
-			mRenderTask = mThreadManager->AddTask(std::bind(&ISystem::Process, system), nullptr, nullptr, std::vector<int>{0});
+			//Cleanup then create new task and set start time
+			mRenderTask->CleanUpTask();
+			mRenderTask = mThreadManager->AddTask(std::bind(&ISystem::Process, mRenderSystem), nullptr, nullptr, std::vector<int>{0});
 			mRenderStart = std::chrono::high_resolution_clock::now();
 		}
-		//system->Process();
 	}
-
-	for (auto & system : mNetworkSystems)
+	else
 	{
-		//If network task has already been assigned
-		if (mNetworkingTask)
-		{
-			//Check if network task has been completed
-			if (mNetworkingTask->IsDone())
-			{
-				//Calculate time taken
-				mNetworkFinish = std::chrono::high_resolution_clock::now();
-				mNetworkTime = mNetworkFinish - mNetworkStart;
-
-				//Convert timings to miliseconds for frequency calculations
-				float targetMiliseconds = static_cast<float>(1000 / mTargetNetworkingFrequency);
-				float networkTimeMiliseconds = static_cast<float>(mNetworkTime.count() / pow(10, 6));
-
-				//If networking task took longer than target frequency, create new task
-				//Else wait until the time meets the target frequency
-				if (networkTimeMiliseconds >= targetMiliseconds)
-				{
-					//Calculate the actual networking frequency
-					mNetworkingFrequency = static_cast<int>(1000 / networkTimeMiliseconds);
-
-					// Cleanup then create new task and set start time
-					mNetworkingTask->CleanUpTask();
-					mNetworkingTask = mThreadManager->AddTask(std::bind(&ISystem::Process, system), nullptr, nullptr, std::vector<int>{1});
-					mNetworkStart = std::chrono::high_resolution_clock::now();
-				}
-			}
-		}
-		else
-		{
-			//Create network task
-			mNetworkingTask = mThreadManager->AddTask(std::bind(&ISystem::Process, system), nullptr, nullptr, std::vector<int>{1});
-			mNetworkStart = std::chrono::high_resolution_clock::now();
-		}
+		//Create render task and set start time
+		mRenderTask = mThreadManager->AddTask(std::bind(&ISystem::Process, mRenderSystem), nullptr, nullptr, std::vector<int>{0});
+		mRenderStart = std::chrono::high_resolution_clock::now();
 	}
 }
 
@@ -509,19 +417,6 @@ void ECSManager::AddVelocityComp(const Velocity & pVelocity, const int pEntityID
 }
 
 /// <summary>
-/// Adds a Weight component to the entity with a given ID
-/// </summary>
-/// <param name="pVelocity">Weight component to add</param>
-/// <param name="pEntityID">Given ID of the entity</param>
-void ECSManager::AddWeightComp(const Weight & pWeight, const int pEntityID)
-{
-	Entity* entity = &mEntities[pEntityID];
-	mWeights[pEntityID] = pWeight;
-	entity->componentMask |= ComponentType::COMPONENT_WEIGHT;
-	AssignEntity(*entity);
-}
-
-/// <summary>
 /// Removes an AI component from the entity with a given ID
 /// </summary>
 /// <param name="pEntityID">Given ID of the entity</param>
@@ -666,17 +561,6 @@ void ECSManager::RemoveVelocityComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
 	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_VELOCITY; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
-	ReAssignEntity(*entity);
-}
-
-/// <summary>
-/// Removes a Weight component from the entity with a given ID
-/// </summary>
-/// <param name="pEntityID">Given ID of the entity</param>
-void ECSManager::RemoveWeightComp(const int pEntityID)
-{
-	Entity* entity = &mEntities[pEntityID];
-	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_WEIGHT; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 	ReAssignEntity(*entity);
 }
 
@@ -886,21 +770,6 @@ Velocity * const ECSManager::VelocityComp(const int pEntityID)
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_VELOCITY) == ComponentType::COMPONENT_VELOCITY)
 	{
 		return &mVelocities[pEntityID];
-	}
-	return nullptr;
-}
-
-/// <summary>
-/// Returns a modifiable handle to the Weight component associated with the given entity ID
-/// </summary>
-/// <param name="pEntityID">Given entity ID</param>
-/// <returns>Modifiable handle to Weight component</returns>
-Weight * const ECSManager::WeightComp(const int pEntityID)
-{
-	//Checks if entity actually owns a component of this type
-	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_WEIGHT) == ComponentType::COMPONENT_WEIGHT)
-	{
-		return &mWeights[pEntityID];
 	}
 	return nullptr;
 }
