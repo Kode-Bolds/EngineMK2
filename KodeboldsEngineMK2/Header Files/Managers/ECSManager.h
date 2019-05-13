@@ -20,6 +20,7 @@ private:
 	std::vector<Entity> mEntities;
 	std::vector<int> mFreeEntityIDs;
 	int mEntityID;
+	const int MAX_ENTITIES = 200000;
 
 	//Components
 	std::vector<AI> mAIs;
@@ -36,26 +37,20 @@ private:
 	std::vector<Texture> mTextures;
 	std::vector<Transform> mTransforms;
 	std::vector<Velocity> mVelocities;
-	std::vector<Weight> mWeights;
+	std::vector<CustomComponent*> mCustomComponentTypes;
+	std::vector<void*> mCustomComponentVectors;
 
 	//Systems
-	std::vector<std::shared_ptr<ISystem>> mRenderSystems;
+	std::shared_ptr<ISystem> mRenderSystem;
 	std::vector<std::shared_ptr<ISystem>> mUpdateSystems;
 	std::vector<std::shared_ptr<ISystem>> mNetworkSystems;
 
 	//Render and network threads
 	Task* mRenderTask = nullptr;
-	Task* mNetworkingTask = nullptr;
-	int mTargetRenderingFrequency;
-	int mTargetNetworkingFrequency;
 	int mRenderingFrequency;
-	int mNetworkingFrequency;
 	std::chrono::high_resolution_clock::time_point mRenderStart;
 	std::chrono::high_resolution_clock::time_point mRenderFinish;
 	std::chrono::nanoseconds mRenderTime;
-	std::chrono::high_resolution_clock::time_point mNetworkStart;
-	std::chrono::high_resolution_clock::time_point mNetworkFinish;
-	std::chrono::nanoseconds mNetworkTime;
 
 	//Entity management
 	void AssignEntity(const Entity& pEntity);
@@ -74,10 +69,7 @@ public:
 	static std::shared_ptr<ECSManager> Instance();
 
 	//Frequencies get/sets
-	int& TargetRenderingFrequency();
-	int& TargetNetworkingFrequency();
 	const int& RenderingFrequency();
-	const int& NetworkingFrequency();
 
 	//Entity creation
 	const int CreateEntity();
@@ -86,8 +78,23 @@ public:
 	//System management
 	void AddUpdateSystem(std::shared_ptr<ISystem> pSystem);
 	void AddRenderSystem(std::shared_ptr<ISystem> pSystem);
-	void AddNetworkSystem(std::shared_ptr<ISystem> pSystem);
 	void ProcessSystems();
+
+	template<class T>
+	/// <summary>
+	/// Creates a new custom component of type T
+	/// NEED TO FIGURE OUT HOW TO CREATE NEW MASK ENUM FOR THIS HERE TOO
+	/// </summary>
+	void CreateComponentType()
+	{
+		//Add new type to types list
+		mCustomComponentTypes.push_back(new T());
+
+		//Create vector for new type
+		std::vector<T>* newVector = new std::vector<T>();
+		newVector->resize(MAX_ENTITIES);
+		mCustomComponentVectors.push_back(static_cast<void*>(newVector));
+	}
 
 	//Add methods for components
 	void AddAIComp(const AI& pAI, const int pEntityID);
@@ -103,7 +110,36 @@ public:
 	void AddTextureComp(const Texture& pTexture, const int pEntityID);
 	void AddTransformComp(const Transform& pTransform, const int pEntityID);
 	void AddVelocityComp(const Velocity& pVelocity, const int pEntityID);
-	void AddWeightComp(const Weight& pWeight, const int pEntityID);
+
+
+	template <class T>
+	/// <summary>
+	/// Add a custom component of type T to the given entity
+	/// </summary>
+	/// <param name="pComponent">Component to add</param>
+	/// <param name="pEntityID">ID of given entity</param>
+	/// <returns>Bool representing whether the addition of this custom component was successful or not</returns>
+	bool AddComponent(const T& pComponent, const int pEntityID)
+	{
+		//Loop through custom types to find matching type
+		for (int i = 0; i < mCustomComponentTypes.size(); i++)
+		{
+			//Check if type matches
+			if (dynamic_cast<T*>(mCustomComponentTypes[i]))
+			{
+				//Retrieve vector that contains this type and then add new component to vector
+				std::vector<T>* componentVector = static_cast<std::vector<T>*>(mCustomComponentVectors[i]);
+				componentVector[pEntityID] = pComponent;
+
+				Entity* entity = &mEntities[pEntityID];
+				//entity->componentMask |= ComponentType::COMPONENT_AI; NEED TO FIGURE OUT HOW TO DO ENUM MASKS
+				AssignEntity(*entity);
+
+				return true;
+			}
+		}
+		return false;
+	};
 
 	//Remove methods for components
 	void RemoveAIComp(const int pEntityID);
@@ -119,7 +155,6 @@ public:
 	void RemoveTextureComp(const int pEntityID);
 	void RemoveTransformComp(const int pEntityID);
 	void RemoveVelocityComp(const int pEntityID);
-	void RemoveWeightComp(const int pEntityID);
 
 
 	//Accessors
@@ -137,5 +172,30 @@ public:
 	Texture* const TextureComp(const int pEntityID);
 	Transform* const TransformComp(const int pEntityID);
 	Velocity* const VelocityComp(const int pEntityID);
-	Weight* const WeightComp(const int pEntityID);
+
+	template <class T>
+	/// <summary>
+	/// Get component of type T for the given entity
+	/// </summary>
+	/// <param name="pEntityID">ID of given entity</param>
+	/// <returns>Modifiable handle to the component of type T</returns>
+	T* const GetComponent(const int pEntityID)
+	{
+		//Checks if entity actually owns a component of this type
+		if (true)//(mEntities[pEntityID].componentMask & ComponentType::COMPONENT_LIGHT) == ComponentType::COMPONENT_LIGHT) COMPARE WITH MASK TO SEE IF ENTITY OWNS A COMPONENT OF TYPE T
+		{
+			//Loop through custom types to find matching type
+			for (int i = 0; i < mCustomComponentTypes.size(); i++)
+			{
+				//Check if type matches
+				if (dynamic_cast<T*>(mCustomComponentTypes[i]))
+				{
+					//Retrieve vector that contains this type and then retrieve component for given entity
+					std::vector<T>* componentVector = static_cast<std::vector<T>*>(mCustomComponentVectors[i]);
+					return (T*)&componentVector[pEntityID];
+				}
+			}
+		}
+		return nullptr;
+	};
 };

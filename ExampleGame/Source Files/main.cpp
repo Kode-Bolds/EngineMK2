@@ -5,8 +5,10 @@
 #include "GameScene.h"
 #include "RayAABBIntersectionSystem.h"
 #include "NetworkSystem.h"
+#include "CustomComp1.h"
+#include "CustomComp2.h"
 
-#pragma comment(lib, "Engine.lib")
+#pragma comment(lib, "KodeboldsEngineMK2.lib")
 
 using namespace KodeboldsMath;
 
@@ -61,9 +63,23 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	system = std::make_shared<RayAABBIntersectionSystem>();
 	ecsManager->AddUpdateSystem(system);
 
-	//Network system
-	system = std::make_shared<NetworkSystem>();
-	ecsManager->AddNetworkSystem(system);
+	ecsManager->CreateComponentType<CustomComp1>();
+	ecsManager->CreateComponentType<CustomComp2>();
+
+	CustomComp1 CC1{};
+	if (!ecsManager->AddComponent<CustomComp1>(CC1, 0))
+	{
+		OutputDebugString(L"REEEEEE");
+	}
+
+	CustomComp2 CC2{};
+	if (!ecsManager->AddComponent<CustomComp2>(CC2, 0))
+	{
+		OutputDebugString(L"REEEEEE");
+	}
+
+	CustomComp1* CC1Ptr = ecsManager->GetComponent<CustomComp1>(0);
+	CustomComp2* CC2Ptr = ecsManager->GetComponent<CustomComp2>(0);
 
 	//Scenes
 	sceneManager->LoadScene<GameScene>();

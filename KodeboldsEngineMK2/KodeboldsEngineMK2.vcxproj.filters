@@ -249,7 +249,7 @@
     <ClInclude Include="Header Files\Components\Ray.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Header Files\Components\Weight.h">
+    <ClInclude Include="Header Files\Components\CustomComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
