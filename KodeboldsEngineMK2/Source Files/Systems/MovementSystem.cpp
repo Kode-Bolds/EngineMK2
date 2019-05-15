@@ -3,8 +3,9 @@
 /// <summary>
 /// 
 /// </summary>
-MovementSystem::MovementSystem() : ISystem(ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_VELOCITY)
+MovementSystem::MovementSystem() : ISystem(std::vector<ComponentType>{ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_VELOCITY})
 {
+	mEntities = std::vector<Entity>(mEcsManager->MaxEntities(), Entity{ -1, ComponentType::COMPONENT_NONE });
 }
 
 /// <summary>
@@ -20,26 +21,30 @@ MovementSystem::~MovementSystem()
 /// <param name="pEntity"></param>
 void MovementSystem::AssignEntity(const Entity & pEntity)
 {
-	//Finds if an entity that matches given entities ID exists and returns it
-	auto entity = find_if(mEntities.begin(), mEntities.end(), [&](const Entity& entity) {return entity.ID == pEntity.ID; });
-
-	if ((pEntity.componentMask & mMask) == mMask)
+	//Checks if entity mask matches the movement mask
+	if ((pEntity.componentMask & mMasks[0]) == mMasks[0])
 	{
-		//If entity is not already assigned to this system add it to list
-		if (entity == mEntities.end())
-		{
-			mEntities.push_back(pEntity);
-		}
-		//If entity is already assigned to this system update it's mask
-		else
-		{
-			entity->componentMask = pEntity.componentMask;
-		}
+		//Update entry in systems entity list
+		mEntities[pEntity.ID] = pEntity;
 	}
-	//If entity mask does not match system mask, remove from list
+}
+
+/// <summary>
+/// 
+/// </summary>
+/// <param name="pEntity"></param>
+void MovementSystem::ReAssignEntity(const Entity & pEntity)
+{
+	//Checks if entity mask matches the movement mask
+	if ((pEntity.componentMask & mMasks[0]) == mMasks[0])
+	{
+		//If the entity matches movement mask then update entry in systems entity list
+		mEntities[pEntity.ID] = pEntity;
+	}
 	else
 	{
-		mEntities.erase(remove_if(mEntities.begin(), mEntities.end(), [&](const Entity& entity) {return entity.ID == pEntity.ID; }), mEntities.end());
+		//If the mask doesn't match then set ID to -1
+		mEntities[pEntity.ID].ID = -1;
 	}
 }
 
@@ -48,25 +53,29 @@ void MovementSystem::AssignEntity(const Entity & pEntity)
 /// </summary>
 void MovementSystem::Process()
 {
-	for(const Entity& entity : mEntities)
-	{		
-		//Check if entity has gravity component
-		if ((entity.componentMask & ComponentType::COMPONENT_GRAVITY) == ComponentType::COMPONENT_GRAVITY)
+	for (const Entity& entity : mEntities)
+	{
+		if (entity.ID != -1)
 		{
-			//Modify velocity by gravity acceleration
-			mEcsManager->VelocityComp(entity.ID)->velocity.Y += mGravityAccel * mSceneManager->DeltaTime();
+			//Check if entity has gravity component
+			if ((entity.componentMask & ComponentType::COMPONENT_GRAVITY) == ComponentType::COMPONENT_GRAVITY)
+			{
+				//Modify velocity by gravity acceleration
+				mEcsManager->VelocityComp(entity.ID)->velocity.Y += mGravityAccel * static_cast<float>(mSceneManager->DeltaTime());
+			}
+
+			//Modify velocity by acceleration
+			mEcsManager->VelocityComp(entity.ID)->velocity += mEcsManager->VelocityComp(entity.ID)->acceleration * static_cast<float>(mSceneManager->DeltaTime());
+
+			//Clamp velocity magnitude to max speed of entity
+			if (mEcsManager->VelocityComp(entity.ID)->velocity.Magnitude() > mEcsManager->VelocityComp(entity.ID)->maxSpeed)
+			{
+				mEcsManager->VelocityComp(entity.ID)->velocity.Clamp(mEcsManager->VelocityComp(entity.ID)->maxSpeed);
+			}
+
+			//Modify translation by velocity
+			mEcsManager->TransformComp(entity.ID)->translation += mEcsManager->VelocityComp(entity.ID)->velocity * static_cast<float>(mSceneManager->DeltaTime());
+			mEcsManager->TransformComp(entity.ID)->transform *= KodeboldsMath::TranslationMatrix(mEcsManager->VelocityComp(entity.ID)->velocity * static_cast<float>(mSceneManager->DeltaTime()));
 		}
-
-		//Modify velocity by acceleration
-		mEcsManager->VelocityComp(entity.ID)->velocity += mEcsManager->VelocityComp(entity.ID)->acceleration * mSceneManager->DeltaTime();
-
-		//Clamp velocity magnitude to max speed of entity
-		if (mEcsManager->VelocityComp(entity.ID)->velocity.Magnitude() > mEcsManager->VelocityComp(entity.ID)->maxSpeed)
-		{
-			mEcsManager->VelocityComp(entity.ID)->velocity.Clamp(mEcsManager->VelocityComp(entity.ID)->maxSpeed);
-		}
-
-		//Modify translation by velocity
-		mEcsManager->TransformComp(entity.ID)->translation += mEcsManager->VelocityComp(entity.ID)->velocity * mSceneManager->DeltaTime();
 	}
 }

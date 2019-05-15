@@ -40,22 +40,6 @@ ECSManager::ECSManager()
 {
 	mEntities.reserve(MAX_ENTITIES);
 
-	//Resize component vectors
-	mAIs.resize(MAX_ENTITIES);
-	mAudios.resize(MAX_ENTITIES);
-	mBoxColliders.resize(MAX_ENTITIES);
-	mCameras.resize(MAX_ENTITIES);
-	mColours.resize(MAX_ENTITIES);
-	mGeometries.resize(MAX_ENTITIES);
-	mGravities.resize(MAX_ENTITIES);
-	mLights.resize(MAX_ENTITIES);
-	mRays.resize(MAX_ENTITIES);
-	mShaders.resize(MAX_ENTITIES);
-	mSphereColliders.resize(MAX_ENTITIES);
-	mTextures.resize(MAX_ENTITIES);
-	mTransforms.resize(MAX_ENTITIES);
-	mVelocities.resize(MAX_ENTITIES);
-
 	//Resize entity component map vectors
 	mAIEntityMap.resize(MAX_ENTITIES);
 	mAudioEntityMap.resize(MAX_ENTITIES);
@@ -107,6 +91,15 @@ const int& ECSManager::RenderingFrequency()
 void ECSManager::SetMaxEntities(const int pEntityCount)
 {
 	MAX_ENTITIES = pEntityCount;
+}
+
+/// <summary>
+/// Get method for the max entities value
+/// </summary>
+/// <returns>Max entities value</returns>
+const int ECSManager::MaxEntities()
+{
+	return MAX_ENTITIES;
 }
 
 /// <summary>
@@ -170,6 +163,11 @@ void ECSManager::DestroyEntity(const int pEntityID)
 	if ((entity->componentMask & ComponentType::COMPONENT_GEOMETRY) == ComponentType::COMPONENT_GEOMETRY)
 	{
 		RemoveGeometryComp(pEntityID);
+	}
+	//Gravity Comp
+	if ((entity->componentMask & ComponentType::COMPONENT_GRAVITY) == ComponentType::COMPONENT_GRAVITY)
+	{
+		RemoveGravityComp(pEntityID);
 	}
 	//Light Comp
 	if ((entity->componentMask & ComponentType::COMPONENT_LIGHT) == ComponentType::COMPONENT_LIGHT)
@@ -355,6 +353,20 @@ void ECSManager::AddGeometryComp(const Geometry & pGeometry, const int pEntityID
 	mGeometries.push_back(pGeometry);
 	mGeometryEntityMap[pEntityID] = static_cast<unsigned short>(mGeometries.size() - 1);
 	entity->componentMask |= ComponentType::COMPONENT_GEOMETRY;
+	AssignEntity(*entity);
+}
+
+/// <summary>
+/// Adds a Gravity component to the entity with a given ID
+/// </summary>
+/// <param name="pGravity">Gravity component to add</param>
+/// <param name="pEntityID">Given ID of the entity</param>
+void ECSManager::AddGravityComp(const Gravity & pGravity, const int pEntityID)
+{
+	Entity* entity = &mEntities[pEntityID];
+	mGravities.push_back(pGravity);
+	mGravityEntityMap[pEntityID] = static_cast<unsigned short>(mGravities.size() - 1);
+	entity->componentMask |= ComponentType::COMPONENT_GRAVITY;
 	AssignEntity(*entity);
 }
 
@@ -587,6 +599,28 @@ void ECSManager::RemoveGeometryComp(const int pEntityID)
 
 	//Update mask and reassign entity
 	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_GEOMETRY; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
+	ReAssignEntity(*entity);
+}
+
+/// <summary>
+/// Removes a Gravity component from the entity with a given ID
+/// </summary>
+/// <param name="pEntityID">Given ID of the entity</param>
+void ECSManager::RemoveGravityComp(const int pEntityID)
+{
+	Entity* entity = &mEntities[pEntityID];
+
+	//Replace with back element
+	mGravities[mGravityEntityMap[pEntityID]] = mGravities.back();
+
+	//Set index in map to new index
+	mGravityEntityMap[mGravities.size() - 1] = mGravityEntityMap[pEntityID];
+
+	//Pop back
+	mGravities.pop_back();
+
+	//Update mask and reassign entity
+	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_GRAVITY; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 	ReAssignEntity(*entity);
 }
 

@@ -28,6 +28,7 @@ private:
 	int mFps = 0;
 	double mAverageDeltaTime = 0;
 	std::array<double, 50> mLast50Frames;
+	bool mDeltaTimeSet = false;
 
 	//Active scene
 	std::shared_ptr<Scene> mScene;

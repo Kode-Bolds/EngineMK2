@@ -5,7 +5,7 @@
 /// Initialises entity vector with size of 200000
 /// </summary>
 /// <param name="pMask">Mask for the system</param>
-RenderSystem::RenderSystem(const ComponentType& pMask) : ISystem(pMask)
+RenderSystem::RenderSystem(const std::vector<ComponentType>& pMasks) : ISystem(pMasks)
 {
-	mEntities = std::vector<Entity>(200000, Entity{ -1, ComponentType::COMPONENT_NONE });
+	mEntities = std::vector<Entity>(mEcsManager->MaxEntities(), Entity{ -1, ComponentType::COMPONENT_NONE });
 }

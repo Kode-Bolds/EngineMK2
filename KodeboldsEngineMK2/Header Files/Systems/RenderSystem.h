@@ -1,15 +1,21 @@
 #pragma once
 #include "ISystem.h"
+#include "ECSManager.h"
 #include "wrl.h"
 #include "VBO.h"
 #include "AntTweakManager.h"
+#include "ResourceManager.h"
+#include "Vector4.h"
+#include "Components.h"
 
 class RenderSystem : public ISystem
 {
 protected:
-	RenderSystem(const ComponentType& pMask);
+	RenderSystem(const std::vector<ComponentType>& pMasks);
 
 	std::shared_ptr<AntTweakManager> mAntTweakManager = AntTweakManager::Instance();
+	std::shared_ptr<ECSManager> mEcsManager = ECSManager::Instance();
+	std::shared_ptr<ResourceManager>  mResourceManager = ResourceManager::Instance();
 public:
 	virtual ~RenderSystem() {};
 
