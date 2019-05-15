@@ -20,7 +20,7 @@ private:
 	std::vector<Entity> mEntities;
 	std::vector<int> mFreeEntityIDs;
 	int mEntityID;
-	const int MAX_ENTITIES = 200000;
+	int MAX_ENTITIES;
 
 	//Components
 	std::vector<AI> mAIs;
@@ -39,6 +39,23 @@ private:
 	std::vector<Velocity> mVelocities;
 	std::vector<CustomComponent*> mCustomComponentTypes;
 	std::vector<void*> mCustomComponentVectors;
+	std::vector<std::vector<unsigned short>*> mCustomComponentEntityMaps;
+
+	//Entity-Component maps
+	std::vector<unsigned short> mAIEntityMap;
+	std::vector<unsigned short> mAudioEntityMap;
+	std::vector<unsigned short> mBoxColliderEntityMap;
+	std::vector<unsigned short> mCameraEntityMap;
+	std::vector<unsigned short> mColourEntityMap;
+	std::vector<unsigned short> mGeometryEntityMap;
+	std::vector<unsigned short> mGravityEntityMap;
+	std::vector<unsigned short> mLightEntityMap;
+	std::vector<unsigned short> mRayEntityMap;
+	std::vector<unsigned short> mShaderEntityMap;
+	std::vector<unsigned short> mSphereColliderEntityMap;
+	std::vector<unsigned short> mTextureEntityMap;
+	std::vector<unsigned short> mTransformEntityMap;
+	std::vector<unsigned short> mVelocityEntityMap;
 
 	//Systems
 	std::shared_ptr<ISystem> mRenderSystem;
@@ -72,6 +89,7 @@ public:
 	const int& RenderingFrequency();
 
 	//Entity creation
+	void SetMaxEntities(const int pEntityCount);
 	const int CreateEntity();
 	void DestroyEntity(const int pEntityID);
 
@@ -129,7 +147,7 @@ public:
 			{
 				//Retrieve vector that contains this type and then add new component to vector
 				std::vector<T>* componentVector = static_cast<std::vector<T>*>(mCustomComponentVectors[i]);
-				componentVector[pEntityID] = pComponent;
+				//componentVector[pEntityID] = pComponent;
 
 				Entity* entity = &mEntities[pEntityID];
 				//entity->componentMask |= ComponentType::COMPONENT_AI; NEED TO FIGURE OUT HOW TO DO ENUM MASKS
