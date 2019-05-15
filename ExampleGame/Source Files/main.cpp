@@ -38,6 +38,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	std::shared_ptr<SceneManager> sceneManager = SceneManager::Instance();
 	std::shared_ptr<ThreadManager> threadManager = ThreadManager::Instance();
 	std::shared_ptr<NetworkManager> networkManager = NetworkManager::Instance();
+	std::shared_ptr<AntTweakManager> anttweakManager = AntTweakManager::Instance();
 
 	//Initialise winsock
 	networkManager->InitWinSock(9171);
@@ -51,34 +52,73 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 
 	//Render systems
 #ifdef DIRECTX
-	std::shared_ptr<ISystem> system = std::make_shared<RenderSystem_DX>(hWnd);
+	ecsManager->AddRenderSystem(std::make_shared<RenderSystem_DX>(hWnd));
 #elif OPENGL
-	std::shared_ptr<ISystem> system = std::make_shared<RenderSystem_GL>(hWnd);
+	ecsManager->AddRenderSystem(std::make_shared<RenderSystem_DX>(hWnd));
 #endif
-	ecsManager->AddRenderSystem(system);
 
-	ecsManager->CreateEntity();
+	ecsManager->AddUpdateSystem(std::make_shared<MovementSystem>());
 
+	//Create camera
+	int entityID = ecsManager->CreateEntity();
+	Camera cam{Vector4(0, 40, 1, 1), Vector4(0, 1, 0, 1), 60, 1, 200};
+	ecsManager->AddCameraComp(cam, entityID);
+	Transform trans{};
+	trans.translation = Vector4(0, 40, -100, 1);
+	ecsManager->AddTransformComp(trans, entityID);
+
+	//Create light
+	entityID = ecsManager->CreateEntity();
+	Light light{Vector4(1, 1, 1, 1)};
+	ecsManager->AddLightComp(light, entityID);
+	Transform transL{};
+	transL.translation = Vector4(0, 5, -2, 1);
+	ecsManager->AddTransformComp(transL, entityID);
+
+	//Create moving cube
+	entityID = ecsManager->CreateEntity();
+	Geometry geo{ L"cube.obj" };
+	ecsManager->AddGeometryComp(geo, entityID);
+	Shader shader{L"defaultShader.fx"};
+	ecsManager->AddShaderComp(shader, entityID);
+	Transform transC{};
+	transC.scale = Vector4(1, 1, 1, 1);
+	ecsManager->AddTransformComp(transC, entityID);
+	Velocity vel{};
+	vel.acceleration = Vector4(0, 12.0f, 0, 1);
+	vel.maxSpeed = 50;
+	ecsManager->AddVelocityComp(vel, entityID);
+	Gravity grav{};
+	ecsManager->AddGravityComp(grav, entityID);
+
+	//Testing custom components
 	ecsManager->CreateComponentType<CustomComp1>();
 	ecsManager->CreateComponentType<CustomComp2>();
 
 	CustomComp1 CC1{};
-	if (!ecsManager->AddComponent<CustomComp1>(CC1, 0))
+	if (!ecsManager->AddComponent<CustomComp1>(CC1, entityID))
 	{
 		OutputDebugString(L"REEEEEE");
 	}
 
 	CustomComp2 CC2{};
-	if (!ecsManager->AddComponent<CustomComp2>(CC2, 0))
+	if (!ecsManager->AddComponent<CustomComp2>(CC2, entityID))
 	{
 		OutputDebugString(L"REEEEEE");
 	}
 
-	CustomComp1* CC1Ptr = ecsManager->GetComponent<CustomComp1>(0);
-	CustomComp2* CC2Ptr = ecsManager->GetComponent<CustomComp2>(0);
+	CustomComp1* CC1Ptr = ecsManager->GetComponent<CustomComp1>(entityID);
+	CustomComp2* CC2Ptr = ecsManager->GetComponent<CustomComp2>(entityID);
 
 	//Scenes
 	sceneManager->LoadScene<GameScene>();
+
+	//AntTweak
+	anttweakManager->AddBar("Testing");
+	TwDefine(" Testing size='300 320' valueswidth=200 ");
+	anttweakManager->AddVariable("Testing", "Velocity", TW_TYPE_DIR3F, &ecsManager->VelocityComp(entityID)->velocity, "");
+	anttweakManager->AddVariable("Testing", "Acceleration", TW_TYPE_DIR3F, &ecsManager->VelocityComp(entityID)->acceleration, "");
+	anttweakManager->AddVariable("Testing", "Max Speed", TW_TYPE_FLOAT, &ecsManager->VelocityComp(entityID)->maxSpeed, "");
 
 	//Main message loop
 	MSG msg = { 0 };
@@ -132,7 +172,7 @@ HRESULT InitWindow(const HINSTANCE pHInstance, const int pNCmdShow)
 
 	//Create window
 	hInst = pHInstance;
-	RECT rc = { 0, 0, 640, 480 };
+	RECT rc = { 0, 0, 1920, 1080 };
 	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 	hWnd = CreateWindow(L"Canvas Painter", L"Canvas Painter",
 		WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,

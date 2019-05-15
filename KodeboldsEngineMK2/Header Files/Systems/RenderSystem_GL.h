@@ -1,11 +1,6 @@
 #pragma once
 #include <windows.h>
-#include "ECSManager.h"
-#include "Components.h"
-#include "ISystem.h"
-#include "Vector4.h"
 #include <wrl.h>
-#include "ResourceManager.h"
 #include "RenderSystem.h"
 
 class RenderSystem_GL : public RenderSystem
@@ -15,8 +10,6 @@ private:
 	HWND mWindow;
 	UINT mWidth{};
 	UINT height{};
-	std::shared_ptr<ECSManager> mEcsManager = ECSManager::Instance();
-	std::shared_ptr<ResourceManager>  mResourceManager = ResourceManager::Instance();
 	const Entity* mActiveCamera;
 	VBO* mGeometry;
 

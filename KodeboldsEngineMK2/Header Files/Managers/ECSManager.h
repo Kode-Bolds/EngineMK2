@@ -90,6 +90,7 @@ public:
 
 	//Entity creation
 	void SetMaxEntities(const int pEntityCount);
+	const int MaxEntities();
 	const int CreateEntity();
 	void DestroyEntity(const int pEntityID);
 
@@ -121,6 +122,7 @@ public:
 	void AddCameraComp(const Camera& pCamera, const int pEntityID);
 	void AddColourComp(const Colour& pColour, const int pEntityID);
 	void AddGeometryComp(const Geometry& pGeometry, const int pEntityID);
+	void AddGravityComp(const Gravity& pGravity, const int pEntityID);
 	void AddLightComp(const Light& pLight, const int pEntityID);
 	void AddRayComp(const Ray& pRay, const int pEntityID);
 	void AddShaderComp(const Shader& pShader, const int pEntityID);
@@ -166,6 +168,7 @@ public:
 	void RemoveCameraComp(const int pEntityID);
 	void RemoveColourComp(const int pEntityID);
 	void RemoveGeometryComp(const int pEntityID);
+	void RemoveGravityComp(const int pEntityID);
 	void RemoveLightComp(const int pEntityID);
 	void RemoveRayComp(const int pEntityID);
 	void RemoveShaderComp(const int pEntityID);
@@ -210,7 +213,7 @@ public:
 				{
 					//Retrieve vector that contains this type and then retrieve component for given entity
 					std::vector<T>* componentVector = static_cast<std::vector<T>*>(mCustomComponentVectors[i]);
-					return (T*)&componentVector[pEntityID];
+					return static_cast<T*>(&((*componentVector)[pEntityID]));
 				}
 			}
 		}
