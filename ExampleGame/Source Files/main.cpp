@@ -3,8 +3,6 @@
 #include <memory>
 #include "Systems.h"
 #include "GameScene.h"
-#include "RayAABBIntersectionSystem.h"
-#include "NetworkSystem.h"
 #include "CustomComp1.h"
 #include "CustomComp2.h"
 
@@ -58,10 +56,6 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	std::shared_ptr<ISystem> system = std::make_shared<RenderSystem_GL>(hWnd);
 #endif
 	ecsManager->AddRenderSystem(system);
-
-	//Ray box collision system
-	system = std::make_shared<RayAABBIntersectionSystem>();
-	ecsManager->AddUpdateSystem(system);
 
 	ecsManager->CreateComponentType<CustomComp1>();
 	ecsManager->CreateComponentType<CustomComp2>();
