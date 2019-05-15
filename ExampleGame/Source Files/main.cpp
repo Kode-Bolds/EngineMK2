@@ -57,6 +57,8 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 #endif
 	ecsManager->AddRenderSystem(system);
 
+	ecsManager->CreateEntity();
+
 	ecsManager->CreateComponentType<CustomComp1>();
 	ecsManager->CreateComponentType<CustomComp2>();
 

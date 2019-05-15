@@ -147,7 +147,7 @@ public:
 			{
 				//Retrieve vector that contains this type and then add new component to vector
 				std::vector<T>* componentVector = static_cast<std::vector<T>*>(mCustomComponentVectors[i]);
-				//componentVector[pEntityID] = pComponent;
+				(*componentVector)[pEntityID] = pComponent;
 
 				Entity* entity = &mEntities[pEntityID];
 				//entity->componentMask |= ComponentType::COMPONENT_AI; NEED TO FIGURE OUT HOW TO DO ENUM MASKS
