@@ -8,6 +8,7 @@ InputManager_DX::InputManager_DX() : InputManager()
 {
 	mKeyboard = std::make_shared<DirectX::Keyboard>();
 	mMouse = std::make_shared<DirectX::Mouse>();
+	mGamepad = std::make_unique<DirectX::GamePad>();
 }
 
 /// <summary>
@@ -1227,4 +1228,168 @@ void InputManager_DX::HeldDownKeys()
 	{
 		mKeyStates.emplace_back(std::pair<KEYS, KEY_STATE>(KEYS::KEY_COMMA, KEY_STATE::KEY_HELD));
 	}
+}
+
+std::pair<float, float> InputManager_DX::GetLeftThumbStickPosition() {
+	
+}
+
+std::pair<float, float> InputManager_DX::GetRightThumbStickPosition() {
+
+}
+
+std::pair<float, float> InputManager_DX::GetLeftThumbStickPosition() {
+
+}
+
+float InputManager_DX::GetLeftTriggerValue() {
+
+}
+
+float InputManager_DX::GetRightTriggerValue() {
+
+}
+
+
+void InputManager_DX::GamePadInput() {
+
+	// TODO: CREATE VECTOR OF CONNECTED GAMEPADS?
+	// TODO: HAVE THE VARIABLES (BELOW) FOR EACH GAMEPAD
+	// TODO: SEPARATE VARIABLES (BELOW) INTO GET METHODS
+	// TODO: IMPLEMENT BUTTON STATE TRACKER FOR GAMEPAD
+
+	auto player = 0;
+
+	mGamePadState = mGamepad->GetState(player);
+
+	// Normalised to between -1 and 1
+	float leftPosX = mGamePadState.thumbSticks.leftX;
+	float leftPosY = mGamePadState.thumbSticks.leftY;
+
+	float rightPosX = mGamePadState.thumbSticks.rightX;
+	float rightPosY = mGamePadState.thumbSticks.rightY;
+
+	// normalised to between 0 and 1
+	float leftTrigger = mGamePadState.triggers.left;
+	float rightTrigger = mGamePadState.triggers.right;
+
+
+
+
+	// Actions for buttons being down
+	if (mGamePadState.IsConnected())
+	{
+		if (mGamePadState.IsAPressed)
+		{
+
+		}
+		if (mGamePadState.IsBackPressed)
+		{
+
+		}
+		if (mGamePadState.IsBPressed)
+		{
+
+		}
+		if (mGamePadState.IsDPadDownPressed)
+		{
+
+		}
+		if (mGamePadState.IsDPadLeftPressed)
+		{
+
+		}
+		if (mGamePadState.IsDPadRightPressed)
+		{
+
+		}
+		if (mGamePadState.IsDPadUpPressed)
+		{
+
+		}
+		if (mGamePadState.IsLeftShoulderPressed)
+		{
+
+		}
+		if (mGamePadState.IsLeftStickPressed)
+		{
+
+		}
+		if (mGamePadState.IsLeftThumbStickDown)
+		{
+
+		}
+		if (mGamePadState.IsLeftThumbStickLeft)
+		{
+
+		}
+		if (mGamePadState.IsLeftThumbStickRight)
+		{
+
+		}
+		if (mGamePadState.IsLeftThumbStickUp)
+		{
+
+		}
+		if (mGamePadState.IsLeftTriggerPressed) // triggers when trigger is pressed more than halfway
+		{
+
+		}
+		if (mGamePadState.IsMenuPressed)
+		{
+
+		}
+		if (mGamePadState.IsRightShoulderPressed)
+		{
+
+		}
+		if (mGamePadState.IsRightStickPressed)
+		{
+
+		}
+		if (mGamePadState.IsRightThumbStickDown)
+		{
+
+		}
+		if (mGamePadState.IsRightThumbStickLeft)
+		{
+
+		}
+		if (mGamePadState.IsRightThumbStickRight)
+		{
+
+		}
+		if (mGamePadState.IsRightThumbStickUp)
+		{
+
+		}
+		if (mGamePadState.IsRightTriggerPressed) // triggers when trigger is pressed more than halfway
+		{
+
+		}
+		if (mGamePadState.IsStartPressed)
+		{
+
+		}
+		if (mGamePadState.IsViewPressed) // XBOX 360 "Back" button and Xbox One "View" button
+		{
+
+		}
+		if (mGamePadState.IsXPressed)
+		{
+
+		}
+		if (mGamePadState.IsYPressed)
+		{
+
+		}
+
+	}
+
+
+}
+
+void InputManager_DX::SetVibration(int pPlayer, float pLeftMotor, float pRightMotor)
+{
+	mGamepad->SetVibration(pPlayer, pLeftMotor, pRightMotor);
 }

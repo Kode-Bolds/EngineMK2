@@ -6,6 +6,7 @@
 #include <memory>
 #include "InputManager.h"
 #include "AntTweakBar.h"
+#include <GamePad.h>
 
 class InputManager_DX : public InputManager
 {
@@ -14,6 +15,10 @@ private:
 	std::shared_ptr<DirectX::Keyboard> mKeyboard;
 	DirectX::Keyboard::KeyboardStateTracker mKeyboardTracker;
 	DirectX::Keyboard::State mKeyboardState;
+
+	// GamePad
+	std::unique_ptr<DirectX::GamePad> mGamepad;
+	DirectX::GamePad::State mGamePadState;
 
 	//Mouse
 	std::shared_ptr<DirectX::Mouse> mMouse;
@@ -24,6 +29,7 @@ private:
 	void SinglePressKeys() override;
 	void ReleasedKeys() override;
 	void HeldDownKeys() override;
+	void GamePadInput() override;
 	void MouseInput() override;
 
 	//Private constructor for singleton pattern
@@ -41,4 +47,12 @@ public:
 
 	void CenterCursor() override;
 	void CursorVisible(const bool pVisible) override;
+
+	//	GAMEPAD
+	void SetVibration(int pPlayer, float pLeftMotor, float pRightMotor);
+	std::pair<float, float> GetLeftThumbStickPosition();
+	float GetLeftTriggerValue();
+	float GetRightTriggerValue();
+	std::pair<float, float> GetRightThumbStickPosition();
+
 };

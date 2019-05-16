@@ -52,6 +52,7 @@ protected:
 	virtual void ReleasedKeys() = 0;
 	virtual void HeldDownKeys() = 0;
 	virtual void MouseInput() = 0;
+	virtual void GamePadInput() = 0;
 
 	//Private constructor for singleton pattern
 	InputManager();
@@ -76,7 +77,7 @@ public:
 	bool KeyUp(const KEYS& pButton);
 
 	//Get keys held this frame
-    bool KeyHeld(const KEYS& pButton);
+	bool KeyHeld(const KEYS& pButton);
 
 	//Mouse
 	const int ScrollWheel() const;
