@@ -33,26 +33,28 @@ void ECSManager::ReAssignEntity(const Entity & pEntity)
 
 /// <summary>
 /// Constructor for ECS Manager
-/// Resizes entity and component vectors upon construction to a reasonably large size to avoid performance overhead of resizing
+/// Resizes entity and component vectors upon construction to max entities to avoid performance overhead of resizing
 /// </summary>
 ECSManager::ECSManager()
-	:mEntityID(0)
+	:mEntityID(0), MAX_ENTITIES(65000)
 {
 	mEntities.reserve(MAX_ENTITIES);
-	mAIs.resize(MAX_ENTITIES);
-	mAudios.resize(MAX_ENTITIES);
-	mBoxColliders.resize(MAX_ENTITIES);
-	mCameras.resize(MAX_ENTITIES);
-	mColours.resize(MAX_ENTITIES);
-	mGeometries.resize(MAX_ENTITIES);
-	mGravities.resize(MAX_ENTITIES);
-	mLights.resize(MAX_ENTITIES);
-	mRays.resize(MAX_ENTITIES);
-	mShaders.resize(MAX_ENTITIES);
-	mSphereColliders.resize(MAX_ENTITIES);
-	mTextures.resize(MAX_ENTITIES);
-	mTransforms.resize(MAX_ENTITIES);
-	mVelocities.resize(MAX_ENTITIES);
+
+	//Resize entity component map vectors
+	mAIEntityMap.resize(MAX_ENTITIES);
+	mAudioEntityMap.resize(MAX_ENTITIES);
+	mBoxColliderEntityMap.resize(MAX_ENTITIES);
+	mCameraEntityMap.resize(MAX_ENTITIES);
+	mColourEntityMap.resize(MAX_ENTITIES);
+	mGeometryEntityMap.resize(MAX_ENTITIES);
+	mGravityEntityMap.resize(MAX_ENTITIES);
+	mLightEntityMap.resize(MAX_ENTITIES);
+	mRayEntityMap.resize(MAX_ENTITIES);
+	mShaderEntityMap.resize(MAX_ENTITIES);
+	mSphereColliderEntityMap.resize(MAX_ENTITIES);
+	mTextureEntityMap.resize(MAX_ENTITIES);
+	mTransformEntityMap.resize(MAX_ENTITIES);
+	mVelocityEntityMap.resize(MAX_ENTITIES);
 }
 
 /// <summary>
@@ -80,6 +82,24 @@ std::shared_ptr<ECSManager> ECSManager::Instance()
 const int& ECSManager::RenderingFrequency()
 {
 	return mRenderingFrequency;
+}
+
+/// <summary>
+/// Sets the maximum entity count for the ECS
+/// </summary>
+/// <param name="pEntityCount">Maximum entity count</param>
+void ECSManager::SetMaxEntities(const int pEntityCount)
+{
+	MAX_ENTITIES = pEntityCount;
+}
+
+/// <summary>
+/// Get method for the max entities value
+/// </summary>
+/// <returns>Max entities value</returns>
+const int ECSManager::MaxEntities()
+{
+	return MAX_ENTITIES;
 }
 
 /// <summary>
@@ -143,6 +163,11 @@ void ECSManager::DestroyEntity(const int pEntityID)
 	if ((entity->componentMask & ComponentType::COMPONENT_GEOMETRY) == ComponentType::COMPONENT_GEOMETRY)
 	{
 		RemoveGeometryComp(pEntityID);
+	}
+	//Gravity Comp
+	if ((entity->componentMask & ComponentType::COMPONENT_GRAVITY) == ComponentType::COMPONENT_GRAVITY)
+	{
+		RemoveGravityComp(pEntityID);
 	}
 	//Light Comp
 	if ((entity->componentMask & ComponentType::COMPONENT_LIGHT) == ComponentType::COMPONENT_LIGHT)
@@ -255,7 +280,8 @@ void ECSManager::ProcessSystems()
 void ECSManager::AddAIComp(const AI & pAI, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
-	mAIs[pEntityID] = pAI;
+	mAIs.push_back(pAI);
+	mAIEntityMap[pEntityID] = static_cast<unsigned short>(mAIs.size() - 1);
 	entity->componentMask |= ComponentType::COMPONENT_AI;
 	AssignEntity(*entity);
 }
@@ -268,7 +294,8 @@ void ECSManager::AddAIComp(const AI & pAI, const int pEntityID)
 void ECSManager::AddAudioComp(const Audio & pAudio, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
-	mAudios[pEntityID] = pAudio;
+	mAudios.push_back(pAudio);
+	mAudioEntityMap[pEntityID] = static_cast<unsigned short>(mAudios.size() - 1);
 	entity->componentMask |= ComponentType::COMPONENT_AUDIO;
 	AssignEntity(*entity);
 }
@@ -281,7 +308,8 @@ void ECSManager::AddAudioComp(const Audio & pAudio, const int pEntityID)
 void ECSManager::AddBoxColliderComp(const BoxCollider & pBoxCollider, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
-	mBoxColliders[pEntityID] = pBoxCollider;
+	mBoxColliders.push_back(pBoxCollider);
+	mBoxColliderEntityMap[pEntityID] = static_cast<unsigned short>(mBoxColliders.size() - 1);
 	entity->componentMask |= ComponentType::COMPONENT_BOXCOLLIDER;
 	AssignEntity(*entity);
 }
@@ -294,7 +322,8 @@ void ECSManager::AddBoxColliderComp(const BoxCollider & pBoxCollider, const int 
 void ECSManager::AddCameraComp(const Camera & pCamera, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
-	mCameras[pEntityID] = pCamera;
+	mCameras.push_back(pCamera);
+	mCameraEntityMap[pEntityID] = static_cast<unsigned short>(mCameras.size() - 1);
 	entity->componentMask |= ComponentType::COMPONENT_CAMERA;
 	AssignEntity(*entity);
 }
@@ -307,7 +336,8 @@ void ECSManager::AddCameraComp(const Camera & pCamera, const int pEntityID)
 void ECSManager::AddColourComp(const Colour & pColour, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
-	mColours[pEntityID] = pColour;
+	mColours.push_back(pColour);
+	mColourEntityMap[pEntityID] = static_cast<unsigned short>(mColours.size() - 1);
 	entity->componentMask |= ComponentType::COMPONENT_COLOUR;
 	AssignEntity(*entity);
 }
@@ -320,8 +350,23 @@ void ECSManager::AddColourComp(const Colour & pColour, const int pEntityID)
 void ECSManager::AddGeometryComp(const Geometry & pGeometry, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
-	mGeometries[pEntityID] = pGeometry;
+	mGeometries.push_back(pGeometry);
+	mGeometryEntityMap[pEntityID] = static_cast<unsigned short>(mGeometries.size() - 1);
 	entity->componentMask |= ComponentType::COMPONENT_GEOMETRY;
+	AssignEntity(*entity);
+}
+
+/// <summary>
+/// Adds a Gravity component to the entity with a given ID
+/// </summary>
+/// <param name="pGravity">Gravity component to add</param>
+/// <param name="pEntityID">Given ID of the entity</param>
+void ECSManager::AddGravityComp(const Gravity & pGravity, const int pEntityID)
+{
+	Entity* entity = &mEntities[pEntityID];
+	mGravities.push_back(pGravity);
+	mGravityEntityMap[pEntityID] = static_cast<unsigned short>(mGravities.size() - 1);
+	entity->componentMask |= ComponentType::COMPONENT_GRAVITY;
 	AssignEntity(*entity);
 }
 
@@ -333,7 +378,8 @@ void ECSManager::AddGeometryComp(const Geometry & pGeometry, const int pEntityID
 void ECSManager::AddLightComp(const Light & pLight, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
-	mLights[pEntityID] = pLight;
+	mLights.push_back(pLight);
+	mLightEntityMap[pEntityID] = static_cast<unsigned short>(mLights.size() - 1);
 	entity->componentMask |= ComponentType::COMPONENT_LIGHT;
 	AssignEntity(*entity);
 }
@@ -346,7 +392,8 @@ void ECSManager::AddLightComp(const Light & pLight, const int pEntityID)
 void ECSManager::AddRayComp(const Ray & pRay, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
-	mRays[pEntityID] = pRay;
+	mRays.push_back(pRay);
+	mRayEntityMap[pEntityID] = static_cast<unsigned short>(mRays.size() - 1);
 	entity->componentMask |= ComponentType::COMPONENT_RAY;
 	AssignEntity(*entity);
 }
@@ -359,7 +406,8 @@ void ECSManager::AddRayComp(const Ray & pRay, const int pEntityID)
 void ECSManager::AddShaderComp(const Shader & pShader, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
-	mShaders[pEntityID] = pShader;
+	mShaders.push_back(pShader);
+	mShaderEntityMap[pEntityID] = static_cast<unsigned short>(mShaders.size() - 1);
 	entity->componentMask |= ComponentType::COMPONENT_SHADER;
 	AssignEntity(*entity);
 }
@@ -372,7 +420,8 @@ void ECSManager::AddShaderComp(const Shader & pShader, const int pEntityID)
 void ECSManager::AddSphereColliderComp(const SphereCollider & pSphereCollider, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
-	mSphereColliders[pEntityID] = pSphereCollider;
+	mSphereColliders.push_back(pSphereCollider);
+	mSphereColliderEntityMap[pEntityID] = static_cast<unsigned short>(mSphereColliders.size() - 1);
 	entity->componentMask |= ComponentType::COMPONENT_SPHERECOLLIDER;
 	AssignEntity(*entity);
 }
@@ -385,7 +434,8 @@ void ECSManager::AddSphereColliderComp(const SphereCollider & pSphereCollider, c
 void ECSManager::AddTextureComp(const Texture & pTexture, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
-	mTextures[pEntityID] = pTexture;
+	mTextures.push_back(pTexture);
+	mTextureEntityMap[pEntityID] = static_cast<unsigned short>(mTextures.size() - 1);
 	entity->componentMask |= ComponentType::COMPONENT_TEXTURE;
 	AssignEntity(*entity);
 }
@@ -398,7 +448,8 @@ void ECSManager::AddTextureComp(const Texture & pTexture, const int pEntityID)
 void ECSManager::AddTransformComp(const Transform & pTransform, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
-	mTransforms[pEntityID] = pTransform;
+	mTransforms.push_back(pTransform);
+	mTransformEntityMap[pEntityID] = static_cast<unsigned short>(mTransforms.size() - 1);
 	entity->componentMask |= ComponentType::COMPONENT_TRANSFORM;
 	AssignEntity(*entity);
 }
@@ -411,7 +462,8 @@ void ECSManager::AddTransformComp(const Transform & pTransform, const int pEntit
 void ECSManager::AddVelocityComp(const Velocity & pVelocity, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
-	mVelocities[pEntityID] = pVelocity;
+	mVelocities.push_back(pVelocity);
+	mVelocityEntityMap[pEntityID] = static_cast<unsigned short>(mVelocities.size() - 1);
 	entity->componentMask |= ComponentType::COMPONENT_VELOCITY;
 	AssignEntity(*entity);
 }
@@ -423,6 +475,17 @@ void ECSManager::AddVelocityComp(const Velocity & pVelocity, const int pEntityID
 void ECSManager::RemoveAIComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
+
+	//Replace with back element
+	mAIs[mAIEntityMap[pEntityID]] = mAIs.back();
+
+	//Set index in map to new index
+	mAIEntityMap[mAIs.size() - 1] = mAIEntityMap[pEntityID];
+
+	//Pop back
+	mAIs.pop_back();
+
+	//Update mask and reassign entity
 	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_AI; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 	ReAssignEntity(*entity);
 }
@@ -434,6 +497,17 @@ void ECSManager::RemoveAIComp(const int pEntityID)
 void ECSManager::RemoveAudioComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
+
+	//Replace with back element
+	mAudios[mAudioEntityMap[pEntityID]] = mAudios.back();
+
+	//Set index in map to new index
+	mAudioEntityMap[mAudios.size() - 1] = mAudioEntityMap[pEntityID];
+
+	//Pop back
+	mAudios.pop_back();
+
+	//Update mask and reassign entity
 	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_AUDIO; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 	ReAssignEntity(*entity);
 }
@@ -445,6 +519,17 @@ void ECSManager::RemoveAudioComp(const int pEntityID)
 void ECSManager::RemoveBoxColliderComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
+
+	//Replace with back element
+	mBoxColliders[mBoxColliderEntityMap[pEntityID]] = mBoxColliders.back();
+
+	//Set index in map to new index
+	mBoxColliderEntityMap[mBoxColliders.size() - 1] = mBoxColliderEntityMap[pEntityID];
+
+	//Pop back
+	mBoxColliders.pop_back();
+
+	//Update mask and reassign entity
 	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_BOXCOLLIDER; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 	ReAssignEntity(*entity);
 }
@@ -457,6 +542,17 @@ void ECSManager::RemoveBoxColliderComp(const int pEntityID)
 void ECSManager::RemoveCameraComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
+
+	//Replace with back element
+	mCameras[mCameraEntityMap[pEntityID]] = mCameras.back();
+
+	//Set index in map to new index
+	mCameraEntityMap[mCameras.size() - 1] = mCameraEntityMap[pEntityID];
+
+	//Pop back
+	mCameras.pop_back();
+
+	//Update mask and reassign entity
 	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_CAMERA; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 	ReAssignEntity(*entity);
 }
@@ -468,6 +564,17 @@ void ECSManager::RemoveCameraComp(const int pEntityID)
 void ECSManager::RemoveColourComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
+
+	//Replace with back element
+	mColours[mColourEntityMap[pEntityID]] = mColours.back();
+
+	//Set index in map to new index
+	mColourEntityMap[mColours.size() - 1] = mColourEntityMap[pEntityID];
+
+	//Pop back
+	mColours.pop_back();
+
+	//Update mask and reassign entity
 	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_COLOUR; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 	ReAssignEntity(*entity);
 }
@@ -480,7 +587,40 @@ void ECSManager::RemoveColourComp(const int pEntityID)
 void ECSManager::RemoveGeometryComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
+
+	//Replace with back element
+	mGeometries[mGeometryEntityMap[pEntityID]] = mGeometries.back();
+
+	//Set index in map to new index
+	mGeometryEntityMap[mGeometries.size() - 1] = mGeometryEntityMap[pEntityID];
+
+	//Pop back
+	mGeometries.pop_back();
+
+	//Update mask and reassign entity
 	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_GEOMETRY; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
+	ReAssignEntity(*entity);
+}
+
+/// <summary>
+/// Removes a Gravity component from the entity with a given ID
+/// </summary>
+/// <param name="pEntityID">Given ID of the entity</param>
+void ECSManager::RemoveGravityComp(const int pEntityID)
+{
+	Entity* entity = &mEntities[pEntityID];
+
+	//Replace with back element
+	mGravities[mGravityEntityMap[pEntityID]] = mGravities.back();
+
+	//Set index in map to new index
+	mGravityEntityMap[mGravities.size() - 1] = mGravityEntityMap[pEntityID];
+
+	//Pop back
+	mGravities.pop_back();
+
+	//Update mask and reassign entity
+	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_GRAVITY; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 	ReAssignEntity(*entity);
 }
 
@@ -492,6 +632,17 @@ void ECSManager::RemoveGeometryComp(const int pEntityID)
 void ECSManager::RemoveLightComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
+
+	//Replace with back element
+	mLights[mLightEntityMap[pEntityID]] = mLights.back();
+
+	//Set index in map to new index
+	mLightEntityMap[mLights.size() - 1] = mLightEntityMap[pEntityID];
+
+	//Pop back
+	mLights.pop_back();
+
+	//Update mask and reassign entity
 	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_LIGHT; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 	ReAssignEntity(*entity);
 }
@@ -503,6 +654,17 @@ void ECSManager::RemoveLightComp(const int pEntityID)
 void ECSManager::RemoveRayComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
+
+	//Replace with back element
+	mRays[mRayEntityMap[pEntityID]] = mRays.back();
+
+	//Set index in map to new index
+	mRayEntityMap[mRays.size() - 1] = mRayEntityMap[pEntityID];
+
+	//Pop back
+	mRays.pop_back();
+
+	//Update mask and reassign entity
 	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_RAY; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 	ReAssignEntity(*entity);
 }
@@ -515,6 +677,17 @@ void ECSManager::RemoveRayComp(const int pEntityID)
 void ECSManager::RemoveShaderComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
+
+	//Replace with back element
+	mShaders[mShaderEntityMap[pEntityID]] = mShaders.back();
+
+	//Set index in map to new index
+	mShaderEntityMap[mShaders.size() - 1] = mShaderEntityMap[pEntityID];
+
+	//Pop back
+	mShaders.pop_back();
+
+	//Update mask and reassign entity
 	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_SHADER; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 	ReAssignEntity(*entity);
 }
@@ -526,6 +699,17 @@ void ECSManager::RemoveShaderComp(const int pEntityID)
 void ECSManager::RemoveSphereColliderComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
+
+	//Replace with back element
+	mSphereColliders[mSphereColliderEntityMap[pEntityID]] = mSphereColliders.back();
+
+	//Set index in map to new index
+	mSphereColliderEntityMap[mSphereColliders.size() - 1] = mSphereColliderEntityMap[pEntityID];
+
+	//Pop back
+	mSphereColliders.pop_back();
+
+	//Update mask and reassign entity
 	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_SPHERECOLLIDER; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 	ReAssignEntity(*entity);
 }
@@ -537,6 +721,17 @@ void ECSManager::RemoveSphereColliderComp(const int pEntityID)
 void ECSManager::RemoveTextureComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
+
+	//Replace with back element
+	mTextures[mTextureEntityMap[pEntityID]] = mTextures.back();
+
+	//Set index in map to new index
+	mTextureEntityMap[mTextures.size() - 1] = mTextureEntityMap[pEntityID];
+
+	//Pop back
+	mTextures.pop_back();
+
+	//Update mask and reassign entity
 	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_TEXTURE; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 	ReAssignEntity(*entity);
 }
@@ -549,6 +744,17 @@ void ECSManager::RemoveTextureComp(const int pEntityID)
 void ECSManager::RemoveTransformComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
+
+	//Replace with back element
+	mTransforms[mTransformEntityMap[pEntityID]] = mTransforms.back();
+
+	//Set index in map to new index
+	mTransformEntityMap[mTransforms.size() - 1] = mTransformEntityMap[pEntityID];
+
+	//Pop back
+	mTransforms.pop_back();
+
+	//Update mask and reassign entity
 	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_TRANSFORM; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 	ReAssignEntity(*entity);
 }
@@ -560,6 +766,17 @@ void ECSManager::RemoveTransformComp(const int pEntityID)
 void ECSManager::RemoveVelocityComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
+
+	//Replace with back element
+	mVelocities[mVelocityEntityMap[pEntityID]] = mVelocities.back();
+
+	//Set index in map to new index
+	mVelocityEntityMap[mVelocities.size() - 1] = mVelocityEntityMap[pEntityID];
+
+	//Pop back
+	mVelocities.pop_back();
+
+	//Update mask and reassign entity
 	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_VELOCITY; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 	ReAssignEntity(*entity);
 }
@@ -574,7 +791,7 @@ AI * const ECSManager::AIComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_AI) == ComponentType::COMPONENT_AI)
 	{
-		return &mAIs[pEntityID];
+		return &mAIs[mAIEntityMap[pEntityID]];
 	}
 	return nullptr;
 }
@@ -589,7 +806,7 @@ Audio * const ECSManager::AudioComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_AUDIO) == ComponentType::COMPONENT_AUDIO)
 	{
-		return &mAudios[pEntityID];
+		return &mAudios[mAudioEntityMap[pEntityID]];
 	}
 	return nullptr;
 }
@@ -604,7 +821,7 @@ BoxCollider * const ECSManager::BoxColliderComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_BOXCOLLIDER) == ComponentType::COMPONENT_BOXCOLLIDER)
 	{
-		return &mBoxColliders[pEntityID];
+		return &mBoxColliders[mBoxColliderEntityMap[pEntityID]];
 	}
 	return nullptr;
 }
@@ -619,7 +836,7 @@ Camera * const ECSManager::CameraComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_CAMERA) == ComponentType::COMPONENT_CAMERA)
 	{
-		return &mCameras[pEntityID];
+		return &mCameras[mCameraEntityMap[pEntityID]];
 	}
 	return nullptr;
 }
@@ -634,7 +851,7 @@ Colour * const ECSManager::ColourComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_COLOUR) == ComponentType::COMPONENT_COLOUR)
 	{
-		return &mColours[pEntityID];
+		return &mColours[mColourEntityMap[pEntityID]];
 	}
 	return nullptr;
 }
@@ -649,7 +866,7 @@ Geometry * const ECSManager::GeometryComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_GEOMETRY) == ComponentType::COMPONENT_GEOMETRY)
 	{
-		return &mGeometries[pEntityID];
+		return &mGeometries[mGeometryEntityMap[pEntityID]];
 	}
 	return nullptr;
 }
@@ -664,7 +881,7 @@ Gravity * const ECSManager::GravityComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_GRAVITY) == ComponentType::COMPONENT_GRAVITY)
 	{
-		return &mGravities[pEntityID];
+		return &mGravities[mGravityEntityMap[pEntityID]];
 	}
 	return nullptr;
 }
@@ -679,7 +896,7 @@ Light * const ECSManager::LightComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_LIGHT) == ComponentType::COMPONENT_LIGHT)
 	{
-		return &mLights[pEntityID];
+		return &mLights[mLightEntityMap[pEntityID]];
 	}
 	return nullptr;
 }
@@ -694,7 +911,7 @@ Ray * const ECSManager::RayComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_RAY) == ComponentType::COMPONENT_RAY)
 	{
-		return &mRays[pEntityID];
+		return &mRays[mRayEntityMap[pEntityID]];
 	}
 	return nullptr;
 }
@@ -709,7 +926,7 @@ Shader * const ECSManager::ShaderComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_SHADER) == ComponentType::COMPONENT_SHADER)
 	{
-		return &mShaders[pEntityID];
+		return &mShaders[mShaderEntityMap[pEntityID]];
 	}
 	return nullptr;
 }
@@ -724,7 +941,7 @@ SphereCollider * const ECSManager::SphereColliderComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_SPHERECOLLIDER) == ComponentType::COMPONENT_SPHERECOLLIDER)
 	{
-		return &mSphereColliders[pEntityID];
+		return &mSphereColliders[mSphereColliderEntityMap[pEntityID]];
 	}
 	return nullptr;
 }
@@ -739,7 +956,7 @@ Texture * const ECSManager::TextureComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_TEXTURE) == ComponentType::COMPONENT_TEXTURE)
 	{
-		return &mTextures[pEntityID];
+		return &mTextures[mTextureEntityMap[pEntityID]];
 	}
 	return nullptr;
 }
@@ -754,7 +971,7 @@ Transform * const ECSManager::TransformComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_TRANSFORM) == ComponentType::COMPONENT_TRANSFORM)
 	{
-		return &mTransforms[pEntityID];
+		return &mTransforms[mTransformEntityMap[pEntityID]];
 	}
 	return nullptr;
 }
@@ -769,7 +986,7 @@ Velocity * const ECSManager::VelocityComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_VELOCITY) == ComponentType::COMPONENT_VELOCITY)
 	{
-		return &mVelocities[pEntityID];
+		return &mVelocities[mVelocityEntityMap[pEntityID]];
 	}
 	return nullptr;
 }

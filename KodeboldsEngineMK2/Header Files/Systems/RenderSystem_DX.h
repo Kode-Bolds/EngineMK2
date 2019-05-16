@@ -1,15 +1,10 @@
 #pragma once
 #include <windows.h>
-#include "ECSManager.h"
-#include "Components.h"
-#include "ISystem.h"
-#include "Vector4.h"
 #include <d3d11shader.h>
 #include <d3d11.h>
 #include <d3d11_1.h>
 #include <wrl.h>
 #include <directxcolors.h>
-#include "ResourceManager.h"
 #include "RenderSystem.h"
 
 struct ConstantBuffer
@@ -30,8 +25,6 @@ private:
 	HWND mWindow;
 	UINT mWidth{};
 	UINT height{};
-	std::shared_ptr<ECSManager> mEcsManager = ECSManager::Instance();
-	std::shared_ptr<ResourceManager>  mResourceManager = ResourceManager::Instance();
 	const Entity* mActiveCamera;
 	VBO* mGeometry;
 	ConstantBuffer mCB;

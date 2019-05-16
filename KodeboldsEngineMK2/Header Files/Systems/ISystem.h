@@ -7,8 +7,8 @@ class ISystem
 {
 protected:
 	std::vector<Entity> mEntities;
-	const ComponentType mMask;
-	ISystem(const ComponentType& pMask) : mMask(pMask) {};
+	std::vector<ComponentType> mMasks;
+	ISystem(const std::vector<ComponentType>& pMasks) : mMasks(pMasks) {};
 
 public:
 	virtual ~ISystem() {};

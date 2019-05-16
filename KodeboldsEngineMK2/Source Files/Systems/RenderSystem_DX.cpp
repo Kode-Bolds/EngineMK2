@@ -16,7 +16,10 @@ using namespace DirectX;
 /// Initialises directX device, and cleans up directX resources if failed
 /// </summary>
 /// <param name="pWindow">A handle to the win32 window</param>
-RenderSystem_DX::RenderSystem_DX(const HWND& pWindow) : RenderSystem(ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_GEOMETRY | ComponentType::COMPONENT_SHADER | ComponentType::COMPONENT_COLOUR),
+RenderSystem_DX::RenderSystem_DX(const HWND& pWindow) 
+	: RenderSystem(std::vector<ComponentType>{ ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_GEOMETRY | ComponentType::COMPONENT_SHADER,
+	ComponentType::COMPONENT_LIGHT,
+	ComponentType::COMPONENT_CAMERA }),
 mWindow(pWindow), mActiveCamera(nullptr)
 {
 	if (FAILED(Init()))
@@ -398,14 +401,14 @@ void RenderSystem_DX::Cleanup()
 void RenderSystem_DX::AssignEntity(const Entity & pEntity)
 {
 	//Checks if entity mask matches the renderable mask
-	if ((pEntity.componentMask & mMask) == mMask)
+	if ((pEntity.componentMask & mMasks[0]) == mMasks[0])
 	{
 		//Update entry in systems entity list
 		mEntities[pEntity.ID] = pEntity;
 	}
 
 	//Checks if entity mask matches the light mask
-	if ((pEntity.componentMask & ComponentType::COMPONENT_LIGHT) == ComponentType::COMPONENT_LIGHT)
+	if ((pEntity.componentMask & mMasks[1]) == mMasks[1])
 	{
 		//If the entity has a light component then find it in the lights
 		const auto entity = find_if(mLights.begin(), mLights.end(), [&](const Entity& entity) {return entity.ID == pEntity.ID; });
@@ -423,7 +426,7 @@ void RenderSystem_DX::AssignEntity(const Entity & pEntity)
 
 	//If the entity is marked as a camera set it to the active camera
 	//TODO: Implement multiple cameras
-	if ((pEntity.componentMask & ComponentType::COMPONENT_CAMERA) == ComponentType::COMPONENT_CAMERA)
+	if ((pEntity.componentMask & mMasks[2]) == mMasks[2])
 	{
 		mActiveCamera = &pEntity;
 
@@ -439,7 +442,7 @@ void RenderSystem_DX::AssignEntity(const Entity & pEntity)
 void RenderSystem_DX::ReAssignEntity(const Entity & pEntity)
 {
 	//Checks if entity mask matches the renderable mask
-	if ((pEntity.componentMask & mMask) == mMask)
+	if ((pEntity.componentMask & mMasks[0]) == mMasks[0])
 	{
 		//If the entity matches renderable mask then update entry in systems entity list
 		mEntities[pEntity.ID] = pEntity;
@@ -451,7 +454,7 @@ void RenderSystem_DX::ReAssignEntity(const Entity & pEntity)
 	}
 
 	//Checks if entity mask matches the light mask
-	if ((pEntity.componentMask & ComponentType::COMPONENT_LIGHT) == ComponentType::COMPONENT_LIGHT)
+	if ((pEntity.componentMask & mMasks[1]) == mMasks[1])
 	{
 		//If the entity has a light component then find it in the lights
 		const auto entity = find_if(mLights.begin(), mLights.end(), [&](const Entity& entity) {return entity.ID == pEntity.ID; });
@@ -510,9 +513,16 @@ void RenderSystem_DX::Process()
 					mActiveShader = mEcsManager->ShaderComp(entity.ID)->filename;
 				}
 
-				//Update constant buffer with world matrix and object colour
+				//Set world matrix
 				mCB.mWorld = XMFLOAT4X4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(entity.ID)->transform)));
-				mCB.colour = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->ColourComp(entity.ID)->colour)));
+
+				//Set colour if colour
+				if ((entity.componentMask & ComponentType::COMPONENT_COLOUR) == ComponentType::COMPONENT_COLOUR)
+				{
+					mCB.colour = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->ColourComp(entity.ID)->colour)));
+				}
+
+				//Update constant buffer
 				mContext->UpdateSubresource(mConstantBuffer.Get(), 0, nullptr, &mCB, 0, 0);
 
 				//mContext->OMSetBlendState()

@@ -18,5 +18,6 @@ public:
 	virtual ~MovementSystem();
 
 	void AssignEntity(const Entity& pEntity) override;
+	void ReAssignEntity(const Entity& pEntity) override;
 	void Process() override;
 };

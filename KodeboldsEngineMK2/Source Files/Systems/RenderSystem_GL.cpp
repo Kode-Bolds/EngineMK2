@@ -14,7 +14,7 @@
 /// Initialises directX device, and cleans up directX resources if failed
 /// </summary>
 /// <param name="pWindow">A handle to the win32 window</param>
-RenderSystem_GL::RenderSystem_GL(const HWND& pWindow) : RenderSystem(ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_GEOMETRY | ComponentType::COMPONENT_SHADER | ComponentType::COMPONENT_COLOUR),
+RenderSystem_GL::RenderSystem_GL(const HWND& pWindow) : RenderSystem(std::vector<ComponentType>{ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_GEOMETRY | ComponentType::COMPONENT_SHADER | ComponentType::COMPONENT_COLOUR}),
 mWindow(pWindow), mActiveCamera(nullptr)
 {
 	if (FAILED(Init()))
@@ -190,7 +190,7 @@ void RenderSystem_GL::Cleanup()
 void RenderSystem_GL::AssignEntity(const Entity & pEntity)
 {
 	//Checks if entity mask matches the renderable mask
-	if ((pEntity.componentMask & mMask) == mMask)
+	if ((pEntity.componentMask & mMasks[0]) == mMasks[0])
 	{
 		//Update entry in systems entity list
 		mEntities[pEntity.ID] = pEntity;
@@ -231,7 +231,7 @@ void RenderSystem_GL::AssignEntity(const Entity & pEntity)
 void RenderSystem_GL::ReAssignEntity(const Entity & pEntity)
 {
 	//Checks if entity mask matches the renderable mask
-	if ((pEntity.componentMask & mMask) == mMask)
+	if ((pEntity.componentMask & mMasks[0]) == mMasks[0])
 	{
 		//If the entity matches renderable mask then update entry in systems entity list
 		mEntities[pEntity.ID] = pEntity;
