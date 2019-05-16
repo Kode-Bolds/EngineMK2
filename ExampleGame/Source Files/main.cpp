@@ -120,6 +120,8 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	anttweakManager->AddVariable("Testing", "Acceleration", TW_TYPE_DIR3F, &ecsManager->VelocityComp(entityID)->acceleration, "");
 	anttweakManager->AddVariable("Testing", "Max Speed", TW_TYPE_FLOAT, &ecsManager->VelocityComp(entityID)->maxSpeed, "");
 
+	networkManager->AddMessage("HELLOlolollololololololololololololololololololololololo");
+
 	//Main message loop
 	MSG msg = { 0 };
 	while (WM_QUIT != msg.message)

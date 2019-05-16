@@ -252,6 +252,9 @@
     <ClInclude Include="Header Files\Components\CustomComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Header Files\Components\RenderStates.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
