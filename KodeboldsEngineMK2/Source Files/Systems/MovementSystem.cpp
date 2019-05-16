@@ -3,7 +3,7 @@
 /// <summary>
 /// 
 /// </summary>
-MovementSystem::MovementSystem() : ISystem(std::vector<ComponentType>{ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_VELOCITY})
+MovementSystem::MovementSystem() : ISystem(std::vector<int>{ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_VELOCITY})
 {
 	mEntities = std::vector<Entity>(mEcsManager->MaxEntities(), Entity{ -1, ComponentType::COMPONENT_NONE });
 }

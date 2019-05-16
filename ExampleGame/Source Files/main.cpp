@@ -3,8 +3,7 @@
 #include <memory>
 #include "Systems.h"
 #include "GameScene.h"
-#include "CustomComp1.h"
-#include "CustomComp2.h"
+#include "CustomComponents.h"
 
 #pragma comment(lib, "KodeboldsEngineMK2.lib")
 
@@ -92,23 +91,33 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	ecsManager->AddGravityComp(grav, entityID);
 
 	//Testing custom components
-	ecsManager->CreateComponentType<CustomComp1>();
-	ecsManager->CreateComponentType<CustomComp2>();
+	ecsManager->CreateCustomComponent<CustomComp1>(CustomComponentType::CUSTOM_COMPONENT_1);
+	ecsManager->CreateCustomComponent<CustomComp2>(CustomComponentType::CUSTOM_COMPONENT_2);
 
 	CustomComp1 CC1{};
-	if (!ecsManager->AddComponent<CustomComp1>(CC1, entityID))
+	if (!ecsManager->AddCustomComponent<CustomComp1>(CC1, entityID))
 	{
 		OutputDebugString(L"REEEEEE");
 	}
 
 	CustomComp2 CC2{};
-	if (!ecsManager->AddComponent<CustomComp2>(CC2, entityID))
+	if (!ecsManager->AddCustomComponent<CustomComp2>(CC2, entityID))
 	{
 		OutputDebugString(L"REEEEEE");
 	}
 
-	CustomComp1* CC1Ptr = ecsManager->GetComponent<CustomComp1>(entityID);
-	CustomComp2* CC2Ptr = ecsManager->GetComponent<CustomComp2>(entityID);
+	CustomComp1* CC1Ptr = ecsManager->GetCustomComponent<CustomComp1>(entityID);
+	CustomComp2* CC2Ptr = ecsManager->GetCustomComponent<CustomComp2>(entityID);
+
+	if (!ecsManager->RemoveCustomComponent<CustomComp1>(entityID))
+	{
+		OutputDebugString(L"REEEEEE");
+	}
+
+	if (!ecsManager->RemoveCustomComponent<CustomComp2>(entityID))
+	{
+		OutputDebugString(L"REEEEEE");
+	}
 
 	//Scenes
 	sceneManager->LoadScene<GameScene>();

@@ -11,7 +11,7 @@
 class RenderSystem : public ISystem
 {
 protected:
-	RenderSystem(const std::vector<ComponentType>& pMasks);
+	RenderSystem(const std::vector<int>& pMasks);
 
 	std::shared_ptr<AntTweakManager> mAntTweakManager = AntTweakManager::Instance();
 	std::shared_ptr<ECSManager> mEcsManager = ECSManager::Instance();
