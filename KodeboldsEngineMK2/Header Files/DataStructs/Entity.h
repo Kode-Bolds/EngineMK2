@@ -5,5 +5,5 @@
 struct Entity
 {
 	int ID;
-	ComponentType componentMask;
+	int componentMask;
 };
