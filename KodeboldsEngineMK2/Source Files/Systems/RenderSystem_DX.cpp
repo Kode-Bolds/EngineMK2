@@ -17,7 +17,7 @@ using namespace DirectX;
 /// </summary>
 /// <param name="pWindow">A handle to the win32 window</param>
 RenderSystem_DX::RenderSystem_DX(const HWND& pWindow) 
-	: RenderSystem(std::vector<ComponentType>{ ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_GEOMETRY | ComponentType::COMPONENT_SHADER,
+	: RenderSystem(std::vector<int>{ ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_GEOMETRY | ComponentType::COMPONENT_SHADER,
 	ComponentType::COMPONENT_LIGHT,
 	ComponentType::COMPONENT_CAMERA }),
 mWindow(pWindow), mActiveCamera(nullptr)

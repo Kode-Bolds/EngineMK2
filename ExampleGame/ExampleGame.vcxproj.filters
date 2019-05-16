@@ -25,6 +25,9 @@
     <Filter Include="Header Files\Systems">
       <UniqueIdentifier>{78804357-255e-49dd-8828-bda39731f7b5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Components">
+      <UniqueIdentifier>{de802c8f-1713-415b-b277-1795a4ceeb47}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -46,11 +49,17 @@
     <ClInclude Include="Header Files\Scenes\GameScene.h">
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="Header Files\CustomComp1.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Header Files\Components\CustomComp1.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Header Files\CustomComp2.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Header Files\Components\CustomComp2.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\CustomComponents.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\CustomComponentType.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

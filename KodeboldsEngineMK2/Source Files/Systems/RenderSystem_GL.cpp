@@ -14,7 +14,7 @@
 /// Initialises directX device, and cleans up directX resources if failed
 /// </summary>
 /// <param name="pWindow">A handle to the win32 window</param>
-RenderSystem_GL::RenderSystem_GL(const HWND& pWindow) : RenderSystem(std::vector<ComponentType>{ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_GEOMETRY | ComponentType::COMPONENT_SHADER | ComponentType::COMPONENT_COLOUR}),
+RenderSystem_GL::RenderSystem_GL(const HWND& pWindow) : RenderSystem(std::vector<int>{ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_GEOMETRY | ComponentType::COMPONENT_SHADER | ComponentType::COMPONENT_COLOUR}),
 mWindow(pWindow), mActiveCamera(nullptr)
 {
 	if (FAILED(Init()))

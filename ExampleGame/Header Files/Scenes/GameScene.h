@@ -3,7 +3,6 @@
 #include <memory>
 #include "Managers.h"
 #include "KodeboldsMath.h"
-#include "GameStats.h"
 
 class GameScene : public Scene
 {

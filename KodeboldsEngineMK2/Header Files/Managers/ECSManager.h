@@ -37,7 +37,10 @@ private:
 	std::vector<Texture> mTextures;
 	std::vector<Transform> mTransforms;
 	std::vector<Velocity> mVelocities;
+
+	//Custom components
 	std::vector<CustomComponent*> mCustomComponentTypes;
+	std::vector<int> mCustomComponentMasks;
 	std::vector<void*> mCustomComponentVectors;
 	std::vector<std::vector<unsigned short>*> mCustomComponentEntityMaps;
 
@@ -82,7 +85,7 @@ public:
 	//Singleton pattern
 	//Deleted copy constructor and assignment operator so no copies of the singleton instance can be made
 	ECSManager(ECSManager const&) = delete;
-	ECSManager& operator=(ECSManager const&) = delete;	
+	ECSManager& operator=(ECSManager const&) = delete;
 	static std::shared_ptr<ECSManager> Instance();
 
 	//Frequencies get/sets
@@ -102,17 +105,24 @@ public:
 	template<class T>
 	/// <summary>
 	/// Creates a new custom component of type T
-	/// NEED TO FIGURE OUT HOW TO CREATE NEW MASK ENUM FOR THIS HERE TOO
 	/// </summary>
-	void CreateComponentType()
+	/// <param name="pMask">Bitmask for the new custom component type</param>
+	void CreateCustomComponent(const int pMask)
 	{
 		//Add new type to types list
 		mCustomComponentTypes.push_back(new T());
 
-		//Create vector for new type
+		//Add new mask to masks list
+		mCustomComponentMasks.push_back(pMask);
+
+		//Create vector for new component type
 		std::vector<T>* newVector = new std::vector<T>();
-		newVector->resize(MAX_ENTITIES);
 		mCustomComponentVectors.push_back(static_cast<void*>(newVector));
+
+		//Create vector for new component types entity component map
+		std::vector<unsigned short>* newMapVector = new std::vector<unsigned short>();
+		newMapVector->resize(MAX_ENTITIES);
+		mCustomComponentEntityMaps.push_back(newMapVector);
 	}
 
 	//Add methods for components
@@ -139,7 +149,7 @@ public:
 	/// <param name="pComponent">Component to add</param>
 	/// <param name="pEntityID">ID of given entity</param>
 	/// <returns>Bool representing whether the addition of this custom component was successful or not</returns>
-	bool AddComponent(const T& pComponent, const int pEntityID)
+	bool AddCustomComponent(const T& pComponent, const int pEntityID)
 	{
 		//Loop through custom types to find matching type
 		for (int i = 0; i < mCustomComponentTypes.size(); i++)
@@ -147,12 +157,17 @@ public:
 			//Check if type matches
 			if (dynamic_cast<T*>(mCustomComponentTypes[i]))
 			{
-				//Retrieve vector that contains this type and then add new component to vector
+				//Retrieve vector that contains this component type and then add new component to vector
 				std::vector<T>* componentVector = static_cast<std::vector<T>*>(mCustomComponentVectors[i]);
-				(*componentVector)[pEntityID] = pComponent;
+				componentVector->push_back(pComponent);
 
+				//Retrieve vector that contains this component types entity-component map and add index of component
+				std::vector<unsigned short>* componentEntityMapVector = mCustomComponentEntityMaps[i];
+				(*componentEntityMapVector)[pEntityID] = static_cast<unsigned short>(componentVector->size() - 1);
+
+				//Adjust entities mask to contain mask of new component
 				Entity* entity = &mEntities[pEntityID];
-				//entity->componentMask |= ComponentType::COMPONENT_AI; NEED TO FIGURE OUT HOW TO DO ENUM MASKS
+				entity->componentMask |= mCustomComponentMasks[i];
 				AssignEntity(*entity);
 
 				return true;
@@ -177,6 +192,47 @@ public:
 	void RemoveTransformComp(const int pEntityID);
 	void RemoveVelocityComp(const int pEntityID);
 
+	template <class T>
+	/// <summary>
+	/// Removes a custom component of type T from the given entity
+	/// </summary>
+	/// <param name="pEntityID">ID of the given entity</param>
+	/// <returns>Bool representing whether the removal of this custom component was successful or not</returns>
+	bool RemoveCustomComponent(const int pEntityID)
+	{
+		//Loop through custom types to find matching type
+		for (int i = 0; i < mCustomComponentTypes.size(); i++)
+		{
+			//Checks if entity actually owns a component of this type
+			if ((mEntities[pEntityID].componentMask & mCustomComponentMasks[i]) == mCustomComponentMasks[i])
+			{
+				//Check if type matches
+				if (dynamic_cast<T*>(mCustomComponentTypes[i]))
+				{
+					//Retrieve vector that contains this component type and vector that contains this componenet types entity component map
+					std::vector<unsigned short>* componentEntityMapVector = mCustomComponentEntityMaps[i];
+					std::vector<T>* componentVector = static_cast<std::vector<T>*>(mCustomComponentVectors[i]);
+
+					//Replace removed component with back element
+					(*componentVector)[(*componentEntityMapVector)[pEntityID]] = componentVector->back();
+
+					//Set new index of component in the entity component map		
+					(*componentEntityMapVector)[componentVector->size() - 1] = (*componentEntityMapVector)[pEntityID];
+
+					//Pop back element
+					componentVector->pop_back();
+
+					//Adjust entities mask to no longer contain mask of removed component
+					Entity* entity = &mEntities[pEntityID];
+					entity->componentMask = entity->componentMask &= ~mCustomComponentMasks[i]; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
+					ReAssignEntity(*entity);
+
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
 	//Accessors
 	AI* const AIComp(const int pEntityID);
@@ -200,20 +256,23 @@ public:
 	/// </summary>
 	/// <param name="pEntityID">ID of given entity</param>
 	/// <returns>Modifiable handle to the component of type T</returns>
-	T* const GetComponent(const int pEntityID)
+	T* const GetCustomComponent(const int pEntityID)
 	{
-		//Checks if entity actually owns a component of this type
-		if (true)//(mEntities[pEntityID].componentMask & ComponentType::COMPONENT_LIGHT) == ComponentType::COMPONENT_LIGHT) COMPARE WITH MASK TO SEE IF ENTITY OWNS A COMPONENT OF TYPE T
+		//Loop through custom types to find matching type
+		for (int i = 0; i < mCustomComponentTypes.size(); i++)
 		{
-			//Loop through custom types to find matching type
-			for (int i = 0; i < mCustomComponentTypes.size(); i++)
+			//Checks if entity actually owns a component of this type
+			if ((mEntities[pEntityID].componentMask & mCustomComponentMasks[i]) == mCustomComponentMasks[i])
 			{
 				//Check if type matches
 				if (dynamic_cast<T*>(mCustomComponentTypes[i]))
 				{
-					//Retrieve vector that contains this type and then retrieve component for given entity
+					//Retrieve vector that contains this component type and vector that contains this componenet types entity component map
+					std::vector<unsigned short>* componentEntityMapVector = mCustomComponentEntityMaps[i];
 					std::vector<T>* componentVector = static_cast<std::vector<T>*>(mCustomComponentVectors[i]);
-					return static_cast<T*>(&((*componentVector)[pEntityID]));
+
+					//Gets the index of the component from the map, then retrieves the component from the component vector
+					return static_cast<T*>(&((*componentVector)[(*componentEntityMapVector)[pEntityID]]));
 				}
 			}
 		}

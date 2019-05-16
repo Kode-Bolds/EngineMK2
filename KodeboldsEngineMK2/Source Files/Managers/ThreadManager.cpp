@@ -6,7 +6,7 @@
 /// </summary>
 ThreadManager::ThreadManager()
 {
-	int maxThreads = static_cast<int>(std::thread::hardware_concurrency() * 2);
+	const int maxThreads = static_cast<int>(std::thread::hardware_concurrency() * 2);
 
 	for (int i = 0; i < maxThreads; i++)
 	{
@@ -50,7 +50,7 @@ void ThreadManager::ProcessTasks()
 {
 	for (auto thread : mThreads)
 	{
-		if (mTasks.size() > 0)
+		if (!mTasks.empty())
 		{
 			//If thread needs tasks, set threads task to front of task queue, then pop task off queue
 			if (thread->NeedsTask())
