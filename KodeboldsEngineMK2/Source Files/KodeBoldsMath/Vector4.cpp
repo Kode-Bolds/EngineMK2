@@ -92,9 +92,9 @@ Vector4 & Vector4::operator-=(const Vector4 & rhs)
 }
 
 /// <summary>
-/// *= operator for the multiplication of two vector4s
+/// *= operator for the multiplication of a vector by a float
 /// </summary>
-/// <param name="rhs">Vector to multiply this vector by</param>
+/// <param name="rhs">Float to multiply this vector by</param>
 /// <returns>Result of the multiplication</returns>
 Vector4 & Vector4::operator*=(const float& rhs)
 {
@@ -102,5 +102,19 @@ Vector4 & Vector4::operator*=(const float& rhs)
 	Y *= rhs;
 	Z *= rhs;
 	W *= rhs;
+	return *this;
+}
+
+/// <summary>
+/// *= operator for the division of a vector by a float
+/// </summary>
+/// <param name="rhs">Float to divide this vector by</param>
+/// <returns>Result of the division</returns>
+Vector4 & KodeboldsMath::Vector4::operator/=(const float& rhs)
+{
+	X /= rhs;
+	Y /= rhs;
+	Z /= rhs;
+	W /= rhs;
 	return *this;
 }

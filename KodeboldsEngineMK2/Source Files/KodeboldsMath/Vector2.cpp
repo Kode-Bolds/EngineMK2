@@ -98,3 +98,15 @@ Vector2 & Vector2::operator*=(const float& rhs)
 	Y *= rhs;
 	return *this;
 }
+
+/// <summary>
+/// *= operator for the division of a vector by a float
+/// </summary>
+/// <param name="rhs">Float to divide this vector by</param>
+/// <returns>Result of the division</returns>
+Vector2 & KodeboldsMath::Vector2::operator/=(const float& rhs)
+{
+	X /= rhs;
+	Y /= rhs;
+	return *this;
+}

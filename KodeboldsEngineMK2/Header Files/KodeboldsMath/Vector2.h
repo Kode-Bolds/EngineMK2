@@ -22,10 +22,12 @@ namespace KodeboldsMath
 		Vector2& operator+=(const Vector2& rhs);
 		Vector2& operator-=(const Vector2& rhs);
 		Vector2& operator*=(const float& rhs);
+		Vector2& operator/= (const float& rhs);
 	};
 
 	//Operator overloads
 	inline Vector2 operator+(Vector2 lhs, const Vector2& rhs) { lhs += rhs; return lhs; }
 	inline Vector2 operator-(Vector2 lhs, const Vector2& rhs) { lhs -= rhs;	return lhs; }
 	inline Vector2 operator*(Vector2 lhs, const float& rhs) { lhs *= rhs;	return lhs; }
+	inline Vector2 operator/(Vector2 lhs, const float& rhs) { lhs /= rhs; return lhs; }
 }
