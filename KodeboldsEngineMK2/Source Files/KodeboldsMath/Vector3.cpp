@@ -100,3 +100,16 @@ Vector3 & Vector3::operator*=(const float& rhs)
 	Z *= rhs;
 	return *this;
 }
+
+/// <summary>
+/// *= operator for the division of a vector by a float
+/// </summary>
+/// <param name="rhs">Float to divide this vector by</param>
+/// <returns>Result of the division</returns>
+Vector3 & KodeboldsMath::Vector3::operator/=(const float& rhs)
+{
+	X /= rhs;
+	Y /= rhs;
+	Z /= rhs;
+	return *this;
+}

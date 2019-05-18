@@ -108,7 +108,7 @@ const int ECSManager::MaxEntities()
 /// <param name="pEntityName">Given name of the entity to create</param>
 const int ECSManager::CreateEntity()
 {
-	int entityID = 0;
+	unsigned short entityID = 0;
 	if (!mFreeEntityIDs.empty())
 	{
 		entityID = mFreeEntityIDs.back();

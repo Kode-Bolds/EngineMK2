@@ -3,3 +3,4 @@
 #include "RenderSystem_DX.h"
 #include "RenderSystem_GL.h"
 #include "MovementSystem.h"
+#include "CollisionCheckSystem.h"
