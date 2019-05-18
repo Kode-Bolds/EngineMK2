@@ -75,7 +75,7 @@ protected:
 	virtual void GamePadInput() = 0;
 
 	//Private constructor for singleton pattern
-	InputManager();
+	InputManager() = default;
 
 public:
 	virtual ~InputManager();

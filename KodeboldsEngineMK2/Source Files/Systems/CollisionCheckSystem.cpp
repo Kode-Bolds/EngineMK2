@@ -149,6 +149,7 @@ void CollisionCheckSystem::UpdateTree()
 /// </summary>
 bool CollisionCheckSystem::RaySphere()
 {
+	return true;
 }
 
 /// <summary>
@@ -156,6 +157,7 @@ bool CollisionCheckSystem::RaySphere()
 /// </summary>
 bool CollisionCheckSystem::SphereSphere()
 {
+	return true;
 }
 
 /// <summary>
@@ -163,6 +165,7 @@ bool CollisionCheckSystem::SphereSphere()
 /// </summary>
 bool CollisionCheckSystem::BoxSphere()
 {
+	return true;
 }
 
 /// <summary>
@@ -170,6 +173,7 @@ bool CollisionCheckSystem::BoxSphere()
 /// </summary>
 bool CollisionCheckSystem::BoxBox()
 {
+	return true;
 }
 
 /// <summary>
@@ -177,4 +181,5 @@ bool CollisionCheckSystem::BoxBox()
 /// </summary>
 bool CollisionCheckSystem::RayBox()
 {
+	return true;
 }

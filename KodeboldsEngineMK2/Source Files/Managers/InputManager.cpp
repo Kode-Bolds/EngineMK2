@@ -1,13 +1,6 @@
 #include "InputManager.h"
 
 /// <summary>
-/// Default constructor
-/// </summary>
-InputManager::InputManager()
-{
-}
-
-/// <summary>
 /// Default destructor
 /// </summary>
 InputManager::~InputManager()

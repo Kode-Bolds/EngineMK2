@@ -1454,9 +1454,6 @@ std::pair<float, float> InputManager_DX::GetRightThumbStickPosition() {
 	return std::make_pair(mRightThumbPosX, mRightThumbPosY);
 }
 
-std::pair<float, float> InputManager_DX::GetLeftThumbStickPosition() {
-
-}
 
 float InputManager_DX::GetLeftTriggerValue() {
 	return mLeftTrigger;

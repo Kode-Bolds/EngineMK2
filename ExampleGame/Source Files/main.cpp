@@ -173,7 +173,7 @@ HRESULT InitWindow(const HINSTANCE pHInstance, const int pNCmdShow)
 	wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
 	wcex.hbrBackground = nullptr;
 	wcex.lpszMenuName = nullptr;
-	wcex.lpszClassName = L"Canvas Painter";
+	wcex.lpszClassName = L"Kodebolds Space Game";
 	wcex.hIconSm = LoadIcon(wcex.hInstance, nullptr);
 	if (!RegisterClassEx(&wcex))
 	{
@@ -184,7 +184,7 @@ HRESULT InitWindow(const HINSTANCE pHInstance, const int pNCmdShow)
 	hInst = pHInstance;
 	RECT rc = { 0, 0, 1920, 1080 };
 	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
-	hWnd = CreateWindow(L"Canvas Painter", L"Canvas Painter",
+	hWnd = CreateWindow(L"Kodebolds Space Game", L"Kodebolds Space Game",
 		WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
 		CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, pHInstance,
 		nullptr);
