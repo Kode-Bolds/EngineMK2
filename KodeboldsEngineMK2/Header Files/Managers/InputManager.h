@@ -39,6 +39,23 @@ enum class KEY_STATE
 	KEY_DOWN, KEY_UP, KEY_HELD
 };
 
+enum class GAMEPAD_BUTTONS {
+	A, B, BACK, MENU, START,
+
+	DPAD_DOWN, DPAD_LEFT, DPAD_RIGHT, DPAD_UP,
+
+	LEFT_SHOULDER, RIGHT_SHOULDER,
+
+	LEFT_STICK, LEFT_STICK_DOWN, LEFT_STICK_LEFT, LEFT_STICK_RIGHT, LEFT_STICK_UP,
+	RIGHT_STICK, RIGHT_STICK_DOWN, RIGHT_STICK_LEFT, RIGHT_STICK_RIGHT, RIGHT_STICK_UP,
+
+	LEFT_TRIGGER, RIGHT_TRIGGER,
+};
+
+enum class GAMEPAD_BUTTON_STATE {
+	PRESSED, HELD, RELEASED, UP
+};
+
 class InputManager
 {
 protected:
@@ -46,6 +63,9 @@ protected:
 	std::vector<std::pair<KEYS, KEY_STATE>> mKeyStates;
 	KodeboldsMath::Vector2 mMousePosition;
 	int mMouseWheelValue;
+
+	// GamePad Button States
+	std::vector<std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>> mGamePadButtonStates;
 
 	virtual void KeyboardInput() = 0;
 	virtual void SinglePressKeys() = 0;

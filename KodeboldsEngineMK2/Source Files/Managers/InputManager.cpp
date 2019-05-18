@@ -114,4 +114,5 @@ void InputManager::Update()
 	mKeyStates.clear();
 	KeyboardInput();
 	MouseInput();
+	GamePadInput();
 }

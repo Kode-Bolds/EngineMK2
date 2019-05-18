@@ -17,8 +17,16 @@ private:
 	DirectX::Keyboard::State mKeyboardState;
 
 	// GamePad
-	std::unique_ptr<DirectX::GamePad> mGamepad;
+	std::unique_ptr<DirectX::GamePad> mGamePad;
 	DirectX::GamePad::State mGamePadState;
+	DirectX::GamePad::ButtonStateTracker mGamePadTracker;
+
+	float mLeftThumbPosX;
+	float mLeftThumbPosY;
+	float mRightThumbPosX;
+	float mRightThumbPosY;
+	float mLeftTrigger;
+	float mRightTrigger;
 
 	//Mouse
 	std::shared_ptr<DirectX::Mouse> mMouse;
