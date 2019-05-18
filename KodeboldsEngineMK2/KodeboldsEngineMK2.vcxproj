@@ -74,6 +74,7 @@
     <ClCompile Include="Source Files\Managers\ResourceManager.cpp" />
     <ClCompile Include="Source Files\Managers\SceneManager.cpp" />
     <ClCompile Include="Source Files\Managers\ThreadManager.cpp" />
+    <ClCompile Include="Source Files\Systems\CollisionCheckSystem.cpp" />
     <ClCompile Include="Source Files\Systems\MovementSystem.cpp" />
     <ClCompile Include="Source Files\Systems\RenderSystem_DX.cpp" />
     <ClCompile Include="Source Files\Systems\RenderSystem.cpp" />
@@ -101,6 +102,7 @@
     <ClInclude Include="Header Files\DataStructs\CullState.h" />
     <ClInclude Include="Header Files\DataStructs\DepthState.h" />
     <ClInclude Include="Header Files\DataStructs\Entity.h" />
+    <ClInclude Include="Header Files\DataStructs\OctTreeNode.h" />
     <ClInclude Include="Header Files\DataStructs\Vertex.h" />
     <ClInclude Include="Header Files\HelperClasses\ObjLoader.h" />
     <ClInclude Include="Header Files\HelperClasses\ShaderObject_GL.h" />
@@ -130,6 +132,7 @@
     <ClInclude Include="Header Files\HelperClasses\Scene.h" />
     <ClInclude Include="Header Files\Managers\SceneManager.h" />
     <ClInclude Include="Header Files\Managers\ThreadManager.h" />
+    <ClInclude Include="Header Files\Systems\CollisionCheckSystem.h" />
     <ClInclude Include="Header Files\Systems\ISystem.h" />
     <ClInclude Include="Header Files\Systems\MovementSystem.h" />
     <ClInclude Include="Header Files\Systems\RenderSystem.h" />
