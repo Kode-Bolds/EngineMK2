@@ -109,7 +109,7 @@ const int ECSManager::MaxEntities()
 const int ECSManager::CreateEntity()
 {
 	int entityID = 0;
-	if (mFreeEntityIDs.size() > 0)
+	if (!mFreeEntityIDs.empty())
 	{
 		entityID = mFreeEntityIDs.back();
 		mFreeEntityIDs.pop_back();
@@ -205,6 +205,31 @@ void ECSManager::DestroyEntity(const int pEntityID)
 		RemoveVelocityComp(pEntityID);
 	}
 
+	//Remove custom components
+	for (int i = 0; i < mCustomComponentTypes.size(); i++)
+	{
+		//If entity contains a component of this type
+		if ((entity->componentMask & mCustomComponentMasks[i]) == mCustomComponentMasks[i])
+		{
+			//Retrieve vector that contains this component type and vector that contains this componenet types entity component map
+			std::vector<unsigned short>* componentEntityMapVector = mCustomComponentEntityMaps[i];
+			std::vector<ComponentType*>* componentVector = static_cast<std::vector<ComponentType*>*>(mCustomComponentVectors[i]);
+
+			//Replace removed component with back element
+			(*componentVector)[(*componentEntityMapVector)[pEntityID]] = componentVector->back();
+
+			//Set new index of component in the entity component map		
+			(*componentEntityMapVector)[componentVector->size() - 1] = (*componentEntityMapVector)[pEntityID];
+
+			//Pop back element
+			componentVector->pop_back();
+
+			//Adjust entities mask to no longer contain mask of removed component
+			entity->componentMask = entity->componentMask &= ~mCustomComponentMasks[i]; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
+			ReAssignEntity(*entity);
+		}
+	}
+
 	//Finds the entity with the matching ID and removes it from the entities vector
 	mEntities[pEntityID] = Entity{};
 	mFreeEntityIDs.push_back(pEntityID);
@@ -252,11 +277,11 @@ void ECSManager::ProcessSystems()
 			mRenderFinish = std::chrono::high_resolution_clock::now();
 			mRenderTime = mRenderFinish - mRenderStart;
 
-			//Convert timings to miliseconds for frequency calculations
-			float renderTimeMiliseconds = static_cast<float>(mRenderTime.count() / pow(10, 6));
+			//Convert timings to milliseconds for frequency calculations
+			const float renderTimeMilliseconds = static_cast<float>(mRenderTime.count() / pow(10, 6));
 
 			//Calculate the actual rendering frequency
-			mRenderingFrequency = static_cast<int>(1000 / renderTimeMiliseconds);
+			mRenderingFrequency = static_cast<int>(1000 / renderTimeMilliseconds);
 
 			//Cleanup then create new task and set start time
 			mRenderTask->CleanUpTask();
@@ -476,18 +501,22 @@ void ECSManager::RemoveAIComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
 
-	//Replace with back element
-	mAIs[mAIEntityMap[pEntityID]] = mAIs.back();
+	//Checks if entity actually owns a component of this type
+	if ((entity->componentMask & ComponentType::COMPONENT_AI) == ComponentType::COMPONENT_AI)
+	{
+		//Replace with back element
+		mAIs[mAIEntityMap[pEntityID]] = mAIs.back();
 
-	//Set index in map to new index
-	mAIEntityMap[mAIs.size() - 1] = mAIEntityMap[pEntityID];
+		//Set index in map to new index
+		mAIEntityMap[mAIs.size() - 1] = mAIEntityMap[pEntityID];
 
-	//Pop back
-	mAIs.pop_back();
+		//Pop back
+		mAIs.pop_back();
 
-	//Update mask and reassign entity
-	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_AI; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
-	ReAssignEntity(*entity);
+		//Update mask and reassign entity
+		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_AI; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
+		ReAssignEntity(*entity);
+	}
 }
 
 /// <summary>
@@ -498,18 +527,22 @@ void ECSManager::RemoveAudioComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
 
-	//Replace with back element
-	mAudios[mAudioEntityMap[pEntityID]] = mAudios.back();
+	//Checks if entity actually owns a component of this type
+	if ((entity->componentMask & ComponentType::COMPONENT_AUDIO) == ComponentType::COMPONENT_AUDIO)
+	{
+		//Replace with back element
+		mAudios[mAudioEntityMap[pEntityID]] = mAudios.back();
 
-	//Set index in map to new index
-	mAudioEntityMap[mAudios.size() - 1] = mAudioEntityMap[pEntityID];
+		//Set index in map to new index
+		mAudioEntityMap[mAudios.size() - 1] = mAudioEntityMap[pEntityID];
 
-	//Pop back
-	mAudios.pop_back();
+		//Pop back
+		mAudios.pop_back();
 
-	//Update mask and reassign entity
-	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_AUDIO; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
-	ReAssignEntity(*entity);
+		//Update mask and reassign entity
+		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_AUDIO; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
+		ReAssignEntity(*entity);
+	}
 }
 
 /// <summary>
@@ -520,18 +553,22 @@ void ECSManager::RemoveBoxColliderComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
 
-	//Replace with back element
-	mBoxColliders[mBoxColliderEntityMap[pEntityID]] = mBoxColliders.back();
+	//Checks if entity actually owns a component of this type
+	if ((entity->componentMask & ComponentType::COMPONENT_BOXCOLLIDER) == ComponentType::COMPONENT_BOXCOLLIDER)
+	{
+		//Replace with back element
+		mBoxColliders[mBoxColliderEntityMap[pEntityID]] = mBoxColliders.back();
 
-	//Set index in map to new index
-	mBoxColliderEntityMap[mBoxColliders.size() - 1] = mBoxColliderEntityMap[pEntityID];
+		//Set index in map to new index
+		mBoxColliderEntityMap[mBoxColliders.size() - 1] = mBoxColliderEntityMap[pEntityID];
 
-	//Pop back
-	mBoxColliders.pop_back();
+		//Pop back
+		mBoxColliders.pop_back();
 
-	//Update mask and reassign entity
-	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_BOXCOLLIDER; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
-	ReAssignEntity(*entity);
+		//Update mask and reassign entity
+		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_BOXCOLLIDER; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
+		ReAssignEntity(*entity);
+	}
 }
 
 
@@ -543,18 +580,22 @@ void ECSManager::RemoveCameraComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
 
-	//Replace with back element
-	mCameras[mCameraEntityMap[pEntityID]] = mCameras.back();
+	//Checks if entity actually owns a component of this type
+	if ((entity->componentMask & ComponentType::COMPONENT_CAMERA) == ComponentType::COMPONENT_CAMERA)
+	{
+		//Replace with back element
+		mCameras[mCameraEntityMap[pEntityID]] = mCameras.back();
 
-	//Set index in map to new index
-	mCameraEntityMap[mCameras.size() - 1] = mCameraEntityMap[pEntityID];
+		//Set index in map to new index
+		mCameraEntityMap[mCameras.size() - 1] = mCameraEntityMap[pEntityID];
 
-	//Pop back
-	mCameras.pop_back();
+		//Pop back
+		mCameras.pop_back();
 
-	//Update mask and reassign entity
-	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_CAMERA; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
-	ReAssignEntity(*entity);
+		//Update mask and reassign entity
+		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_CAMERA; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
+		ReAssignEntity(*entity);
+	}
 }
 
 /// <summary>
@@ -565,18 +606,22 @@ void ECSManager::RemoveColourComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
 
-	//Replace with back element
-	mColours[mColourEntityMap[pEntityID]] = mColours.back();
+	//Checks if entity actually owns a component of this type
+	if ((entity->componentMask & ComponentType::COMPONENT_COLOUR) == ComponentType::COMPONENT_COLOUR)
+	{
+		//Replace with back element
+		mColours[mColourEntityMap[pEntityID]] = mColours.back();
 
-	//Set index in map to new index
-	mColourEntityMap[mColours.size() - 1] = mColourEntityMap[pEntityID];
+		//Set index in map to new index
+		mColourEntityMap[mColours.size() - 1] = mColourEntityMap[pEntityID];
 
-	//Pop back
-	mColours.pop_back();
+		//Pop back
+		mColours.pop_back();
 
-	//Update mask and reassign entity
-	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_COLOUR; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
-	ReAssignEntity(*entity);
+		//Update mask and reassign entity
+		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_COLOUR; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
+		ReAssignEntity(*entity);
+	}
 }
 
 
@@ -588,18 +633,22 @@ void ECSManager::RemoveGeometryComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
 
-	//Replace with back element
-	mGeometries[mGeometryEntityMap[pEntityID]] = mGeometries.back();
+	//Checks if entity actually owns a component of this type
+	if ((entity->componentMask & ComponentType::COMPONENT_GEOMETRY) == ComponentType::COMPONENT_GEOMETRY)
+	{
+		//Replace with back element
+		mGeometries[mGeometryEntityMap[pEntityID]] = mGeometries.back();
 
-	//Set index in map to new index
-	mGeometryEntityMap[mGeometries.size() - 1] = mGeometryEntityMap[pEntityID];
+		//Set index in map to new index
+		mGeometryEntityMap[mGeometries.size() - 1] = mGeometryEntityMap[pEntityID];
 
-	//Pop back
-	mGeometries.pop_back();
+		//Pop back
+		mGeometries.pop_back();
 
-	//Update mask and reassign entity
-	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_GEOMETRY; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
-	ReAssignEntity(*entity);
+		//Update mask and reassign entity
+		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_GEOMETRY; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
+		ReAssignEntity(*entity);
+	}
 }
 
 /// <summary>
@@ -610,18 +659,22 @@ void ECSManager::RemoveGravityComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
 
-	//Replace with back element
-	mGravities[mGravityEntityMap[pEntityID]] = mGravities.back();
+	//Checks if entity actually owns a component of this type
+	if ((entity->componentMask & ComponentType::COMPONENT_GRAVITY) == ComponentType::COMPONENT_GRAVITY)
+	{
+		//Replace with back element
+		mGravities[mGravityEntityMap[pEntityID]] = mGravities.back();
 
-	//Set index in map to new index
-	mGravityEntityMap[mGravities.size() - 1] = mGravityEntityMap[pEntityID];
+		//Set index in map to new index
+		mGravityEntityMap[mGravities.size() - 1] = mGravityEntityMap[pEntityID];
 
-	//Pop back
-	mGravities.pop_back();
+		//Pop back
+		mGravities.pop_back();
 
-	//Update mask and reassign entity
-	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_GRAVITY; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
-	ReAssignEntity(*entity);
+		//Update mask and reassign entity
+		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_GRAVITY; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
+		ReAssignEntity(*entity);
+	}
 }
 
 
@@ -633,18 +686,22 @@ void ECSManager::RemoveLightComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
 
-	//Replace with back element
-	mLights[mLightEntityMap[pEntityID]] = mLights.back();
+	//Checks if entity actually owns a component of this type
+	if ((entity->componentMask & ComponentType::COMPONENT_LIGHT) == ComponentType::COMPONENT_LIGHT)
+	{
+		//Replace with back element
+		mLights[mLightEntityMap[pEntityID]] = mLights.back();
 
-	//Set index in map to new index
-	mLightEntityMap[mLights.size() - 1] = mLightEntityMap[pEntityID];
+		//Set index in map to new index
+		mLightEntityMap[mLights.size() - 1] = mLightEntityMap[pEntityID];
 
-	//Pop back
-	mLights.pop_back();
+		//Pop back
+		mLights.pop_back();
 
-	//Update mask and reassign entity
-	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_LIGHT; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
-	ReAssignEntity(*entity);
+		//Update mask and reassign entity
+		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_LIGHT; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
+		ReAssignEntity(*entity);
+	}
 }
 
 /// <summary>
@@ -655,18 +712,22 @@ void ECSManager::RemoveRayComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
 
-	//Replace with back element
-	mRays[mRayEntityMap[pEntityID]] = mRays.back();
+	//Checks if entity actually owns a component of this type
+	if ((entity->componentMask & ComponentType::COMPONENT_RAY) == ComponentType::COMPONENT_RAY)
+	{
+		//Replace with back element
+		mRays[mRayEntityMap[pEntityID]] = mRays.back();
 
-	//Set index in map to new index
-	mRayEntityMap[mRays.size() - 1] = mRayEntityMap[pEntityID];
+		//Set index in map to new index
+		mRayEntityMap[mRays.size() - 1] = mRayEntityMap[pEntityID];
 
-	//Pop back
-	mRays.pop_back();
+		//Pop back
+		mRays.pop_back();
 
-	//Update mask and reassign entity
-	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_RAY; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
-	ReAssignEntity(*entity);
+		//Update mask and reassign entity
+		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_RAY; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
+		ReAssignEntity(*entity);
+	}
 }
 
 
@@ -678,18 +739,22 @@ void ECSManager::RemoveShaderComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
 
-	//Replace with back element
-	mShaders[mShaderEntityMap[pEntityID]] = mShaders.back();
+	//Checks if entity actually owns a component of this type
+	if ((entity->componentMask & ComponentType::COMPONENT_SHADER) == ComponentType::COMPONENT_SHADER)
+	{
+		//Replace with back element
+		mShaders[mShaderEntityMap[pEntityID]] = mShaders.back();
 
-	//Set index in map to new index
-	mShaderEntityMap[mShaders.size() - 1] = mShaderEntityMap[pEntityID];
+		//Set index in map to new index
+		mShaderEntityMap[mShaders.size() - 1] = mShaderEntityMap[pEntityID];
 
-	//Pop back
-	mShaders.pop_back();
+		//Pop back
+		mShaders.pop_back();
 
-	//Update mask and reassign entity
-	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_SHADER; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
-	ReAssignEntity(*entity);
+		//Update mask and reassign entity
+		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_SHADER; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
+		ReAssignEntity(*entity);
+	}
 }
 
 /// <summary>
@@ -700,18 +765,22 @@ void ECSManager::RemoveSphereColliderComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
 
-	//Replace with back element
-	mSphereColliders[mSphereColliderEntityMap[pEntityID]] = mSphereColliders.back();
+	//Checks if entity actually owns a component of this type
+	if ((entity->componentMask & ComponentType::COMPONENT_SPHERECOLLIDER) == ComponentType::COMPONENT_SPHERECOLLIDER)
+	{
+		//Replace with back element
+		mSphereColliders[mSphereColliderEntityMap[pEntityID]] = mSphereColliders.back();
 
-	//Set index in map to new index
-	mSphereColliderEntityMap[mSphereColliders.size() - 1] = mSphereColliderEntityMap[pEntityID];
+		//Set index in map to new index
+		mSphereColliderEntityMap[mSphereColliders.size() - 1] = mSphereColliderEntityMap[pEntityID];
 
-	//Pop back
-	mSphereColliders.pop_back();
+		//Pop back
+		mSphereColliders.pop_back();
 
-	//Update mask and reassign entity
-	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_SPHERECOLLIDER; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
-	ReAssignEntity(*entity);
+		//Update mask and reassign entity
+		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_SPHERECOLLIDER; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
+		ReAssignEntity(*entity);
+	}
 }
 
 /// <summary>
@@ -722,18 +791,22 @@ void ECSManager::RemoveTextureComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
 
-	//Replace with back element
-	mTextures[mTextureEntityMap[pEntityID]] = mTextures.back();
+	//Checks if entity actually owns a component of this type
+	if ((entity->componentMask & ComponentType::COMPONENT_TEXTURE) == ComponentType::COMPONENT_TEXTURE)
+	{
+		//Replace with back element
+		mTextures[mTextureEntityMap[pEntityID]] = mTextures.back();
 
-	//Set index in map to new index
-	mTextureEntityMap[mTextures.size() - 1] = mTextureEntityMap[pEntityID];
+		//Set index in map to new index
+		mTextureEntityMap[mTextures.size() - 1] = mTextureEntityMap[pEntityID];
 
-	//Pop back
-	mTextures.pop_back();
+		//Pop back
+		mTextures.pop_back();
 
-	//Update mask and reassign entity
-	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_TEXTURE; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
-	ReAssignEntity(*entity);
+		//Update mask and reassign entity
+		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_TEXTURE; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
+		ReAssignEntity(*entity);
+	}
 }
 
 
@@ -745,18 +818,22 @@ void ECSManager::RemoveTransformComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
 
-	//Replace with back element
-	mTransforms[mTransformEntityMap[pEntityID]] = mTransforms.back();
+	//Checks if entity actually owns a component of this type
+	if ((entity->componentMask & ComponentType::COMPONENT_TRANSFORM) == ComponentType::COMPONENT_TRANSFORM)
+	{
+		//Replace with back element
+		mTransforms[mTransformEntityMap[pEntityID]] = mTransforms.back();
 
-	//Set index in map to new index
-	mTransformEntityMap[mTransforms.size() - 1] = mTransformEntityMap[pEntityID];
+		//Set index in map to new index
+		mTransformEntityMap[mTransforms.size() - 1] = mTransformEntityMap[pEntityID];
 
-	//Pop back
-	mTransforms.pop_back();
+		//Pop back
+		mTransforms.pop_back();
 
-	//Update mask and reassign entity
-	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_TRANSFORM; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
-	ReAssignEntity(*entity);
+		//Update mask and reassign entity
+		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_TRANSFORM; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
+		ReAssignEntity(*entity);
+	}
 }
 
 /// <summary>
@@ -767,18 +844,22 @@ void ECSManager::RemoveVelocityComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
 
-	//Replace with back element
-	mVelocities[mVelocityEntityMap[pEntityID]] = mVelocities.back();
+	//Checks if entity actually owns a component of this type
+	if ((entity->componentMask & ComponentType::COMPONENT_VELOCITY) == ComponentType::COMPONENT_VELOCITY)
+	{
+		//Replace with back element
+		mVelocities[mVelocityEntityMap[pEntityID]] = mVelocities.back();
 
-	//Set index in map to new index
-	mVelocityEntityMap[mVelocities.size() - 1] = mVelocityEntityMap[pEntityID];
+		//Set index in map to new index
+		mVelocityEntityMap[mVelocities.size() - 1] = mVelocityEntityMap[pEntityID];
 
-	//Pop back
-	mVelocities.pop_back();
+		//Pop back
+		mVelocities.pop_back();
 
-	//Update mask and reassign entity
-	entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_VELOCITY; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
-	ReAssignEntity(*entity);
+		//Update mask and reassign entity
+		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_VELOCITY; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
+		ReAssignEntity(*entity);
+	}
 }
 
 /// <summary>
