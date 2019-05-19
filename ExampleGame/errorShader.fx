@@ -9,6 +9,7 @@ cbuffer ConstantBuffer : register(b0)
 	float4 LightColour;
 	float4 LightPosition;
 	float4 CameraPosition;
+	float4 Colour;
 	//float4 Time;
 }
 
