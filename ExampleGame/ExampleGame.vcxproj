@@ -195,7 +195,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>"Header Files";"Header Files\Systems";"Header Files\Components";"Header Files\Scenes";"../KodeboldsEngineMK2/Header Files/Components";"../KodeboldsEngineMK2/Header Files/DataStructs";"../KodeboldsEngineMK2/Header Files/HelperClasses";"../KodeboldsEngineMK2/Header Files/Managers";"../KodeboldsEngineMK2/Header Files/Systems";"../KodeboldsEngineMK2/Header Files/KodeboldsMath";</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"Header Files";"Header Files\GameClasses";"Header Files\Systems";"Header Files\Components";"Header Files\Scenes";"../KodeboldsEngineMK2/Header Files/Components";"../KodeboldsEngineMK2/Header Files/DataStructs";"../KodeboldsEngineMK2/Header Files/HelperClasses";"../KodeboldsEngineMK2/Header Files/Managers";"../KodeboldsEngineMK2/Header Files/Systems";"../KodeboldsEngineMK2/Header Files/KodeboldsMath";</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;../KodeboldsEngineMK2/Build/KodeboldsEngineMK2.lib;d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -208,7 +208,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>"Header Files";"Header Files\Systems";"Header Files\Components";"Header Files\Scenes";"../KodeboldsEngineMK2/Header Files/Components";"../KodeboldsEngineMK2/Header Files/DataStructs";"../KodeboldsEngineMK2/Header Files/HelperClasses";"../KodeboldsEngineMK2/Header Files/Managers";"../KodeboldsEngineMK2/Header Files/Systems";"../KodeboldsEngineMK2/Header Files/KodeboldsMath";</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"Header Files";"Header Files\GameClasses";"Header Files\Systems";"Header Files\Components";"Header Files\Scenes";"../KodeboldsEngineMK2/Header Files/Components";"../KodeboldsEngineMK2/Header Files/DataStructs";"../KodeboldsEngineMK2/Header Files/HelperClasses";"../KodeboldsEngineMK2/Header Files/Managers";"../KodeboldsEngineMK2/Header Files/Systems";"../KodeboldsEngineMK2/Header Files/KodeboldsMath";</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>OPENGL;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -222,7 +222,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>"Header Files";"Header Files\Systems";"Header Files\Components";"Header Files\Scenes";"../KodeboldsEngineMK2/Header Files/Components";"../KodeboldsEngineMK2/Header Files/DataStructs";"../KodeboldsEngineMK2/Header Files/HelperClasses";"../KodeboldsEngineMK2/Header Files/Managers";"../KodeboldsEngineMK2/Header Files/Systems";"../KodeboldsEngineMK2/Header Files/KodeboldsMath";</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"Header Files";"Header Files\GameClasses";"Header Files\Systems";"Header Files\Components";"Header Files\Scenes";"../KodeboldsEngineMK2/Header Files/Components";"../KodeboldsEngineMK2/Header Files/DataStructs";"../KodeboldsEngineMK2/Header Files/HelperClasses";"../KodeboldsEngineMK2/Header Files/Managers";"../KodeboldsEngineMK2/Header Files/Systems";"../KodeboldsEngineMK2/Header Files/KodeboldsMath";</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DIRECTX;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -236,7 +236,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>"Header Files";"Header Files\Systems";"Header Files\Components";"Header Files\Scenes";"../KodeboldsEngineMK2/Header Files/Components";"../KodeboldsEngineMK2/Header Files/DataStructs";"../KodeboldsEngineMK2/Header Files/HelperClasses";"../KodeboldsEngineMK2/Header Files/Managers";"../KodeboldsEngineMK2/Header Files/Systems";"../KodeboldsEngineMK2/Header Files/KodeboldsMath";</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"Header Files";"Header Files\GameClasses";"Header Files\Systems";"Header Files\Components";"Header Files\Scenes";"../KodeboldsEngineMK2/Header Files/Components";"../KodeboldsEngineMK2/Header Files/DataStructs";"../KodeboldsEngineMK2/Header Files/HelperClasses";"../KodeboldsEngineMK2/Header Files/Managers";"../KodeboldsEngineMK2/Header Files/Systems";"../KodeboldsEngineMK2/Header Files/KodeboldsMath";</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;../KodeboldsEngineMK2/Build/KodeboldsEngineMK2.lib;d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -249,7 +249,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>"Header Files";"Header Files\Systems";"Header Files\Components";"Header Files\Scenes";"../KodeboldsEngineMK2/Header Files/Components";"../KodeboldsEngineMK2/Header Files/DataStructs";"../KodeboldsEngineMK2/Header Files/HelperClasses";"../KodeboldsEngineMK2/Header Files/Managers";"../KodeboldsEngineMK2/Header Files/Systems";"../KodeboldsEngineMK2/Header Files/KodeboldsMath";</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"Header Files";"Header Files\GameClasses";"Header Files\Systems";"Header Files\Components";"Header Files\Scenes";"../KodeboldsEngineMK2/Header Files/Components";"../KodeboldsEngineMK2/Header Files/DataStructs";"../KodeboldsEngineMK2/Header Files/HelperClasses";"../KodeboldsEngineMK2/Header Files/Managers";"../KodeboldsEngineMK2/Header Files/Systems";"../KodeboldsEngineMK2/Header Files/KodeboldsMath";</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>OPENGL;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -263,7 +263,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>"Header Files";"Header Files\Systems";"Header Files\Components";"Header Files\Scenes";"../KodeboldsEngineMK2/Header Files/Components";"../KodeboldsEngineMK2/Header Files/DataStructs";"../KodeboldsEngineMK2/Header Files/HelperClasses";"../KodeboldsEngineMK2/Header Files/Managers";"../KodeboldsEngineMK2/Header Files/Systems";"../KodeboldsEngineMK2/Header Files/KodeboldsMath";</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"Header Files";"Header Files\GameClasses";"Header Files\Systems";"Header Files\Components";"Header Files\Scenes";"../KodeboldsEngineMK2/Header Files/Components";"../KodeboldsEngineMK2/Header Files/DataStructs";"../KodeboldsEngineMK2/Header Files/HelperClasses";"../KodeboldsEngineMK2/Header Files/Managers";"../KodeboldsEngineMK2/Header Files/Systems";"../KodeboldsEngineMK2/Header Files/KodeboldsMath";</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DIRECTX;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -279,7 +279,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>"Header Files";"Header Files\Systems";"Header Files\Components";"Header Files\Scenes";"../KodeboldsEngineMK2/Header Files/Components";"../KodeboldsEngineMK2/Header Files/DataStructs";"../KodeboldsEngineMK2/Header Files/HelperClasses";"../KodeboldsEngineMK2/Header Files/Managers";"../KodeboldsEngineMK2/Header Files/Systems";"../KodeboldsEngineMK2/Header Files/KodeboldsMath";</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"Header Files";"Header Files\GameClasses";"Header Files\Systems";"Header Files\Components";"Header Files\Scenes";"../KodeboldsEngineMK2/Header Files/Components";"../KodeboldsEngineMK2/Header Files/DataStructs";"../KodeboldsEngineMK2/Header Files/HelperClasses";"../KodeboldsEngineMK2/Header Files/Managers";"../KodeboldsEngineMK2/Header Files/Systems";"../KodeboldsEngineMK2/Header Files/KodeboldsMath";</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -297,7 +297,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>"Header Files";"Header Files\Systems";"Header Files\Components";"Header Files\Scenes";"../KodeboldsEngineMK2/Header Files/Components";"../KodeboldsEngineMK2/Header Files/DataStructs";"../KodeboldsEngineMK2/Header Files/HelperClasses";"../KodeboldsEngineMK2/Header Files/Managers";"../KodeboldsEngineMK2/Header Files/Systems";"../KodeboldsEngineMK2/Header Files/KodeboldsMath";</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"Header Files";"Header Files\GameClasses";"Header Files\Systems";"Header Files\Components";"Header Files\Scenes";"../KodeboldsEngineMK2/Header Files/Components";"../KodeboldsEngineMK2/Header Files/DataStructs";"../KodeboldsEngineMK2/Header Files/HelperClasses";"../KodeboldsEngineMK2/Header Files/Managers";"../KodeboldsEngineMK2/Header Files/Systems";"../KodeboldsEngineMK2/Header Files/KodeboldsMath";</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>OPENGL;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -316,7 +316,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>"Header Files";"Header Files\Systems";"Header Files\Components";"Header Files\Scenes";"../KodeboldsEngineMK2/Header Files/Components";"../KodeboldsEngineMK2/Header Files/DataStructs";"../KodeboldsEngineMK2/Header Files/HelperClasses";"../KodeboldsEngineMK2/Header Files/Managers";"../KodeboldsEngineMK2/Header Files/Systems";"../KodeboldsEngineMK2/Header Files/KodeboldsMath";</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"Header Files";"Header Files\GameClasses";"Header Files\Systems";"Header Files\Components";"Header Files\Scenes";"../KodeboldsEngineMK2/Header Files/Components";"../KodeboldsEngineMK2/Header Files/DataStructs";"../KodeboldsEngineMK2/Header Files/HelperClasses";"../KodeboldsEngineMK2/Header Files/Managers";"../KodeboldsEngineMK2/Header Files/Systems";"../KodeboldsEngineMK2/Header Files/KodeboldsMath";</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DIRECTX;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -334,7 +334,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>"Header Files";"Header Files\Systems";"Header Files\Components";"Header Files\Scenes";"../KodeboldsEngineMK2/Header Files/Components";"../KodeboldsEngineMK2/Header Files/DataStructs";"../KodeboldsEngineMK2/Header Files/HelperClasses";"../KodeboldsEngineMK2/Header Files/Managers";"../KodeboldsEngineMK2/Header Files/Systems";"../KodeboldsEngineMK2/Header Files/KodeboldsMath";</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"Header Files";"Header Files\GameClasses";"Header Files\Systems";"Header Files\Components";"Header Files\Scenes";"../KodeboldsEngineMK2/Header Files/Components";"../KodeboldsEngineMK2/Header Files/DataStructs";"../KodeboldsEngineMK2/Header Files/HelperClasses";"../KodeboldsEngineMK2/Header Files/Managers";"../KodeboldsEngineMK2/Header Files/Systems";"../KodeboldsEngineMK2/Header Files/KodeboldsMath";</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -352,7 +352,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>"Header Files";"Header Files\Systems";"Header Files\Components";"Header Files\Scenes";"../KodeboldsEngineMK2/Header Files/Components";"../KodeboldsEngineMK2/Header Files/DataStructs";"../KodeboldsEngineMK2/Header Files/HelperClasses";"../KodeboldsEngineMK2/Header Files/Managers";"../KodeboldsEngineMK2/Header Files/Systems";"../KodeboldsEngineMK2/Header Files/KodeboldsMath";</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"Header Files";"Header Files\GameClasses";"Header Files\Systems";"Header Files\Components";"Header Files\Scenes";"../KodeboldsEngineMK2/Header Files/Components";"../KodeboldsEngineMK2/Header Files/DataStructs";"../KodeboldsEngineMK2/Header Files/HelperClasses";"../KodeboldsEngineMK2/Header Files/Managers";"../KodeboldsEngineMK2/Header Files/Systems";"../KodeboldsEngineMK2/Header Files/KodeboldsMath";</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>OPENGL;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -371,7 +371,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>"Header Files";"Header Files\Systems";"Header Files\Components";"Header Files\Scenes";"../KodeboldsEngineMK2/Header Files/Components";"../KodeboldsEngineMK2/Header Files/DataStructs";"../KodeboldsEngineMK2/Header Files/HelperClasses";"../KodeboldsEngineMK2/Header Files/Managers";"../KodeboldsEngineMK2/Header Files/Systems";"../KodeboldsEngineMK2/Header Files/KodeboldsMath";</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"Header Files";"Header Files\GameClasses";"Header Files\Systems";"Header Files\Components";"Header Files\Scenes";"../KodeboldsEngineMK2/Header Files/Components";"../KodeboldsEngineMK2/Header Files/DataStructs";"../KodeboldsEngineMK2/Header Files/HelperClasses";"../KodeboldsEngineMK2/Header Files/Managers";"../KodeboldsEngineMK2/Header Files/Systems";"../KodeboldsEngineMK2/Header Files/KodeboldsMath";</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DIRECTX;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -521,6 +521,8 @@
     <ClInclude Include="Header Files\Components\CustomComp2.h" />
     <ClInclude Include="Header Files\Components\CustomComponents.h" />
     <ClInclude Include="Header Files\Components\CustomComponentType.h" />
+    <ClInclude Include="Header Files\CustomCollisionMask.h" />
+    <ClInclude Include="Header Files\GameClasses\EntitySpawner.h" />
     <ClInclude Include="Header Files\Scenes\GameScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

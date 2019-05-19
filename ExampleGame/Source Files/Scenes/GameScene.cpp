@@ -1,6 +1,7 @@
 #include "GameScene.h"
 
 using namespace KodeboldsMath;
+using namespace EntitySpawner;
 
 /// <summary>
 /// Default constructor
@@ -75,40 +76,11 @@ void GameScene::Update()
 
 	if (mInputManager->KeyDown(KEYS::MOUSE_BUTTON_LEFT))
 	{
-		int ID = mEcsManager->CreateEntity();
-		Geometry geo{ L"cube.obj" };
-		mEcsManager->AddGeometryComp(geo, ID);
-		Shader shader{ L"defaultShader.fx" };
-		mEcsManager->AddShaderComp(shader, ID);
-		Transform transC{};
-		transC.scale = Vector4(1, 1, 1, 1);
-		transC.translation = mEcsManager->TransformComp(mPlayer)->translation + Vector4(-25, 5, 0, 0);
-		transC.transform *= TranslationMatrix(transC.translation);
-		mEcsManager->AddTransformComp(transC, ID);
-		Velocity vel{};
-		vel.acceleration = Vector4(0, 0.0f, 20.0f, 1);
-		vel.maxSpeed = 40;
-		mEcsManager->AddVelocityComp(vel, ID);
-		Colour colour{Vector4(0, 0.4f, 0.8f, 1)};
-		mEcsManager->AddColourComp(colour, ID);
+		Vector4 leftLaser = mEcsManager->TransformComp(mPlayer)->translation + Vector4(-25, 5, 0, 0);
+		SpawnLaser(leftLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(0, 0, 20, 1), 40, leftLaser.XYZ() - Vector3(1, 1, 1), leftLaser.XYZ() + Vector3(1, 1, 1));
 
-
-		ID = mEcsManager->CreateEntity();
-		Geometry geo2{ L"cube.obj" };
-		mEcsManager->AddGeometryComp(geo2, ID);
-		Shader shader2{ L"defaultShader.fx" };
-		mEcsManager->AddShaderComp(shader2, ID);
-		Transform transC2{};
-		transC2.scale = Vector4(1, 1, 1, 1);
-		transC2.translation = mEcsManager->TransformComp(mPlayer)->translation + Vector4(25, 5, 0, 0);
-		transC2.transform *= TranslationMatrix(transC2.translation);
-		mEcsManager->AddTransformComp(transC2, ID);
-		Velocity vel2{};
-		vel2.acceleration = Vector4(0, 0.0f, 20.0f, 1);
-		vel2.maxSpeed = 40;
-		mEcsManager->AddVelocityComp(vel2, ID);
-		Colour colour2{ Vector4(0, 0.4f, 0.8f, 1) };
-		mEcsManager->AddColourComp(colour2, ID);
+		Vector4 rightLaser = mEcsManager->TransformComp(mPlayer)->translation + Vector4(25, 5, 0, 0);
+		SpawnLaser(rightLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(0, 0, 20, 1), 40, rightLaser.XYZ() - Vector3(1, 1, 1), rightLaser.XYZ() + Vector3(1, 1, 1));
 	}
 }
 

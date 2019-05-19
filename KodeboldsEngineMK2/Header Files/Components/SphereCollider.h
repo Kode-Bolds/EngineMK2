@@ -4,4 +4,5 @@
 struct SphereCollider
 {
 	float radius;
+	int collisionMask;
 };
