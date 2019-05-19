@@ -22,7 +22,7 @@ struct ConstantBuffer
 class RenderSystem_DX : public RenderSystem
 {
 private:
-	std::shared_ptr<GUIManager_DX>  mGUIManager = GUIManager_DX::Instance();
+	std::shared_ptr<GUIManager_DX>  mGUIManager;// = GUIManager_DX::Instance();
 
 	std::vector<Entity> mLights;
 	HWND mWindow;
@@ -34,6 +34,9 @@ private:
 
 	std::wstring mActiveGeometry;
 	std::wstring mActiveShader;
+	BlendState mActiveBlend;
+	CullState mActiveCull;
+	DepthState mActiveDepth;
 
 	/// <summary>
 	/// DirectX pointers
@@ -48,11 +51,20 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> mRenderTargetView = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> mDepthStencil = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> mDepthStencilView = nullptr;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> mDepthStencilState = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> mConstantBuffer = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> mConstantBufferUniform = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11SamplerState> mTexSampler = nullptr;
-	Microsoft::WRL::ComPtr<ID3D11RasterizerState> mDefaultRasterizerState = nullptr;
+
+	Microsoft::WRL::ComPtr<ID3D11RasterizerState> mRastWireframeState = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11RasterizerState> mRastNoCullState = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11RasterizerState> mRastFrontCullState = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11RasterizerState> mRastBackCullState = nullptr;
+
+	Microsoft::WRL::ComPtr<ID3D11BlendState> mAlphaBlend = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11BlendState> mNoBlend = nullptr;
+
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState>	mDepthNone = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState>	mDepthLessEqual = nullptr;
 
 	HRESULT Init() override;
 	HRESULT CreateDevice() override;
@@ -74,6 +86,8 @@ private:
 
 	void SetViewProj() override;
 	void SetLights() override;
+
+	void CalculateTransform(const Entity& pEntity);
 
 public:
 	explicit RenderSystem_DX(const HWND& pWindow);

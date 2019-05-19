@@ -47,7 +47,7 @@ private:
 	std::vector<std::vector<unsigned short>*> mCustomComponentFreeLists;
 
 	//Entity-Component maps
-	std::vector<unsigned short> mAIEntityMap; 
+	std::vector<unsigned short> mAIEntityMap;
 	std::vector<unsigned short> mAudioEntityMap;
 	std::vector<unsigned short> mBoxColliderEntityMap;
 	std::vector<unsigned short> mCameraEntityMap;
