@@ -92,7 +92,7 @@ void GameScene::OnLoad()
 	mPlayer = mEcsManager->CreateEntity();
 	Geometry geo{ L"ship.obj" };
 	mEcsManager->AddGeometryComp(geo, mPlayer);
-	Shader shader{ L"defaultShader.fx" };
+	Shader shader{ L"defaultShader.fx" , BlendState::ALPHABLEND, CullState::WIREFRAME, DepthState::LESSEQUAL };
 	mEcsManager->AddShaderComp(shader, mPlayer);
 	Transform transC{};
 	transC.scale = Vector4(1, 1, 1, 1);

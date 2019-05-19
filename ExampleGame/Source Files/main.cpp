@@ -94,6 +94,8 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	CustomComp1* CC1Ptr = ecsManager->GetCustomComponent<CustomComp1>(entityID);
 	CustomComp2* CC2Ptr = ecsManager->GetCustomComponent<CustomComp2>(entityID);
 
+	ecsManager->DestroyEntity(entityID);
+
 	if (!ecsManager->RemoveCustomComponent<CustomComp1>(entityID))
 	{
 		OutputDebugString(L"REEEEEE");
