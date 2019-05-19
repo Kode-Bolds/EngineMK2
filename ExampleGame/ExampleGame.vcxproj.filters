@@ -62,4 +62,9 @@
       <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="cat.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

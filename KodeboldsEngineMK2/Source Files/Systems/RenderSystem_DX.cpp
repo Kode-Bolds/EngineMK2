@@ -54,8 +54,8 @@ HRESULT RenderSystem_DX::Init()
 		return hr;
 
 
-	mAntTweakManager->Init(TW_DIRECT3D11, mDevice.Get(), mWidth, height);
-	//mGUIManager->Init(mDevice.Get(), mContext.Get(), mWidth, height);
+	//mAntTweakManager->Init(TW_DIRECT3D11, mDevice.Get(), mWidth, height);
+	mAntTweakManager->InititialiseGUI(mDevice.Get(), mContext.Get(), mWidth, height);
 
 
 	hr = CreateSwapChain();
@@ -488,6 +488,8 @@ void RenderSystem_DX::ReAssignEntity(const Entity& pEntity)
 void RenderSystem_DX::Process()
 {
 	ClearView();
+
+	mAntTweakManager->Render();
 
 	if (mActiveCamera)
 	{
