@@ -8,6 +8,7 @@ InputManager_DX::InputManager_DX() : InputManager()
 {
 	mKeyboard = std::make_shared<DirectX::Keyboard>();
 	mMouse = std::make_shared<DirectX::Mouse>();
+	mGamePad = std::make_unique<DirectX::GamePad>();
 }
 
 /// <summary>
@@ -44,7 +45,6 @@ void InputManager_DX::CursorVisible(const bool pVisible)
 {
 	mMouse->SetVisible(pVisible);
 }
-
 
 ////--------------------------------------------------------------------------------------
 //// Called every time the application receives a message
@@ -1227,4 +1227,238 @@ void InputManager_DX::HeldDownKeys()
 	{
 		mKeyStates.emplace_back(std::pair<KEYS, KEY_STATE>(KEYS::KEY_COMMA, KEY_STATE::KEY_HELD));
 	}
+}
+
+void InputManager_DX::GamePadInput() {
+
+	// TODO: CREATE VECTOR OF CONNECTED GAMEPADS?
+	// TODO: HAVE THE VARIABLES (BELOW) FOR EACH GAMEPAD
+
+	auto player = 0;
+	mGamePadState = mGamePad->GetState(player); // looks for input from player 1
+
+	// Normalised to between -1 and 1
+	mLeftThumbPosX = mGamePadState.thumbSticks.leftX;
+	mLeftThumbPosY = mGamePadState.thumbSticks.leftY;
+
+	mRightThumbPosX = mGamePadState.thumbSticks.rightX;
+	mRightThumbPosY = mGamePadState.thumbSticks.rightY;
+
+	// normalised to between 0 and 1
+	mLeftTrigger = mGamePadState.triggers.left;
+	mRightTrigger = mGamePadState.triggers.right;
+
+
+	//// Actions for buttons being held down
+	//if (mGamePadState.IsConnected())
+	//{
+	//	if (mGamePadState.IsAPressed)
+	//	{
+	//	}
+	//	if (mGamePadState.IsBackPressed)
+	//	{
+	//	}
+	//	if (mGamePadState.IsBPressed)
+	//	{
+	//	}
+	//	if (mGamePadState.IsDPadDownPressed)
+	//	{
+	//	}
+	//	if (mGamePadState.IsDPadLeftPressed)
+	//	{
+	//	}
+	//	if (mGamePadState.IsDPadRightPressed)
+	//	{
+	//	}
+	//	if (mGamePadState.IsDPadUpPressed)
+	//	{
+	//	}
+	//	if (mGamePadState.IsLeftShoulderPressed)
+	//	{
+	//	}
+	//	if (mGamePadState.IsLeftStickPressed)
+	//	{
+	//	}
+	//	if (mGamePadState.IsLeftThumbStickDown)
+	//	{
+	//	}
+	//	if (mGamePadState.IsLeftThumbStickLeft)
+	//	{
+	//	}
+	//	if (mGamePadState.IsLeftThumbStickRight)
+	//	{
+	//	}
+	//	if (mGamePadState.IsLeftThumbStickUp)
+	//	{
+	//	}
+	//	if (mGamePadState.IsLeftTriggerPressed) // triggers when trigger is pressed more than halfway
+	//	{
+	//	}
+	//	if (mGamePadState.IsMenuPressed)
+	//	{
+	//	}
+	//	if (mGamePadState.IsRightShoulderPressed)
+	//	{
+	//	}
+	//	if (mGamePadState.IsRightStickPressed)
+	//	{
+	//	}
+	//	if (mGamePadState.IsRightThumbStickDown)
+	//	{
+	//	}
+	//	if (mGamePadState.IsRightThumbStickLeft)
+	//	{
+	//	}
+	//	if (mGamePadState.IsRightThumbStickRight)
+	//	{
+//	}
+	//	if (mGamePadState.IsRightThumbStickUp)
+	//	{
+	//	}
+	//	if (mGamePadState.IsRightTriggerPressed) // triggers when trigger is pressed more than halfway
+	//	{
+	//	}
+	//	if (mGamePadState.IsStartPressed)
+	//	{
+	//	}
+	//	if (mGamePadState.IsViewPressed) // XBOX 360 "Back" button and Xbox One "View" button
+	//	{
+	//	}
+	//	if (mGamePadState.IsXPressed)
+	//	{
+	//	}
+	//	if (mGamePadState.IsYPressed)
+	//	{
+	//	}
+	//}
+
+	// Actions for single presses and releases
+	if (mGamePadState.IsConnected())
+	{
+		mGamePadTracker.Update(mGamePadState);
+
+		if (mGamePadTracker.a == DirectX::GamePad::ButtonStateTracker::PRESSED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::A, GAMEPAD_BUTTON_STATE::PRESSED)); }
+		if (mGamePadTracker.b == DirectX::GamePad::ButtonStateTracker::PRESSED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::B, GAMEPAD_BUTTON_STATE::PRESSED)); }
+		if (mGamePadTracker.back == DirectX::GamePad::ButtonStateTracker::PRESSED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::BACK, GAMEPAD_BUTTON_STATE::PRESSED)); }
+		if (mGamePadTracker.dpadDown == DirectX::GamePad::ButtonStateTracker::PRESSED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::DPAD_DOWN, GAMEPAD_BUTTON_STATE::PRESSED)); }
+		if (mGamePadTracker.dpadLeft == DirectX::GamePad::ButtonStateTracker::PRESSED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::DPAD_LEFT, GAMEPAD_BUTTON_STATE::PRESSED)); }
+		if (mGamePadTracker.dpadRight == DirectX::GamePad::ButtonStateTracker::PRESSED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::DPAD_RIGHT, GAMEPAD_BUTTON_STATE::PRESSED)); }
+		if (mGamePadTracker.dpadUp == DirectX::GamePad::ButtonStateTracker::PRESSED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::DPAD_UP, GAMEPAD_BUTTON_STATE::PRESSED)); }
+		if (mGamePadTracker.leftShoulder == DirectX::GamePad::ButtonStateTracker::PRESSED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_SHOULDER, GAMEPAD_BUTTON_STATE::PRESSED)); }
+		if (mGamePadTracker.leftStick == DirectX::GamePad::ButtonStateTracker::PRESSED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_STICK, GAMEPAD_BUTTON_STATE::PRESSED)); }
+		if (mGamePadTracker.leftStickDown == DirectX::GamePad::ButtonStateTracker::PRESSED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_STICK_DOWN, GAMEPAD_BUTTON_STATE::PRESSED)); }
+		if (mGamePadTracker.leftStickLeft == DirectX::GamePad::ButtonStateTracker::PRESSED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_STICK_LEFT, GAMEPAD_BUTTON_STATE::PRESSED)); }
+		if (mGamePadTracker.leftStickRight == DirectX::GamePad::ButtonStateTracker::PRESSED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_STICK_RIGHT, GAMEPAD_BUTTON_STATE::PRESSED)); }
+		if (mGamePadTracker.leftStickUp == DirectX::GamePad::ButtonStateTracker::PRESSED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_STICK_UP, GAMEPAD_BUTTON_STATE::PRESSED)); }
+		if (mGamePadTracker.leftTrigger == DirectX::GamePad::ButtonStateTracker::PRESSED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_TRIGGER, GAMEPAD_BUTTON_STATE::PRESSED)); }
+		if (mGamePadTracker.menu == DirectX::GamePad::ButtonStateTracker::PRESSED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::MENU, GAMEPAD_BUTTON_STATE::PRESSED)); }
+		if (mGamePadTracker.rightShoulder == DirectX::GamePad::ButtonStateTracker::PRESSED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_SHOULDER, GAMEPAD_BUTTON_STATE::PRESSED)); }
+		if (mGamePadTracker.rightStick == DirectX::GamePad::ButtonStateTracker::PRESSED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_STICK, GAMEPAD_BUTTON_STATE::PRESSED)); }
+		if (mGamePadTracker.rightStickDown == DirectX::GamePad::ButtonStateTracker::PRESSED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_STICK_DOWN, GAMEPAD_BUTTON_STATE::PRESSED)); }
+		if (mGamePadTracker.rightStickLeft == DirectX::GamePad::ButtonStateTracker::PRESSED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_STICK_LEFT, GAMEPAD_BUTTON_STATE::PRESSED)); }
+		if (mGamePadTracker.rightStickRight == DirectX::GamePad::ButtonStateTracker::PRESSED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_STICK_RIGHT, GAMEPAD_BUTTON_STATE::PRESSED)); }
+		if (mGamePadTracker.rightStickUp == DirectX::GamePad::ButtonStateTracker::PRESSED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_STICK_UP, GAMEPAD_BUTTON_STATE::PRESSED)); }
+		if (mGamePadTracker.rightTrigger == DirectX::GamePad::ButtonStateTracker::PRESSED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_TRIGGER, GAMEPAD_BUTTON_STATE::PRESSED)); }
+		if (mGamePadTracker.start == DirectX::GamePad::ButtonStateTracker::PRESSED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::START, GAMEPAD_BUTTON_STATE::PRESSED)); }
+
+		if (mGamePadTracker.a == DirectX::GamePad::ButtonStateTracker::RELEASED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::A, GAMEPAD_BUTTON_STATE::RELEASED)); }
+		if (mGamePadTracker.b == DirectX::GamePad::ButtonStateTracker::RELEASED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::B, GAMEPAD_BUTTON_STATE::RELEASED)); }
+		if (mGamePadTracker.back == DirectX::GamePad::ButtonStateTracker::RELEASED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::BACK, GAMEPAD_BUTTON_STATE::RELEASED)); }
+		if (mGamePadTracker.dpadDown == DirectX::GamePad::ButtonStateTracker::RELEASED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::DPAD_DOWN, GAMEPAD_BUTTON_STATE::RELEASED)); }
+		if (mGamePadTracker.dpadLeft == DirectX::GamePad::ButtonStateTracker::RELEASED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::DPAD_LEFT, GAMEPAD_BUTTON_STATE::RELEASED)); }
+		if (mGamePadTracker.dpadRight == DirectX::GamePad::ButtonStateTracker::RELEASED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::DPAD_RIGHT, GAMEPAD_BUTTON_STATE::RELEASED)); }
+		if (mGamePadTracker.dpadUp == DirectX::GamePad::ButtonStateTracker::RELEASED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::DPAD_UP, GAMEPAD_BUTTON_STATE::RELEASED)); }
+		if (mGamePadTracker.leftShoulder == DirectX::GamePad::ButtonStateTracker::RELEASED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_SHOULDER, GAMEPAD_BUTTON_STATE::RELEASED)); }
+		if (mGamePadTracker.leftStick == DirectX::GamePad::ButtonStateTracker::RELEASED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_STICK, GAMEPAD_BUTTON_STATE::RELEASED)); }
+		if (mGamePadTracker.leftStickDown == DirectX::GamePad::ButtonStateTracker::RELEASED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_STICK_DOWN, GAMEPAD_BUTTON_STATE::RELEASED)); }
+		if (mGamePadTracker.leftStickLeft == DirectX::GamePad::ButtonStateTracker::RELEASED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_STICK_LEFT, GAMEPAD_BUTTON_STATE::RELEASED)); }
+		if (mGamePadTracker.leftStickRight == DirectX::GamePad::ButtonStateTracker::RELEASED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_STICK_RIGHT, GAMEPAD_BUTTON_STATE::RELEASED)); }
+		if (mGamePadTracker.leftStickUp == DirectX::GamePad::ButtonStateTracker::RELEASED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_STICK_UP, GAMEPAD_BUTTON_STATE::RELEASED)); }
+		if (mGamePadTracker.leftTrigger == DirectX::GamePad::ButtonStateTracker::RELEASED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_TRIGGER, GAMEPAD_BUTTON_STATE::RELEASED)); }
+		if (mGamePadTracker.menu == DirectX::GamePad::ButtonStateTracker::RELEASED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::MENU, GAMEPAD_BUTTON_STATE::RELEASED)); }
+		if (mGamePadTracker.rightShoulder == DirectX::GamePad::ButtonStateTracker::RELEASED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_SHOULDER, GAMEPAD_BUTTON_STATE::RELEASED)); }
+		if (mGamePadTracker.rightStick == DirectX::GamePad::ButtonStateTracker::RELEASED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_STICK, GAMEPAD_BUTTON_STATE::RELEASED)); }
+		if (mGamePadTracker.rightStickDown == DirectX::GamePad::ButtonStateTracker::RELEASED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_STICK_DOWN, GAMEPAD_BUTTON_STATE::RELEASED)); }
+		if (mGamePadTracker.rightStickLeft == DirectX::GamePad::ButtonStateTracker::RELEASED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_STICK_LEFT, GAMEPAD_BUTTON_STATE::RELEASED)); }
+		if (mGamePadTracker.rightStickRight == DirectX::GamePad::ButtonStateTracker::RELEASED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_STICK_RIGHT, GAMEPAD_BUTTON_STATE::RELEASED)); }
+		if (mGamePadTracker.rightStickUp == DirectX::GamePad::ButtonStateTracker::RELEASED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_STICK_UP, GAMEPAD_BUTTON_STATE::RELEASED)); }
+		if (mGamePadTracker.rightTrigger == DirectX::GamePad::ButtonStateTracker::RELEASED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_TRIGGER, GAMEPAD_BUTTON_STATE::RELEASED)); }
+		if (mGamePadTracker.start == DirectX::GamePad::ButtonStateTracker::RELEASED) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::START, GAMEPAD_BUTTON_STATE::RELEASED)); }
+
+		if (mGamePadTracker.a == DirectX::GamePad::ButtonStateTracker::HELD) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::A, GAMEPAD_BUTTON_STATE::HELD)); }
+		if (mGamePadTracker.b == DirectX::GamePad::ButtonStateTracker::HELD) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::B, GAMEPAD_BUTTON_STATE::HELD)); }
+		if (mGamePadTracker.back == DirectX::GamePad::ButtonStateTracker::HELD) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::BACK, GAMEPAD_BUTTON_STATE::HELD)); }
+		if (mGamePadTracker.dpadDown == DirectX::GamePad::ButtonStateTracker::HELD) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::DPAD_DOWN, GAMEPAD_BUTTON_STATE::HELD)); }
+		if (mGamePadTracker.dpadLeft == DirectX::GamePad::ButtonStateTracker::HELD) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::DPAD_LEFT, GAMEPAD_BUTTON_STATE::HELD)); }
+		if (mGamePadTracker.dpadRight == DirectX::GamePad::ButtonStateTracker::HELD) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::DPAD_RIGHT, GAMEPAD_BUTTON_STATE::HELD)); }
+		if (mGamePadTracker.dpadUp == DirectX::GamePad::ButtonStateTracker::HELD) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::DPAD_UP, GAMEPAD_BUTTON_STATE::HELD)); }
+		if (mGamePadTracker.leftShoulder == DirectX::GamePad::ButtonStateTracker::HELD) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_SHOULDER, GAMEPAD_BUTTON_STATE::HELD)); }
+		if (mGamePadTracker.leftStick == DirectX::GamePad::ButtonStateTracker::HELD) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_STICK, GAMEPAD_BUTTON_STATE::HELD)); }
+		if (mGamePadTracker.leftStickDown == DirectX::GamePad::ButtonStateTracker::HELD) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_STICK_DOWN, GAMEPAD_BUTTON_STATE::HELD)); }
+		if (mGamePadTracker.leftStickLeft == DirectX::GamePad::ButtonStateTracker::HELD) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_STICK_LEFT, GAMEPAD_BUTTON_STATE::HELD)); }
+		if (mGamePadTracker.leftStickRight == DirectX::GamePad::ButtonStateTracker::HELD) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_STICK_RIGHT, GAMEPAD_BUTTON_STATE::HELD)); }
+		if (mGamePadTracker.leftStickUp == DirectX::GamePad::ButtonStateTracker::HELD) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_STICK_UP, GAMEPAD_BUTTON_STATE::HELD)); }
+		if (mGamePadTracker.leftTrigger == DirectX::GamePad::ButtonStateTracker::HELD) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_TRIGGER, GAMEPAD_BUTTON_STATE::HELD)); }
+		if (mGamePadTracker.menu == DirectX::GamePad::ButtonStateTracker::HELD) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::MENU, GAMEPAD_BUTTON_STATE::HELD)); }
+		if (mGamePadTracker.rightShoulder == DirectX::GamePad::ButtonStateTracker::HELD) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_SHOULDER, GAMEPAD_BUTTON_STATE::HELD)); }
+		if (mGamePadTracker.rightStick == DirectX::GamePad::ButtonStateTracker::HELD) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_STICK, GAMEPAD_BUTTON_STATE::HELD)); }
+		if (mGamePadTracker.rightStickDown == DirectX::GamePad::ButtonStateTracker::HELD) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_STICK_DOWN, GAMEPAD_BUTTON_STATE::HELD)); }
+		if (mGamePadTracker.rightStickLeft == DirectX::GamePad::ButtonStateTracker::HELD) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_STICK_LEFT, GAMEPAD_BUTTON_STATE::HELD)); }
+		if (mGamePadTracker.rightStickRight == DirectX::GamePad::ButtonStateTracker::HELD) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_STICK_RIGHT, GAMEPAD_BUTTON_STATE::HELD)); }
+		if (mGamePadTracker.rightStickUp == DirectX::GamePad::ButtonStateTracker::HELD) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_STICK_UP, GAMEPAD_BUTTON_STATE::HELD)); }
+		if (mGamePadTracker.rightTrigger == DirectX::GamePad::ButtonStateTracker::HELD) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_TRIGGER, GAMEPAD_BUTTON_STATE::HELD)); }
+		if (mGamePadTracker.start == DirectX::GamePad::ButtonStateTracker::HELD) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::START, GAMEPAD_BUTTON_STATE::HELD)); }
+
+		if (mGamePadTracker.a == DirectX::GamePad::ButtonStateTracker::UP) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::A, GAMEPAD_BUTTON_STATE::UP)); }
+		if (mGamePadTracker.b == DirectX::GamePad::ButtonStateTracker::UP) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::B, GAMEPAD_BUTTON_STATE::UP)); }
+		if (mGamePadTracker.back == DirectX::GamePad::ButtonStateTracker::UP) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::BACK, GAMEPAD_BUTTON_STATE::UP)); }
+		if (mGamePadTracker.dpadDown == DirectX::GamePad::ButtonStateTracker::UP) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::DPAD_DOWN, GAMEPAD_BUTTON_STATE::UP)); }
+		if (mGamePadTracker.dpadLeft == DirectX::GamePad::ButtonStateTracker::UP) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::DPAD_LEFT, GAMEPAD_BUTTON_STATE::UP)); }
+		if (mGamePadTracker.dpadRight == DirectX::GamePad::ButtonStateTracker::UP) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::DPAD_RIGHT, GAMEPAD_BUTTON_STATE::UP)); }
+		if (mGamePadTracker.dpadUp == DirectX::GamePad::ButtonStateTracker::UP) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::DPAD_UP, GAMEPAD_BUTTON_STATE::UP)); }
+		if (mGamePadTracker.leftShoulder == DirectX::GamePad::ButtonStateTracker::UP) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_SHOULDER, GAMEPAD_BUTTON_STATE::UP)); }
+		if (mGamePadTracker.leftStick == DirectX::GamePad::ButtonStateTracker::UP) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_STICK, GAMEPAD_BUTTON_STATE::UP)); }
+		if (mGamePadTracker.leftStickDown == DirectX::GamePad::ButtonStateTracker::UP) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_STICK_DOWN, GAMEPAD_BUTTON_STATE::UP)); }
+		if (mGamePadTracker.leftStickLeft == DirectX::GamePad::ButtonStateTracker::UP) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_STICK_LEFT, GAMEPAD_BUTTON_STATE::UP)); }
+		if (mGamePadTracker.leftStickRight == DirectX::GamePad::ButtonStateTracker::UP) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_STICK_RIGHT, GAMEPAD_BUTTON_STATE::UP)); }
+		if (mGamePadTracker.leftStickUp == DirectX::GamePad::ButtonStateTracker::UP) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_STICK_UP, GAMEPAD_BUTTON_STATE::UP)); }
+		if (mGamePadTracker.leftTrigger == DirectX::GamePad::ButtonStateTracker::UP) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::LEFT_TRIGGER, GAMEPAD_BUTTON_STATE::UP)); }
+		if (mGamePadTracker.menu == DirectX::GamePad::ButtonStateTracker::UP) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::MENU, GAMEPAD_BUTTON_STATE::UP)); }
+		if (mGamePadTracker.rightShoulder == DirectX::GamePad::ButtonStateTracker::UP) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_SHOULDER, GAMEPAD_BUTTON_STATE::UP)); }
+		if (mGamePadTracker.rightStick == DirectX::GamePad::ButtonStateTracker::UP) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_STICK, GAMEPAD_BUTTON_STATE::UP)); }
+		if (mGamePadTracker.rightStickDown == DirectX::GamePad::ButtonStateTracker::UP) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_STICK_DOWN, GAMEPAD_BUTTON_STATE::UP)); }
+		if (mGamePadTracker.rightStickLeft == DirectX::GamePad::ButtonStateTracker::UP) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_STICK_LEFT, GAMEPAD_BUTTON_STATE::UP)); }
+		if (mGamePadTracker.rightStickRight == DirectX::GamePad::ButtonStateTracker::UP) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_STICK_RIGHT, GAMEPAD_BUTTON_STATE::UP)); }
+		if (mGamePadTracker.rightStickUp == DirectX::GamePad::ButtonStateTracker::UP) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_STICK_UP, GAMEPAD_BUTTON_STATE::UP)); }
+		if (mGamePadTracker.rightTrigger == DirectX::GamePad::ButtonStateTracker::UP) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::RIGHT_TRIGGER, GAMEPAD_BUTTON_STATE::UP)); }
+		if (mGamePadTracker.start == DirectX::GamePad::ButtonStateTracker::UP) { mGamePadButtonStates.emplace_back(std::pair<GAMEPAD_BUTTONS, GAMEPAD_BUTTON_STATE>(GAMEPAD_BUTTONS::START, GAMEPAD_BUTTON_STATE::UP)); }
+	}
+	else
+	{
+		mGamePadTracker.Reset();
+	}
+
+
+}
+
+void InputManager_DX::SetVibration(int pPlayer, float pLeftMotor, float pRightMotor)
+{
+	mGamePad->SetVibration(pPlayer, pLeftMotor, pRightMotor);
+}
+
+std::pair<float, float> InputManager_DX::GetLeftThumbStickPosition() {
+	return std::make_pair(mLeftThumbPosX, mLeftThumbPosY);
+}
+
+std::pair<float, float> InputManager_DX::GetRightThumbStickPosition() {
+	return std::make_pair(mRightThumbPosX, mRightThumbPosY);
+}
+
+
+float InputManager_DX::GetLeftTriggerValue() {
+	return mLeftTrigger;
+}
+
+float InputManager_DX::GetRightTriggerValue() {
+	return mRightTrigger;
 }

@@ -26,6 +26,7 @@ cbuffer ConstantBuffer : register(b0)
 	float4 LightColour;
 	float4 LightPosition;
 	float4 CameraPosition;
+	float4 Colour;
 	//float4 Time;
 }
 
@@ -37,7 +38,7 @@ cbuffer LightingBuffer : register (b1)
 	PointLight pointLights[5];
 
 	int numDirLights;
-	
+
 }
 
 //Texture2D txDiffuse : register(t0);
@@ -101,7 +102,7 @@ float4 PS(PS_INPUT input) : SV_Target
 	float3 viewDirection = normalize(CameraPosition - input.PosWorld);
 	float4 outputCol = ambient;
 
-	
+
 	//Calc spotlights
 
 	//for (int i = 0; i < NumberOfPointLights.x; ++i)
@@ -123,4 +124,5 @@ float4 PS(PS_INPUT input) : SV_Target
 
 
 	return outputCol;
+
 }

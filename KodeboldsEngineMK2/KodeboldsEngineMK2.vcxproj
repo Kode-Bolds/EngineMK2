@@ -85,6 +85,7 @@
     <ClInclude Include="Header Files\Components\Audio.h" />
     <ClInclude Include="Header Files\Components\BoxCollider.h" />
     <ClInclude Include="Header Files\Components\Camera.h" />
+    <ClInclude Include="Header Files\Components\Collision.h" />
     <ClInclude Include="Header Files\Components\Colour.h" />
     <ClInclude Include="Header Files\Components\Components.h" />
     <ClInclude Include="Header Files\Components\ComponentType.h" />
@@ -99,6 +100,7 @@
     <ClInclude Include="Header Files\Components\Transform.h" />
     <ClInclude Include="Header Files\Components\Velocity.h" />
     <ClInclude Include="Header Files\DataStructs\BlendState.h" />
+    <ClInclude Include="Header Files\DataStructs\CollisionMask.h" />
     <ClInclude Include="Header Files\DataStructs\CullState.h" />
     <ClInclude Include="Header Files\DataStructs\DepthState.h" />
     <ClInclude Include="Header Files\DataStructs\Entity.h" />

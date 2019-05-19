@@ -261,6 +261,13 @@
     <ClInclude Include="Header Files\Systems\CollisionCheckSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="Header Files\Components\Collision.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\RenderStates.h" />
+    <ClInclude Include="Header Files\DataStructs\CollisionMask.h">
+      <Filter>Header Files\DataStructs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">

@@ -3,5 +3,5 @@
 
 struct Colour
 {
-	KodeboldsMath::Vector4 colour;
+	KodeboldsMath::Vector4 mColour;
 };

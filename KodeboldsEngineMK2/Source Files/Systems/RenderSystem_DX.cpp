@@ -16,11 +16,11 @@ using namespace DirectX;
 /// Initialises directX device, and cleans up directX resources if failed
 /// </summary>
 /// <param name="pWindow">A handle to the win32 window</param>
-RenderSystem_DX::RenderSystem_DX(const HWND& pWindow) 
+RenderSystem_DX::RenderSystem_DX(const HWND& pWindow)
 	: RenderSystem(std::vector<int>{ ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_GEOMETRY | ComponentType::COMPONENT_SHADER,
-	ComponentType::COMPONENT_LIGHT,
-	ComponentType::COMPONENT_CAMERA }),
-mWindow(pWindow), mActiveCamera(nullptr)
+		ComponentType::COMPONENT_LIGHT,
+		ComponentType::COMPONENT_CAMERA }),
+	mWindow(pWindow), mActiveCamera(nullptr)
 {
 	if (FAILED(Init()))
 	{
@@ -53,7 +53,10 @@ HRESULT RenderSystem_DX::Init()
 	if (FAILED(hr))
 		return hr;
 
+
 	mAntTweakManager->Init(TW_DIRECT3D11, mDevice.Get(), mWidth, height);
+	//mGUIManager->Init(mDevice.Get(), mContext.Get(), mWidth, height);
+
 
 	hr = CreateSwapChain();
 	if (FAILED(hr))
@@ -289,8 +292,17 @@ HRESULT RenderSystem_DX::CreateDepth()
 	ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
 	depthStencilDesc.DepthEnable = TRUE;
 	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
-	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
-	hr = mDevice->CreateDepthStencilState(&depthStencilDesc, mDepthStencilState.GetAddressOf());
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_NEVER;
+	hr = mDevice->CreateDepthStencilState(&depthStencilDesc, mDepthNone.GetAddressOf());
+	if (FAILED(hr))
+		return hr;
+
+	D3D11_DEPTH_STENCIL_DESC depthStencilDesc2;
+	ZeroMemory(&depthStencilDesc2, sizeof(D3D11_DEPTH_STENCIL_DESC));
+	depthStencilDesc2.DepthEnable = TRUE;
+	depthStencilDesc2.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc2.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+	mDevice->CreateDepthStencilState(&depthStencilDesc2, mDepthLessEqual.GetAddressOf());
 	if (FAILED(hr))
 		return hr;
 
@@ -305,12 +317,49 @@ HRESULT RenderSystem_DX::CreateRasterizer()
 {
 	auto hr{ S_OK };
 
-	D3D11_RASTERIZER_DESC rasterizerDesc;
-	ZeroMemory(&rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
-	rasterizerDesc.FillMode = D3D11_FILL_SOLID;
-	rasterizerDesc.CullMode = D3D11_CULL_NONE;
+	D3D11_RASTERIZER_DESC rasterizerWireFrameDesc;
+	ZeroMemory(&rasterizerWireFrameDesc, sizeof(D3D11_RASTERIZER_DESC));
+	rasterizerWireFrameDesc.FillMode = D3D11_FILL_WIREFRAME;
+	rasterizerWireFrameDesc.CullMode = D3D11_CULL_NONE;
 
-	hr = mDevice->CreateRasterizerState(&rasterizerDesc, mDefaultRasterizerState.GetAddressOf());
+	hr = mDevice->CreateRasterizerState(&rasterizerWireFrameDesc, mRastWireframeState.GetAddressOf());
+	if (FAILED(hr))
+	{
+		return hr;
+	}
+
+	D3D11_RASTERIZER_DESC rasterizerNoCullDesc;
+	ZeroMemory(&rasterizerNoCullDesc, sizeof(D3D11_RASTERIZER_DESC));
+	rasterizerNoCullDesc.FillMode = D3D11_FILL_SOLID;
+	rasterizerNoCullDesc.CullMode = D3D11_CULL_NONE;
+
+	hr = mDevice->CreateRasterizerState(&rasterizerNoCullDesc, mRastNoCullState.GetAddressOf());
+	if (FAILED(hr))
+	{
+		return hr;
+	}
+
+	D3D11_RASTERIZER_DESC rasterizerFrontCullDesc;
+	ZeroMemory(&rasterizerFrontCullDesc, sizeof(D3D11_RASTERIZER_DESC));
+	rasterizerFrontCullDesc.FillMode = D3D11_FILL_SOLID;
+	rasterizerFrontCullDesc.CullMode = D3D11_CULL_FRONT;
+
+	hr = mDevice->CreateRasterizerState(&rasterizerFrontCullDesc, mRastFrontCullState.GetAddressOf());
+	if (FAILED(hr))
+	{
+		return hr;
+	}
+
+	D3D11_RASTERIZER_DESC rasterizerBackCullDesc;
+	ZeroMemory(&rasterizerBackCullDesc, sizeof(D3D11_RASTERIZER_DESC));
+	rasterizerBackCullDesc.FillMode = D3D11_FILL_SOLID;
+	rasterizerBackCullDesc.CullMode = D3D11_CULL_BACK;
+
+	hr = mDevice->CreateRasterizerState(&rasterizerBackCullDesc, mRastBackCullState.GetAddressOf());
+	if (FAILED(hr))
+	{
+		return hr;
+	}
 
 	return hr;
 }
@@ -321,7 +370,47 @@ HRESULT RenderSystem_DX::CreateRasterizer()
 /// <returns>HRESULT status code</returns>
 HRESULT RenderSystem_DX::CreateBlend()
 {
-	return E_NOTIMPL;
+	auto hr{ S_OK };
+
+	D3D11_BLEND_DESC blendDesc;
+	ZeroMemory(&blendDesc, sizeof(D3D11_BLEND_DESC));
+	blendDesc.RenderTarget[0].BlendEnable = TRUE;
+	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendDesc.AlphaToCoverageEnable = FALSE;
+	blendDesc.IndependentBlendEnable = FALSE;
+
+	hr = mDevice->CreateBlendState(&blendDesc, mAlphaBlend.GetAddressOf());
+	if (FAILED(hr))
+	{
+		return hr;
+	}
+
+	D3D11_BLEND_DESC blendDesc2;
+	ZeroMemory(&blendDesc, sizeof(D3D11_BLEND_DESC));
+	blendDesc2.RenderTarget[0].BlendEnable = FALSE;
+	blendDesc2.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	blendDesc2.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	blendDesc2.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendDesc2.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	blendDesc2.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blendDesc2.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	blendDesc2.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendDesc2.AlphaToCoverageEnable = FALSE;
+	blendDesc2.IndependentBlendEnable = FALSE;
+
+	hr = mDevice->CreateBlendState(&blendDesc2, mNoBlend.GetAddressOf());
+	if (FAILED(hr))
+	{
+		return hr;
+	}
+
+	return hr;
 }
 
 /// <summary>
@@ -398,7 +487,7 @@ void RenderSystem_DX::Cleanup()
 /// Assigns entity to system if the entities mask matches the system mask
 /// </summary>
 /// <param name="pEntity">Entity to be assigned</param>
-void RenderSystem_DX::AssignEntity(const Entity & pEntity)
+void RenderSystem_DX::AssignEntity(const Entity& pEntity)
 {
 	//Checks if entity mask matches the renderable mask
 	if ((pEntity.componentMask & mMasks[0]) == mMasks[0])
@@ -411,7 +500,7 @@ void RenderSystem_DX::AssignEntity(const Entity & pEntity)
 	if ((pEntity.componentMask & mMasks[1]) == mMasks[1])
 	{
 		//If the entity has a light component then find it in the lights
-		const auto entity = find_if(mLights.begin(), mLights.end(), [&](const Entity& entity) {return entity.ID == pEntity.ID; });
+		const auto entity = find_if(mLights.begin(), mLights.end(), [&](const Entity & entity) {return entity.ID == pEntity.ID; });
 		if (entity == mLights.end())
 		{
 			//If not found then add it
@@ -439,7 +528,7 @@ void RenderSystem_DX::AssignEntity(const Entity & pEntity)
 /// Re-assigns entity to system when component is removed from entity
 /// </summary>
 /// <param name="pEntity">Entity to re-assign</param>
-void RenderSystem_DX::ReAssignEntity(const Entity & pEntity)
+void RenderSystem_DX::ReAssignEntity(const Entity& pEntity)
 {
 	//Checks if entity mask matches the renderable mask
 	if ((pEntity.componentMask & mMasks[0]) == mMasks[0])
@@ -457,7 +546,7 @@ void RenderSystem_DX::ReAssignEntity(const Entity & pEntity)
 	if ((pEntity.componentMask & mMasks[1]) == mMasks[1])
 	{
 		//If the entity has a light component then find it in the lights
-		const auto entity = find_if(mLights.begin(), mLights.end(), [&](const Entity& entity) {return entity.ID == pEntity.ID; });
+		const auto entity = find_if(mLights.begin(), mLights.end(), [&](const Entity & entity) {return entity.ID == pEntity.ID; });
 		if (entity == mLights.end())
 		{
 			//If not found then add it
@@ -472,7 +561,7 @@ void RenderSystem_DX::ReAssignEntity(const Entity & pEntity)
 	else
 	{
 		//If the mask doesn't match then remove it (if it wasn't in the list then the remove acts as a search to confirm it is not there)
-		mLights.erase(remove_if(mLights.begin(), mLights.end(), [&](const Entity& entity) {return entity.ID == pEntity.ID; }), mLights.end());
+		mLights.erase(remove_if(mLights.begin(), mLights.end(), [&](const Entity & entity) {return entity.ID == pEntity.ID; }), mLights.end());
 	}
 
 	//TODO: Implement multiple cameras
@@ -484,58 +573,108 @@ void RenderSystem_DX::ReAssignEntity(const Entity & pEntity)
 /// </summary>
 void RenderSystem_DX::Process()
 {
-		ClearView();
+	ClearView();
 
-		if (mActiveCamera)
+	if (mActiveCamera)
+	{
+		SetViewProj();
+	}
+	if (!mLights.empty())
+	{
+		SetLights();
+	}
+	for (const Entity& entity : mEntities)
+	{
+		if (entity.ID != -1)
 		{
-			SetViewProj();
-		}
-		if (mLights.size() > 0)
-		{
-			SetLights();
-		}
-		for (const Entity& entity : mEntities)
-		{
-			if (entity.ID != -1)
+			CalculateTransform(entity);
+
+			//If geometry of entity is not already in the buffers, load entities geometry
+			if (mEcsManager->GeometryComp(entity.ID)->filename != mActiveGeometry)
 			{
-				//If geometry of entity is not already in the buffers, load entities geometry
-				if (mEcsManager->GeometryComp(entity.ID)->filename != mActiveGeometry)
-				{
-					mGeometry = LoadGeometry(entity);
-					mGeometry->Load(this);
-					mActiveGeometry = mEcsManager->GeometryComp(entity.ID)->filename;
-				}
-				//LoadTexture(entity);
-				//If shader of entity is not already in the buffers, load entities shader
-				if (mEcsManager->ShaderComp(entity.ID)->filename != mActiveShader)
-				{
-					LoadShaders(entity);
-					mActiveShader = mEcsManager->ShaderComp(entity.ID)->filename;
-				}
-
-				//Set world matrix
-				mCB.mWorld = XMFLOAT4X4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(entity.ID)->transform)));
-
-				//Set colour if colour
-				if ((entity.componentMask & ComponentType::COMPONENT_COLOUR) == ComponentType::COMPONENT_COLOUR)
-				{
-					mCB.colour = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->ColourComp(entity.ID)->colour)));
-				}
-
-				//Update constant buffer
-				mContext->UpdateSubresource(mConstantBuffer.Get(), 0, nullptr, &mCB, 0, 0);
-
-				//mContext->OMSetBlendState()
-				//mContext->OMSetDepthStencilState(NULL, 1);
-				mContext->RSSetState(mDefaultRasterizerState.Get());
-
-				mGeometry->Draw(this);
+				mGeometry = LoadGeometry(entity);
+				mGeometry->Load(this);
+				mActiveGeometry = mEcsManager->GeometryComp(entity.ID)->filename;
 			}
+			//LoadTexture(entity);
+			//If shader of entity is not already in the buffers, load entities shader
+			if (mEcsManager->ShaderComp(entity.ID)->filename != mActiveShader)
+			{
+				LoadShaders(entity);
+				mActiveShader = mEcsManager->ShaderComp(entity.ID)->filename;
+				//if the render states have changed, load the appropriate ones for this shader
+				const BlendState blend = mEcsManager->ShaderComp(entity.ID)->blendState;
+				if (blend != mActiveBlend)
+				{
+					float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+					const auto blendSample = 0xffffffff;
+					if (blend == BlendState::NOBLEND)
+					{
+						mContext->OMSetBlendState(mNoBlend.Get(), blendFactor, blendSample);
+					}
+					else if (blend == BlendState::ALPHABLEND)
+					{
+						mContext->OMSetBlendState(mAlphaBlend.Get(), blendFactor, blendSample);
+					}
+				}
+				const CullState cull = mEcsManager->ShaderComp(entity.ID)->cullState;
+				if (cull != mActiveCull)
+				{
+					if (cull == CullState::NONE)
+					{
+						mContext->RSSetState(mRastNoCullState.Get());
+					}
+					else if (cull == CullState::FRONT)
+					{
+						mContext->RSSetState(mRastFrontCullState.Get());
+					}
+					else if (cull == CullState::BACK)
+					{
+						mContext->RSSetState(mRastBackCullState.Get());
+					}
+					else if (cull == CullState::WIREFRAME)
+					{
+						mContext->RSSetState(mRastWireframeState.Get());
+					}
+				}
+
+				const DepthState depth = mEcsManager->ShaderComp(entity.ID)->depthState;
+				if (depth != mActiveDepth)
+				{
+					if (depth == DepthState::NONE)
+					{
+						mContext->OMSetDepthStencilState(mDepthNone.Get(), 1);
+					}
+					else if (depth == DepthState::LESSEQUAL)
+					{
+						mContext->OMSetDepthStencilState(mDepthLessEqual.Get(), 1);
+					}
+				}
+			}
+
+			//Set world matrix
+			mCB.mWorld = XMFLOAT4X4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(entity.ID)->transform)));
+
+			//Set colour if colour
+			if ((entity.componentMask & ComponentType::COMPONENT_COLOUR) == ComponentType::COMPONENT_COLOUR)
+			{
+				mCB.mColour = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->ColourComp(entity.ID)->mColour)));
+			}
+			else
+			{
+				mCB.mColour = XMFLOAT4(0, 0, 0, 0);
+			}
+
+			//Update constant buffer
+			mContext->UpdateSubresource(mConstantBuffer.Get(), 0, nullptr, &mCB, 0, 0);
+
+			mGeometry->Draw(this);
 		}
+	}
 
-		mAntTweakManager->Draw();
+	mAntTweakManager->Draw();
 
-		SwapBuffers();
+	SwapBuffers();
 }
 
 /// <summary>
@@ -559,7 +698,7 @@ void RenderSystem_DX::SwapBuffers() const
 /// Loads the geometry for the given entity into a VBO object 
 /// </summary>
 /// <param name="pEntity">Entity to load geometry for</param>
-VBO * const RenderSystem_DX::LoadGeometry(const Entity& pEntity) const
+VBO* const RenderSystem_DX::LoadGeometry(const Entity& pEntity) const
 {
 	const auto geometry = mResourceManager->LoadGeometry(this, mEcsManager->GeometryComp(pEntity.ID)->filename);
 	return geometry;
@@ -569,7 +708,7 @@ VBO * const RenderSystem_DX::LoadGeometry(const Entity& pEntity) const
 /// Loads the shader for the given entity into a shader object
 /// </summary>
 /// <param name="pEntity">Entity to load shader for</param>
-void RenderSystem_DX::LoadShaders(const Entity & pEntity) const
+void RenderSystem_DX::LoadShaders(const Entity& pEntity) const
 {
 	const auto shader = mResourceManager->LoadShader(this, mEcsManager->ShaderComp(pEntity.ID)->filename);
 	shader->Load(this);
@@ -579,7 +718,7 @@ void RenderSystem_DX::LoadShaders(const Entity & pEntity) const
 /// Loads the texture for the given entity into a texture object
 /// </summary>
 /// <param name="pEntity">Entity to load texture for</param>
-void RenderSystem_DX::LoadTexture(const Entity & pEntity) const
+void RenderSystem_DX::LoadTexture(const Entity& pEntity) const
 {
 	//Loads diffuse texture from texture component
 	auto texture = mResourceManager->LoadTexture(this, mEcsManager->TextureComp(pEntity.ID)->diffuse);
@@ -635,6 +774,21 @@ void RenderSystem_DX::SetViewProj()
 void RenderSystem_DX::SetLights()
 {
 	mCB.mLightPosition = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mLights[0].ID)->translation)));
-	mCB.mLightColour = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->LightComp(mLights[0].ID)->colour)));
+	mCB.mLightColour = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->LightComp(mLights[0].ID)->mColour)));
+}
+
+void RenderSystem_DX::CalculateTransform(const Entity& pEntity)
+{
+	Transform* t = mEcsManager->TransformComp(pEntity.ID);
+	const auto scale = KodeboldsMath::ScaleMatrix(t->scale);
+	const auto translation = KodeboldsMath::TranslationMatrix(t->translation);
+	const auto rotation = KodeboldsMath::RotationMatrixX(t->rotation.X)
+		* KodeboldsMath::RotationMatrixY(t->rotation.Y)
+		* KodeboldsMath::RotationMatrixZ(t->rotation.Z);
+
+	t->transform = scale * rotation * translation;
+	t->forward = KodeboldsMath::Vector4(t->transform._31, t->transform._32, t->transform._33, 1.0f);
+	t->up = KodeboldsMath::Vector4(t->transform._21, t->transform._22, t->transform._23, 1.0f);
+	t->right = KodeboldsMath::Vector4(t->transform._11, t->transform._12, t->transform._13, 1.0f);
 }
 

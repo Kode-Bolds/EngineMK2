@@ -109,6 +109,10 @@ void InputManager_GL::MouseInput()
 {
 }
 
+void InputManager_GL::GamePadInput()
+{
+}
+
 /// <summary>
 /// Updates all the information about released keys this frame based on information reveived from the DirectXTK
 /// </summary>

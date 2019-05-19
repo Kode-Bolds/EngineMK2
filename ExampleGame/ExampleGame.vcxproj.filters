@@ -31,6 +31,12 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{e070537a-1295-4444-9e27-328eeebd8129}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\GameClasses">
+      <UniqueIdentifier>{c553cf01-058d-49ed-abe1-484cf703a459}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GameClasses">
+      <UniqueIdentifier>{d0af385a-dfd8-475c-94df-04db25596264}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -78,6 +84,12 @@
     </ClInclude>
     <ClInclude Include="Header Files\Components\CustomComponentType.h">
       <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\CustomCollisionMask.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\GameClasses\EntitySpawner.h">
+      <Filter>Header Files\GameClasses</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

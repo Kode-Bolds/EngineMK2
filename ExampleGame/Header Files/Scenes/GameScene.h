@@ -1,8 +1,12 @@
 #pragma once
 #include "Scene.h"
 #include <memory>
-#include "Managers.h"
-#include "KodeboldsMath.h"
+#include "NetworkManager.h"
+#include "InputManager_DX.h"
+#include "InputManager_GL.h"
+#include "SceneManager.h"
+#include "AntTweakManager.h"
+#include "EntitySpawner.h"
 
 class GameScene : public Scene
 {
@@ -16,6 +20,10 @@ private:
 	std::shared_ptr<InputManager_GL> mInputManager = InputManager_GL::Instance();
 #endif
 	std::shared_ptr<SceneManager> mSceneManager = SceneManager::Instance();
+	std::shared_ptr<AntTweakManager> mAntTweakManager = AntTweakManager::Instance();
+
+	int mPlayer;
+	float mPlayerSpeed;
 
 public:
 	//Structors
