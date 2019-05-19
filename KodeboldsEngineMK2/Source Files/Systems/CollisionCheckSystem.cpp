@@ -81,7 +81,7 @@ void CollisionCheckSystem::Process()
 void CollisionCheckSystem::ConstructTree()
 {
 	//Create initial region
-	float halfSize = static_cast<float>(MAX_OCTANT_SIZE / 2);
+	const float halfSize = static_cast<float>(MAX_OCTANT_SIZE) / 2;
 	mOctTree = new OctTreeNode(nullptr, Vector3(-halfSize, -halfSize, -halfSize), Vector3(halfSize, halfSize, halfSize));
 
 	//Keep splitting region until the octants reach the minimum size
@@ -92,17 +92,17 @@ void CollisionCheckSystem::ConstructTree()
 /// Splits a given region contained within an oct tree node into 8 children, then recursively splits the children into 8 more until the minimum octant size is reached
 /// </summary>
 /// <param name="pRegion">Given region to be split</param>
-bool CollisionCheckSystem::SplitRegion(OctTreeNode* const pRegion)
+void CollisionCheckSystem::SplitRegion(OctTreeNode* const pRegion) const
 {
 	//If this region is smaller than or equal to the minimum size then stop splitting and return true
 	if (pRegion->dimensions.X <= MIN_OCTANT_SIZE)
 	{
-		return false;
+		return;
 	}
 
 	//Get center of region
-	Vector3 halfDimension = pRegion->dimensions / 2.0f;
-	Vector3 center = pRegion->minBounds + halfDimension;
+	const Vector3 halfDimension = pRegion->dimensions / 2.0f;
+	const Vector3 center = pRegion->minBounds + halfDimension;
 
 	//Bottom left front
 	pRegion->children[0] = new OctTreeNode(pRegion, 
@@ -145,12 +145,11 @@ bool CollisionCheckSystem::SplitRegion(OctTreeNode* const pRegion)
 		Vector3(center.X, pRegion->maxBounds.Y, pRegion->maxBounds.Z));
 
 	//Split all of the children of this region
-	for (int i = 0; i < 8; i++)
+	for (auto& i : pRegion->children)
 	{
-		SplitRegion(pRegion->children[i]);
+		SplitRegion(i);
 	}
 
-	return false;
 }
 
 /// <summary>
@@ -159,7 +158,7 @@ bool CollisionCheckSystem::SplitRegion(OctTreeNode* const pRegion)
 void CollisionCheckSystem::UpdateTree()
 {
 	//Process the insertion queue until it's empty
-	while (mEntitiesToInsert.size() != 0)
+	while (!mEntitiesToInsert.empty())
 	{
 		//Begin insertion of entity into oct tree
 		Insert(mOctTree, mEntitiesToInsert.front());
@@ -167,7 +166,7 @@ void CollisionCheckSystem::UpdateTree()
 	}
 
 	//Process the removal queue until it's empty
-	while (mEntitiesToRemove.size() != 0)
+	while (!mEntitiesToRemove.empty())
 	{
 		//Get the node of the entity to remove from the entity node map, then remove the entity from that nodes entity list
 		std::vector<unsigned short>* nodeEntities = &mEntityNodeMap[mEntitiesToRemove.front()]->entities;
@@ -188,21 +187,21 @@ void CollisionCheckSystem::UpdateTree()
 void CollisionCheckSystem::Insert(OctTreeNode * const pNode, const int pEntity)
 {
 	//Loop through children and see if any children enclose the entities collider
-	for (int i = 0; i < 8; i++)
+	for (auto& child : pNode->children)
 	{
 		//If child exists
-		if (pNode->children[i])
+		if (child)
 		{
 			//If the entity has a box collider and the collider is enclosed within the region, begin looping on the childs children to see if any of those enclose the collider
-			if (mEcsManager->BoxColliderComp(pEntity) && BoxInsideRegion(pNode->children[i], pEntity))
+			if (mEcsManager->BoxColliderComp(pEntity) && BoxInsideRegion(child, pEntity))
 			{
-				Insert(pNode->children[i], pEntity);
+				Insert(child, pEntity);
 				return;
 			}
 			//If the entity has a sphere collider and the collider is enclosed within the region, begin looping on the childs children to see if any of those enclose the collider
-			if (mEcsManager->SphereColliderComp(pEntity) && SphereInsideRegion(pNode->children[i], pEntity))
+			if (mEcsManager->SphereColliderComp(pEntity) && SphereInsideRegion(child, pEntity))
 			{
-				Insert(pNode->children[i], pEntity);
+				Insert(child, pEntity);
 				return;
 			}
 		}
@@ -243,7 +242,7 @@ void CollisionCheckSystem::HandleCollisions(OctTreeNode * const pNode)
 					}
 				}
 
-				//If entity j has box collider
+				//If entity j has sphere collider
 				if (mEcsManager->SphereColliderComp(pNode->entities[j]))
 				{
 					//If the entities have collided
@@ -283,12 +282,12 @@ void CollisionCheckSystem::HandleCollisions(OctTreeNode * const pNode)
 	}
 
 	//Loop through children of node
-	for (int i = 0; i < 8; i++)
+	for (auto& child : pNode->children)
 	{
 		//If child exists
-		if (pNode->children[i])
+		if (child)
 		{
-			HandleCollisions(pNode->children[i]);
+			HandleCollisions(child);
 		}
 	}
 }
@@ -298,7 +297,7 @@ void CollisionCheckSystem::HandleCollisions(OctTreeNode * const pNode)
 /// </summary>
 bool CollisionCheckSystem::RaySphere()
 {
-	return true;
+	return E_NOTIMPL;
 }
 
 /// <summary>
@@ -347,7 +346,7 @@ bool CollisionCheckSystem::BoxBox(const BoxCollider* const pBoxA, const BoxColli
 /// </summary>
 bool CollisionCheckSystem::RayBox()
 {
-	return true;
+	return E_NOTIMPL;
 }
 
 /// <summary>
@@ -356,9 +355,9 @@ bool CollisionCheckSystem::RayBox()
 /// <param name="pNode">Node containing the given region</param>
 /// <param name="pEntity">Entity that owns the given AABB</param>
 /// <returns>bool representing whether it is enclosed or not</returns>
-bool CollisionCheckSystem::BoxInsideRegion(OctTreeNode * const pNode, const int pEntity)
+bool CollisionCheckSystem::BoxInsideRegion(OctTreeNode * const pNode, const int pEntity) const
 {
-	if (//If the min bounds of the box are greater than the min bounds of the region
+	return (//If the min bounds of the box are greater than the min bounds of the region
 		mEcsManager->BoxColliderComp(pEntity)->minBounds.X > pNode->minBounds.X &&
 		mEcsManager->BoxColliderComp(pEntity)->minBounds.Y > pNode->minBounds.Y &&
 		mEcsManager->BoxColliderComp(pEntity)->minBounds.Z > pNode->minBounds.Z &&
@@ -367,11 +366,7 @@ bool CollisionCheckSystem::BoxInsideRegion(OctTreeNode * const pNode, const int 
 		mEcsManager->BoxColliderComp(pEntity)->maxBounds.X < pNode->maxBounds.X &&
 		mEcsManager->BoxColliderComp(pEntity)->maxBounds.Y < pNode->maxBounds.Y &&
 		mEcsManager->BoxColliderComp(pEntity)->maxBounds.Z < pNode->maxBounds.Z
-	   )
-	{
-		return true;
-	}
-	return false;
+		);
 }
 
 /// <summary>
@@ -380,20 +375,16 @@ bool CollisionCheckSystem::BoxInsideRegion(OctTreeNode * const pNode, const int 
 /// <param name="pNode">Node containing the given region</param>
 /// <param name="pEntity">Entity that owns the given sphere collider</param>
 /// <returns>bool representing whether it is enclosed or not</returns>
-bool CollisionCheckSystem::SphereInsideRegion(OctTreeNode * const pNode, const int pEntity)
+bool CollisionCheckSystem::SphereInsideRegion(OctTreeNode * const pNode, const int pEntity) const
 {
-	if (//If the min bounds of the sphere are greater than the min bounds of the region
+	return (//If the min bounds of the sphere are greater than the min bounds of the region
 		mEcsManager->TransformComp(pEntity)->translation.X - mEcsManager->SphereColliderComp(pEntity)->radius > pNode->minBounds.X &&
 		mEcsManager->TransformComp(pEntity)->translation.Y - mEcsManager->SphereColliderComp(pEntity)->radius > pNode->minBounds.Y &&
 		mEcsManager->TransformComp(pEntity)->translation.Z - mEcsManager->SphereColliderComp(pEntity)->radius > pNode->minBounds.Z &&
-		
+
 		//If the max bounds of the sphere are smaller than the max bounds of the region
 		mEcsManager->TransformComp(pEntity)->translation.X + mEcsManager->SphereColliderComp(pEntity)->radius < pNode->maxBounds.X &&
 		mEcsManager->TransformComp(pEntity)->translation.Y + mEcsManager->SphereColliderComp(pEntity)->radius < pNode->maxBounds.Y &&
 		mEcsManager->TransformComp(pEntity)->translation.Z + mEcsManager->SphereColliderComp(pEntity)->radius < pNode->maxBounds.Z
-	   )
-	{
-		return true;
-	}
-	return false;
+		);
 }
