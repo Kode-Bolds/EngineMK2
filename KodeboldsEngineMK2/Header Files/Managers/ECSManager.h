@@ -39,10 +39,10 @@ private:
 	std::vector<Velocity> mVelocities;
 
 	//Custom components
-	std::vector<CustomComponent*> mCustomComponentTypes;
-	std::vector<int> mCustomComponentMasks;
 	std::vector<void*> mCustomComponentVectors;
 	std::vector<std::vector<unsigned short>*> mCustomComponentEntityMaps;
+	std::vector<CustomComponent*> mCustomComponentTypes;
+	std::vector<int> mCustomComponentMasks;
 
 	//Entity-Component maps
 	std::vector<unsigned short> mAIEntityMap;
@@ -209,11 +209,11 @@ public:
 				//Check if type matches
 				if (dynamic_cast<T*>(mCustomComponentTypes[i]))
 				{
-					//Retrieve vector that contains this component type and vector that contains this componenet types entity component map
+					//Retrieve vector that contains this component type and vector that contains this component types entity component map
 					std::vector<unsigned short>* componentEntityMapVector = mCustomComponentEntityMaps[i];
 					std::vector<T>* componentVector = static_cast<std::vector<T>*>(mCustomComponentVectors[i]);
 
-					//Replace removed component with back element
+					//Replace the removed component with back element
 					(*componentVector)[(*componentEntityMapVector)[pEntityID]] = componentVector->back();
 
 					//Set new index of component in the entity component map		
@@ -267,7 +267,7 @@ public:
 				//Check if type matches
 				if (dynamic_cast<T*>(mCustomComponentTypes[i]))
 				{
-					//Retrieve vector that contains this component type and vector that contains this componenet types entity component map
+					//Retrieve vector that contains this component type and vector that contains this component types entity component map
 					std::vector<unsigned short>* componentEntityMapVector = mCustomComponentEntityMaps[i];
 					std::vector<T>* componentVector = static_cast<std::vector<T>*>(mCustomComponentVectors[i]);
 
