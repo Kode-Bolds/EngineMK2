@@ -23,8 +23,7 @@ private:
 	std::vector<SOCKET> mPeers;
 	int mPeerCount;
 
-	const std::string mIdentifier = "$DB$";
-	const std::string mTerminator = "*DB*";
+	const std::string mIdentifier = "$KB$";
 
 	SOCKET mListenSocket;
 	sockaddr_in mListenAddress;
@@ -49,7 +48,7 @@ public:
 	void InitWinSock(const int pPort);
 	void AddMessage(const std::string& pMessage);
 	std::queue<std::string> ReadMessages();
-	int PeerCount();
+	int PeerCount() const;
 
 	static std::shared_ptr< NetworkManager > Instance();
 };

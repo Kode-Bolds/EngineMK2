@@ -17,6 +17,7 @@ typedef struct {
 		COMPONENT_TEXTURE = 1 << 12,
 		COMPONENT_TRANSFORM = 1 << 13,
 		COMPONENT_VELOCITY = 1 << 14,
-		CUSTOM_COMPONENT = 1 << 15,
+		COMPONENT_COLLISION = 1 << 15,
+		CUSTOM_COMPONENT = 1 << 16,
 	};
 }ComponentType;

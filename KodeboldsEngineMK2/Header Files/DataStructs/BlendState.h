@@ -2,6 +2,6 @@
 
 enum class BlendState
 {
-	ALPHABLEND,
-	NOBLEND
+	NOBLEND,
+	ALPHABLEND
 };

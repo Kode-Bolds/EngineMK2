@@ -7,7 +7,8 @@
 /// Reserves space for up to 5 peers
 /// </summary>
 NetworkManager::NetworkManager()
-	:mMessagesToSend(), mMessagesToSend2(), mActiveQueue(&mMessagesToSend), mFlushingQueue(&mMessagesToSend2), mPeerCount(0)
+	: mActiveQueue(&mMessagesToSend), mFlushingQueue(&mMessagesToSend2), mPeerCount(0), mListenSocket(0),
+	mListenAddress()
 {
 	mPeers.reserve(5);
 }
@@ -21,9 +22,8 @@ NetworkManager::NetworkManager()
 void NetworkManager::ListenToPeer(void* pPeerSocket)
 {
 	char buffer;
-	SOCKET peerSocket = *(int*)pPeerSocket;
+	const SOCKET peerSocket = *static_cast<int*>(pPeerSocket);
 	bool readingMessage = false;
-	std::string message;
 
 	//Handle communication until the peer disconnects
 	do
@@ -34,57 +34,51 @@ void NetworkManager::ListenToPeer(void* pPeerSocket)
 			OutputDebugString(std::to_wstring(WSAGetLastError()).c_str());
 			break;
 		}
-		else
+
+		//Check for identifier at beginning of message
+		if (buffer == '$' && !readingMessage)
 		{
-			//Check for identifier at beginning of message
-			if (buffer == '$' && readingMessage == false)
+			char tempBuffer[5];
+			tempBuffer[4] = '\0';
+			tempBuffer[0] = buffer;
+			recv(peerSocket, &tempBuffer[1], 3, 0);
+
+			std::string tempBufferString = tempBuffer;
+
+			//If identifier found start reading message
+			if (tempBufferString == mIdentifier)
 			{
-				char tempBuffer[5];
-				tempBuffer[4] = '\0';
-				tempBuffer[0] = buffer;
-				recv(peerSocket, &tempBuffer[1], 3, 0);
+				readingMessage = true;
+				OutputDebugString(L"Reading message!");
+			}
+		}
 
-				std::string tempBufferString = tempBuffer;
-
-				//If identifier found start reading message
-				if (tempBufferString == mIdentifier)
-				{
-					readingMessage = true;
-					OutputDebugString(L"Reading message!");
-					buffer = '\0';
-				}
+		//Read whole message based on length given
+		if (readingMessage)
+		{
+			char lengthPacked;
+			if (recv(peerSocket, &lengthPacked, 1, 0) == SOCKET_ERROR)
+			{
+				OutputDebugString(L"Receive failed with ");
+				OutputDebugString(std::to_wstring(WSAGetLastError()).c_str());
+				break;
 			}
 
-			//Check for terminator at end of messsage
-			if (buffer == '*' && readingMessage == true)
-			{
-				char tempBuffer[5];
-				tempBuffer[4] = '\0';
-				tempBuffer[0] = buffer;
-				recv(peerSocket, &tempBuffer[1], 3, 0);
+			int msgLength = lengthPacked;
 
-				std::string tempBufferString = tempBuffer;
-
-				//If terminator found, add message to received messages queue and set reading to false
-				if (tempBufferString == mTerminator)
-				{
-					readingMessage = false;
-					std::lock_guard<std::mutex> lock(mx);
-					mMessagesReceived.push(message);
-					OutputDebugString(L"Message read!");
-					message = "";
-				}
-				else
-				{
-					//Add buffer to message if not terminator
-					message += tempBuffer;
-				}
-			}
-			else if (readingMessage == true && buffer != '\0')
+			std::string msg;
+			while (msgLength > 0)
 			{
-				//Add buffer to message
-				message += buffer;
+				std::vector<char> msgBuffer(msgLength);
+				msgLength -= recv(peerSocket, &msgBuffer.front(), msgLength, 0);
+				msg.append(msgBuffer.begin(), msgBuffer.end());
 			}
+
+			readingMessage = false;
+			std::lock_guard<std::mutex> lock(mx);
+			mMessagesReceived.push(msg);
+			OutputDebugString(L"Message read!");
+			msg = "";
 		}
 	} while (true);
 
@@ -110,11 +104,11 @@ void NetworkManager::SendMessages()
 		}
 
 		//Loops through all the messages in the queue
-		int messagesToSend = static_cast<int>(mFlushingQueue->size());
+		const int messagesToSend = static_cast<int>(mFlushingQueue->size());
 		for (int j = 0; j < messagesToSend; j++)
 		{
 			//Loops through all the peers and sends messages to them
-			int peerCount = static_cast<int>(mPeers.size());
+			const int peerCount = static_cast<int>(mPeers.size());
 			for (int i = 0; i < peerCount; i++)
 			{
 				OutputDebugString(L"Sending message!");
@@ -180,7 +174,7 @@ void NetworkManager::FindPeers()
 			OutputDebugString(std::to_wstring(WSAGetLastError()).c_str());
 		}
 		//Connect to peer
-		else if (connect(peerSocket, (sockaddr *)&address, sizeof(address)) == SOCKET_ERROR)
+		else if (connect(peerSocket, reinterpret_cast<sockaddr *>(&address), sizeof(address)) == SOCKET_ERROR)
 		{
 			OutputDebugString(L"Connecting to peer failed with ");
 			OutputDebugString(std::to_wstring(WSAGetLastError()).c_str());
@@ -188,7 +182,7 @@ void NetworkManager::FindPeers()
 		else
 		{
 			//Upon successful connection send the connect command to the peer to register the connection
-			std::string message = mIdentifier + "CONNECT:" + mTerminator;
+			std::string message = mIdentifier + static_cast<char>(1) + "C";
 			if (send(peerSocket, message.c_str(), 17, 0) == SOCKET_ERROR)
 			{
 				OutputDebugString(L"Send failed with ");
@@ -229,7 +223,7 @@ void NetworkManager::Listen()
 		while (peerSocket == SOCKET_ERROR)
 		{
 			OutputDebugString(L"Listening for peer!");
-			peerSocket = accept(mListenSocket, NULL, NULL);
+			peerSocket = accept(mListenSocket, nullptr, nullptr);
 		}
 
 		//Verify acception of socket
@@ -260,7 +254,7 @@ void NetworkManager::Listen()
 void NetworkManager::InitWinSock(const int pPort)
 {
 	//Create version identifier
-	WORD wVersionRequested = MAKEWORD(2, 0);
+	const WORD wVersionRequested = MAKEWORD(2, 0);
 
 	// Startup windows sockets
 	WSADATA wsaData;
@@ -283,7 +277,7 @@ void NetworkManager::InitWinSock(const int pPort)
 		OutputDebugString(L"Create socket failed with ");
 		OutputDebugString(std::to_wstring(WSAGetLastError()).c_str());
 	}
-	else if (bind(mListenSocket, (sockaddr *)&mListenAddress, sizeof(mListenAddress)) == SOCKET_ERROR)
+	else if (bind(mListenSocket, reinterpret_cast<sockaddr *>(&mListenAddress), sizeof(mListenAddress)) == SOCKET_ERROR)
 	{
 		OutputDebugString(L"Bind failed with ");
 		OutputDebugString(std::to_wstring(WSAGetLastError()).c_str());
@@ -298,7 +292,7 @@ void NetworkManager::InitWinSock(const int pPort)
 			//Create listening socket
 			mListenSocket = socket(AF_INET, SOCK_STREAM, 0);
 
-			if (bind(mListenSocket, (sockaddr *)&mListenAddress, sizeof(mListenAddress)) == SOCKET_ERROR)
+			if (bind(mListenSocket, reinterpret_cast<sockaddr *>(&mListenAddress), sizeof(mListenAddress)) == SOCKET_ERROR)
 			{
 				OutputDebugString(L"Secondary bind failed with ");
 				OutputDebugString(std::to_wstring(WSAGetLastError()).c_str());
@@ -335,7 +329,7 @@ void NetworkManager::InitWinSock(const int pPort)
 void NetworkManager::AddMessage(const std::string & pMessage)
 {
 	std::lock_guard<std::mutex> lock(mx);
-	mActiveQueue->push(mIdentifier + pMessage + mTerminator);
+	mActiveQueue->push(mIdentifier + static_cast<char>(pMessage.length()) + pMessage);
 }
 
 /// <summary>
@@ -355,7 +349,7 @@ std::queue<std::string> NetworkManager::ReadMessages()
 /// Gets the count of players currently connected
 /// </summary>
 /// <returns>Count of players currently connected</returns>
-int NetworkManager::PeerCount()
+int NetworkManager::PeerCount() const
 {
 	return mPeerCount;
 }

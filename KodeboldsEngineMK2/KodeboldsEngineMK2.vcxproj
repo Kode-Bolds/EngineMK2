@@ -85,6 +85,7 @@
     <ClInclude Include="Header Files\Components\Audio.h" />
     <ClInclude Include="Header Files\Components\BoxCollider.h" />
     <ClInclude Include="Header Files\Components\Camera.h" />
+    <ClInclude Include="Header Files\Components\Collision.h" />
     <ClInclude Include="Header Files\Components\Colour.h" />
     <ClInclude Include="Header Files\Components\Components.h" />
     <ClInclude Include="Header Files\Components\ComponentType.h" />
@@ -93,6 +94,7 @@
     <ClInclude Include="Header Files\Components\Gravity.h" />
     <ClInclude Include="Header Files\Components\Light.h" />
     <ClInclude Include="Header Files\Components\Ray.h" />
+    <ClInclude Include="Header Files\Components\RenderStates.h" />
     <ClInclude Include="Header Files\Components\Shader.h" />
     <ClInclude Include="Header Files\Components\SphereCollider.h" />
     <ClInclude Include="Header Files\Components\Texture.h" />
