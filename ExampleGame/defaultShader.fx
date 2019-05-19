@@ -2,7 +2,7 @@
 
 struct DirectionalLight
 {
-	float4 direction;
+	float3 direction;
 	float4 colour;
 };
 
@@ -35,7 +35,7 @@ cbuffer ConstantBuffer : register(b0)
 cbuffer LightingBuffer : register (b1)
 {
 	int numDirLights;
-	DirectionalLight directionalLights[2];
+	DirectionalLight dirLights[2];
 
 	int numPointLights; //5 max
 	Pointlight pointLights[5];
@@ -109,9 +109,23 @@ float4 PS(PS_INPUT input) : SV_Target
 	float4 outputCol = ambient;
 
 
+	//Calc directional lights
+	/*for (int i = 0; i < numDirLights; ++i)
+	{
+		float4 lightColour = CalcLightColour(matDiffuse, matSpec, viewDirection, dirLights[i].direction, dirLights[i].colour, input);
+		outputCol += saturate(lightColour + outputCol);
+	}*/
+
+	//Test directional light - Remove when buffers in & uncomment above
+	DirectionalLight testDir;
+	testDir.direction = normalize(float3(1, -1, 1));
+	testDir.colour = float4(0, 0, 1, 1);
+	outputCol += CalcLightColour(matDiffuse, matSpec, viewDirection, testDir.direction, testDir.colour, input);
+
+
 	//Calc spotlights
 	/*
-	for (int i = 0; i < numPointLights; i++)
+	for (int i = 0; i < numPointLights; ++i)
 	{
 		float3 lightDir = normalize(pointLights[i].position - input.PosWorld);
 
@@ -134,7 +148,7 @@ float4 PS(PS_INPUT input) : SV_Target
 
 		
 
-		//TODO: Spotlights
+	//TODO: Spotlights
 
 
 	return outputCol;
