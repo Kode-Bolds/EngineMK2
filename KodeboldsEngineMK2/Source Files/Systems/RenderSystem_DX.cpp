@@ -16,11 +16,11 @@ using namespace DirectX;
 /// Initialises directX device, and cleans up directX resources if failed
 /// </summary>
 /// <param name="pWindow">A handle to the win32 window</param>
-RenderSystem_DX::RenderSystem_DX(const HWND& pWindow) 
+RenderSystem_DX::RenderSystem_DX(const HWND& pWindow)
 	: RenderSystem(std::vector<int>{ ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_GEOMETRY | ComponentType::COMPONENT_SHADER,
-	ComponentType::COMPONENT_LIGHT,
-	ComponentType::COMPONENT_CAMERA }),
-mWindow(pWindow), mActiveCamera(nullptr)
+		ComponentType::COMPONENT_LIGHT,
+		ComponentType::COMPONENT_CAMERA }),
+	mWindow(pWindow), mActiveCamera(nullptr)
 {
 	if (FAILED(Init()))
 	{
@@ -53,7 +53,10 @@ HRESULT RenderSystem_DX::Init()
 	if (FAILED(hr))
 		return hr;
 
+
 	mAntTweakManager->Init(TW_DIRECT3D11, mDevice.Get(), mWidth, height);
+	//mGUIManager->Init(mDevice.Get(), mContext.Get(), mWidth, height);
+
 
 	hr = CreateSwapChain();
 	if (FAILED(hr))
@@ -398,7 +401,7 @@ void RenderSystem_DX::Cleanup()
 /// Assigns entity to system if the entities mask matches the system mask
 /// </summary>
 /// <param name="pEntity">Entity to be assigned</param>
-void RenderSystem_DX::AssignEntity(const Entity & pEntity)
+void RenderSystem_DX::AssignEntity(const Entity& pEntity)
 {
 	//Checks if entity mask matches the renderable mask
 	if ((pEntity.componentMask & mMasks[0]) == mMasks[0])
@@ -411,7 +414,7 @@ void RenderSystem_DX::AssignEntity(const Entity & pEntity)
 	if ((pEntity.componentMask & mMasks[1]) == mMasks[1])
 	{
 		//If the entity has a light component then find it in the lights
-		const auto entity = find_if(mLights.begin(), mLights.end(), [&](const Entity& entity) {return entity.ID == pEntity.ID; });
+		const auto entity = find_if(mLights.begin(), mLights.end(), [&](const Entity & entity) {return entity.ID == pEntity.ID; });
 		if (entity == mLights.end())
 		{
 			//If not found then add it
@@ -439,7 +442,7 @@ void RenderSystem_DX::AssignEntity(const Entity & pEntity)
 /// Re-assigns entity to system when component is removed from entity
 /// </summary>
 /// <param name="pEntity">Entity to re-assign</param>
-void RenderSystem_DX::ReAssignEntity(const Entity & pEntity)
+void RenderSystem_DX::ReAssignEntity(const Entity& pEntity)
 {
 	//Checks if entity mask matches the renderable mask
 	if ((pEntity.componentMask & mMasks[0]) == mMasks[0])
@@ -457,7 +460,7 @@ void RenderSystem_DX::ReAssignEntity(const Entity & pEntity)
 	if ((pEntity.componentMask & mMasks[1]) == mMasks[1])
 	{
 		//If the entity has a light component then find it in the lights
-		const auto entity = find_if(mLights.begin(), mLights.end(), [&](const Entity& entity) {return entity.ID == pEntity.ID; });
+		const auto entity = find_if(mLights.begin(), mLights.end(), [&](const Entity & entity) {return entity.ID == pEntity.ID; });
 		if (entity == mLights.end())
 		{
 			//If not found then add it
@@ -472,7 +475,7 @@ void RenderSystem_DX::ReAssignEntity(const Entity & pEntity)
 	else
 	{
 		//If the mask doesn't match then remove it (if it wasn't in the list then the remove acts as a search to confirm it is not there)
-		mLights.erase(remove_if(mLights.begin(), mLights.end(), [&](const Entity& entity) {return entity.ID == pEntity.ID; }), mLights.end());
+		mLights.erase(remove_if(mLights.begin(), mLights.end(), [&](const Entity & entity) {return entity.ID == pEntity.ID; }), mLights.end());
 	}
 
 	//TODO: Implement multiple cameras
@@ -484,20 +487,20 @@ void RenderSystem_DX::ReAssignEntity(const Entity & pEntity)
 /// </summary>
 void RenderSystem_DX::Process()
 {
-		ClearView();
+	ClearView();
 
-		if (mActiveCamera)
+	if (mActiveCamera)
+	{
+		SetViewProj();
+	}
+	if (mLights.size() > 0)
+	{
+		SetLights();
+	}
+	for (const Entity& entity : mEntities)
+	{
+		if (entity.ID != -1)
 		{
-			SetViewProj();
-		}
-		if (mLights.size() > 0)
-		{
-			SetLights();
-		}
-		for (const Entity& entity : mEntities)
-		{
-			if (entity.ID != -1)
-			{
 				//If geometry of entity is not already in the buffers, load entities geometry
 				if (mEcsManager->GeometryComp(entity.ID)->filename != mActiveGeometry)
 				{
@@ -534,12 +537,12 @@ void RenderSystem_DX::Process()
 				mContext->RSSetState(mDefaultRasterizerState.Get());
 
 				mGeometry->Draw(this);
-			}
 		}
+	}
 
-		mAntTweakManager->Draw();
+	mAntTweakManager->Draw();
 
-		SwapBuffers();
+	SwapBuffers();
 }
 
 /// <summary>
@@ -563,7 +566,7 @@ void RenderSystem_DX::SwapBuffers() const
 /// Loads the geometry for the given entity into a VBO object 
 /// </summary>
 /// <param name="pEntity">Entity to load geometry for</param>
-VBO * const RenderSystem_DX::LoadGeometry(const Entity& pEntity) const
+VBO* const RenderSystem_DX::LoadGeometry(const Entity& pEntity) const
 {
 	const auto geometry = mResourceManager->LoadGeometry(this, mEcsManager->GeometryComp(pEntity.ID)->filename);
 	return geometry;
@@ -573,7 +576,7 @@ VBO * const RenderSystem_DX::LoadGeometry(const Entity& pEntity) const
 /// Loads the shader for the given entity into a shader object
 /// </summary>
 /// <param name="pEntity">Entity to load shader for</param>
-void RenderSystem_DX::LoadShaders(const Entity & pEntity) const
+void RenderSystem_DX::LoadShaders(const Entity& pEntity) const
 {
 	const auto shader = mResourceManager->LoadShader(this, mEcsManager->ShaderComp(pEntity.ID)->filename);
 	shader->Load(this);
@@ -583,7 +586,7 @@ void RenderSystem_DX::LoadShaders(const Entity & pEntity) const
 /// Loads the texture for the given entity into a texture object
 /// </summary>
 /// <param name="pEntity">Entity to load texture for</param>
-void RenderSystem_DX::LoadTexture(const Entity & pEntity) const
+void RenderSystem_DX::LoadTexture(const Entity& pEntity) const
 {
 	//Loads diffuse texture from texture component
 	auto texture = mResourceManager->LoadTexture(this, mEcsManager->TextureComp(pEntity.ID)->diffuse);

@@ -13,6 +13,7 @@ private:
 	void ReleasedKeys() override;
 	void HeldDownKeys() override;
 	void MouseInput() override;
+	void GamePadInput() override;
 
 	//Private constructor for singleton pattern
 	InputManager_GL();
