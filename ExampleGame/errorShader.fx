@@ -1,20 +1,3 @@
-
-
-struct DirectionalLight
-{
-	float4 direction;
-	float4 colour;
-};
-
-struct Pointlight
-{
-	float4 position;
-	float4 colour;
-
-	float range;
-};
-
-
 //--------------------------------------------------------------------------------------
 // Constant Buffer Variables
 //--------------------------------------------------------------------------------------
@@ -29,16 +12,12 @@ cbuffer ConstantBuffer : register(b0)
 	//float4 Time;
 }
 
-//A lighting buffer would be nice, could do with setting ambient light in here too
-
-cbuffer LightingBuffer : register (b1)
-{
-	int numPointLights; //5 max
-	PointLight pointLights[5];
-
-	int numDirLights;
-	
-}
+//cbuffer ConstantBufferUniform : register (b1)
+//{
+//	float4 LightPosition[5];
+//	float4 LightColour[5];
+//	uint4 NumberOfLights;
+//}
 
 //Texture2D txDiffuse : register(t0);
 
@@ -75,9 +54,6 @@ PS_INPUT VS(VS_INPUT input)
 	output.Pos = mul(float4(input.Pos, 1.0f), World);
 	output.Pos = mul(output.Pos, View);
 	output.Pos = mul(output.Pos, Projection);
-	output.Normal = mul(World, float4(input.Normal, 1.0f)).xyz;
-	output.Normal = normalize(output.Normal);
-	output.PosWorld = mul(float4(input.Pos, 1.0f), World);
 	//output.TexCoord = float2(1,1);
 
 	return output;
@@ -88,39 +64,5 @@ PS_INPUT VS(VS_INPUT input)
 //--------------------------------------------------------------------------------------
 float4 PS(PS_INPUT input) : SV_Target
 {
-	Pointlight testPoint;
-	testPoint.position = float4(0, 5, 5, 1);
-	testPoint.colour = float4(1, 0, 0, 1);
-	testPoint.range = 10;
-
-	float4 matDiffuse = float4(1, 1, 1, 1.0);
-	float4 matSpec = float4(1.0, 1.0, 1.0, 1.0);
-	float4 ambient = float4(0.1, 0.1, 0.1, 1.0);
-
-	//float4 texColour = txDiffuse.Sample(txSampler, input.TexCoord);
-	float3 viewDirection = normalize(CameraPosition - input.PosWorld);
-	float4 outputCol = ambient;
-
-	
-	//Calc spotlights
-
-	//for (int i = 0; i < NumberOfPointLights.x; ++i)
-	//{
-		float3 lightDir = normalize(testPoint.position - input.PosWorld);
-		float diffuse = max(0.0, dot(lightDir, input.Normal));
-		float3 R = normalize(reflect(-lightDir, input.Normal));
-		float spec = pow(max(0.0, dot(viewDirection, R)), 50);
-
-		//Attenuation
-		float intensity =  1 - min(distance(testPoint.position.xyz, input.PosWorld.xyz) / testPoint.range, 1);
-
-		float4 lightColour = ((testPoint.colour * matDiffuse * diffuse) + (testPoint.colour * matSpec * spec)) * intensity;
-
-		outputCol += saturate(lightColour + outputCol);
-	//}
-
-		//TODO: Spotlights
-
-
-	return outputCol;
+	return float4(0.75, 0.75, 0, 1);
 }
