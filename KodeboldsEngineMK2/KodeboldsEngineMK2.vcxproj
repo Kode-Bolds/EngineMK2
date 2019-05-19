@@ -100,6 +100,7 @@
     <ClInclude Include="Header Files\Components\Transform.h" />
     <ClInclude Include="Header Files\Components\Velocity.h" />
     <ClInclude Include="Header Files\DataStructs\BlendState.h" />
+    <ClInclude Include="Header Files\DataStructs\CollisionMask.h" />
     <ClInclude Include="Header Files\DataStructs\CullState.h" />
     <ClInclude Include="Header Files\DataStructs\DepthState.h" />
     <ClInclude Include="Header Files\DataStructs\Entity.h" />

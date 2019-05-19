@@ -22,7 +22,7 @@ struct ConstantBuffer
 class RenderSystem_DX : public RenderSystem
 {
 private:
-	std::shared_ptr<GUIManager_DX>  mGUIManager;// = GUIManager_DX::Instance();
+	//std::shared_ptr<GUIManager_DX>  mGUIManager = GUIManager_DX::Instance();
 
 	std::vector<Entity> mLights;
 	HWND mWindow;

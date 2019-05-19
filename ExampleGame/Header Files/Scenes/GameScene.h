@@ -1,8 +1,12 @@
 #pragma once
 #include "Scene.h"
 #include <memory>
-#include "Managers.h"
-#include "KodeboldsMath.h"
+#include "NetworkManager.h"
+#include "InputManager_DX.h"
+#include "InputManager_GL.h"
+#include "SceneManager.h"
+#include "AntTweakManager.h"
+#include "EntitySpawner.h"
 
 class GameScene : public Scene
 {
