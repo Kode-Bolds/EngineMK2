@@ -14,4 +14,5 @@
 #include "Velocity.h"
 #include "Colour.h"
 #include "Ray.h"
+#include "Collision.h"
 #include "CustomComponent.h"

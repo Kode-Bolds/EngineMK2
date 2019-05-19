@@ -9,6 +9,7 @@ cbuffer ConstantBuffer : register(b0)
 	float4 LightColour;
 	float4 LightPosition;
 	float4 CameraPosition;
+	float4 Colour;
 	//float4 Time;
 }
 
@@ -83,6 +84,11 @@ float4 PS(PS_INPUT input) : SV_Target
 		float spec = pow(max(0.0, dot(viewDirection, R)), 50);
 		light += saturate(((matDiffuse*diffuse) + (matSpec*spec)) * LightColour);
 	//}
+
+		if (Colour.a != 0)
+		{
+			return light * Colour;
+		}
 
 	return  light;
 }
