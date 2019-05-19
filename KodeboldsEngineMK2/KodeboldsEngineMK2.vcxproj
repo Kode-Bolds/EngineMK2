@@ -85,6 +85,7 @@
     <ClInclude Include="Header Files\Components\Audio.h" />
     <ClInclude Include="Header Files\Components\BoxCollider.h" />
     <ClInclude Include="Header Files\Components\Camera.h" />
+    <ClInclude Include="Header Files\Components\Collision.h" />
     <ClInclude Include="Header Files\Components\Colour.h" />
     <ClInclude Include="Header Files\Components\Components.h" />
     <ClInclude Include="Header Files\Components\ComponentType.h" />

@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "Vector3.h"
+#include "OctTreeNode.h"
 
 struct BoxCollider
 {
