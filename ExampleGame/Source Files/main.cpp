@@ -76,6 +76,35 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	ecsManager->AddTransformComp(transL, entityID);
 
 
+	// Testing Sprite Loading (GUI)
+	//Vector2 catPosition = Vector2(100,100);
+	//Vector2 catOrigin = Vector2(0,0);
+	//anttweakManager->LoadSprite(L"cat.png", catOrigin, catPosition, 1.5f, 3.0f);
+
+	// Testing new enum for centering sprite positions
+	//Vector2 catOrigin = Vector2(0, 0);
+	//anttweakManager->LoadSprite(L"cat.png", catOrigin, AntTweakManager::SpritePosition::CENTRE_TOP, 1.5f, 1.0f);
+	//anttweakManager->LoadSprite(L"cat.png", catOrigin, AntTweakManager::SpritePosition::CENTRE_MIDDLE, 1.5f, 1.0f);
+	//anttweakManager->LoadSprite(L"cat.png", catOrigin, AntTweakManager::SpritePosition::CENTRE_BOTTOM, 1.5f, 1.0f);
+
+	// Testing new enum for centering sprite origins
+	//Vector2 catPosition = Vector2(0,0);
+	//anttweakManager->LoadSprite(L"cat.png", AntTweakManager::SpriteOrigin::CENTRE, catPosition, 1.5f, 1.0f);
+
+	// Testing both enums for centering sprite origins and positions
+	anttweakManager->LoadSprite(L"cat.png", AntTweakManager::SpriteOrigin::CENTRE, AntTweakManager::SpritePosition::CENTRE_TOP, 1.5f, 1.0f);
+
+
+
+	//Vector2 dogPosition = Vector2(10, 0);
+	//Vector2 dogOrigin = Vector2(0, 0);
+	//anttweakManager->LoadSprite(L"dog.png", dogOrigin, dogPosition, 90);
+
+
+
+
+
+
 	//Testing custom components
 	ecsManager->CreateCustomComponent<CustomComp1>(CustomComponentType::CUSTOM_COMPONENT_1);
 	ecsManager->CreateCustomComponent<CustomComp2>(CustomComponentType::CUSTOM_COMPONENT_2);

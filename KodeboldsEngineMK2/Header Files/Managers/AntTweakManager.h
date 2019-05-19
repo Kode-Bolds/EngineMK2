@@ -8,10 +8,16 @@
 #include <WICTextureLoader.h>
 #include <SpriteBatch.h>
 #include <wrl.h>
+#include "ResourceManager.h"
+
+
 
 class AntTweakManager
 {
+
 private:
+	std::shared_ptr<ResourceManager> mResourceManager = ResourceManager::Instance();
+
 	std::vector<std::pair<std::string, TwBar*>> mBars;
 
 	int mDeviceWidth;
@@ -19,20 +25,22 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Device> mDevice;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> mContext;
 
-	void LoadTextureFromFile(const wchar_t* pFileName);
 	std::unique_ptr<DirectX::SpriteBatch> mSpriteBatch;
-	DirectX::XMFLOAT2  mScreenPos;
-	DirectX::XMFLOAT2 mOrigin;
-
-	Microsoft::WRL::ComPtr<ID3D11Resource> mResource;
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mTexture;
-
 
 	//Private constructor for singleton pattern
 	AntTweakManager();
 
 public:
 	~AntTweakManager();
+	enum class SpriteOrigin {
+		CENTRE,
+	};
+
+	enum class SpritePosition {
+		CENTRE_TOP,
+		CENTRE_MIDDLE,
+		CENTRE_BOTTOM
+	};
 
 	//Singleton pattern
 	//Deleted copy constructor and assignment operator so no copies of the singleton instance can be made
@@ -41,6 +49,7 @@ public:
 
 	static std::shared_ptr<AntTweakManager> Instance();
 
+	// Ant Tweak Bar
 	void Init(const TwGraphAPI& pGraphicsAPI, void* const pDevice, const int pWidth, const int pHeight) const;
 	void AddBar(const std::string& pBarName);
 	void AddVariable(const std::string& pBarName, const std::string& pVariableName, const TwType& pVariableType, const void* const pVariable, const std::string& pBehaviourDefinition);
@@ -48,8 +57,13 @@ public:
 	void Draw();
 	void Cleanup() const;
 
+	// Standard GUI
 	void InititialiseGUI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const int pWidth, const int pHeight);
 	void Render();
 
+	void LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, float pRotation, float pScale);
+	void LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, SpritePosition pPosition, float pRotation, float pScale);
+	void LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, KodeboldsMath::Vector2 pPosition, float pRotation, float pScale);
+	void LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, SpritePosition pPosition, float pRotation, float pScale);
 
 };

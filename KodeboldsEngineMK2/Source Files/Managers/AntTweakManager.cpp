@@ -103,37 +103,171 @@ void AntTweakManager::InititialiseGUI(ID3D11Device* pDevice, ID3D11DeviceContext
 
 	mSpriteBatch = std::make_unique<DirectX::SpriteBatch>(pContext);
 
-	//CoInitialize(NULL);
-	LoadTextureFromFile(L"cat.png");
-
-
 	//Microsoft::WRL::ComPtr<ID3D11Texture2D> cat;
 	//mResource.As(&cat);
-
 	//CD3D11_TEXTURE2D_DESC catDesc;
 	//cat->GetDesc(&catDesc);
-
-	//mOrigin.x = float(catDesc.Width / 2);
-	//mOrigin.y = float(catDesc.Height / 2);
-
-	mScreenPos.x = mDeviceWidth / 2.0f;
-	mScreenPos.y = mDeviceHeight / 2.0f;
 
 }
 void AntTweakManager::Render()
 {
 	mSpriteBatch->Begin();
 
-	mSpriteBatch->Draw(mTexture.Get(), mScreenPos, nullptr, DirectX::Colors::White, 0.0f, mOrigin);
+	for (int i = 0; i < mResourceManager->mSprites.size(); i++)
+	{
+		auto sprite = mResourceManager->mSprites[i].second;
+		mSpriteBatch->Draw(sprite.mTexture.Get(), sprite.mPosition, nullptr, DirectX::Colors::White, sprite.mRotation, sprite.mOrigin, sprite.mScale);
+	}
 
 	mSpriteBatch->End();
 }
-void AntTweakManager::LoadTextureFromFile(const wchar_t* pFileName)
+void AntTweakManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, float pRotation, float pScale)
 {
-	auto imageTest = DirectX::CreateWICTextureFromFile(mDevice.Get(), mContext.Get(), pFileName, nullptr, mTexture.GetAddressOf());
+	Sprite sprite;
+	sprite.mOrigin = DirectX::XMFLOAT2(pOrigin.X, pOrigin.Y);
+	sprite.mPosition = DirectX::XMFLOAT2(pPosition.X, pPosition.Y);
+	sprite.mRotation = pRotation;
+	sprite.mScale = pScale;
+
+	mResourceManager->mSprites.emplace_back(std::make_pair(pFileName, sprite));
+
+	auto imageTest = DirectX::CreateWICTextureFromFile(mDevice.Get(), mContext.Get(), pFileName, nullptr, mResourceManager->mSprites.back().second.mTexture.GetAddressOf());
 
 	if (imageTest == 0x80070002) // file not found
 	{
 		int i = 0;
 	}
+
+	ID3D11Texture2D* pTextureInterface = 0;
+	ID3D11Resource* res;
+	mResourceManager->mSprites.back().second.mTexture.Get()->GetResource(&res);
+	res->QueryInterface<ID3D11Texture2D>(&pTextureInterface);
+	D3D11_TEXTURE2D_DESC desc;
+	pTextureInterface->GetDesc(&desc);
+
+	mResourceManager->mSprites.back().second.mWidth = desc.Width;
+	mResourceManager->mSprites.back().second.mHeight = desc.Height;
+}
+
+void AntTweakManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, SpritePosition pPosition, float pRotation, float pScale)
+{
+	KodeboldsMath::Vector2 position;
+
+	switch (pPosition)
+	{
+	case SpritePosition::CENTRE_TOP:
+		position.X = mDeviceWidth / 2.0f;
+		position.Y = 0;
+		break;
+	case SpritePosition::CENTRE_MIDDLE:
+		position.X = mDeviceWidth / 2.0f;
+		position.Y = mDeviceHeight / 2.0f;
+		break;
+	case SpritePosition::CENTRE_BOTTOM:
+		position.X = mDeviceWidth / 2.0f;
+		position.Y = mDeviceHeight;
+		break;
+	}
+
+	LoadSprite(pFileName, pOrigin, position, pRotation, pScale);
+}
+
+void AntTweakManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, KodeboldsMath::Vector2 pPosition, float pRotation, float pScale)
+{
+	Sprite sprite;
+	sprite.mOrigin = DirectX::XMFLOAT2(0, 0);
+	sprite.mPosition = DirectX::XMFLOAT2(pPosition.X, pPosition.Y);
+	sprite.mRotation = pRotation;
+	sprite.mScale = pScale;
+
+	mResourceManager->mSprites.emplace_back(std::make_pair(pFileName, sprite));
+
+	auto imageTest = DirectX::CreateWICTextureFromFile(mDevice.Get(), mContext.Get(), pFileName, nullptr, mResourceManager->mSprites.back().second.mTexture.GetAddressOf());
+
+	if (imageTest == 0x80070002) // file not found
+	{
+		int i = 0;
+	}
+
+	ID3D11Texture2D* pTextureInterface = 0;
+	ID3D11Resource* res;
+	mResourceManager->mSprites.back().second.mTexture.Get()->GetResource(&res);
+	res->QueryInterface<ID3D11Texture2D>(&pTextureInterface);
+	D3D11_TEXTURE2D_DESC desc;
+	pTextureInterface->GetDesc(&desc);
+
+	mResourceManager->mSprites.back().second.mWidth = desc.Width;
+	mResourceManager->mSprites.back().second.mHeight = desc.Height;
+
+	KodeboldsMath::Vector2 origin;
+
+	switch (pOrigin)
+	{
+	case SpriteOrigin::CENTRE:
+		origin.X = float(desc.Width / 2);
+		origin.Y = float(desc.Height / 2);
+		break;
+	}
+
+	mResourceManager->mSprites.back().second.mOrigin = DirectX::XMFLOAT2(origin.X, origin.Y);
+}
+
+void AntTweakManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, SpritePosition pPosition, float pRotation, float pScale)
+{
+	Sprite sprite;
+	sprite.mOrigin = DirectX::XMFLOAT2(0, 0);
+	sprite.mPosition = DirectX::XMFLOAT2(0, 0);
+	sprite.mRotation = pRotation;
+	sprite.mScale = pScale;
+
+	mResourceManager->mSprites.emplace_back(std::make_pair(pFileName, sprite));
+
+	auto imageTest = DirectX::CreateWICTextureFromFile(mDevice.Get(), mContext.Get(), pFileName, nullptr, mResourceManager->mSprites.back().second.mTexture.GetAddressOf());
+
+	if (imageTest == 0x80070002) // file not found
+	{
+		int i = 0;
+	}
+
+	ID3D11Texture2D* pTextureInterface = 0;
+	ID3D11Resource* res;
+	mResourceManager->mSprites.back().second.mTexture.Get()->GetResource(&res);
+	res->QueryInterface<ID3D11Texture2D>(&pTextureInterface);
+	D3D11_TEXTURE2D_DESC desc;
+	pTextureInterface->GetDesc(&desc);
+
+	mResourceManager->mSprites.back().second.mWidth = desc.Width;
+	mResourceManager->mSprites.back().second.mHeight = desc.Height;
+
+	KodeboldsMath::Vector2 origin;
+
+	switch (pOrigin)
+	{
+	case SpriteOrigin::CENTRE:
+		origin.X = float(desc.Width / 2);
+		origin.Y = float(desc.Height / 2);
+		break;
+	}
+
+	mResourceManager->mSprites.back().second.mOrigin = DirectX::XMFLOAT2(origin.X, origin.Y);
+
+	KodeboldsMath::Vector2 position;
+
+	switch (pPosition)
+	{
+	case SpritePosition::CENTRE_TOP:
+		position.X = mDeviceWidth / 2.0f;
+		position.Y = 0;
+		break;
+	case SpritePosition::CENTRE_MIDDLE:
+		position.X = mDeviceWidth / 2.0f;
+		position.Y = mDeviceHeight / 2.0f;
+		break;
+	case SpritePosition::CENTRE_BOTTOM:
+		position.X = mDeviceWidth / 2.0f;
+		position.Y = mDeviceHeight;
+		break;
+	}
+
+	mResourceManager->mSprites.back().second.mPosition = DirectX::XMFLOAT2(position.X, position.Y);
 }
