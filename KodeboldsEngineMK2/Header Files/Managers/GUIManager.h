@@ -9,12 +9,11 @@
 #include <SpriteBatch.h>
 #include <wrl.h>
 #include "ResourceManager.h"
+#include <CommonStates.h>
 
 
-
-class AntTweakManager
+class GUIManager
 {
-
 private:
 	std::shared_ptr<ResourceManager> mResourceManager = ResourceManager::Instance();
 
@@ -26,12 +25,13 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> mContext;
 
 	std::unique_ptr<DirectX::SpriteBatch> mSpriteBatch;
+	std::unique_ptr<DirectX::CommonStates> m_states;
 
 	//Private constructor for singleton pattern
-	AntTweakManager();
+	GUIManager();
 
 public:
-	~AntTweakManager();
+	~GUIManager();
 	enum class SpriteOrigin {
 		CENTRE,
 	};
@@ -44,10 +44,10 @@ public:
 
 	//Singleton pattern
 	//Deleted copy constructor and assignment operator so no copies of the singleton instance can be made
-	AntTweakManager(const AntTweakManager& pAntTweakManager) = delete;
-	AntTweakManager& operator=(AntTweakManager const&) = delete;
+	GUIManager(const GUIManager& pGUIManager) = delete;
+	GUIManager& operator=(GUIManager const&) = delete;
 
-	static std::shared_ptr<AntTweakManager> Instance();
+	static std::shared_ptr<GUIManager> Instance();
 
 	// Ant Tweak Bar
 	void Init(const TwGraphAPI& pGraphicsAPI, void* const pDevice, const int pWidth, const int pHeight) const;

@@ -16,7 +16,7 @@ private:
 	std::shared_ptr<InputManager_GL> mInputManager = InputManager_GL::Instance();
 #endif
 	std::shared_ptr<SceneManager> mSceneManager = SceneManager::Instance();
-	std::shared_ptr<AntTweakManager> mAntTweakManager = AntTweakManager::Instance();
+	std::shared_ptr<GUIManager> mGUIManager = GUIManager::Instance();
 
 	int mPlayer;
 	float mPlayerSpeed;

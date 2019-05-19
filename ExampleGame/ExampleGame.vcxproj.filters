@@ -63,7 +63,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="cat.png">
+    <Image Include="crosshair.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

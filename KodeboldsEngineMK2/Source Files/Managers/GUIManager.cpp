@@ -1,16 +1,16 @@
-#include "AntTweakManager.h"
+#include "GUIManager.h"
 
 /// <summary>
 /// Default constructor
 /// </summary>
-AntTweakManager::AntTweakManager()
+GUIManager::GUIManager()
 {
 }
 
 /// <summary>
 /// Default destructor
 /// </summary>
-AntTweakManager::~AntTweakManager()
+GUIManager::~GUIManager()
 {
 }
 
@@ -19,9 +19,9 @@ AntTweakManager::~AntTweakManager()
 /// Returns pointer to the instance of AntTweak Manager
 /// </summary>
 /// <returns>Shared pointer to the AntTweak Manager instance</returns>
-std::shared_ptr<AntTweakManager> AntTweakManager::Instance()
+std::shared_ptr<GUIManager> GUIManager::Instance()
 {
-	static std::shared_ptr<AntTweakManager> instance{ new AntTweakManager };
+	static std::shared_ptr<GUIManager> instance{ new GUIManager };
 	return instance;
 }
 
@@ -32,7 +32,7 @@ std::shared_ptr<AntTweakManager> AntTweakManager::Instance()
 /// <param name="pDevice">Pointer to graphics device</param>
 /// <param name="width">Width of window</param>
 /// <param name="height">Height of window</param>
-void AntTweakManager::Init(const TwGraphAPI& pGraphicsAPI, void* const pDevice, const int pWidth, const int pHeight) const
+void GUIManager::Init(const TwGraphAPI& pGraphicsAPI, void* const pDevice, const int pWidth, const int pHeight) const
 {
 	TwInit(pGraphicsAPI, pDevice);
 	TwWindowSize(pWidth, pHeight);
@@ -42,7 +42,7 @@ void AntTweakManager::Init(const TwGraphAPI& pGraphicsAPI, void* const pDevice, 
 /// Adds a bar to the anttweak GUI
 /// </summary>
 /// <param name="barName">Name of bar to be added</param>
-void AntTweakManager::AddBar(const std::string& pBarName)
+void GUIManager::AddBar(const std::string& pBarName)
 {
 	TwBar* newBar = TwNewBar(pBarName.c_str());
 	mBars.emplace_back(std::make_pair(pBarName, newBar));
@@ -56,7 +56,7 @@ void AntTweakManager::AddBar(const std::string& pBarName)
 /// <param name="variableType">Type of the variable to be added</param>
 /// <param name="variable">Pointer to the variable to be added</param>
 /// <param name="behaviourDefinition">Anttweak behaviour definition string</param>
-void AntTweakManager::AddVariable(const std::string& pBarName, const std::string& pVariableName, const TwType& pVariableType, const void* const pVariable, const std::string& pBehaviourDefinition)
+void GUIManager::AddVariable(const std::string& pBarName, const std::string& pVariableName, const TwType& pVariableType, const void* const pVariable, const std::string& pBehaviourDefinition)
 {
 	auto it = std::find_if(mBars.begin(), mBars.end(), [&](const std::pair<std::string, TwBar*> bar) { return bar.first == pBarName; });
 	TwAddVarRO(it->second, pVariableName.c_str(), pVariableType, const_cast<void*>(pVariable), pBehaviourDefinition.c_str());
@@ -66,7 +66,7 @@ void AntTweakManager::AddVariable(const std::string& pBarName, const std::string
 /// Deletes a bar from the anttweak GUI
 /// </summary>
 /// <param name="barName">Name of bar to be deleted</param>
-void AntTweakManager::DeleteBar(const std::string& pBarName)
+void GUIManager::DeleteBar(const std::string& pBarName)
 {
 	auto it = std::find_if(mBars.begin(), mBars.end(), [&](const std::pair<std::string, TwBar*> bar) { return bar.first == pBarName; });
 	TwDeleteBar(it->second);
@@ -76,7 +76,7 @@ void AntTweakManager::DeleteBar(const std::string& pBarName)
 /// <summary>
 /// Refreshes and draws the anttweak GUI
 /// </summary>
-void AntTweakManager::Draw()
+void GUIManager::Draw()
 {
 	for (auto& bar : mBars)
 	{
@@ -88,13 +88,13 @@ void AntTweakManager::Draw()
 /// <summary>
 /// Deletes all bars and de-allocates all memory assigned to anttweak
 /// </summary>
-void AntTweakManager::Cleanup() const
+void GUIManager::Cleanup() const
 {
 	TwDeleteAllBars();
 	TwTerminate();
 }
 
-void AntTweakManager::InititialiseGUI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const int pWidth, const int pHeight)
+void GUIManager::InititialiseGUI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const int pWidth, const int pHeight)
 {
 	mDevice = pDevice;
 	mDeviceWidth = pWidth;
@@ -102,6 +102,7 @@ void AntTweakManager::InititialiseGUI(ID3D11Device* pDevice, ID3D11DeviceContext
 	mContext = pContext;
 
 	mSpriteBatch = std::make_unique<DirectX::SpriteBatch>(pContext);
+	m_states = std::make_unique<DirectX::CommonStates>(pDevice);
 
 	//Microsoft::WRL::ComPtr<ID3D11Texture2D> cat;
 	//mResource.As(&cat);
@@ -109,9 +110,12 @@ void AntTweakManager::InititialiseGUI(ID3D11Device* pDevice, ID3D11DeviceContext
 	//cat->GetDesc(&catDesc);
 
 }
-void AntTweakManager::Render()
+void GUIManager::Render()
 {
-	mSpriteBatch->Begin();
+
+	mSpriteBatch->Begin(DirectX::SpriteSortMode_Deferred, m_states->NonPremultiplied());
+
+	//mResourceManager->mSprites.at(0).second.mPosition.x += 1;
 
 	for (int i = 0; i < mResourceManager->mSprites.size(); i++)
 	{
@@ -119,9 +123,11 @@ void AntTweakManager::Render()
 		mSpriteBatch->Draw(sprite.mTexture.Get(), sprite.mPosition, nullptr, DirectX::Colors::White, sprite.mRotation, sprite.mOrigin, sprite.mScale);
 	}
 
+
 	mSpriteBatch->End();
+	mResourceManager->mSprites.clear();
 }
-void AntTweakManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, float pRotation, float pScale)
+void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, float pRotation, float pScale)
 {
 	Sprite sprite;
 	sprite.mOrigin = DirectX::XMFLOAT2(pOrigin.X, pOrigin.Y);
@@ -149,7 +155,7 @@ void AntTweakManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector
 	mResourceManager->mSprites.back().second.mHeight = desc.Height;
 }
 
-void AntTweakManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, SpritePosition pPosition, float pRotation, float pScale)
+void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, SpritePosition pPosition, float pRotation, float pScale)
 {
 	KodeboldsMath::Vector2 position;
 
@@ -172,7 +178,7 @@ void AntTweakManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector
 	LoadSprite(pFileName, pOrigin, position, pRotation, pScale);
 }
 
-void AntTweakManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, KodeboldsMath::Vector2 pPosition, float pRotation, float pScale)
+void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, KodeboldsMath::Vector2 pPosition, float pRotation, float pScale)
 {
 	Sprite sprite;
 	sprite.mOrigin = DirectX::XMFLOAT2(0, 0);
@@ -212,7 +218,7 @@ void AntTweakManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin,
 	mResourceManager->mSprites.back().second.mOrigin = DirectX::XMFLOAT2(origin.X, origin.Y);
 }
 
-void AntTweakManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, SpritePosition pPosition, float pRotation, float pScale)
+void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, SpritePosition pPosition, float pRotation, float pScale)
 {
 	Sprite sprite;
 	sprite.mOrigin = DirectX::XMFLOAT2(0, 0);
