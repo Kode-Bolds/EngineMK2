@@ -519,7 +519,11 @@ void RenderSystem_DX::Process()
 				//Set colour if colour
 				if ((entity.componentMask & ComponentType::COMPONENT_COLOUR) == ComponentType::COMPONENT_COLOUR)
 				{
-					mCB.colour = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->ColourComp(entity.ID)->colour)));
+					mCB.mColour = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->ColourComp(entity.ID)->mColour)));
+				}
+				else
+				{
+					mCB.mColour = XMFLOAT4(0, 0, 0, 0);
 				}
 
 				//Update constant buffer
@@ -635,6 +639,6 @@ void RenderSystem_DX::SetViewProj()
 void RenderSystem_DX::SetLights()
 {
 	mCB.mLightPosition = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mLights[0].ID)->translation)));
-	mCB.mLightColour = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->LightComp(mLights[0].ID)->colour)));
+	mCB.mLightColour = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->LightComp(mLights[0].ID)->mColour)));
 }
 

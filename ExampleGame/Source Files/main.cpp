@@ -57,13 +57,14 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 #endif
 
 	ecsManager->AddUpdateSystem(std::make_shared<MovementSystem>());
+	ecsManager->AddUpdateSystem(std::make_shared<CollisionCheckSystem>(500, 5));
 
 	//Create camera
 	int entityID = ecsManager->CreateEntity();
-	Camera cam{Vector4(0, 40, 1, 1), Vector4(0, 1, 0, 1), 60, 1, 200};
+	Camera cam{Vector4(0, 0, 1, 1), Vector4(0, 1, 0, 1), 60, 1, 200};
 	ecsManager->AddCameraComp(cam, entityID);
 	Transform trans{};
-	trans.translation = Vector4(0, 40, -100, 1);
+	trans.translation = Vector4(0, 0, -100, 1);
 	ecsManager->AddTransformComp(trans, entityID);
 
 	//Create light
@@ -71,24 +72,9 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	Light light{Vector4(1, 1, 1, 1)};
 	ecsManager->AddLightComp(light, entityID);
 	Transform transL{};
-	transL.translation = Vector4(0, 5, -2, 1);
+	transL.translation = Vector4(0, -20, -10, 1);
 	ecsManager->AddTransformComp(transL, entityID);
 
-	//Create moving cube
-	entityID = ecsManager->CreateEntity();
-	Geometry geo{ L"cube.obj" };
-	ecsManager->AddGeometryComp(geo, entityID);
-	Shader shader{L"defaultShader.fx"};
-	ecsManager->AddShaderComp(shader, entityID);
-	Transform transC{};
-	transC.scale = Vector4(1, 1, 1, 1);
-	ecsManager->AddTransformComp(transC, entityID);
-	Velocity vel{};
-	vel.acceleration = Vector4(0, 12.0f, 0, 1);
-	vel.maxSpeed = 50;
-	ecsManager->AddVelocityComp(vel, entityID);
-	Gravity grav{};
-	ecsManager->AddGravityComp(grav, entityID);
 
 	//Testing custom components
 	ecsManager->CreateCustomComponent<CustomComp1>(CustomComponentType::CUSTOM_COMPONENT_1);
@@ -121,15 +107,6 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 
 	//Scenes
 	sceneManager->LoadScene<GameScene>();
-
-	//AntTweak
-	anttweakManager->AddBar("Testing");
-	TwDefine(" Testing size='300 320' valueswidth=200 ");
-	anttweakManager->AddVariable("Testing", "Velocity", TW_TYPE_DIR3F, &ecsManager->VelocityComp(entityID)->velocity, "");
-	anttweakManager->AddVariable("Testing", "Acceleration", TW_TYPE_DIR3F, &ecsManager->VelocityComp(entityID)->acceleration, "");
-	anttweakManager->AddVariable("Testing", "Max Speed", TW_TYPE_FLOAT, &ecsManager->VelocityComp(entityID)->maxSpeed, "");
-
-	networkManager->AddMessage("HELLOlolollololololololololololololololololololololololo");
 
 	//Main message loop
 	MSG msg = { 0 };

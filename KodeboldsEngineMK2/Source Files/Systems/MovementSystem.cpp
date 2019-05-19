@@ -1,24 +1,26 @@
 #include "MovementSystem.h"
 
 /// <summary>
-/// 
+/// Constructor
+/// Initialises entity vector to max entities size
 /// </summary>
-MovementSystem::MovementSystem() : ISystem(std::vector<int>{ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_VELOCITY})
+MovementSystem::MovementSystem() 
+	: ISystem(std::vector<int>{ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_VELOCITY})
 {
 	mEntities = std::vector<Entity>(mEcsManager->MaxEntities(), Entity{ -1, ComponentType::COMPONENT_NONE });
 }
 
 /// <summary>
-/// 
+/// Default destructor
 /// </summary>
 MovementSystem::~MovementSystem()
 {
 }
 
 /// <summary>
-/// 
+/// Assigns entity to system if the entities mask matches the system mask
 /// </summary>
-/// <param name="pEntity"></param>
+/// <param name="pEntity">Entity to be assigned</param>
 void MovementSystem::AssignEntity(const Entity & pEntity)
 {
 	//Checks if entity mask matches the movement mask
@@ -30,9 +32,9 @@ void MovementSystem::AssignEntity(const Entity & pEntity)
 }
 
 /// <summary>
-/// 
+/// Re-assigns entity to system when component is removed from entity
 /// </summary>
-/// <param name="pEntity"></param>
+/// <param name="pEntity">Entity to re-assign</param>
 void MovementSystem::ReAssignEntity(const Entity & pEntity)
 {
 	//Checks if entity mask matches the movement mask
@@ -49,7 +51,9 @@ void MovementSystem::ReAssignEntity(const Entity & pEntity)
 }
 
 /// <summary>
-/// 
+/// Systems process function, core logic of system
+/// Calculates entities velocity by applying the entities acceleration as well as acceleration of gravity
+/// Applies velocity to entities transform
 /// </summary>
 void MovementSystem::Process()
 {
@@ -73,7 +77,7 @@ void MovementSystem::Process()
 				mEcsManager->VelocityComp(entity.ID)->velocity.Clamp(mEcsManager->VelocityComp(entity.ID)->maxSpeed);
 			}
 
-			//Modify translation by velocity
+			//Modify translation and transform by velocity
 			mEcsManager->TransformComp(entity.ID)->translation += mEcsManager->VelocityComp(entity.ID)->velocity * static_cast<float>(mSceneManager->DeltaTime());
 			mEcsManager->TransformComp(entity.ID)->transform *= KodeboldsMath::TranslationMatrix(mEcsManager->VelocityComp(entity.ID)->velocity * static_cast<float>(mSceneManager->DeltaTime()));
 		}

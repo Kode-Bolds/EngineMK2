@@ -82,6 +82,9 @@
     <ClCompile Include="Source Files\HelperClasses\VBO_GL.cpp">
       <Filter>Source Files\HelperClasses</Filter>
     </ClCompile>
+    <ClCompile Include="Source Files\Systems\CollisionCheckSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\Components\AI.h">
@@ -252,7 +255,13 @@
     <ClInclude Include="Header Files\Components\CustomComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Header Files\Components\RenderStates.h">
+    <ClInclude Include="Header Files\DataStructs\OctTreeNode.h">
+      <Filter>Header Files\DataStructs</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Systems\CollisionCheckSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\Collision.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
