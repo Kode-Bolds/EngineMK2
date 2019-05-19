@@ -1,7 +1,6 @@
 #pragma once
 #include "ECSManager.h"
 #include "SceneManager.h"
-#include "Components.h"
 #include "ISystem.h"
 #include "Vector4.h"
 

@@ -27,6 +27,7 @@ private:
 	std::vector<Audio> mAudios;
 	std::vector<BoxCollider> mBoxColliders;
 	std::vector<Camera> mCameras;
+	std::vector<Collision> mCollisions;
 	std::vector<Colour> mColours;
 	std::vector<Geometry> mGeometries;
 	std::vector<Gravity> mGravities;
@@ -39,16 +40,18 @@ private:
 	std::vector<Velocity> mVelocities;
 
 	//Custom components
-	std::vector<void*> mCustomComponentVectors;
-	std::vector<std::vector<unsigned short>*> mCustomComponentEntityMaps;
 	std::vector<CustomComponent*> mCustomComponentTypes;
 	std::vector<int> mCustomComponentMasks;
+	std::vector<void*> mCustomComponentVectors;
+	std::vector<std::vector<unsigned short>*> mCustomComponentEntityMaps;
+	std::vector<std::vector<unsigned short>*> mCustomComponentFreeLists;
 
 	//Entity-Component maps
 	std::vector<unsigned short> mAIEntityMap;
 	std::vector<unsigned short> mAudioEntityMap;
 	std::vector<unsigned short> mBoxColliderEntityMap;
 	std::vector<unsigned short> mCameraEntityMap;
+	std::vector<unsigned short> mCollisionEntityMap;
 	std::vector<unsigned short> mColourEntityMap;
 	std::vector<unsigned short> mGeometryEntityMap;
 	std::vector<unsigned short> mGravityEntityMap;
@@ -59,6 +62,23 @@ private:
 	std::vector<unsigned short> mTextureEntityMap;
 	std::vector<unsigned short> mTransformEntityMap;
 	std::vector<unsigned short> mVelocityEntityMap;
+
+	//Component free lists
+	std::vector<unsigned short> mAIFreeList;
+	std::vector<unsigned short> mAudioFreeList;
+	std::vector<unsigned short> mBoxColliderFreeList;
+	std::vector<unsigned short> mCameraFreeList;
+	std::vector<unsigned short> mCollisionFreeList;
+	std::vector<unsigned short> mColourFreeList;
+	std::vector<unsigned short> mGeometryFreeList;
+	std::vector<unsigned short> mGravityFreeList;
+	std::vector<unsigned short> mLightFreeList;
+	std::vector<unsigned short> mRayFreeList;
+	std::vector<unsigned short> mShaderFreeList;
+	std::vector<unsigned short> mSphereColliderFreeList;
+	std::vector<unsigned short> mTextureFreeList;
+	std::vector<unsigned short> mTransformFreeList;
+	std::vector<unsigned short> mVelocityFreeList;
 
 	//Systems
 	std::shared_ptr<ISystem> mRenderSystem;
@@ -123,6 +143,10 @@ public:
 		std::vector<unsigned short>* newMapVector = new std::vector<unsigned short>();
 		newMapVector->resize(MAX_ENTITIES);
 		mCustomComponentEntityMaps.push_back(newMapVector);
+
+		//Create vector for new component types free list
+		std::vector<unsigned short>* newFreeListVector = new std::vector<unsigned short>();
+		mCustomComponentFreeLists.push_back(newFreeListVector);
 	}
 
 	//Add methods for components
@@ -130,6 +154,7 @@ public:
 	void AddAudioComp(const Audio& pAudio, const int pEntityID);
 	void AddBoxColliderComp(const BoxCollider& pBoxCollider, const int pEntityID);
 	void AddCameraComp(const Camera& pCamera, const int pEntityID);
+	void AddCollisionComp(const Collision& pCollision, const int pEntityID);
 	void AddColourComp(const Colour& pColour, const int pEntityID);
 	void AddGeometryComp(const Geometry& pGeometry, const int pEntityID);
 	void AddGravityComp(const Gravity& pGravity, const int pEntityID);
@@ -157,13 +182,24 @@ public:
 			//Check if type matches
 			if (dynamic_cast<T*>(mCustomComponentTypes[i]))
 			{
-				//Retrieve vector that contains this component type and then add new component to vector
-				std::vector<T>* componentVector = static_cast<std::vector<T>*>(mCustomComponentVectors[i]);
-				componentVector->push_back(pComponent);
-
-				//Retrieve vector that contains this component types entity-component map and add index of component
+				//Retrieve vector that contains this component type and vector that contains this componenet types entity component map and vector that contains this components free list
 				std::vector<unsigned short>* componentEntityMapVector = mCustomComponentEntityMaps[i];
-				(*componentEntityMapVector)[pEntityID] = static_cast<unsigned short>(componentVector->size() - 1);
+				std::vector<unsigned short>* componentFreeList = mCustomComponentFreeLists[i];
+				std::vector<T>* componentVector = static_cast<std::vector<T>*>(mCustomComponentVectors[i]);
+
+				if (componentFreeList->empty())
+				{
+					//Push onto back if no free slots and map to back
+					componentVector->push_back(pComponent);
+					(*componentEntityMapVector)[pEntityID] = static_cast<unsigned short>(componentVector->size() - 1);
+				}
+				else
+				{
+					//Insert into free slot and map to free slot
+					(*componentVector)[componentFreeList->back()] = pComponent;
+					(*componentEntityMapVector)[pEntityID] = static_cast<unsigned short>(componentFreeList->back());
+					componentFreeList->pop_back();
+				}
 
 				//Adjust entities mask to contain mask of new component
 				Entity* entity = &mEntities[pEntityID];
@@ -181,6 +217,7 @@ public:
 	void RemoveAudioComp(const int pEntityID);
 	void RemoveBoxColliderComp(const int pEntityID);
 	void RemoveCameraComp(const int pEntityID);
+	void RemoveCollisionComp(const int pEntityID);
 	void RemoveColourComp(const int pEntityID);
 	void RemoveGeometryComp(const int pEntityID);
 	void RemoveGravityComp(const int pEntityID);
@@ -209,18 +246,12 @@ public:
 				//Check if type matches
 				if (dynamic_cast<T*>(mCustomComponentTypes[i]))
 				{
-					//Retrieve vector that contains this component type and vector that contains this component types entity component map
+					//Retrieve vector that contains this component type and vector that contains this componenet types entity component map
 					std::vector<unsigned short>* componentEntityMapVector = mCustomComponentEntityMaps[i];
-					std::vector<T>* componentVector = static_cast<std::vector<T>*>(mCustomComponentVectors[i]);
+					std::vector<unsigned short>* componentFreeList = mCustomComponentFreeLists[i];
 
-					//Replace the removed component with back element
-					(*componentVector)[(*componentEntityMapVector)[pEntityID]] = componentVector->back();
-
-					//Set new index of component in the entity component map		
-					(*componentEntityMapVector)[componentVector->size() - 1] = (*componentEntityMapVector)[pEntityID];
-
-					//Pop back element
-					componentVector->pop_back();
+					//Add slot in array to free list
+					componentFreeList->push_back((*componentEntityMapVector)[pEntityID]);
 
 					//Adjust entities mask to no longer contain mask of removed component
 					Entity* entity = &mEntities[pEntityID];
@@ -239,6 +270,7 @@ public:
 	Audio* const AudioComp(const int pEntityID);
 	BoxCollider* const BoxColliderComp(const int pEntityID);
 	Camera* const CameraComp(const int pEntityID);
+	Collision* const CollisionComp(const int pEntityID);
 	Colour* const ColourComp(const int pEntityID);
 	Geometry* const GeometryComp(const int pEntityID);
 	Gravity* const GravityComp(const int pEntityID);
@@ -267,7 +299,7 @@ public:
 				//Check if type matches
 				if (dynamic_cast<T*>(mCustomComponentTypes[i]))
 				{
-					//Retrieve vector that contains this component type and vector that contains this component types entity component map
+					//Retrieve vector that contains this component type and vector that contains this componenet types entity component map
 					std::vector<unsigned short>* componentEntityMapVector = mCustomComponentEntityMaps[i];
 					std::vector<T>* componentVector = static_cast<std::vector<T>*>(mCustomComponentVectors[i]);
 

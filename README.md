@@ -6,6 +6,8 @@ Team Members:
 - Anthony Beacock
 - Jakob Scrivener
 - Dean Barnard
+- Kristian Dixon (Shaders)
+- Axel Davenport (Art)
 
 ## Project Management
 * Trello - https://trello.com/b/7fnsqyau/kodeboldsengine

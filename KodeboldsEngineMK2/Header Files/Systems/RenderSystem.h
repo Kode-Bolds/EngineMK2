@@ -16,6 +16,7 @@ protected:
 	std::shared_ptr<AntTweakManager> mAntTweakManager = AntTweakManager::Instance();
 	std::shared_ptr<ECSManager> mEcsManager = ECSManager::Instance();
 	std::shared_ptr<ResourceManager>  mResourceManager = ResourceManager::Instance();
+
 public:
 	virtual ~RenderSystem() {};
 

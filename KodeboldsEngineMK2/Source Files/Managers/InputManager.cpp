@@ -1,13 +1,6 @@
 #include "InputManager.h"
 
 /// <summary>
-/// Default constructor
-/// </summary>
-InputManager::InputManager()
-{
-}
-
-/// <summary>
 /// Default destructor
 /// </summary>
 InputManager::~InputManager()
@@ -114,4 +107,5 @@ void InputManager::Update()
 	mKeyStates.clear();
 	KeyboardInput();
 	MouseInput();
+	GamePadInput();
 }
