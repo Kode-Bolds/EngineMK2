@@ -579,7 +579,7 @@ void RenderSystem_DX::Process()
 	{
 		SetViewProj();
 	}
-	if (mLights.size() > 0)
+	if (!mLights.empty())
 	{
 		SetLights();
 	}
@@ -587,6 +587,8 @@ void RenderSystem_DX::Process()
 	{
 		if (entity.ID != -1)
 		{
+			CalculateTransform(entity);
+
 			//If geometry of entity is not already in the buffers, load entities geometry
 			if (mEcsManager->GeometryComp(entity.ID)->filename != mActiveGeometry)
 			{
@@ -773,5 +775,20 @@ void RenderSystem_DX::SetLights()
 {
 	mCB.mLightPosition = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mLights[0].ID)->translation)));
 	mCB.mLightColour = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->LightComp(mLights[0].ID)->mColour)));
+}
+
+void RenderSystem_DX::CalculateTransform(const Entity& pEntity)
+{
+	Transform* t = mEcsManager->TransformComp(pEntity.ID);
+	const auto scale = KodeboldsMath::ScaleMatrix(t->scale);
+	const auto translation = KodeboldsMath::TranslationMatrix(t->translation);
+	const auto rotation = KodeboldsMath::RotationMatrixX(t->rotation.X)
+		* KodeboldsMath::RotationMatrixY(t->rotation.Y)
+		* KodeboldsMath::RotationMatrixZ(t->rotation.Z);
+
+	t->transform = scale * rotation * translation;
+	t->forward = KodeboldsMath::Vector4(t->transform._31, t->transform._32, t->transform._33, 1.0f);
+	t->up = KodeboldsMath::Vector4(t->transform._21, t->transform._22, t->transform._23, 1.0f);
+	t->right = KodeboldsMath::Vector4(t->transform._11, t->transform._12, t->transform._13, 1.0f);
 }
 

@@ -87,6 +87,8 @@ private:
 	void SetViewProj() override;
 	void SetLights() override;
 
+	void CalculateTransform(const Entity& pEntity);
+
 public:
 	explicit RenderSystem_DX(const HWND& pWindow);
 	virtual ~RenderSystem_DX();
