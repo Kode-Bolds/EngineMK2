@@ -501,38 +501,42 @@ void RenderSystem_DX::Process()
 	{
 		if (entity.ID != -1)
 		{
-			//If geometry of entity is not already in the buffers, load entities geometry
-			if (mEcsManager->GeometryComp(entity.ID)->filename != mActiveGeometry)
-			{
-				mGeometry = LoadGeometry(entity);
-				mGeometry->Load(this);
-				mActiveGeometry = mEcsManager->GeometryComp(entity.ID)->filename;
-			}
-			//LoadTexture(entity);
-			//If shader of entity is not already in the buffers, load entities shader
-			if (mEcsManager->ShaderComp(entity.ID)->filename != mActiveShader)
-			{
-				LoadShaders(entity);
-				mActiveShader = mEcsManager->ShaderComp(entity.ID)->filename;
-			}
+				//If geometry of entity is not already in the buffers, load entities geometry
+				if (mEcsManager->GeometryComp(entity.ID)->filename != mActiveGeometry)
+				{
+					mGeometry = LoadGeometry(entity);
+					mGeometry->Load(this);
+					mActiveGeometry = mEcsManager->GeometryComp(entity.ID)->filename;
+				}
+				//LoadTexture(entity);
+				//If shader of entity is not already in the buffers, load entities shader
+				if (mEcsManager->ShaderComp(entity.ID)->filename != mActiveShader)
+				{
+					LoadShaders(entity);
+					mActiveShader = mEcsManager->ShaderComp(entity.ID)->filename;
+				}
 
-			//Set world matrix
-			mCB.mWorld = XMFLOAT4X4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(entity.ID)->transform)));
+				//Set world matrix
+				mCB.mWorld = XMFLOAT4X4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(entity.ID)->transform)));
 
-			//Set colour if colour
-			if ((entity.componentMask & ComponentType::COMPONENT_COLOUR) == ComponentType::COMPONENT_COLOUR)
-			{
-				mCB.colour = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->ColourComp(entity.ID)->colour)));
-			}
+				//Set colour if colour
+				if ((entity.componentMask & ComponentType::COMPONENT_COLOUR) == ComponentType::COMPONENT_COLOUR)
+				{
+					mCB.mColour = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->ColourComp(entity.ID)->mColour)));
+				}
+				else
+				{
+					mCB.mColour = XMFLOAT4(0, 0, 0, 0);
+				}
 
-			//Update constant buffer
-			mContext->UpdateSubresource(mConstantBuffer.Get(), 0, nullptr, &mCB, 0, 0);
+				//Update constant buffer
+				mContext->UpdateSubresource(mConstantBuffer.Get(), 0, nullptr, &mCB, 0, 0);
 
-			//mContext->OMSetBlendState()
-			//mContext->OMSetDepthStencilState(NULL, 1);
-			mContext->RSSetState(mDefaultRasterizerState.Get());
+				//mContext->OMSetBlendState()
+				//mContext->OMSetDepthStencilState(NULL, 1);
+				mContext->RSSetState(mDefaultRasterizerState.Get());
 
-			mGeometry->Draw(this);
+				mGeometry->Draw(this);
 		}
 	}
 
@@ -638,6 +642,6 @@ void RenderSystem_DX::SetViewProj()
 void RenderSystem_DX::SetLights()
 {
 	mCB.mLightPosition = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mLights[0].ID)->translation)));
-	mCB.mLightColour = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->LightComp(mLights[0].ID)->colour)));
+	mCB.mLightColour = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->LightComp(mLights[0].ID)->mColour)));
 }
 

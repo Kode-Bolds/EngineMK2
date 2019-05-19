@@ -16,7 +16,7 @@ struct ConstantBuffer
 	DirectX::XMFLOAT4 mLightColour;
 	DirectX::XMFLOAT4 mLightPosition;
 	DirectX::XMFLOAT4 mCameraPosition;
-	DirectX::XMFLOAT4 colour;
+	DirectX::XMFLOAT4 mColour;
 };
 
 class RenderSystem_DX : public RenderSystem

@@ -278,6 +278,9 @@
     </ClInclude>
     <ClInclude Include="Header Files\Managers\GUIManager_GL.h">
       <Filter>Header Files\Managers</Filter>
+     </ClInclude>
+    <ClInclude Include="Header Files\Components\Collision.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -45,6 +45,7 @@ ECSManager::ECSManager()
 	mAudioEntityMap.resize(MAX_ENTITIES);
 	mBoxColliderEntityMap.resize(MAX_ENTITIES);
 	mCameraEntityMap.resize(MAX_ENTITIES);
+	mCollisionEntityMap.resize(MAX_ENTITIES);
 	mColourEntityMap.resize(MAX_ENTITIES);
 	mGeometryEntityMap.resize(MAX_ENTITIES);
 	mGravityEntityMap.resize(MAX_ENTITIES);
@@ -153,6 +154,11 @@ void ECSManager::DestroyEntity(const int pEntityID)
 	if ((entity->componentMask & ComponentType::COMPONENT_CAMERA) == ComponentType::COMPONENT_CAMERA)
 	{
 		RemoveCameraComp(pEntityID);
+	}
+	//Collision Comp
+	if ((entity->componentMask & ComponentType::COMPONENT_COLLISION) == ComponentType::COMPONENT_COLLISION)
+	{
+		RemoveCollisionComp(pEntityID);
 	}
 	//Colour Comp
 	if ((entity->componentMask & ComponentType::COMPONENT_COLOUR) == ComponentType::COMPONENT_COLOUR)
@@ -305,8 +311,22 @@ void ECSManager::ProcessSystems()
 void ECSManager::AddAIComp(const AI & pAI, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
-	mAIs.push_back(pAI);
-	mAIEntityMap[pEntityID] = static_cast<unsigned short>(mAIs.size() - 1);
+
+	if (mAIFreeList.empty())
+	{
+		//Push onto back if no free slots and map to back
+		mAIs.push_back(pAI);
+		mAIEntityMap[pEntityID] = static_cast<unsigned short>(mAIs.size() - 1);
+	}
+	else
+	{
+		//Insert into free slot and map to free slot
+		mAIs[mAIFreeList.back()] = pAI;
+		mAIEntityMap[pEntityID] = static_cast<unsigned short>(mAIFreeList.back());
+		mAIFreeList.pop_back();
+	}
+
+	//Adjust mask then assign entity
 	entity->componentMask |= ComponentType::COMPONENT_AI;
 	AssignEntity(*entity);
 }
@@ -319,8 +339,22 @@ void ECSManager::AddAIComp(const AI & pAI, const int pEntityID)
 void ECSManager::AddAudioComp(const Audio & pAudio, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
-	mAudios.push_back(pAudio);
-	mAudioEntityMap[pEntityID] = static_cast<unsigned short>(mAudios.size() - 1);
+
+	if (mAudioFreeList.empty())
+	{
+		//Push onto back if no free slots and map to back
+		mAudios.push_back(pAudio);
+		mAudioEntityMap[pEntityID] = static_cast<unsigned short>(mAudios.size() - 1);
+	}
+	else
+	{
+		//Insert into free slot and map to free slot
+		mAudios[mAudioFreeList.back()] = pAudio;
+		mAudioEntityMap[pEntityID] = static_cast<unsigned short>(mAudioFreeList.back());
+		mAudioFreeList.pop_back();
+	}
+
+	//Adjust mask then assign entity
 	entity->componentMask |= ComponentType::COMPONENT_AUDIO;
 	AssignEntity(*entity);
 }
@@ -333,8 +367,22 @@ void ECSManager::AddAudioComp(const Audio & pAudio, const int pEntityID)
 void ECSManager::AddBoxColliderComp(const BoxCollider & pBoxCollider, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
-	mBoxColliders.push_back(pBoxCollider);
-	mBoxColliderEntityMap[pEntityID] = static_cast<unsigned short>(mBoxColliders.size() - 1);
+
+	if (mBoxColliderFreeList.empty())
+	{
+		//Push onto back if no free slots and map to back
+		mBoxColliders.push_back(pBoxCollider);
+		mBoxColliderEntityMap[pEntityID] = static_cast<unsigned short>(mBoxColliders.size() - 1);
+	}
+	else
+	{
+		//Insert into free slot and map to free slot
+		mBoxColliders[mBoxColliderFreeList.back()] = pBoxCollider;
+		mBoxColliderEntityMap[pEntityID] = static_cast<unsigned short>(mBoxColliderFreeList.back());
+		mBoxColliderFreeList.pop_back();
+	}
+
+	//Adjust mask then assign entity
 	entity->componentMask |= ComponentType::COMPONENT_BOXCOLLIDER;
 	AssignEntity(*entity);
 }
@@ -347,9 +395,51 @@ void ECSManager::AddBoxColliderComp(const BoxCollider & pBoxCollider, const int 
 void ECSManager::AddCameraComp(const Camera & pCamera, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
-	mCameras.push_back(pCamera);
-	mCameraEntityMap[pEntityID] = static_cast<unsigned short>(mCameras.size() - 1);
+
+	if (mCameraFreeList.empty())
+	{
+		//Push onto back if no free slots and map to back
+		mCameras.push_back(pCamera);
+		mCameraEntityMap[pEntityID] = static_cast<unsigned short>(mCameras.size() - 1);
+	}
+	else
+	{
+		//Insert into free slot and map to free slot
+		mCameras[mCameraFreeList.back()] = pCamera;
+		mCameraEntityMap[pEntityID] = static_cast<unsigned short>(mCameraFreeList.back());
+		mCameraFreeList.pop_back();
+	}
+
+	//Adjust mask then assign entity
 	entity->componentMask |= ComponentType::COMPONENT_CAMERA;
+	AssignEntity(*entity);
+}
+
+/// <summary>
+/// Adds a Collision component to the entity with a given ID
+/// </summary>
+/// <param name="pCollision">Collision component to add</param>
+/// <param name="pEntityID">Given ID of the entity</param>
+void ECSManager::AddCollisionComp(const Collision & pCollision, const int pEntityID)
+{
+	Entity* entity = &mEntities[pEntityID];
+
+	if (mCollisionFreeList.empty())
+	{
+		//Push onto back if no free slots and map to back
+		mCollisions.push_back(pCollision);
+		mCollisionEntityMap[pEntityID] = static_cast<unsigned short>(mCollisions.size() - 1);
+	}
+	else
+	{
+		//Insert into free slot and map to free slot
+		mCollisions[mCollisionFreeList.back()] = pCollision;
+		mCollisionEntityMap[pEntityID] = static_cast<unsigned short>(mCollisionFreeList.back());
+		mCollisionFreeList.pop_back();
+	}
+
+	//Adjust mask then assign entity
+	entity->componentMask |= ComponentType::COMPONENT_COLLISION;
 	AssignEntity(*entity);
 }
 
@@ -361,8 +451,22 @@ void ECSManager::AddCameraComp(const Camera & pCamera, const int pEntityID)
 void ECSManager::AddColourComp(const Colour & pColour, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
-	mColours.push_back(pColour);
-	mColourEntityMap[pEntityID] = static_cast<unsigned short>(mColours.size() - 1);
+
+	if (mColourFreeList.empty())
+	{
+		//Push onto back if no free slots and map to back
+		mColours.push_back(pColour);
+		mColourEntityMap[pEntityID] = static_cast<unsigned short>(mColours.size() - 1);
+	}
+	else
+	{
+		//Insert into free slot and map to free slot
+		mColours[mColourFreeList.back()] = pColour;
+		mColourEntityMap[pEntityID] = static_cast<unsigned short>(mColourFreeList.back());
+		mColourFreeList.pop_back();
+	}
+
+	//Adjust mask then assign entity
 	entity->componentMask |= ComponentType::COMPONENT_COLOUR;
 	AssignEntity(*entity);
 }
@@ -375,8 +479,22 @@ void ECSManager::AddColourComp(const Colour & pColour, const int pEntityID)
 void ECSManager::AddGeometryComp(const Geometry & pGeometry, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
-	mGeometries.push_back(pGeometry);
-	mGeometryEntityMap[pEntityID] = static_cast<unsigned short>(mGeometries.size() - 1);
+
+	if (mGeometryFreeList.empty())
+	{
+		//Push onto back if no free slots and map to back
+		mGeometries.push_back(pGeometry);
+		mGeometryEntityMap[pEntityID] = static_cast<unsigned short>(mGeometries.size() - 1);
+	}
+	else
+	{
+		//Insert into free slot and map to free slot
+		mGeometries[mGeometryFreeList.back()] = pGeometry;
+		mGeometryEntityMap[pEntityID] = static_cast<unsigned short>(mGeometryFreeList.back());
+		mGeometryFreeList.pop_back();
+	}
+
+	//Adjust mask then assign entity
 	entity->componentMask |= ComponentType::COMPONENT_GEOMETRY;
 	AssignEntity(*entity);
 }
@@ -389,8 +507,22 @@ void ECSManager::AddGeometryComp(const Geometry & pGeometry, const int pEntityID
 void ECSManager::AddGravityComp(const Gravity & pGravity, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
-	mGravities.push_back(pGravity);
-	mGravityEntityMap[pEntityID] = static_cast<unsigned short>(mGravities.size() - 1);
+
+	if (mGravityFreeList.empty())
+	{
+		//Push onto back if no free slots and map to back
+		mGravities.push_back(pGravity);
+		mGravityEntityMap[pEntityID] = static_cast<unsigned short>(mGravities.size() - 1);
+	}
+	else
+	{
+		//Insert into free slot and map to free slot
+		mGravities[mGravityFreeList.back()] = pGravity;
+		mGravityEntityMap[pEntityID] = static_cast<unsigned short>(mGravityFreeList.back());
+		mGravityFreeList.pop_back();
+	}
+
+	//Adjust mask then assign entity
 	entity->componentMask |= ComponentType::COMPONENT_GRAVITY;
 	AssignEntity(*entity);
 }
@@ -403,8 +535,22 @@ void ECSManager::AddGravityComp(const Gravity & pGravity, const int pEntityID)
 void ECSManager::AddLightComp(const Light & pLight, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
-	mLights.push_back(pLight);
-	mLightEntityMap[pEntityID] = static_cast<unsigned short>(mLights.size() - 1);
+
+	if (mLightFreeList.empty())
+	{
+		//Push onto back if no free slots and map to back
+		mLights.push_back(pLight);
+		mLightEntityMap[pEntityID] = static_cast<unsigned short>(mLights.size() - 1);
+	}
+	else
+	{
+		//Insert into free slot and map to free slot
+		mLights[mLightFreeList.back()] = pLight;
+		mLightEntityMap[pEntityID] = static_cast<unsigned short>(mLightFreeList.back());
+		mLightFreeList.pop_back();
+	}
+
+	//Adjust mask then assign entity
 	entity->componentMask |= ComponentType::COMPONENT_LIGHT;
 	AssignEntity(*entity);
 }
@@ -417,8 +563,22 @@ void ECSManager::AddLightComp(const Light & pLight, const int pEntityID)
 void ECSManager::AddRayComp(const Ray & pRay, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
-	mRays.push_back(pRay);
-	mRayEntityMap[pEntityID] = static_cast<unsigned short>(mRays.size() - 1);
+
+	if (mRayFreeList.empty())
+	{
+		//Push onto back if no free slots and map to back
+		mRays.push_back(pRay);
+		mRayEntityMap[pEntityID] = static_cast<unsigned short>(mRays.size() - 1);
+	}
+	else
+	{
+		//Insert into free slot and map to free slot
+		mRays[mRayFreeList.back()] = pRay;
+		mRayEntityMap[pEntityID] = static_cast<unsigned short>(mRayFreeList.back());
+		mRayFreeList.pop_back();
+	}
+
+	//Adjust mask then assign entity
 	entity->componentMask |= ComponentType::COMPONENT_RAY;
 	AssignEntity(*entity);
 }
@@ -431,8 +591,22 @@ void ECSManager::AddRayComp(const Ray & pRay, const int pEntityID)
 void ECSManager::AddShaderComp(const Shader & pShader, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
-	mShaders.push_back(pShader);
-	mShaderEntityMap[pEntityID] = static_cast<unsigned short>(mShaders.size() - 1);
+
+	if (mShaderFreeList.empty())
+	{
+		//Push onto back if no free slots and map to back
+		mShaders.push_back(pShader);
+		mShaderEntityMap[pEntityID] = static_cast<unsigned short>(mShaders.size() - 1);
+	}
+	else
+	{
+		//Insert into free slot and map to free slot
+		mShaders[mShaderFreeList.back()] = pShader;
+		mShaderEntityMap[pEntityID] = static_cast<unsigned short>(mShaderFreeList.back());
+		mShaderFreeList.pop_back();
+	}
+
+	//Adjust mask then assign entity
 	entity->componentMask |= ComponentType::COMPONENT_SHADER;
 	AssignEntity(*entity);
 }
@@ -445,8 +619,22 @@ void ECSManager::AddShaderComp(const Shader & pShader, const int pEntityID)
 void ECSManager::AddSphereColliderComp(const SphereCollider & pSphereCollider, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
-	mSphereColliders.push_back(pSphereCollider);
-	mSphereColliderEntityMap[pEntityID] = static_cast<unsigned short>(mSphereColliders.size() - 1);
+
+	if (mSphereColliderFreeList.empty())
+	{
+		//Push onto back if no free slots and map to back
+		mSphereColliders.push_back(pSphereCollider);
+		mSphereColliderEntityMap[pEntityID] = static_cast<unsigned short>(mSphereColliders.size() - 1);
+	}
+	else
+	{
+		//Insert into free slot and map to free slot
+		mSphereColliders[mSphereColliderFreeList.back()] = pSphereCollider;
+		mSphereColliderEntityMap[pEntityID] = static_cast<unsigned short>(mSphereColliderFreeList.back());
+		mSphereColliderFreeList.pop_back();
+	}
+
+	//Adjust mask then assign entity
 	entity->componentMask |= ComponentType::COMPONENT_SPHERECOLLIDER;
 	AssignEntity(*entity);
 }
@@ -459,8 +647,22 @@ void ECSManager::AddSphereColliderComp(const SphereCollider & pSphereCollider, c
 void ECSManager::AddTextureComp(const Texture & pTexture, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
-	mTextures.push_back(pTexture);
-	mTextureEntityMap[pEntityID] = static_cast<unsigned short>(mTextures.size() - 1);
+
+	if (mTextureFreeList.empty())
+	{
+		//Push onto back if no free slots and map to back
+		mTextures.push_back(pTexture);
+		mTextureEntityMap[pEntityID] = static_cast<unsigned short>(mTextures.size() - 1);
+	}
+	else
+	{
+		//Insert into free slot and map to free slot
+		mTextures[mTextureFreeList.back()] = pTexture;
+		mTextureEntityMap[pEntityID] = static_cast<unsigned short>(mTextureFreeList.back());
+		mTextureFreeList.pop_back();
+	}
+
+	//Adjust mask then assign entity
 	entity->componentMask |= ComponentType::COMPONENT_TEXTURE;
 	AssignEntity(*entity);
 }
@@ -473,8 +675,22 @@ void ECSManager::AddTextureComp(const Texture & pTexture, const int pEntityID)
 void ECSManager::AddTransformComp(const Transform & pTransform, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
-	mTransforms.push_back(pTransform);
-	mTransformEntityMap[pEntityID] = static_cast<unsigned short>(mTransforms.size() - 1);
+
+	if (mTransformFreeList.empty())
+	{
+		//Push onto back if no free slots and map to back
+		mTransforms.push_back(pTransform);
+		mTransformEntityMap[pEntityID] = static_cast<unsigned short>(mTransforms.size() - 1);
+	}
+	else
+	{
+		//Insert into free slot and map to free slot
+		mTransforms[mTransformFreeList.back()] = pTransform;
+		mTransformEntityMap[pEntityID] = static_cast<unsigned short>(mTransformFreeList.back());
+		mTransformFreeList.pop_back();
+	}
+
+	//Adjust mask then assign entity
 	entity->componentMask |= ComponentType::COMPONENT_TRANSFORM;
 	AssignEntity(*entity);
 }
@@ -487,8 +703,22 @@ void ECSManager::AddTransformComp(const Transform & pTransform, const int pEntit
 void ECSManager::AddVelocityComp(const Velocity & pVelocity, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
-	mVelocities.push_back(pVelocity);
-	mVelocityEntityMap[pEntityID] = static_cast<unsigned short>(mVelocities.size() - 1);
+
+	if (mVelocityFreeList.empty())
+	{
+		//Push onto back if no free slots and map to back
+		mVelocities.push_back(pVelocity);
+		mVelocityEntityMap[pEntityID] = static_cast<unsigned short>(mVelocities.size() - 1);
+	}
+	else
+	{
+		//Insert into free slot and map to free slot
+		mVelocities[mVelocityFreeList.back()] = pVelocity;
+		mVelocityEntityMap[pEntityID] = static_cast<unsigned short>(mVelocityFreeList.back());
+		mVelocityFreeList.pop_back();
+	}
+
+	//Adjust mask then assign entity
 	entity->componentMask |= ComponentType::COMPONENT_VELOCITY;
 	AssignEntity(*entity);
 }
@@ -504,14 +734,8 @@ void ECSManager::RemoveAIComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((entity->componentMask & ComponentType::COMPONENT_AI) == ComponentType::COMPONENT_AI)
 	{
-		//Replace with back element
-		mAIs[mAIEntityMap[pEntityID]] = mAIs.back();
-
-		//Set index in map to new index
-		mAIEntityMap[mAIs.size() - 1] = mAIEntityMap[pEntityID];
-
-		//Pop back
-		mAIs.pop_back();
+		//Add slot in ai array to free list
+		mAIFreeList.push_back(mAIEntityMap[pEntityID]);
 
 		//Update mask and reassign entity
 		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_AI; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
@@ -530,14 +754,8 @@ void ECSManager::RemoveAudioComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((entity->componentMask & ComponentType::COMPONENT_AUDIO) == ComponentType::COMPONENT_AUDIO)
 	{
-		//Replace with back element
-		mAudios[mAudioEntityMap[pEntityID]] = mAudios.back();
-
-		//Set index in map to new index
-		mAudioEntityMap[mAudios.size() - 1] = mAudioEntityMap[pEntityID];
-
-		//Pop back
-		mAudios.pop_back();
+		//Add slot in audio array to free list
+		mAudioFreeList.push_back(mAudioEntityMap[pEntityID]);
 
 		//Update mask and reassign entity
 		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_AUDIO; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
@@ -556,14 +774,8 @@ void ECSManager::RemoveBoxColliderComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((entity->componentMask & ComponentType::COMPONENT_BOXCOLLIDER) == ComponentType::COMPONENT_BOXCOLLIDER)
 	{
-		//Replace with back element
-		mBoxColliders[mBoxColliderEntityMap[pEntityID]] = mBoxColliders.back();
-
-		//Set index in map to new index
-		mBoxColliderEntityMap[mBoxColliders.size() - 1] = mBoxColliderEntityMap[pEntityID];
-
-		//Pop back
-		mBoxColliders.pop_back();
+		//Add slot in box collider array to free list
+		mBoxColliderFreeList.push_back(mBoxColliderEntityMap[pEntityID]);
 
 		//Update mask and reassign entity
 		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_BOXCOLLIDER; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
@@ -583,17 +795,31 @@ void ECSManager::RemoveCameraComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((entity->componentMask & ComponentType::COMPONENT_CAMERA) == ComponentType::COMPONENT_CAMERA)
 	{
-		//Replace with back element
-		mCameras[mCameraEntityMap[pEntityID]] = mCameras.back();
-
-		//Set index in map to new index
-		mCameraEntityMap[mCameras.size() - 1] = mCameraEntityMap[pEntityID];
-
-		//Pop back
-		mCameras.pop_back();
+		//Add slot in camera array to free list
+		mCameraFreeList.push_back(mCameraEntityMap[pEntityID]);
 
 		//Update mask and reassign entity
 		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_CAMERA; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
+		ReAssignEntity(*entity);
+	}
+}
+
+/// <summary>
+/// Removes a Collision component from the entity with a given ID
+/// </summary>
+/// <param name="pEntityID">Given ID of the entity</param>
+void ECSManager::RemoveCollisionComp(const int pEntityID)
+{
+	Entity* entity = &mEntities[pEntityID];
+
+	//Checks if entity actually owns a component of this type
+	if ((entity->componentMask & ComponentType::COMPONENT_COLLISION) == ComponentType::COMPONENT_COLLISION)
+	{
+		//Add slot in collision array to free list
+		mCollisionFreeList.push_back(mCollisionEntityMap[pEntityID]);
+
+		//Update mask and reassign entity
+		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_COLLISION; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 		ReAssignEntity(*entity);
 	}
 }
@@ -609,14 +835,8 @@ void ECSManager::RemoveColourComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((entity->componentMask & ComponentType::COMPONENT_COLOUR) == ComponentType::COMPONENT_COLOUR)
 	{
-		//Replace with back element
-		mColours[mColourEntityMap[pEntityID]] = mColours.back();
-
-		//Set index in map to new index
-		mColourEntityMap[mColours.size() - 1] = mColourEntityMap[pEntityID];
-
-		//Pop back
-		mColours.pop_back();
+		//Add slot in colour array to free list
+		mColourFreeList.push_back(mColourEntityMap[pEntityID]);
 
 		//Update mask and reassign entity
 		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_COLOUR; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
@@ -636,14 +856,8 @@ void ECSManager::RemoveGeometryComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((entity->componentMask & ComponentType::COMPONENT_GEOMETRY) == ComponentType::COMPONENT_GEOMETRY)
 	{
-		//Replace with back element
-		mGeometries[mGeometryEntityMap[pEntityID]] = mGeometries.back();
-
-		//Set index in map to new index
-		mGeometryEntityMap[mGeometries.size() - 1] = mGeometryEntityMap[pEntityID];
-
-		//Pop back
-		mGeometries.pop_back();
+		//Add slot in geometry array to free list
+		mGeometryFreeList.push_back(mGeometryEntityMap[pEntityID]);
 
 		//Update mask and reassign entity
 		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_GEOMETRY; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
@@ -662,14 +876,8 @@ void ECSManager::RemoveGravityComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((entity->componentMask & ComponentType::COMPONENT_GRAVITY) == ComponentType::COMPONENT_GRAVITY)
 	{
-		//Replace with back element
-		mGravities[mGravityEntityMap[pEntityID]] = mGravities.back();
-
-		//Set index in map to new index
-		mGravityEntityMap[mGravities.size() - 1] = mGravityEntityMap[pEntityID];
-
-		//Pop back
-		mGravities.pop_back();
+		//Add slot in gravity array to free list
+		mGravityFreeList.push_back(mGravityEntityMap[pEntityID]);
 
 		//Update mask and reassign entity
 		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_GRAVITY; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
@@ -689,14 +897,8 @@ void ECSManager::RemoveLightComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((entity->componentMask & ComponentType::COMPONENT_LIGHT) == ComponentType::COMPONENT_LIGHT)
 	{
-		//Replace with back element
-		mLights[mLightEntityMap[pEntityID]] = mLights.back();
-
-		//Set index in map to new index
-		mLightEntityMap[mLights.size() - 1] = mLightEntityMap[pEntityID];
-
-		//Pop back
-		mLights.pop_back();
+		//Add slot in light array to free list
+		mLightFreeList.push_back(mLightEntityMap[pEntityID]);
 
 		//Update mask and reassign entity
 		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_LIGHT; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
@@ -715,14 +917,8 @@ void ECSManager::RemoveRayComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((entity->componentMask & ComponentType::COMPONENT_RAY) == ComponentType::COMPONENT_RAY)
 	{
-		//Replace with back element
-		mRays[mRayEntityMap[pEntityID]] = mRays.back();
-
-		//Set index in map to new index
-		mRayEntityMap[mRays.size() - 1] = mRayEntityMap[pEntityID];
-
-		//Pop back
-		mRays.pop_back();
+		//Add slot in ray array to free list
+		mRayFreeList.push_back(mRayEntityMap[pEntityID]);
 
 		//Update mask and reassign entity
 		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_RAY; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
@@ -742,14 +938,8 @@ void ECSManager::RemoveShaderComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((entity->componentMask & ComponentType::COMPONENT_SHADER) == ComponentType::COMPONENT_SHADER)
 	{
-		//Replace with back element
-		mShaders[mShaderEntityMap[pEntityID]] = mShaders.back();
-
-		//Set index in map to new index
-		mShaderEntityMap[mShaders.size() - 1] = mShaderEntityMap[pEntityID];
-
-		//Pop back
-		mShaders.pop_back();
+		//Add slot in shader array to free list
+		mShaderFreeList.push_back(mShaderEntityMap[pEntityID]);
 
 		//Update mask and reassign entity
 		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_SHADER; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
@@ -768,14 +958,8 @@ void ECSManager::RemoveSphereColliderComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((entity->componentMask & ComponentType::COMPONENT_SPHERECOLLIDER) == ComponentType::COMPONENT_SPHERECOLLIDER)
 	{
-		//Replace with back element
-		mSphereColliders[mSphereColliderEntityMap[pEntityID]] = mSphereColliders.back();
-
-		//Set index in map to new index
-		mSphereColliderEntityMap[mSphereColliders.size() - 1] = mSphereColliderEntityMap[pEntityID];
-
-		//Pop back
-		mSphereColliders.pop_back();
+		//Add slot in sphere collider array to free list
+		mSphereColliderFreeList.push_back(mSphereColliderEntityMap[pEntityID]);
 
 		//Update mask and reassign entity
 		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_SPHERECOLLIDER; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
@@ -794,14 +978,8 @@ void ECSManager::RemoveTextureComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((entity->componentMask & ComponentType::COMPONENT_TEXTURE) == ComponentType::COMPONENT_TEXTURE)
 	{
-		//Replace with back element
-		mTextures[mTextureEntityMap[pEntityID]] = mTextures.back();
-
-		//Set index in map to new index
-		mTextureEntityMap[mTextures.size() - 1] = mTextureEntityMap[pEntityID];
-
-		//Pop back
-		mTextures.pop_back();
+		//Add slot in texture array to free list
+		mTextureFreeList.push_back(mTextureEntityMap[pEntityID]);
 
 		//Update mask and reassign entity
 		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_TEXTURE; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
@@ -821,14 +999,8 @@ void ECSManager::RemoveTransformComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((entity->componentMask & ComponentType::COMPONENT_TRANSFORM) == ComponentType::COMPONENT_TRANSFORM)
 	{
-		//Replace with back element
-		mTransforms[mTransformEntityMap[pEntityID]] = mTransforms.back();
-
-		//Set index in map to new index
-		mTransformEntityMap[mTransforms.size() - 1] = mTransformEntityMap[pEntityID];
-
-		//Pop back
-		mTransforms.pop_back();
+		//Add slot in transform array to free list
+		mTransformFreeList.push_back(mTransformEntityMap[pEntityID]);
 
 		//Update mask and reassign entity
 		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_TRANSFORM; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
@@ -847,14 +1019,8 @@ void ECSManager::RemoveVelocityComp(const int pEntityID)
 	//Checks if entity actually owns a component of this type
 	if ((entity->componentMask & ComponentType::COMPONENT_VELOCITY) == ComponentType::COMPONENT_VELOCITY)
 	{
-		//Replace with back element
-		mVelocities[mVelocityEntityMap[pEntityID]] = mVelocities.back();
-
-		//Set index in map to new index
-		mVelocityEntityMap[mVelocities.size() - 1] = mVelocityEntityMap[pEntityID];
-
-		//Pop back
-		mVelocities.pop_back();
+		//Add slot in velocity array to free list
+		mVelocityFreeList.push_back(mVelocityEntityMap[pEntityID]);
 
 		//Update mask and reassign entity
 		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_VELOCITY; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
@@ -918,6 +1084,21 @@ Camera * const ECSManager::CameraComp(const int pEntityID)
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_CAMERA) == ComponentType::COMPONENT_CAMERA)
 	{
 		return &mCameras[mCameraEntityMap[pEntityID]];
+	}
+	return nullptr;
+}
+
+/// <summary>
+/// Returns a modifiable handle to the Collision component associated with the given entity ID
+/// </summary>
+/// <param name="pEntityID">Given entity ID</param>
+/// <returns>Modifiable handle to Collision component</returns>
+Collision * const ECSManager::CollisionComp(const int pEntityID)
+{
+	//Checks if entity actually owns a component of this type
+	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_COLLISION) == ComponentType::COMPONENT_COLLISION)
+	{
+		return &mCollisions[mCollisionEntityMap[pEntityID]];
 	}
 	return nullptr;
 }
