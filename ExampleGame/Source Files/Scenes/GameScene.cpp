@@ -96,6 +96,11 @@ void GameScene::OnLoad()
 	mEcsManager->AddGeometryComp(geo, mPlayer);
 	Shader shader{ L"defaultShader.fx" , BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
 	mEcsManager->AddShaderComp(shader, mPlayer);
+	Texture texture{};
+	texture.diffuse = L"TextureBump.png";
+	texture.normal = L"BrickNorm.jpg";
+	mEcsManager->AddTextureComp(texture, mPlayer);
+
 	Transform transC{};
 	transC.scale = Vector4(1, 1, 1, 1);
 	mEcsManager->AddTransformComp(transC, mPlayer);
