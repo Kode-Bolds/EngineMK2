@@ -3,7 +3,7 @@
 #include "ECSManager.h"
 #include "wrl.h"
 #include "VBO.h"
-#include "AntTweakManager.h"
+#include "GUIManager.h"
 #include "ResourceManager.h"
 #include "Vector4.h"
 #include "Components.h"
@@ -13,7 +13,7 @@ class RenderSystem : public ISystem
 protected:
 	RenderSystem(const std::vector<int>& pMasks);
 
-	std::shared_ptr<AntTweakManager> mAntTweakManager = AntTweakManager::Instance();
+	std::shared_ptr<GUIManager> mGUIManager = GUIManager::Instance();
 	std::shared_ptr<ECSManager> mEcsManager = ECSManager::Instance();
 	std::shared_ptr<ResourceManager>  mResourceManager = ResourceManager::Instance();
 

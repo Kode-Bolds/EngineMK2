@@ -92,4 +92,9 @@
       <Filter>Header Files\GameClasses</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="crosshair.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>
