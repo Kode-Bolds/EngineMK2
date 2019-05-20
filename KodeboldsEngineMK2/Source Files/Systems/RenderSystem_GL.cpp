@@ -48,7 +48,7 @@ HRESULT RenderSystem_GL::Init()
 	if (FAILED(hr))
 		return hr;
 
-	//mAntTweakManager->Init(TW_DIRECT3D11, mDevice.Get(), mWidth, height);
+	//mGUIManager->Init(TW_DIRECT3D11, mDevice.Get(), mWidth, height);
 
 	hr = CreateSwapChain();
 	if (FAILED(hr))
@@ -180,7 +180,7 @@ HRESULT RenderSystem_GL::CreateConstantBuffers()
 /// </summary>
 void RenderSystem_GL::Cleanup()
 {
-	mAntTweakManager->Cleanup();
+	mGUIManager->Cleanup();
 }
 
 /// <summary>
@@ -315,7 +315,7 @@ void RenderSystem_GL::Process()
 		}
 	}
 
-	mAntTweakManager->Draw();
+	mGUIManager->Draw();
 
 	SwapBuffers();
 }

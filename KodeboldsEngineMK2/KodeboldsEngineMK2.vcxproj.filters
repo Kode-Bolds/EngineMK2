@@ -49,9 +49,6 @@
     <ClCompile Include="Source Files\KodeboldsMath\Vector3.cpp">
       <Filter>Source Files\KodeBoldsMath</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\Managers\AntTweakManager.cpp">
-      <Filter>Source Files\Managers</Filter>
-    </ClCompile>
     <ClCompile Include="Source Files\Managers\InputManager_DX.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
@@ -84,6 +81,9 @@
     </ClCompile>
     <ClCompile Include="Source Files\Systems\CollisionCheckSystem.cpp">
       <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Managers\GUIManager.cpp">
+      <Filter>Source Files\Managers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -213,9 +213,6 @@
     <ClInclude Include="Header Files\KodeboldsMath\Vector3.h">
       <Filter>Header Files\KodeboldsMath</Filter>
     </ClInclude>
-    <ClInclude Include="Header Files\Managers\AntTweakManager.h">
-      <Filter>Header Files\Managers</Filter>
-    </ClInclude>
     <ClInclude Include="Header Files\Managers\InputManager_DX.h">
       <Filter>Header Files\Managers</Filter>
     </ClInclude>
@@ -263,6 +260,16 @@
     </ClInclude>
     <ClInclude Include="Header Files\Components\Collision.h">
       <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\RenderStates.h" />
+    <ClInclude Include="Header Files\Managers\GUIManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\Sprite.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\Text.h">
+      <Filter>Header Files\HelperClasses</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\Components\RenderStates.h" />
     <ClInclude Include="Header Files\DataStructs\CollisionMask.h">

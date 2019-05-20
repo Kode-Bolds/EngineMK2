@@ -36,7 +36,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	std::shared_ptr<SceneManager> sceneManager = SceneManager::Instance();
 	std::shared_ptr<ThreadManager> threadManager = ThreadManager::Instance();
 	std::shared_ptr<NetworkManager> networkManager = NetworkManager::Instance();
-	std::shared_ptr<AntTweakManager> anttweakManager = AntTweakManager::Instance();
+	std::shared_ptr<GUIManager> guiManager = GUIManager::Instance();
 
 	//Initialise winsock
 	networkManager->InitWinSock(9171);
@@ -60,7 +60,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 
 	//Create camera
 	int entityID = ecsManager->CreateEntity();
-	Camera cam{Vector4(0, 0, 1, 1), Vector4(0, 1, 0, 1), 60, 1, 200};
+	Camera cam{ Vector4(0, 0, 1, 1), Vector4(0, 1, 0, 1), 60, 1, 200 };
 	ecsManager->AddCameraComp(cam, entityID);
 	Transform trans{};
 	trans.translation = Vector4(0, 0, -100, 1);
@@ -68,11 +68,40 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 
 	//Create light
 	entityID = ecsManager->CreateEntity();
-	Light light{Vector4(1, 1, 1, 1)};
+	Light light{ Vector4(1, 1, 1, 1) };
 	ecsManager->AddLightComp(light, entityID);
 	Transform transL{};
 	transL.translation = Vector4(0, -20, -10, 1);
 	ecsManager->AddTransformComp(transL, entityID);
+
+
+	// Testing Sprite Loading (GUI)
+	//Vector2 catPosition = Vector2(100,100);
+	//Vector2 catOrigin = Vector2(0,0);
+	//GUIManager->LoadSprite(L"cat.png", catOrigin, catPosition, 1.5f, 3.0f);
+
+	// Testing new enum for centering sprite positions
+	//Vector2 catOrigin = Vector2(0, 0);
+	//GUIManager->LoadSprite(L"cat.png", catOrigin, GUIManager::SpritePosition::CENTRE_TOP, 1.5f, 1.0f);
+	//GUIManager->LoadSprite(L"cat.png", catOrigin, GUIManager::SpritePosition::CENTRE_MIDDLE, 1.5f, 1.0f);
+	//GUIManager->LoadSprite(L"cat.png", catOrigin, GUIManager::SpritePosition::CENTRE_BOTTOM, 1.5f, 1.0f);
+
+	// Testing new enum for centering sprite origins
+	//Vector2 catPosition = Vector2(0,0);
+	//GUIManager->LoadSprite(L"cat.png", GUIManager::SpriteOrigin::CENTRE, catPosition, 1.5f, 1.0f);
+
+	// Testing both enums for centering sprite origins and positions
+	guiManager->LoadSprite(L"crosshair.png", GUIManager::SpriteOrigin::CENTRE, GUIManager::SpritePosition::CENTRE_MIDDLE, 0.0f, 0.05f);
+
+
+	// Testing Fonts
+	guiManager->Write(L"Hello Tony!", Vector2(100, 100), L"CourierNew.spritefont", 1.0f);
+	guiManager->Write(L"Hello Dean!", Vector2(100, 200), L"CourierNew.spritefont", 1.0f);
+	guiManager->Write(L"Hello Jake!", Vector2(100, 300), L"CourierNew.spritefont", 1.0f);
+	guiManager->Write(L"Hello Kris!", Vector2(100, 400), L"CourierNew.spritefont", 1.0f);
+	guiManager->Write(L"Hello Axel!", Vector2(100, 500), L"CourierNew.spritefont", 1.0f);
+
+
 
 
 	//Testing custom components
