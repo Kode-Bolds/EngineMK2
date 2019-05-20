@@ -575,6 +575,11 @@ void RenderSystem_DX::Process()
 {
 	ClearView();
 
+	//mGUIManager->Render();
+	//mGUIManager->RenderText();
+
+	//mGUIManager->Draw(); // anttweak
+
 
 	if (mActiveCamera)
 	{
@@ -584,10 +589,6 @@ void RenderSystem_DX::Process()
 	{
 		SetLights();
 	}
-
-
-	//mGUIManager->Render();
-	//mGUIManager->RenderText();
 
 	for (const Entity& entity : mEntities)
 	{
@@ -678,10 +679,6 @@ void RenderSystem_DX::Process()
 			mGeometry->Draw(this);
 		}
 	}
-
-
-	
-	mGUIManager->Draw();
 
 	SwapBuffers();
 }
