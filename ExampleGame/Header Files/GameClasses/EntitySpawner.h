@@ -32,6 +32,10 @@ namespace EntitySpawner
 		trans.translation = pPosition;
 		entitySpawnerEcsManager->AddTransformComp(trans, ID);
 
+		Texture tex{};
+		entitySpawnerEcsManager->AddTextureComp(tex, ID);
+
+
 		//Velocity component
 		Velocity vel{ pAcceleration, KodeboldsMath::Vector4(), pMaxSpeed };
 		entitySpawnerEcsManager->AddVelocityComp(vel, ID);

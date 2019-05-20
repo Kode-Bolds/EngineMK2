@@ -575,8 +575,6 @@ void RenderSystem_DX::Process()
 {
 	ClearView();
 
-	mGUIManager->Render();
-	mGUIManager->RenderText();
 
 	if (mActiveCamera)
 	{
@@ -586,6 +584,10 @@ void RenderSystem_DX::Process()
 	{
 		SetLights();
 	}
+
+
+	//mGUIManager->Render();
+	//mGUIManager->RenderText();
 
 	for (const Entity& entity : mEntities)
 	{
@@ -677,6 +679,8 @@ void RenderSystem_DX::Process()
 		}
 	}
 
+
+	
 	mGUIManager->Draw();
 
 	SwapBuffers();
