@@ -5,8 +5,8 @@
 #include "InputManager_DX.h"
 #include "InputManager_GL.h"
 #include "SceneManager.h"
-#include "GUIManager.h"
 #include "EntitySpawner.h"
+#include "GUIManager.h"
 
 class GameScene : public Scene
 {

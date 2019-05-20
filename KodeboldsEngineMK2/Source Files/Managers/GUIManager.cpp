@@ -112,10 +112,9 @@ void GUIManager::InititialiseGUI(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 }
 void GUIManager::Render()
 {
-
 	mSpriteBatch->Begin(DirectX::SpriteSortMode_Deferred, m_states->NonPremultiplied());
 
-	//mResourceManager->mSprites.at(0).second.mPosition.x += 1;
+	mResourceManager->mSprites.at(0).second.mPosition.x += 1;
 
 	for (int i = 0; i < mResourceManager->mSprites.size(); i++)
 	{
@@ -123,9 +122,24 @@ void GUIManager::Render()
 		mSpriteBatch->Draw(sprite.mTexture.Get(), sprite.mPosition, nullptr, DirectX::Colors::White, sprite.mRotation, sprite.mOrigin, sprite.mScale);
 	}
 
-
 	mSpriteBatch->End();
-	mResourceManager->mSprites.clear();
+
+	//mResourceManager->mSprites.clear();
+}
+
+void GUIManager::RenderText()
+{
+	mSpriteBatch->Begin();
+	for (int i = 0; i < mTexts.size(); i++)
+	{
+		DirectX::XMVECTOR origin = DirectX::XMVectorSet(mTexts[i].mOrigin.x, mTexts[i].mOrigin.y, 0, 0);// mFonts[0]->MeasureString(pText);
+		DirectX::XMVECTOR position = DirectX::XMVectorSet(mTexts[i].mPosition.x, mTexts[i].mPosition.y, 0, 0);
+
+		mFonts[i]->DrawString(mSpriteBatch.get(), mTexts[i].mText, position, DirectX::Colors::White, 0.0f, origin, 1.0f);
+	}
+	mSpriteBatch->End();
+
+
 }
 void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, float pRotation, float pScale)
 {
@@ -295,24 +309,9 @@ void GUIManager::Write(const wchar_t* pText, KodeboldsMath::Vector2 pPosition, c
 	Text text;
 	text.mText = pText;
 	text.mPosition = DirectX::XMFLOAT2(pPosition.X, pPosition.Y);
-	text.mOrigin = DirectX::XMFLOAT2(0,0);
+	text.mOrigin = DirectX::XMFLOAT2(0, 0);
 	text.mScale = pScale;
 
 	mTexts.emplace_back(text);
 }
 
-void GUIManager::RenderText()
-{
-	mSpriteBatch->Begin();
-
-	for (int i = 0; i < mTexts.size(); i++)
-	{
-		DirectX::XMVECTOR origin = DirectX::XMVectorSet(mTexts[i].mOrigin.x, mTexts[i].mOrigin.y, 0, 0);// mFonts[0]->MeasureString(pText);
-		DirectX::XMVECTOR position = DirectX::XMVectorSet(mTexts[i].mPosition.x, mTexts[i].mPosition.y, 0, 0);
-
-		mFonts[i]->DrawString(mSpriteBatch.get(), mTexts[i].mText, position, DirectX::Colors::White, 0.0f, origin, 1.0f);
-	}
-
-	mSpriteBatch->End();
-
-}
