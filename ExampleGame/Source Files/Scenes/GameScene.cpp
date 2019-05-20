@@ -90,6 +90,7 @@ void GameScene::Update()
 		mPlayerSpeed /= 2;
 	}
 
+	//
 	if (mInputManager->KeyDown(KEYS::MOUSE_BUTTON_LEFT))
 	{
 		Vector4 leftLaser = mEcsManager->TransformComp(mPlayer)->translation + Vector4(-25, 5, 0, 0);
@@ -100,8 +101,6 @@ void GameScene::Update()
 		SpawnLaser(rightLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(0, 0, 20, 1), 40,
 			rightLaser.XYZ() - Vector3(1, 1, 1), rightLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER);
 	}
-
-	int i = 0;
 }
 
 /// <summary>
