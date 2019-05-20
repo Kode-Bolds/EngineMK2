@@ -1,93 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Source Files\Managers\ECSManager.cpp">
-      <Filter>Source Files\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Managers\InputManager.cpp">
-      <Filter>Source Files\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\HelperClasses\ObjLoader.cpp">
-      <Filter>Source Files\HelperClasses</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Managers\ResourceManager.cpp">
-      <Filter>Source Files\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Managers\SceneManager.cpp">
-      <Filter>Source Files\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Systems\MovementSystem.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\KodeBoldsMath\Matrix4.cpp">
-      <Filter>Source Files\KodeBoldsMath</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\KodeBoldsMath\Vector4.cpp">
-      <Filter>Source Files\KodeBoldsMath</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\HelperClasses\VBO_DX.cpp">
-      <Filter>Source Files\HelperClasses</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\HelperClasses\VBO.cpp">
-      <Filter>Source Files\HelperClasses</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\HelperClasses\TextureObject_DX.cpp">
-      <Filter>Source Files\HelperClasses</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\HelperClasses\ShaderObject_DX.cpp">
-      <Filter>Source Files\HelperClasses</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Systems\RenderSystem_DX.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Systems\RenderSystem.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\KodeboldsMath\Vector2.cpp">
-      <Filter>Source Files\KodeBoldsMath</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\KodeboldsMath\Vector3.cpp">
-      <Filter>Source Files\KodeBoldsMath</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Managers\InputManager_DX.cpp">
-      <Filter>Source Files\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Managers\InputManager_GL.cpp">
-      <Filter>Source Files\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Managers\NetworkManager.cpp">
-      <Filter>Source Files\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Managers\ThreadManager.cpp">
-      <Filter>Source Files\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Systems\RenderSystem_GL.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\HelperClasses\ShaderObject_GL.cpp">
-      <Filter>Source Files\HelperClasses</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\HelperClasses\Task.cpp">
-      <Filter>Source Files\HelperClasses</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\HelperClasses\TextureObject_GL.cpp">
-      <Filter>Source Files\HelperClasses</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\HelperClasses\Thread.cpp">
-      <Filter>Source Files\HelperClasses</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\HelperClasses\VBO_GL.cpp">
-      <Filter>Source Files\HelperClasses</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Systems\CollisionCheckSystem.cpp">
-      <Filter>Source Files\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Managers\GUIManager.cpp">
-      <Filter>Source Files\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Managers\AudioManager.cpp">
-      <Filter>Source Files\Managers</Filter>
-    </ClCompile>
+    <ClCompile Include="Source Files\HelperClasses\ObjLoader.cpp" />
+    <ClCompile Include="Source Files\HelperClasses\ShaderObject_GL.cpp" />
+    <ClCompile Include="Source Files\HelperClasses\Task.cpp" />
+    <ClCompile Include="Source Files\HelperClasses\TextureObject_GL.cpp" />
+    <ClCompile Include="Source Files\HelperClasses\Thread.cpp" />
+    <ClCompile Include="Source Files\HelperClasses\VBO.cpp" />
+    <ClCompile Include="Source Files\HelperClasses\VBO_DX.cpp" />
+    <ClCompile Include="Source Files\HelperClasses\ShaderObject_DX.cpp" />
+    <ClCompile Include="Source Files\HelperClasses\TextureObject_DX.cpp" />
+    <ClCompile Include="Source Files\HelperClasses\VBO_GL.cpp" />
+    <ClCompile Include="Source Files\KodeBoldsMath\Matrix4.cpp" />
+    <ClCompile Include="Source Files\KodeboldsMath\Vector2.cpp" />
+    <ClCompile Include="Source Files\KodeboldsMath\Vector3.cpp" />
+    <ClCompile Include="Source Files\KodeBoldsMath\Vector4.cpp" />
+    <ClCompile Include="Source Files\Managers\AudioManager.cpp" />
+    <ClCompile Include="Source Files\Managers\GUIManager.cpp" />
+    <ClCompile Include="Source Files\Managers\ECSManager.cpp" />
+    <ClCompile Include="Source Files\Managers\InputManager.cpp" />
+    <ClCompile Include="Source Files\Managers\InputManager_DX.cpp" />
+    <ClCompile Include="Source Files\Managers\InputManager_GL.cpp" />
+    <ClCompile Include="Source Files\Managers\NetworkManager.cpp" />
+    <ClCompile Include="Source Files\Managers\ResourceManager.cpp" />
+    <ClCompile Include="Source Files\Managers\SceneManager.cpp" />
+    <ClCompile Include="Source Files\Managers\ThreadManager.cpp" />
+    <ClCompile Include="Source Files\Systems\CollisionCheckSystem.cpp" />
+    <ClCompile Include="Source Files\Systems\MovementSystem.cpp" />
+    <ClCompile Include="Source Files\Systems\RenderSystem_DX.cpp" />
+    <ClCompile Include="Source Files\Systems\RenderSystem.cpp" />
+    <ClCompile Include="Source Files\Systems\RenderSystem_GL.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\Components\AI.h">

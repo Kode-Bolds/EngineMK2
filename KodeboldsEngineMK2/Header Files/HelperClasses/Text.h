@@ -9,4 +9,6 @@ public:
 	DirectX::XMFLOAT2 mPosition;
 	DirectX::XMFLOAT2 mOrigin;
 	float mScale;
+	float mRotation;
+	DirectX::XMFLOAT4 mColour;
 };

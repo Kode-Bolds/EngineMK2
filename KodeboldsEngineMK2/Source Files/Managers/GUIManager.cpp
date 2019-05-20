@@ -112,7 +112,8 @@ void GUIManager::InititialiseGUI(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 }
 void GUIManager::Render()
 {
-	mSpriteBatch->Begin(DirectX::SpriteSortMode_Deferred, m_states->NonPremultiplied());
+
+	mSpriteBatch->Begin(DirectX::SpriteSortMode_Deferred, m_states->NonPremultiplied(), nullptr, nullptr, nullptr, nullptr);
 
 	mResourceManager->mSprites.at(0).second.mPosition.x += 1;
 
@@ -123,29 +124,28 @@ void GUIManager::Render()
 	}
 
 	mSpriteBatch->End();
-
-	//mResourceManager->mSprites.clear();
 }
 
 void GUIManager::RenderText()
 {
-	mSpriteBatch->Begin();
+	mSpriteBatch->Begin(DirectX::SpriteSortMode_Deferred, m_states->NonPremultiplied(), nullptr, nullptr, nullptr, nullptr);
 	for (int i = 0; i < mTexts.size(); i++)
 	{
 		DirectX::XMVECTOR origin = DirectX::XMVectorSet(mTexts[i].mOrigin.x, mTexts[i].mOrigin.y, 0, 0);// mFonts[0]->MeasureString(pText);
 		DirectX::XMVECTOR position = DirectX::XMVectorSet(mTexts[i].mPosition.x, mTexts[i].mPosition.y, 0, 0);
+		DirectX::XMVECTOR colour = DirectX::XMVectorSet(mTexts[i].mColour.x, mTexts[i].mColour.y, mTexts[i].mColour.z, mTexts[i].mColour.w);
 
-		mFonts[i]->DrawString(mSpriteBatch.get(), mTexts[i].mText, position, DirectX::Colors::White, 0.0f, origin, 1.0f);
+		mFonts[i]->DrawString(mSpriteBatch.get(), mTexts[i].mText, position, colour, mTexts[i].mRotation, origin, 1.0f);
 	}
 	mSpriteBatch->End();
 
 
 }
-void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, float pRotation, float pScale)
+void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale)
 {
 	Sprite sprite;
 	sprite.mOrigin = DirectX::XMFLOAT2(pOrigin.X, pOrigin.Y);
-	sprite.mPosition = DirectX::XMFLOAT2(pPosition.X, pPosition.Y);
+	sprite.mPosition = DirectX::XMFLOAT2(pPosition.X + pPadding.X, pPosition.Y + pPadding.Y);
 	sprite.mRotation = pRotation;
 	sprite.mScale = pScale;
 
@@ -169,34 +169,34 @@ void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOr
 	mResourceManager->mSprites.back().second.mHeight = desc.Height;
 }
 
-void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, SpritePosition pPosition, float pRotation, float pScale)
+void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, SpritePosition pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale)
 {
 	KodeboldsMath::Vector2 position;
 
 	switch (pPosition)
 	{
 	case SpritePosition::CENTRE_TOP:
-		position.X = mDeviceWidth / 2.0f;
-		position.Y = 0;
+		position.X = (mDeviceWidth / 2.0f) + pPadding.X;
+		position.Y = 0 + pPadding.Y;
 		break;
 	case SpritePosition::CENTRE_MIDDLE:
-		position.X = mDeviceWidth / 2.0f;
-		position.Y = mDeviceHeight / 2.0f;
+		position.X = (mDeviceWidth / 2.0f) + pPadding.X;
+		position.Y = (mDeviceHeight / 2.0f) + pPadding.Y;
 		break;
 	case SpritePosition::CENTRE_BOTTOM:
-		position.X = mDeviceWidth / 2.0f;
-		position.Y = mDeviceHeight;
+		position.X = (mDeviceWidth / 2.0f) + pPadding.X;
+		position.Y = mDeviceHeight + pPadding.Y;
 		break;
 	}
 
-	LoadSprite(pFileName, pOrigin, position, pRotation, pScale);
+	LoadSprite(pFileName, pOrigin, position, pPadding, pRotation, pScale);
 }
 
-void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, KodeboldsMath::Vector2 pPosition, float pRotation, float pScale)
+void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale)
 {
 	Sprite sprite;
 	sprite.mOrigin = DirectX::XMFLOAT2(0, 0);
-	sprite.mPosition = DirectX::XMFLOAT2(pPosition.X, pPosition.Y);
+	sprite.mPosition = DirectX::XMFLOAT2(pPosition.X + pPadding.X, pPosition.Y + pPadding.Y);
 	sprite.mRotation = pRotation;
 	sprite.mScale = pScale;
 
@@ -232,11 +232,9 @@ void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, Kode
 	mResourceManager->mSprites.back().second.mOrigin = DirectX::XMFLOAT2(origin.X, origin.Y);
 }
 
-void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, SpritePosition pPosition, float pRotation, float pScale)
+void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, SpritePosition pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale)
 {
 	Sprite sprite;
-	sprite.mOrigin = DirectX::XMFLOAT2(0, 0);
-	sprite.mPosition = DirectX::XMFLOAT2(0, 0);
 	sprite.mRotation = pRotation;
 	sprite.mScale = pScale;
 
@@ -276,16 +274,16 @@ void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, Spri
 	switch (pPosition)
 	{
 	case SpritePosition::CENTRE_TOP:
-		position.X = mDeviceWidth / 2.0f;
-		position.Y = 0;
+		position.X = (mDeviceWidth / 2.0f) + pPadding.X;
+		position.Y = 0 + pPadding.Y;
 		break;
 	case SpritePosition::CENTRE_MIDDLE:
-		position.X = mDeviceWidth / 2.0f;
-		position.Y = mDeviceHeight / 2.0f;
+		position.X = (mDeviceWidth / 2.0f) + pPadding.X;
+		position.Y = (mDeviceHeight / 2.0f) + pPadding.Y;
 		break;
 	case SpritePosition::CENTRE_BOTTOM:
-		position.X = mDeviceWidth / 2.0f;
-		position.Y = mDeviceHeight;
+		position.X = (mDeviceWidth / 2.0f) + pPadding.X;
+		position.Y = mDeviceHeight + pPadding.Y;
 		break;
 	}
 
@@ -297,7 +295,7 @@ void GUIManager::LoadFont(const wchar_t* pFontName)
 	mFonts.push_back(std::make_unique<DirectX::SpriteFont>(mDevice.Get(), pFontName));
 }
 
-void GUIManager::Write(const wchar_t* pText, KodeboldsMath::Vector2 pPosition, const wchar_t* pFontName, float pScale)
+void GUIManager::Write(const wchar_t* pText, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, const wchar_t* pFontName, float pRotation, float pScale, KodeboldsMath::Vector4 pColour)
 {
 	// TODO:
 	// check if font has already been loaded
@@ -308,9 +306,112 @@ void GUIManager::Write(const wchar_t* pText, KodeboldsMath::Vector2 pPosition, c
 
 	Text text;
 	text.mText = pText;
-	text.mPosition = DirectX::XMFLOAT2(pPosition.X, pPosition.Y);
-	text.mOrigin = DirectX::XMFLOAT2(0, 0);
+	text.mPosition = DirectX::XMFLOAT2(pPosition.X + pPadding.X, pPosition.Y + pPadding.Y);
+	text.mOrigin = DirectX::XMFLOAT2(pOrigin.X, pOrigin.Y);
 	text.mScale = pScale;
+	text.mRotation = pRotation;
+	text.mColour = DirectX::XMFLOAT4(pColour.X, pColour.Y, pColour.Z, pColour.W);
+
+	mTexts.emplace_back(text);
+}
+
+void GUIManager::Write(const wchar_t* pText, KodeboldsMath::Vector2 pOrigin, TextPosition pPosition, KodeboldsMath::Vector2 pPadding, const wchar_t* pFontName, float pRotation, float pScale, KodeboldsMath::Vector4 pColour)
+{
+	KodeboldsMath::Vector2 position;
+
+	switch (pPosition)
+	{
+	case TextPosition::CENTRE_TOP:
+		position.X = (mDeviceWidth / 2.0f) + pPadding.X;
+		position.Y = 0 + pPadding.Y;
+		break;
+	case TextPosition::CENTRE_MIDDLE:
+		position.X = (mDeviceWidth / 2.0f) + pPadding.X;
+		position.Y = (mDeviceHeight / 2.0f) + pPadding.Y;
+		break;
+	case TextPosition::CENTRE_BOTTOM:
+		position.X = (mDeviceWidth / 2.0f) + pPadding.X;
+		position.Y = mDeviceHeight + pPadding.Y;
+		break;
+	}
+
+	Write(pText, pOrigin, position, pPadding, pFontName, pRotation, pScale, pColour);
+}
+
+void GUIManager::Write(const wchar_t* pText, TextOrigin pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, const wchar_t* pFontName, float pRotation, float pScale, KodeboldsMath::Vector4 pColour)
+{
+	// TODO:
+	// check if font has already been loaded
+	// if not - load
+	// if so = use it
+
+	LoadFont(pFontName);
+
+	Text text;
+	text.mText = pText;
+	text.mPosition = DirectX::XMFLOAT2(pPosition.X + pPadding.X, pPosition.Y + pPadding.Y);
+	text.mScale = pScale;
+	text.mRotation = pRotation;
+	text.mColour = DirectX::XMFLOAT4(pColour.X, pColour.Y, pColour.Z, pColour.W);
+
+	DirectX::XMFLOAT2 textSize;
+	auto vecTextSize = mFonts[0]->MeasureString(pText);
+	DirectX::XMStoreFloat2(&textSize, vecTextSize);
+
+	switch (pOrigin)
+	{
+	case TextOrigin::CENTRE:
+		text.mOrigin.x = float(textSize.x / 2);
+		text.mOrigin.y = float(textSize.y / 2);
+		break;
+	}
+
+	mTexts.emplace_back(text);
+}
+
+void GUIManager::Write(const wchar_t* pText, TextOrigin pOrigin, TextPosition pPosition, KodeboldsMath::Vector2 pPadding, const wchar_t* pFontName, float pRotation, float pScale, KodeboldsMath::Vector4 pColour)
+{
+	// TODO:
+	// check if font has already been loaded
+	// if not - load
+	// if so = use it
+
+	LoadFont(pFontName);
+
+	Text text;
+	text.mText = pText;
+	text.mScale = pScale;
+	text.mRotation = pRotation;
+	text.mColour = DirectX::XMFLOAT4(pColour.X, pColour.Y, pColour.Z, pColour.W);
+
+	switch (pPosition)
+	{
+	case TextPosition::CENTRE_TOP:
+		text.mPosition.x = (mDeviceWidth / 2.0f) + pPadding.X;
+		text.mPosition.y = 0 + pPadding.Y;
+		break;
+	case TextPosition::CENTRE_MIDDLE:
+		text.mPosition.x = (mDeviceWidth / 2.0f) + pPadding.X;
+		text.mPosition.y = (mDeviceHeight / 2.0f) + pPadding.Y;
+		break;
+	case TextPosition::CENTRE_BOTTOM:
+		text.mPosition.x = (mDeviceWidth / 2.0f) + pPadding.X;
+		text.mPosition.y = mDeviceHeight + pPadding.Y;
+		break;
+	}
+
+	// origin
+	DirectX::XMFLOAT2 textSize;
+	auto vecTextSize = mFonts[0]->MeasureString(pText);
+	DirectX::XMStoreFloat2(&textSize, vecTextSize);
+
+	switch (pOrigin)
+	{
+	case TextOrigin::CENTRE:
+		text.mOrigin.x = float(textSize.x / 2);
+		text.mOrigin.y = float(textSize.y / 2);
+		break;
+	}
 
 	mTexts.emplace_back(text);
 }

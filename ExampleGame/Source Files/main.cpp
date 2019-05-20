@@ -83,17 +83,20 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	//GUIManager->LoadSprite(L"cat.png", GUIManager::SpriteOrigin::CENTRE, catPosition, 1.5f, 1.0f);
 
 	// Testing both enums for centering sprite origins and positions
-	guiManager->LoadSprite(L"crosshair.png", GUIManager::SpriteOrigin::CENTRE, GUIManager::SpritePosition::CENTRE_MIDDLE, 0.0f, 0.05f);
+	guiManager->LoadSprite(L"crosshair.png", GUIManager::SpriteOrigin::CENTRE, GUIManager::SpritePosition::CENTRE_MIDDLE, Vector2(0, 0), 0.0f, 0.05f);
 
 
 	// Testing Fonts
-	guiManager->Write(L"Hello Tony!", Vector2(100, 100), L"CourierNew.spritefont", 1.0f);
-	guiManager->Write(L"Hello Dean!", Vector2(100, 200), L"CourierNew.spritefont", 1.0f);
-	guiManager->Write(L"Hello Jake!", Vector2(100, 300), L"CourierNew.spritefont", 1.0f);
-	guiManager->Write(L"Hello Kris!", Vector2(100, 400), L"CourierNew.spritefont", 1.0f);
-	guiManager->Write(L"Hello Axel!", Vector2(100, 500), L"CourierNew.spritefont", 1.0f);
+	guiManager->Write(L"Hello Tony!", Vector2(0, 0), Vector2(300, 100), Vector2(0, 0), L"CourierNew.spritefont", 1.0f, 1.0f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 
-	
+	guiManager->Write(L"Hello Dean!", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::CENTRE_TOP, Vector2(0, 50), L"CourierNew.spritefont", 0.0f, 1.0f, Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+
+	guiManager->Write(L"Hello Jake!", GUIManager::TextOrigin::CENTRE, Vector2(150, 200), Vector2(0, 0), L"CourierNew.spritefont", 0.0f, 1.0f, Vector4(0.5f, 0.5f, 1.0f, 1.0f));
+
+	guiManager->Write(L"Hello Kris!", Vector2(0, 0), Vector2(100, 400), Vector2(0, 0), L"CourierNew.spritefont", 0.0f, 1.0f, Vector4(0.0f, 1.0f, 1.0f, 1.0f));
+	guiManager->Write(L"Hello Axel!", Vector2(0, 0), Vector2(100, 500), Vector2(0, 0), L"CourierNew.spritefont", 0.0f, 1.0f, Vector4(1.0f, 1.0f, 0.0f, 1.0f));
+
+
 
 
 	//Testing custom components
