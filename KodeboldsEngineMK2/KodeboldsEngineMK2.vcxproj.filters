@@ -276,6 +276,9 @@
     </ClInclude>
     <ClInclude Include="Header Files\Managers\AudioManager.h">
       <Filter>Header Files\Managers</Filter>
+    <ClInclude Include="Header Files\Components\RenderStates.h" />
+    <ClInclude Include="Header Files\DataStructs\CollisionMask.h">
+      <Filter>Header Files\DataStructs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,8 +1,7 @@
-#include "Managers.h"
+#include "GameScene.h"
 #include <windows.h>
 #include <memory>
 #include "Systems.h"
-#include "GameScene.h"
 #include "CustomComponents.h"
 
 #pragma comment(lib, "KodeboldsEngineMK2.lib")
@@ -123,6 +122,8 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 
 	CustomComp1* CC1Ptr = ecsManager->GetCustomComponent<CustomComp1>(entityID);
 	CustomComp2* CC2Ptr = ecsManager->GetCustomComponent<CustomComp2>(entityID);
+
+	ecsManager->DestroyEntity(entityID);
 
 	if (!ecsManager->RemoveCustomComponent<CustomComp1>(entityID))
 	{

@@ -4,5 +4,6 @@ enum class CullState
 {
 	NONE,
 	BACK,
-	FRONT
+	FRONT,
+	WIREFRAME
 };

@@ -17,7 +17,7 @@ private:
 	std::vector<OctTreeNode*> mEntityNodeMap;
 
 	void ConstructTree();
-	bool SplitRegion(OctTreeNode* const pRegion);
+	void SplitRegion(OctTreeNode* const pRegion) const;
 	void UpdateTree();
 	void Insert(OctTreeNode* const pNode, const int pEntity);
 	void HandleCollisions(OctTreeNode* const pNode);
@@ -26,8 +26,8 @@ private:
 	bool BoxSphere(const BoxCollider* const pBox, const KodeboldsMath::Vector3& pSpherePos, const SphereCollider* const pSphere);
 	bool BoxBox(const BoxCollider* const pBoxA, const BoxCollider* const pBoxB);
 	bool RayBox();
-	bool BoxInsideRegion(OctTreeNode* const pNode, const int pEntity);
-	bool SphereInsideRegion(OctTreeNode* const pNode, const int pEntity);
+	bool BoxInsideRegion(OctTreeNode* const pNode, const int pEntity) const;
+	bool SphereInsideRegion(OctTreeNode* const pNode, const int pEntity) const;
 
 public:
 	CollisionCheckSystem(const int pMaxOctantSize, const int pMinOctantSize);
