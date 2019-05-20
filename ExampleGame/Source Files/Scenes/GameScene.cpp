@@ -94,7 +94,7 @@ void GameScene::OnLoad()
 	mPlayer = mEcsManager->CreateEntity();
 	Geometry geo{ L"ship.obj" };
 	mEcsManager->AddGeometryComp(geo, mPlayer);
-	Shader shader{ L"defaultShader.fx" , BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
+	Shader shader{ L"depthShader.fx" , BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
 	mEcsManager->AddShaderComp(shader, mPlayer);
 	Texture texture{};
 	texture.diffuse = L"stones.dds";
