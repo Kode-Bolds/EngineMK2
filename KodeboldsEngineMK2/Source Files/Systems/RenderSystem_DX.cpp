@@ -54,8 +54,8 @@ HRESULT RenderSystem_DX::Init()
 		return hr;
 
 
-	mAntTweakManager->Init(TW_DIRECT3D11, mDevice.Get(), mWidth, height);
-	//mGUIManager->Init(mDevice.Get(), mContext.Get(), mWidth, height);
+	//mGUIManager->Init(TW_DIRECT3D11, mDevice.Get(), mWidth, height);
+	mGUIManager->InititialiseGUI(mDevice.Get(), mContext.Get(), mWidth, height);
 
 
 	hr = CreateSwapChain();
@@ -480,7 +480,7 @@ HRESULT RenderSystem_DX::CreateConstantBuffers()
 /// </summary>
 void RenderSystem_DX::Cleanup()
 {
-	mAntTweakManager->Cleanup();
+	mGUIManager->Cleanup();
 }
 
 /// <summary>
@@ -575,6 +575,9 @@ void RenderSystem_DX::Process()
 {
 	ClearView();
 
+	mGUIManager->Render();
+	mGUIManager->RenderText();
+
 	if (mActiveCamera)
 	{
 		SetViewProj();
@@ -588,7 +591,7 @@ void RenderSystem_DX::Process()
 		if (entity.ID != -1)
 		{
 			CalculateTransform(entity);
-
+      
 			//If geometry of entity is not already in the buffers, load entities geometry
 			if (mEcsManager->GeometryComp(entity.ID)->filename != mActiveGeometry)
 			{
@@ -602,6 +605,7 @@ void RenderSystem_DX::Process()
 			{
 				LoadShaders(entity);
 				mActiveShader = mEcsManager->ShaderComp(entity.ID)->filename;
+
 				//if the render states have changed, load the appropriate ones for this shader
 				const BlendState blend = mEcsManager->ShaderComp(entity.ID)->blendState;
 				if (blend != mActiveBlend)
@@ -672,7 +676,7 @@ void RenderSystem_DX::Process()
 		}
 	}
 
-	mAntTweakManager->Draw();
+	mGUIManager->Draw();
 
 	SwapBuffers();
 }
@@ -682,7 +686,7 @@ void RenderSystem_DX::Process()
 /// </summary>
 void RenderSystem_DX::ClearView() const
 {
-	mContext->ClearRenderTargetView(mRenderTargetView.Get(), DirectX::Colors::CornflowerBlue);
+	mContext->ClearRenderTargetView(mRenderTargetView.Get(), DirectX::Colors::Black);
 	mContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 

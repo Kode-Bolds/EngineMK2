@@ -3,9 +3,9 @@
 A game engine written in C++ and DirectX, developed by the Kode-Bolds.
 
 Team Members:
-- Anthony Beacock
-- Jakob Scrivener
-- Dean Barnard
+- Anthony Beacock (Programming, Music)
+- Jakob Scrivener (Programming)
+- Dean Barnard (Programming)
 - Kristian Dixon (Shaders)
 - Axel Davenport (Art)
 
