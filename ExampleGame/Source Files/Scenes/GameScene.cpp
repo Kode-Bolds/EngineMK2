@@ -149,13 +149,13 @@ void GameScene::OnLoad()
 		}
 	}
 	//AntTweak
-	/*
+	
 	mGUIManager->AddBar("Testing");
 	TwDefine(" Testing size='300 320' valueswidth=200 ");
 	mGUIManager->AddVariable("Testing", "Velocity", TW_TYPE_DIR3F, &mEcsManager->VelocityComp(mPlayer)->velocity, "");
 	mGUIManager->AddVariable("Testing", "Acceleration", TW_TYPE_DIR3F, &mEcsManager->VelocityComp(mPlayer)->acceleration, "");
 	mGUIManager->AddVariable("Testing", "Max Speed", TW_TYPE_FLOAT, &mEcsManager->VelocityComp(mPlayer)->maxSpeed, "");
-	*/
+	
 }
 
 /// <summary>
