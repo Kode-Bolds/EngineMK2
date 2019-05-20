@@ -23,6 +23,8 @@ private:
 	std::shared_ptr<GUIManager> mGUIManager = GUIManager::Instance();
 
 	int mPlayer;
+	int mCamera;
+	float mCameraSpeed;
 	float mPlayerSpeed;
 
 public:
