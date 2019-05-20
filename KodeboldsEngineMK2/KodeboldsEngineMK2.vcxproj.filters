@@ -85,6 +85,9 @@
     <ClCompile Include="Source Files\Managers\GUIManager.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
+    <ClCompile Include="Source Files\Managers\AudioManager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\Components\AI.h">
@@ -270,6 +273,9 @@
     </ClInclude>
     <ClInclude Include="Header Files\HelperClasses\Text.h">
       <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Managers\AudioManager.h">
+      <Filter>Header Files\Managers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

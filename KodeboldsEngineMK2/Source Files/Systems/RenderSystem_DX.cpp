@@ -490,7 +490,9 @@ void RenderSystem_DX::Process()
 	ClearView();
 
 	mGUIManager->Render();
-	mGUIManager->RenderText();
+	//mGUIManager->RenderText();
+
+	//mGUIManager->Draw(); // anttweak
 
 	if (mActiveCamera)
 	{
@@ -543,7 +545,6 @@ void RenderSystem_DX::Process()
 		}
 	}
 
-	mGUIManager->Draw();
 
 	SwapBuffers();
 }

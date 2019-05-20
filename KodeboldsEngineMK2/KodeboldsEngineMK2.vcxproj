@@ -65,6 +65,7 @@
     <ClCompile Include="Source Files\KodeboldsMath\Vector2.cpp" />
     <ClCompile Include="Source Files\KodeboldsMath\Vector3.cpp" />
     <ClCompile Include="Source Files\KodeBoldsMath\Vector4.cpp" />
+    <ClCompile Include="Source Files\Managers\AudioManager.cpp" />
     <ClCompile Include="Source Files\Managers\GUIManager.cpp" />
     <ClCompile Include="Source Files\Managers\ECSManager.cpp" />
     <ClCompile Include="Source Files\Managers\InputManager.cpp" />
@@ -125,6 +126,7 @@
     <ClInclude Include="Header Files\KodeboldsMath\Vector2.h" />
     <ClInclude Include="Header Files\KodeboldsMath\Vector3.h" />
     <ClInclude Include="Header Files\KodeBoldsMath\Vector4.h" />
+    <ClInclude Include="Header Files\Managers\AudioManager.h" />
     <ClInclude Include="Header Files\Managers\GUIManager.h" />
     <ClInclude Include="Header Files\Managers\ECSManager.h" />
     <ClInclude Include="Header Files\Managers\InputManager.h" />
