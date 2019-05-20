@@ -5,7 +5,6 @@
 #include "ISystem.h"
 #include "Entity.h"
 #include <algorithm>
-#include <string>
 #include "ThreadManager.h"
 #include <chrono>
 

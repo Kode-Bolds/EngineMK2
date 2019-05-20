@@ -56,7 +56,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 #endif
 
 	ecsManager->AddUpdateSystem(std::make_shared<MovementSystem>());
-	ecsManager->AddUpdateSystem(std::make_shared<CollisionCheckSystem>(500, 5));
+	ecsManager->AddUpdateSystem(std::make_shared<CollisionCheckSystem>(500, 50));
 
 	//Create camera
 	int entityID = ecsManager->CreateEntity();

@@ -77,10 +77,12 @@ void GameScene::Update()
 	if (mInputManager->KeyDown(KEYS::MOUSE_BUTTON_LEFT))
 	{
 		Vector4 leftLaser = mEcsManager->TransformComp(mPlayer)->translation + Vector4(-25, 5, 0, 0);
-		SpawnLaser(leftLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(0, 0, 20, 1), 40, leftLaser.XYZ() - Vector3(1, 1, 1), leftLaser.XYZ() + Vector3(1, 1, 1));
+		SpawnLaser(leftLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(0, 0, 20, 1), 40,
+			leftLaser.XYZ() - Vector3(1, 1, 1), leftLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER);
 
 		Vector4 rightLaser = mEcsManager->TransformComp(mPlayer)->translation + Vector4(25, 5, 0, 0);
-		SpawnLaser(rightLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(0, 0, 20, 1), 40, rightLaser.XYZ() - Vector3(1, 1, 1), rightLaser.XYZ() + Vector3(1, 1, 1));
+		SpawnLaser(rightLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(0, 0, 20, 1), 40,
+			rightLaser.XYZ() - Vector3(1, 1, 1), rightLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER);
 	}
 }
 
@@ -101,10 +103,6 @@ void GameScene::OnLoad()
 	vel.acceleration = Vector4(0, 0.0f, 0, 1);
 	vel.maxSpeed = 50;
 	mEcsManager->AddVelocityComp(vel, mPlayer);
-	//Gravity grav{};
-	//mEcsManager->AddGravityComp(grav, mPlayer);
-	//SphereCollider sphere{ 1 };
-	//mEcsManager->AddSphereColliderComp(sphere, mPlayer);
 	Colour colour2{ Vector4(1, 0, 0, 1) };
 	mEcsManager->AddColourComp(colour2, mPlayer);
 
