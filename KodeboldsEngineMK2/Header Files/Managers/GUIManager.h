@@ -10,6 +10,8 @@
 #include <wrl.h>
 #include "ResourceManager.h"
 #include <CommonStates.h>
+#include <SpriteFont.h>
+#include "Text.h"
 
 
 class GUIManager
@@ -25,7 +27,12 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> mContext;
 
 	std::unique_ptr<DirectX::SpriteBatch> mSpriteBatch;
+
 	std::unique_ptr<DirectX::CommonStates> m_states;
+
+	std::vector<std::unique_ptr<DirectX::SpriteFont>> mFonts;
+
+	std::vector<Text> mTexts;
 
 	//Private constructor for singleton pattern
 	GUIManager();
@@ -65,5 +72,9 @@ public:
 	void LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, SpritePosition pPosition, float pRotation, float pScale);
 	void LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, KodeboldsMath::Vector2 pPosition, float pRotation, float pScale);
 	void LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, SpritePosition pPosition, float pRotation, float pScale);
+
+	void LoadFont(const wchar_t* pFontName);
+	void RenderText();
+	void Write(const wchar_t* pText, KodeboldsMath::Vector2 pPosition, const wchar_t* pFontName, float pScale);
 
 };

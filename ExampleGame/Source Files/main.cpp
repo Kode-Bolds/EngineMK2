@@ -37,7 +37,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	std::shared_ptr<SceneManager> sceneManager = SceneManager::Instance();
 	std::shared_ptr<ThreadManager> threadManager = ThreadManager::Instance();
 	std::shared_ptr<NetworkManager> networkManager = NetworkManager::Instance();
-	std::shared_ptr<GUIManager> GUIManager = GUIManager::Instance();
+	std::shared_ptr<GUIManager> guiManager = GUIManager::Instance();
 
 	//Initialise winsock
 	networkManager->InitWinSock(9171);
@@ -61,7 +61,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 
 	//Create camera
 	int entityID = ecsManager->CreateEntity();
-	Camera cam{Vector4(0, 0, 1, 1), Vector4(0, 1, 0, 1), 60, 1, 200};
+	Camera cam{ Vector4(0, 0, 1, 1), Vector4(0, 1, 0, 1), 60, 1, 200 };
 	ecsManager->AddCameraComp(cam, entityID);
 	Transform trans{};
 	trans.translation = Vector4(0, 0, -100, 1);
@@ -69,7 +69,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 
 	//Create light
 	entityID = ecsManager->CreateEntity();
-	Light light{Vector4(1, 1, 1, 1)};
+	Light light{ Vector4(1, 1, 1, 1) };
 	ecsManager->AddLightComp(light, entityID);
 	Transform transL{};
 	transL.translation = Vector4(0, -20, -10, 1);
@@ -92,15 +92,15 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	//GUIManager->LoadSprite(L"cat.png", GUIManager::SpriteOrigin::CENTRE, catPosition, 1.5f, 1.0f);
 
 	// Testing both enums for centering sprite origins and positions
-	GUIManager->LoadSprite(L"crosshair.png", GUIManager::SpriteOrigin::CENTRE, GUIManager::SpritePosition::CENTRE_MIDDLE, 0.0f, 0.05f);
+	guiManager->LoadSprite(L"crosshair.png", GUIManager::SpriteOrigin::CENTRE, GUIManager::SpritePosition::CENTRE_MIDDLE, 0.0f, 0.05f);
 
 
-
-	//Vector2 dogPosition = Vector2(10, 0);
-	//Vector2 dogOrigin = Vector2(0, 0);
-	//GUIManager->LoadSprite(L"dog.png", dogOrigin, dogPosition, 90);
-
-
+	// Testing Fonts
+	guiManager->Write(L"Hello Tony!", Vector2(100, 100), L"CourierNew.spritefont", 1.0f);
+	guiManager->Write(L"Hello Dean!", Vector2(100, 200), L"CourierNew.spritefont", 1.0f);
+	guiManager->Write(L"Hello Jake!", Vector2(100, 300), L"CourierNew.spritefont", 1.0f);
+	guiManager->Write(L"Hello Kris!", Vector2(100, 400), L"CourierNew.spritefont", 1.0f);
+	guiManager->Write(L"Hello Axel!", Vector2(100, 500), L"CourierNew.spritefont", 1.0f);
 
 
 

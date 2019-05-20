@@ -490,6 +490,7 @@ void RenderSystem_DX::Process()
 	ClearView();
 
 	mGUIManager->Render();
+	mGUIManager->RenderText();
 
 	if (mActiveCamera)
 	{

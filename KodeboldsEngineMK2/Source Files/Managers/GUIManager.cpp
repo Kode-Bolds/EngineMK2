@@ -277,3 +277,42 @@ void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, Spri
 
 	mResourceManager->mSprites.back().second.mPosition = DirectX::XMFLOAT2(position.X, position.Y);
 }
+
+void GUIManager::LoadFont(const wchar_t* pFontName)
+{
+	mFonts.push_back(std::make_unique<DirectX::SpriteFont>(mDevice.Get(), pFontName));
+}
+
+void GUIManager::Write(const wchar_t* pText, KodeboldsMath::Vector2 pPosition, const wchar_t* pFontName, float pScale)
+{
+	// TODO:
+	// check if font has already been loaded
+	// if not - load
+	// if so = use it
+
+	LoadFont(pFontName);
+
+	Text text;
+	text.mText = pText;
+	text.mPosition = DirectX::XMFLOAT2(pPosition.X, pPosition.Y);
+	text.mOrigin = DirectX::XMFLOAT2(0,0);
+	text.mScale = pScale;
+
+	mTexts.emplace_back(text);
+}
+
+void GUIManager::RenderText()
+{
+	mSpriteBatch->Begin();
+
+	for (int i = 0; i < mTexts.size(); i++)
+	{
+		DirectX::XMVECTOR origin = DirectX::XMVectorSet(mTexts[i].mOrigin.x, mTexts[i].mOrigin.y, 0, 0);// mFonts[0]->MeasureString(pText);
+		DirectX::XMVECTOR position = DirectX::XMVectorSet(mTexts[i].mPosition.x, mTexts[i].mPosition.y, 0, 0);
+
+		mFonts[i]->DrawString(mSpriteBatch.get(), mTexts[i].mText, position, DirectX::Colors::White, 0.0f, origin, 1.0f);
+	}
+
+	mSpriteBatch->End();
+
+}
