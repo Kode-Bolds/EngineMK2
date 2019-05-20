@@ -271,6 +271,10 @@
     <ClInclude Include="Header Files\HelperClasses\Text.h">
       <Filter>Header Files\HelperClasses</Filter>
     </ClInclude>
+    <ClInclude Include="Header Files\Components\RenderStates.h" />
+    <ClInclude Include="Header Files\DataStructs\CollisionMask.h">
+      <Filter>Header Files\DataStructs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">

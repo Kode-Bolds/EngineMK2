@@ -1,3 +1,20 @@
+
+
+struct DirectionalLight
+{
+	float3 direction;
+	float4 colour;
+};
+
+struct Pointlight
+{
+	float4 position;
+	float4 colour;
+
+	float range;
+};
+
+
 //--------------------------------------------------------------------------------------
 // Constant Buffer Variables
 //--------------------------------------------------------------------------------------
@@ -13,12 +30,18 @@ cbuffer ConstantBuffer : register(b0)
 	//float4 Time;
 }
 
-//cbuffer ConstantBufferUniform : register (b1)
-//{
-//	float4 LightPosition[5];
-//	float4 LightColour[5];
-//	uint4 NumberOfLights;
-//}
+//A lighting buffer would be nice, could do with setting ambient light in here too
+
+cbuffer LightingBuffer : register (b1)
+{
+	int numDirLights;
+	DirectionalLight dirLights[2];
+
+	int numPointLights; //5 max
+	Pointlight pointLights[5];
+
+	
+}
 
 //Texture2D txDiffuse : register(t0);
 
@@ -63,32 +86,71 @@ PS_INPUT VS(VS_INPUT input)
 	return output;
 }
 
+float4 CalcLightColour(float4 matDiffuse, float4 matSpec, float3 viewDirection, float3 lightDir, float4 lightColour, PS_INPUT input)
+{
+	float diffuse = max(0.0, dot(lightDir, input.Normal));
+	float3 R = normalize(reflect(-lightDir, input.Normal));
+	float spec = pow(max(0.0, dot(viewDirection, R)), 50);
+
+	return (lightColour * matDiffuse * diffuse) + (lightColour * matSpec * spec);
+}
+
 //--------------------------------------------------------------------------------------
 // Pixel Shader
 //--------------------------------------------------------------------------------------
 float4 PS(PS_INPUT input) : SV_Target
 {
-	float4 matDiffuse = float4(0.8, 0.8, 0.8, 1.0);
+	float4 matDiffuse = float4(1, 1, 1, 1.0);
 	float4 matSpec = float4(1.0, 1.0, 1.0, 1.0);
 	float4 ambient = float4(0.1, 0.1, 0.1, 1.0);
 
 	//float4 texColour = txDiffuse.Sample(txSampler, input.TexCoord);
 	float3 viewDirection = normalize(CameraPosition - input.PosWorld);
-	float4 light = ambient;
+	float4 outputCol = ambient;
 
-	//for (int i = 0; i < NumberOfLights.x; ++i)
-	//{
-		float3 lightDir = normalize(LightPosition - input.PosWorld);
-		float diffuse = max(0.0, dot(lightDir, input.Normal));
-		float3 R = normalize(reflect(-lightDir, input.Normal));
-		float spec = pow(max(0.0, dot(viewDirection, R)), 50);
-		light += saturate(((matDiffuse*diffuse) + (matSpec*spec)) * LightColour);
-	//}
 
-		if (Colour.a != 0)
-		{
-			return light * Colour;
-		}
+	//Calc directional lights
+	/*for (int i = 0; i < numDirLights; ++i)
+	{
+		float4 lightColour = CalcLightColour(matDiffuse, matSpec, viewDirection, dirLights[i].direction, dirLights[i].colour, input);
+		outputCol += saturate(lightColour + outputCol);
+	}*/
 
-	return  light;
+	//Test directional light - Remove when buffers in & uncomment above
+	DirectionalLight testDir;
+	testDir.direction = normalize(float3(1, -1, 1));
+	testDir.colour = float4(0, 0, 1, 1);
+	outputCol += CalcLightColour(matDiffuse, matSpec, viewDirection, testDir.direction, testDir.colour, input);
+
+
+	//Calc spotlights
+	/*
+	for (int i = 0; i < numPointLights; ++i)
+	{
+		float3 lightDir = normalize(pointLights[i].position - input.PosWorld);
+
+		float intensity = 1 - min(distance(pointLights[i].position.xyz, input.PosWorld.xyz) / pointLights[i].range, 1);
+		float4 lightColour = CalcLightColour(matDiffuse, matSpec, viewDirection, lightDirection, pointLights[i].colour, input) * intensity;
+		outputCol += saturate(lightColour + outputCol);
+	}
+	*/
+
+	//Test spotlight - Remove when buffers in & uncomment above
+	Pointlight testPoint;
+	testPoint.position = float4(0, 25, 5, 1);
+	testPoint.colour = float4(1, 0, 0, 1);
+	testPoint.range = 100;
+	float3 lightDir = normalize(testPoint.position - input.PosWorld);
+
+	float intensity =  1 - min(distance(testPoint.position.xyz, input.PosWorld.xyz) / testPoint.range, 1);
+	float4 lightColour = CalcLightColour(matDiffuse, matSpec, viewDirection, lightDir, testPoint.colour, input) * intensity;
+	outputCol += saturate(lightColour + outputCol);
+
+		
+
+	//TODO: Spotlights
+
+
+	return outputCol;
+
 }
