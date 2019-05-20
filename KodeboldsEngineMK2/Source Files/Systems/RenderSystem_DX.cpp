@@ -573,12 +573,24 @@ void RenderSystem_DX::ReAssignEntity(const Entity& pEntity)
 /// </summary>
 void RenderSystem_DX::Process()
 {
+
 	ClearView();
 
-	//mGUIManager->Render();
-	//mGUIManager->RenderText();
+	mGUIManager->Render();
+	mGUIManager->RenderText();
 
-	//mGUIManager->Draw(); // anttweak
+	/*mContext->VSSetShader(nullptr, 0, 0);
+	mContext->PSSetShader(nullptr, 0, 0);
+	mContext->HSSetShader(nullptr, 0, 0);
+	mContext->CSSetShader(nullptr, 0, 0);
+	mContext->GSSetShader(nullptr, 0, 0);
+
+	mContext->RSSetState(nullptr);
+	mContext->OMSetBlendState(nullptr, nullptr, 0);
+	mContext->OMSetDepthStencilState(nullptr, 0);
+*/
+	//mContext->OMSetRenderTargets(0, nullptr, nullptr);
+	//mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
 
 
 	if (mActiveCamera)
@@ -595,7 +607,7 @@ void RenderSystem_DX::Process()
 		if (entity.ID != -1)
 		{
 			CalculateTransform(entity);
-      
+
 			//If geometry of entity is not already in the buffers, load entities geometry
 			if (mEcsManager->GeometryComp(entity.ID)->filename != mActiveGeometry)
 			{
@@ -609,56 +621,57 @@ void RenderSystem_DX::Process()
 			{
 				LoadShaders(entity);
 				mActiveShader = mEcsManager->ShaderComp(entity.ID)->filename;
+			}
 
-				//if the render states have changed, load the appropriate ones for this shader
-				const BlendState blend = mEcsManager->ShaderComp(entity.ID)->blendState;
-				if (blend != mActiveBlend)
+			//if the render states have changed, load the appropriate ones for this shader
+			const BlendState blend = mEcsManager->ShaderComp(entity.ID)->blendState;
+			if (blend != mActiveBlend)
+			{
+				float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+				const auto blendSample = 0xffffffff;
+				if (blend == BlendState::NOBLEND)
 				{
-					float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-					const auto blendSample = 0xffffffff;
-					if (blend == BlendState::NOBLEND)
-					{
-						mContext->OMSetBlendState(mNoBlend.Get(), blendFactor, blendSample);
-					}
-					else if (blend == BlendState::ALPHABLEND)
-					{
-						mContext->OMSetBlendState(mAlphaBlend.Get(), blendFactor, blendSample);
-					}
+					mContext->OMSetBlendState(mNoBlend.Get(), blendFactor, blendSample);
 				}
-				const CullState cull = mEcsManager->ShaderComp(entity.ID)->cullState;
-				if (cull != mActiveCull)
+				else if (blend == BlendState::ALPHABLEND)
 				{
-					if (cull == CullState::NONE)
-					{
-						mContext->RSSetState(mRastNoCullState.Get());
-					}
-					else if (cull == CullState::FRONT)
-					{
-						mContext->RSSetState(mRastFrontCullState.Get());
-					}
-					else if (cull == CullState::BACK)
-					{
-						mContext->RSSetState(mRastBackCullState.Get());
-					}
-					else if (cull == CullState::WIREFRAME)
-					{
-						mContext->RSSetState(mRastWireframeState.Get());
-					}
-				}
-
-				const DepthState depth = mEcsManager->ShaderComp(entity.ID)->depthState;
-				if (depth != mActiveDepth)
-				{
-					if (depth == DepthState::NONE)
-					{
-						mContext->OMSetDepthStencilState(mDepthNone.Get(), 1);
-					}
-					else if (depth == DepthState::LESSEQUAL)
-					{
-						mContext->OMSetDepthStencilState(mDepthLessEqual.Get(), 1);
-					}
+					mContext->OMSetBlendState(mAlphaBlend.Get(), blendFactor, blendSample);
 				}
 			}
+			const CullState cull = mEcsManager->ShaderComp(entity.ID)->cullState;
+			if (cull != mActiveCull)
+			{
+				if (cull == CullState::NONE)
+				{
+					mContext->RSSetState(mRastNoCullState.Get());
+				}
+				else if (cull == CullState::FRONT)
+				{
+					mContext->RSSetState(mRastFrontCullState.Get());
+				}
+				else if (cull == CullState::BACK)
+				{
+					mContext->RSSetState(mRastBackCullState.Get());
+				}
+				else if (cull == CullState::WIREFRAME)
+				{
+					mContext->RSSetState(mRastWireframeState.Get());
+				}
+			}
+
+			const DepthState depth = mEcsManager->ShaderComp(entity.ID)->depthState;
+			if (depth != mActiveDepth)
+			{
+				if (depth == DepthState::NONE)
+				{
+					mContext->OMSetDepthStencilState(mDepthNone.Get(), 1);
+				}
+				else if (depth == DepthState::LESSEQUAL)
+				{
+					mContext->OMSetDepthStencilState(mDepthLessEqual.Get(), 1);
+				}
+			}
+
 
 			//Set world matrix
 			mCB.mWorld = XMFLOAT4X4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(entity.ID)->transform)));
@@ -680,7 +693,10 @@ void RenderSystem_DX::Process()
 		}
 	}
 
+
 	SwapBuffers();
+
+
 }
 
 /// <summary>
