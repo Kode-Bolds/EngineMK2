@@ -101,7 +101,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	guiManager->Write(L"Hello Kris!", Vector2(100, 400), L"CourierNew.spritefont", 1.0f);
 	guiManager->Write(L"Hello Axel!", Vector2(100, 500), L"CourierNew.spritefont", 1.0f);
 
-
+	
 
 
 	//Testing custom components
