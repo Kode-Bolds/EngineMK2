@@ -43,9 +43,12 @@ cbuffer LightingBuffer : register (b1)
 	
 }
 
-//Texture2D txDiffuse : register(t0);
+Texture2D txDiffuse : register(t0);
+SamplerState txDiffSampler : register(s0);
 
-//SamplerState txSampler : register(s0);
+Texture2D txBump : register(t1);
+SamplerState txBumpSampler : register(s1);
+
 
 //--------------------------------------------------------------------------------------
 // Shader Inputs
@@ -65,7 +68,7 @@ struct PS_INPUT
 	float4 Pos : SV_POSITION;
 	float3 Normal: NORMAL;
 	float4 PosWorld : TEXCOORD0;
-	//float2 TexCoord : TEXCOORD1;
+	float2 TexCoord : TEXCOORD1;
 };
 
 
@@ -81,7 +84,7 @@ PS_INPUT VS(VS_INPUT input)
 	output.Normal = mul(World, float4(input.Normal, 1.0f)).xyz;
 	output.Normal = normalize(output.Normal);
 	output.PosWorld = mul(float4(input.Pos, 1.0f), World);
-	//output.TexCoord = float2(1,1);
+	output.TexCoord = input.TexCoord;
 
 	return output;
 }
@@ -95,19 +98,51 @@ float4 CalcLightColour(float4 matDiffuse, float4 matSpec, float3 viewDirection, 
 	return (lightColour * matDiffuse * diffuse) + (lightColour * matSpec * spec);
 }
 
+float3x3 cotangent_frame(float3 N, float3 p, float2 uv)
+{
+	// get edge vectors of the pixel triangle
+	float3 dp1 = ddx(p);
+	float3 dp2 = ddy(p);
+	float2 duv1 = ddx(uv);
+	float2 duv2 = ddy(uv);
+
+	// solve the linear system
+	float3 dp2perp = cross(dp2, N);
+	float3 dp1perp = cross(N, dp1);
+	float3 T = dp2perp * duv1.x + dp1perp * duv2.x;
+	float3 B = dp2perp * duv1.y + dp1perp * duv2.y;
+
+	// construct a scale-invariant frame 
+	float invmax = rsqrt(max(dot(T, T), dot(B, B)));
+	return transpose(float3x3(T * invmax, B * invmax, N));
+}
+
+float3 perturb_normal(float3 N, float3 V, float2 texcoord)
+{
+	// assume N, the interpolated vertex normal and 
+	// V, the view vector (vertex to eye)
+	float3 map = txBump.Sample(txBumpSampler, texcoord).xyz; 
+	////float4 texColour = txDiffuse.Sample(txSampler, input.TexCoord);
+
+	//map.y = -map.y;
+	float3x3 TBN = cotangent_frame(N, -V, texcoord);
+	return normalize(mul(TBN, map));
+}
+
+
 //--------------------------------------------------------------------------------------
 // Pixel Shader
 //--------------------------------------------------------------------------------------
 float4 PS(PS_INPUT input) : SV_Target
 {
-	float4 matDiffuse = float4(1, 1, 1, 1.0);
+	float4 matDiffuse = txDiffuse.Sample(txDiffSampler, input.TexCoord);// *Tint;
 	float4 matSpec = float4(1.0, 1.0, 1.0, 1.0);
-	float4 ambient = float4(0.1, 0.1, 0.1, 1.0);
+	float4 ambient = float4(0.01, 0.01, 0.01, 1.0);
 
-	//float4 texColour = txDiffuse.Sample(txSampler, input.TexCoord);
 	float3 viewDirection = normalize(CameraPosition - input.PosWorld);
-	float4 outputCol = ambient;
-
+	float4 outputCol = ambient;// *matDiffuse;
+	
+	input.Normal = perturb_normal(normalize(input.Normal), viewDirection, input.TexCoord);
 
 	//Calc directional lights
 	/*for (int i = 0; i < numDirLights; ++i)
@@ -118,8 +153,8 @@ float4 PS(PS_INPUT input) : SV_Target
 
 	//Test directional light - Remove when buffers in & uncomment above
 	DirectionalLight testDir;
-	testDir.direction = normalize(float3(1, -1, 1));
-	testDir.colour = float4(0, 0, 1, 1);
+	testDir.direction = normalize(float3(0.5, 1, -0.5));
+	testDir.colour = float4(0.15, 0.15, 0.15, 1);
 	outputCol += CalcLightColour(matDiffuse, matSpec, viewDirection, testDir.direction, testDir.colour, input);
 
 
@@ -137,9 +172,9 @@ float4 PS(PS_INPUT input) : SV_Target
 
 	//Test spotlight - Remove when buffers in & uncomment above
 	Pointlight testPoint;
-	testPoint.position = float4(0, 25, 5, 1);
+	testPoint.position = float4(0, 0, -96, 1);
 	testPoint.colour = float4(1, 0, 0, 1);
-	testPoint.range = 100;
+	testPoint.range = 10;
 	float3 lightDir = normalize(testPoint.position - input.PosWorld);
 
 	float intensity =  1 - min(distance(testPoint.position.xyz, input.PosWorld.xyz) / testPoint.range, 1);

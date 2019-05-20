@@ -261,7 +261,6 @@
     <ClInclude Include="Header Files\Components\Collision.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Header Files\Components\RenderStates.h" />
     <ClInclude Include="Header Files\Managers\GUIManager.h">
       <Filter>Header Files\Managers</Filter>
     </ClInclude>
@@ -271,7 +270,6 @@
     <ClInclude Include="Header Files\HelperClasses\Text.h">
       <Filter>Header Files\HelperClasses</Filter>
     </ClInclude>
-    <ClInclude Include="Header Files\Components\RenderStates.h" />
     <ClInclude Include="Header Files\DataStructs\CollisionMask.h">
       <Filter>Header Files\DataStructs</Filter>
     </ClInclude>
