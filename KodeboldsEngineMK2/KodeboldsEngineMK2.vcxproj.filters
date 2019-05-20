@@ -32,69 +32,233 @@
     <ClCompile Include="Source Files\Systems\RenderSystem_GL.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Header Files\Components\AI.h" />
-    <ClInclude Include="Header Files\Components\Audio.h" />
-    <ClInclude Include="Header Files\Components\BoxCollider.h" />
-    <ClInclude Include="Header Files\Components\Camera.h" />
-    <ClInclude Include="Header Files\Components\Collision.h" />
-    <ClInclude Include="Header Files\Components\Colour.h" />
-    <ClInclude Include="Header Files\Components\Components.h" />
-    <ClInclude Include="Header Files\Components\ComponentType.h" />
-    <ClInclude Include="Header Files\Components\CustomComponent.h" />
-    <ClInclude Include="Header Files\Components\Geometry.h" />
-    <ClInclude Include="Header Files\Components\Gravity.h" />
-    <ClInclude Include="Header Files\Components\Light.h" />
-    <ClInclude Include="Header Files\Components\Ray.h" />
-    <ClInclude Include="Header Files\Components\Shader.h" />
-    <ClInclude Include="Header Files\Components\SphereCollider.h" />
-    <ClInclude Include="Header Files\Components\Texture.h" />
-    <ClInclude Include="Header Files\Components\Transform.h" />
-    <ClInclude Include="Header Files\Components\Velocity.h" />
-    <ClInclude Include="Header Files\DataStructs\BlendState.h" />
-    <ClInclude Include="Header Files\DataStructs\CollisionMask.h" />
-    <ClInclude Include="Header Files\DataStructs\CullState.h" />
-    <ClInclude Include="Header Files\DataStructs\DepthState.h" />
-    <ClInclude Include="Header Files\DataStructs\Entity.h" />
-    <ClInclude Include="Header Files\DataStructs\OctTreeNode.h" />
-    <ClInclude Include="Header Files\DataStructs\Vertex.h" />
-    <ClInclude Include="Header Files\HelperClasses\ObjLoader.h" />
-    <ClInclude Include="Header Files\HelperClasses\ShaderObject_GL.h" />
-    <ClInclude Include="Header Files\HelperClasses\Sprite.h" />
-    <ClInclude Include="Header Files\HelperClasses\Task.h" />
-    <ClInclude Include="Header Files\HelperClasses\Text.h" />
-    <ClInclude Include="Header Files\HelperClasses\TextureObject_GL.h" />
-    <ClInclude Include="Header Files\HelperClasses\Thread.h" />
-    <ClInclude Include="Header Files\HelperClasses\VBO.h" />
-    <ClInclude Include="Header Files\HelperClasses\VBO_DX.h" />
-    <ClInclude Include="Header Files\HelperClasses\ShaderObject.h" />
-    <ClInclude Include="Header Files\HelperClasses\ShaderObject_DX.h" />
-    <ClInclude Include="Header Files\HelperClasses\TextureObject.h" />
-    <ClInclude Include="Header Files\HelperClasses\TextureObject_DX.h" />
-    <ClInclude Include="Header Files\HelperClasses\VBO_GL.h" />
-    <ClInclude Include="Header Files\KodeboldsMath\KodeboldsMath.h" />
-    <ClInclude Include="Header Files\KodeBoldsMath\Matrix4.h" />
-    <ClInclude Include="Header Files\KodeboldsMath\Vector2.h" />
-    <ClInclude Include="Header Files\KodeboldsMath\Vector3.h" />
-    <ClInclude Include="Header Files\KodeBoldsMath\Vector4.h" />
-    <ClInclude Include="Header Files\Managers\AudioManager.h" />
-    <ClInclude Include="Header Files\Managers\GUIManager.h" />
-    <ClInclude Include="Header Files\Managers\ECSManager.h" />
-    <ClInclude Include="Header Files\Managers\InputManager.h" />
-    <ClInclude Include="Header Files\Managers\InputManager_DX.h" />
-    <ClInclude Include="Header Files\Managers\InputManager_GL.h" />
-    <ClInclude Include="Header Files\Managers\Managers.h" />
-    <ClInclude Include="Header Files\Managers\NetworkManager.h" />
-    <ClInclude Include="Header Files\Managers\ResourceManager.h" />
-    <ClInclude Include="Header Files\HelperClasses\Scene.h" />
-    <ClInclude Include="Header Files\Managers\SceneManager.h" />
-    <ClInclude Include="Header Files\Managers\ThreadManager.h" />
-    <ClInclude Include="Header Files\Systems\CollisionCheckSystem.h" />
-    <ClInclude Include="Header Files\Systems\ISystem.h" />
-    <ClInclude Include="Header Files\Systems\MovementSystem.h" />
-    <ClInclude Include="Header Files\Systems\RenderSystem.h" />
-    <ClInclude Include="Header Files\Systems\RenderSystem_DX.h" />
-    <ClInclude Include="Header Files\Systems\RenderSystem_GL.h" />
-    <ClInclude Include="Header Files\Systems\Systems.h" />
+    <ClInclude Include="Header Files\Components\AI.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\Audio.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\BoxCollider.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\Camera.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\Components.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\ComponentType.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\Gravity.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\Geometry.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\Light.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\Shader.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\SphereCollider.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\Texture.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\Transform.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\Velocity.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Systems\ISystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\ObjLoader.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\Scene.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Managers\ECSManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Managers\InputManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Managers\ResourceManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Managers\SceneManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Systems\MovementSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\DataStructs\Entity.h">
+      <Filter>Header Files\DataStructs</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\DataStructs\Vertex.h">
+      <Filter>Header Files\DataStructs</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Systems\Systems.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Managers\Managers.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\KodeBoldsMath\Matrix4.h">
+      <Filter>Header Files\KodeboldsMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\KodeBoldsMath\Vector4.h">
+      <Filter>Header Files\KodeboldsMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\VBO.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\VBO_DX.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\TextureObject_DX.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\TextureObject.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\ShaderObject.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\ShaderObject_DX.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Systems\RenderSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Systems\RenderSystem_DX.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\DataStructs\CullState.h">
+      <Filter>Header Files\DataStructs</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\DataStructs\BlendState.h">
+      <Filter>Header Files\DataStructs</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\DataStructs\DepthState.h">
+      <Filter>Header Files\DataStructs</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\KodeboldsMath\KodeboldsMath.h">
+      <Filter>Header Files\KodeboldsMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\KodeboldsMath\Vector2.h">
+      <Filter>Header Files\KodeboldsMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\KodeboldsMath\Vector3.h">
+      <Filter>Header Files\KodeboldsMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Managers\InputManager_DX.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Managers\InputManager_GL.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Managers\NetworkManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Managers\ThreadManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Systems\RenderSystem_GL.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\ShaderObject_GL.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\Task.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\TextureObject_GL.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\Thread.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\VBO_GL.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\Colour.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\Ray.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\CustomComponent.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\DataStructs\OctTreeNode.h">
+      <Filter>Header Files\DataStructs</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Systems\CollisionCheckSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\Collision.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Managers\GUIManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\Sprite.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\Text.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Managers\AudioManager.h">
+      <Filter>Header Files\Managers</Filter>
+	 </ClInclude>
+    <ClInclude Include="Header Files\DataStructs\CollisionMask.h">
+      <Filter>Header Files\DataStructs</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{bc0ebd36-4beb-4981-bead-2311f507eb99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{f8a7bf6c-0ed2-4188-b350-8cdeab5a1ba7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Components">
+      <UniqueIdentifier>{7c622a62-ed5a-4f33-972d-51e9c47c2a44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Systems">
+      <UniqueIdentifier>{e677d032-7231-491b-96e5-eb6ef50b166f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\HelperClasses">
+      <UniqueIdentifier>{97a4865f-6db7-4c0f-bea8-f4f163c455b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Managers">
+      <UniqueIdentifier>{7c3694f9-4a42-420f-bb49-25e31ffb4338}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\HelperClasses">
+      <UniqueIdentifier>{f6073586-2a37-44b1-bff9-75bd24763291}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Managers">
+      <UniqueIdentifier>{4253dc08-5287-41ec-861e-7bb3217728cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Systems">
+      <UniqueIdentifier>{ac071894-4324-4026-9b95-f999edf7cc06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DataStructs">
+      <UniqueIdentifier>{bb7a16b2-7c29-4528-9e61-6ea87cd38892}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\KodeBoldsMath">
+      <UniqueIdentifier>{96c02329-d0ce-41c8-9dff-9a02239e23a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\KodeboldsMath">
+      <UniqueIdentifier>{e6c5287b-1dd7-4c6d-be0d-da6837691a67}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

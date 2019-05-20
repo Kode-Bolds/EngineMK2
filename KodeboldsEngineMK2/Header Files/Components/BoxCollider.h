@@ -8,4 +8,5 @@ struct BoxCollider
 	KodeboldsMath::Vector3 minBounds;
 	KodeboldsMath::Vector3 maxBounds;
 	int collisionMask;
+	int ignoreCollisionMask;
 };
