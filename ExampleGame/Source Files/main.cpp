@@ -60,14 +60,6 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 
 	//Create camera
 	int entityID = ecsManager->CreateEntity();
-	Camera cam{ Vector4(0, 0, 1, 1), Vector4(0, 1, 0, 1), 60, 1, 200 };
-	ecsManager->AddCameraComp(cam, entityID);
-	Transform trans{};
-	trans.translation = Vector4(0, 0, -100, 1);
-	ecsManager->AddTransformComp(trans, entityID);
-
-	//Create light
-	entityID = ecsManager->CreateEntity();
 	Light light{ Vector4(1, 1, 1, 1) };
 	ecsManager->AddLightComp(light, entityID);
 	Transform transL{};

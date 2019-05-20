@@ -5,7 +5,7 @@
 #include "InputManager_DX.h"
 #include "InputManager_GL.h"
 #include "SceneManager.h"
-#include "AntTweakManager.h"
+#include "GUIManager.h"
 #include "EntitySpawner.h"
 
 class GameScene : public Scene
@@ -23,6 +23,8 @@ private:
 	std::shared_ptr<GUIManager> mGUIManager = GUIManager::Instance();
 
 	int mPlayer;
+	int mCamera;
+	float mCameraSpeed;
 	float mPlayerSpeed;
 
 public:

@@ -575,8 +575,8 @@ void RenderSystem_DX::Process()
 {
 	ClearView();
 
-	mGUIManager->Render();
-	mGUIManager->RenderText();
+	//mGUIManager->Render();
+	//mGUIManager->RenderText();
 
 	if (mActiveCamera)
 	{
@@ -676,7 +676,7 @@ void RenderSystem_DX::Process()
 		}
 	}
 
-	mGUIManager->Draw();
+	//mGUIManager->Draw();
 
 	SwapBuffers();
 }
@@ -751,11 +751,15 @@ void RenderSystem_DX::LoadTexture(const Entity& pEntity) const
 /// </summary>
 void RenderSystem_DX::SetViewProj()
 {
+	CalculateTransform(*mActiveCamera);
+
 	//Calculates the view matrix and sets it in the constant buffer
 	const XMFLOAT4 position(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mActiveCamera->ID)->translation)));
-	mCB.mCameraPosition = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mActiveCamera->ID)->translation)));
-	const XMFLOAT4 lookAt(reinterpret_cast<float*>(&(mEcsManager->CameraComp(mActiveCamera->ID)->lookAt)));
-	const XMFLOAT4 up(reinterpret_cast<float*>(&(mEcsManager->CameraComp(mActiveCamera->ID)->up)));
+	mCB.mCameraPosition = position;
+
+	KodeboldsMath::Vector4 lookAtV = mEcsManager->TransformComp(mActiveCamera->ID)->translation + mEcsManager->TransformComp(mActiveCamera->ID)->forward;
+	const XMFLOAT4 lookAt(reinterpret_cast<float*>(&(lookAtV)));
+	const XMFLOAT4 up(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mActiveCamera->ID)->up)));
 
 	const XMVECTOR posVec = XMLoadFloat4(&position);
 	const XMVECTOR lookAtVec = XMLoadFloat4(&lookAt);
@@ -781,6 +785,10 @@ void RenderSystem_DX::SetLights()
 	mCB.mLightColour = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->LightComp(mLights[0].ID)->mColour)));
 }
 
+/// <summary>
+/// Calculates the transform of a given entity based on the translation, rotation and scale of the entity
+/// </summary>
+/// <param name="pEntity">Given entity to calculate transform for</param>
 void RenderSystem_DX::CalculateTransform(const Entity& pEntity)
 {
 	Transform* t = mEcsManager->TransformComp(pEntity.ID);
@@ -791,8 +799,8 @@ void RenderSystem_DX::CalculateTransform(const Entity& pEntity)
 		* KodeboldsMath::RotationMatrixZ(t->rotation.Z);
 
 	t->transform = scale * rotation * translation;
-	t->forward = KodeboldsMath::Vector4(t->transform._31, t->transform._32, t->transform._33, 1.0f);
-	t->up = KodeboldsMath::Vector4(t->transform._21, t->transform._22, t->transform._23, 1.0f);
-	t->right = KodeboldsMath::Vector4(t->transform._11, t->transform._12, t->transform._13, 1.0f);
+	t->forward = KodeboldsMath::Vector4(t->transform._31, t->transform._32, t->transform._33, 1.0f).Normalise();
+	t->up = KodeboldsMath::Vector4(t->transform._21, t->transform._22, t->transform._23, 1.0f).Normalise();
+	t->right = KodeboldsMath::Vector4(t->transform._11, t->transform._12, t->transform._13, 1.0f).Normalise();
 }
 

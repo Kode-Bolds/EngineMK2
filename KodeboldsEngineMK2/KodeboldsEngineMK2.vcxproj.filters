@@ -261,7 +261,6 @@
     <ClInclude Include="Header Files\Components\Collision.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Header Files\Components\RenderStates.h" />
     <ClInclude Include="Header Files\Managers\GUIManager.h">
       <Filter>Header Files\Managers</Filter>
     </ClInclude>

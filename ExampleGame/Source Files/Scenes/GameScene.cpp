@@ -25,43 +25,59 @@ void GameScene::Update()
 	//
 	if (mInputManager->KeyHeld(KEYS::KEY_W))
 	{
-		mEcsManager->VelocityComp(mPlayer)->acceleration.Z = mPlayerSpeed;
+		//mEcsManager->VelocityComp(mPlayer)->acceleration.Z = mPlayerSpeed;
+		mEcsManager->TransformComp(mCamera)->translation += mEcsManager->TransformComp(mCamera)->forward * mCameraSpeed * mSceneManager->DeltaTime();
 	}
 	else if (mInputManager->KeyHeld(KEYS::KEY_S))
 	{
-		mEcsManager->VelocityComp(mPlayer)->acceleration.Z = -mPlayerSpeed;
+		//mEcsManager->VelocityComp(mPlayer)->acceleration.Z = -mPlayerSpeed;
+		mEcsManager->TransformComp(mCamera)->translation -= mEcsManager->TransformComp(mCamera)->forward * mCameraSpeed * mSceneManager->DeltaTime();
 	}
 	else
 	{
-		mEcsManager->VelocityComp(mPlayer)->acceleration.Z = 0;
+		//mEcsManager->VelocityComp(mPlayer)->acceleration.Z = 0;
 	}
 
 	//
 	if (mInputManager->KeyHeld(KEYS::KEY_A))
 	{
-		mEcsManager->VelocityComp(mPlayer)->acceleration.X = -mPlayerSpeed;
+		//mEcsManager->VelocityComp(mPlayer)->acceleration.X = -mPlayerSpeed;
+		mEcsManager->TransformComp(mCamera)->translation -= mEcsManager->TransformComp(mCamera)->right * mCameraSpeed * mSceneManager->DeltaTime();
 	}
 	else if (mInputManager->KeyHeld(KEYS::KEY_D))
 	{
-		mEcsManager->VelocityComp(mPlayer)->acceleration.X = mPlayerSpeed;
+		//mEcsManager->VelocityComp(mPlayer)->acceleration.X = mPlayerSpeed;
+		mEcsManager->TransformComp(mCamera)->translation += mEcsManager->TransformComp(mCamera)->right * mCameraSpeed * mSceneManager->DeltaTime();
 	}
 	else
 	{
-		mEcsManager->VelocityComp(mPlayer)->acceleration.X = 0;
+		//mEcsManager->VelocityComp(mPlayer)->acceleration.X = 0;
 	}
 
 	//
 	if (mInputManager->KeyHeld(KEYS::KEY_SPACE))
 	{
-		mEcsManager->VelocityComp(mPlayer)->acceleration.Y = mPlayerSpeed;
+		//mEcsManager->VelocityComp(mPlayer)->acceleration.Y = mPlayerSpeed;
+		mEcsManager->TransformComp(mCamera)->translation += mEcsManager->TransformComp(mCamera)->up * mCameraSpeed * mSceneManager->DeltaTime();
 	}
 	else if (mInputManager->KeyHeld(KEYS::KEY_LEFT_CTRL))
 	{
-		mEcsManager->VelocityComp(mPlayer)->acceleration.Y = -mPlayerSpeed;
+		//mEcsManager->VelocityComp(mPlayer)->acceleration.Y = -mPlayerSpeed;
+		mEcsManager->TransformComp(mCamera)->translation -= mEcsManager->TransformComp(mCamera)->up * mCameraSpeed * mSceneManager->DeltaTime();
 	}
 	else
 	{
-		mEcsManager->VelocityComp(mPlayer)->acceleration.Y = 0;
+		//mEcsManager->VelocityComp(mPlayer)->acceleration.Y = 0;
+	}
+
+	//
+	if (mInputManager->KeyHeld(KEYS::KEY_Q))
+	{
+		mEcsManager->TransformComp(mCamera)->rotation -= Vector4(0, 1, 0, 0) * mSceneManager->DeltaTime();
+	}
+	if (mInputManager->KeyHeld(KEYS::KEY_E))
+	{
+		mEcsManager->TransformComp(mCamera)->rotation += Vector4(0, 1, 0, 0) * mSceneManager->DeltaTime();
 	}
 
 	//
@@ -93,6 +109,16 @@ void GameScene::Update()
 /// </summary>
 void GameScene::OnLoad()
 {
+	mCamera = mEcsManager->CreateEntity();
+	Camera cam{ 60, 1, 200 };
+	mEcsManager->AddCameraComp(cam, mCamera);
+	Transform trans{};
+	trans.translation = Vector4(0, 0, -100, 1);
+	trans.scale = Vector4(1, 1, 1, 1);
+	mEcsManager->AddTransformComp(trans, mCamera);
+
+	mCameraSpeed = 10.0f;
+
 	mPlayer = mEcsManager->CreateEntity();
 	Geometry geo{ L"ship.obj" };
 	mEcsManager->AddGeometryComp(geo, mPlayer);
@@ -105,7 +131,7 @@ void GameScene::OnLoad()
 	vel.acceleration = Vector4(0, 0.0f, 0, 1);
 	vel.maxSpeed = 50;
 	mEcsManager->AddVelocityComp(vel, mPlayer);
-	Colour colour2{ Vector4(1, 0, 0, 1) };
+	Colour colour2{ Vector4(1, 1, 1, 1) };
 	mEcsManager->AddColourComp(colour2, mPlayer);
 
 	mPlayerSpeed = 2.0f;
