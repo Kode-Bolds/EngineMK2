@@ -586,6 +586,7 @@ void RenderSystem_DX::Process()
 	{
 		SetLights();
 	}
+
 	for (const Entity& entity : mEntities)
 	{
 		if (entity.ID != -1)
@@ -599,7 +600,7 @@ void RenderSystem_DX::Process()
 				mGeometry->Load(this);
 				mActiveGeometry = mEcsManager->GeometryComp(entity.ID)->filename;
 			}
-			//LoadTexture(entity);
+			LoadTexture(entity);
 			//If shader of entity is not already in the buffers, load entities shader
 			if (mEcsManager->ShaderComp(entity.ID)->filename != mActiveShader)
 			{

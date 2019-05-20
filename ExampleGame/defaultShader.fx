@@ -114,7 +114,7 @@ float3x3 cotangent_frame(float3 N, float3 p, float2 uv)
 
 	// construct a scale-invariant frame 
 	float invmax = rsqrt(max(dot(T, T), dot(B, B)));
-	return float3x3(T * invmax, B * invmax, N);
+	return transpose(float3x3(T * invmax, B * invmax, N));
 }
 
 float3 perturb_normal(float3 N, float3 V, float2 texcoord)
@@ -124,7 +124,7 @@ float3 perturb_normal(float3 N, float3 V, float2 texcoord)
 	float3 map = txBump.Sample(txBumpSampler, texcoord).xyz; 
 	////float4 texColour = txDiffuse.Sample(txSampler, input.TexCoord);
 
-	map.y = -map.y;
+	//map.y = -map.y;
 	float3x3 TBN = cotangent_frame(N, -V, texcoord);
 	return normalize(mul(TBN, map));
 }
@@ -137,12 +137,12 @@ float4 PS(PS_INPUT input) : SV_Target
 {
 	float4 matDiffuse = txDiffuse.Sample(txDiffSampler, input.TexCoord);// *Tint;
 	float4 matSpec = float4(1.0, 1.0, 1.0, 1.0);
-	float4 ambient = float4(0.1, 0.1, 0.1, 1.0);
+	float4 ambient = float4(0.01, 0.01, 0.01, 1.0);
 
 	float3 viewDirection = normalize(CameraPosition - input.PosWorld);
-	float4 outputCol = ambient;
+	float4 outputCol = ambient;// *matDiffuse;
 	
-	//input.Normal = 
+	input.Normal = perturb_normal(normalize(input.Normal), viewDirection, input.TexCoord);
 
 	//Calc directional lights
 	/*for (int i = 0; i < numDirLights; ++i)
@@ -153,8 +153,8 @@ float4 PS(PS_INPUT input) : SV_Target
 
 	//Test directional light - Remove when buffers in & uncomment above
 	DirectionalLight testDir;
-	testDir.direction = normalize(float3(1, -1, 1));
-	testDir.colour = float4(1, 1, 1, 1);
+	testDir.direction = normalize(float3(0.5, 1, -0.5));
+	testDir.colour = float4(0.15, 0.15, 0.15, 1);
 	outputCol += CalcLightColour(matDiffuse, matSpec, viewDirection, testDir.direction, testDir.colour, input);
 
 
@@ -172,9 +172,9 @@ float4 PS(PS_INPUT input) : SV_Target
 
 	//Test spotlight - Remove when buffers in & uncomment above
 	Pointlight testPoint;
-	testPoint.position = float4(0, 25, 5, 1);
+	testPoint.position = float4(0, 0, -96, 1);
 	testPoint.colour = float4(1, 0, 0, 1);
-	testPoint.range = 1000;
+	testPoint.range = 10;
 	float3 lightDir = normalize(testPoint.position - input.PosWorld);
 
 	float intensity =  1 - min(distance(testPoint.position.xyz, input.PosWorld.xyz) / testPoint.range, 1);
