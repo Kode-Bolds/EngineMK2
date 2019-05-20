@@ -91,10 +91,13 @@ void GameScene::Update()
 /// </summary>
 void GameScene::OnLoad()
 {
+
+
+
 	mPlayer = mEcsManager->CreateEntity();
 	Geometry geo{ L"ship.obj" };
 	mEcsManager->AddGeometryComp(geo, mPlayer);
-	Shader shader{ L"depthShader.fx" , BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
+	Shader shader{ L"defaultShader.fx" , BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
 	mEcsManager->AddShaderComp(shader, mPlayer);
 	Texture texture{};
 	texture.diffuse = L"stones.dds";
@@ -118,6 +121,8 @@ void GameScene::OnLoad()
 	mPlayerSpeed = 2.0f;
 
 
+
+
 	for(int x = 0; x < 10; x++)
 	{
 		for(int z = 0; z < 10; z++)
@@ -137,17 +142,30 @@ void GameScene::OnLoad()
 			transCm.scale = Vector4(1, 1, 1, 1);
 			transCm.translation = Vector4(x * 2 - 5, -2, z * 2- 100, 1);
 
-			if(x == 0 && z == 0)
-			{
-				//transCm.translation = Vector4(0, 0, -96, 1);
-
-			}
-
 			mEcsManager->AddTransformComp(transCm, entity);
-
-
 		}
 	}
+
+	//Skybox
+	int entity = mEcsManager->CreateEntity();
+
+	Geometry geom{ L"cube.obj" };
+	mEcsManager->AddGeometryComp(geom, entity);
+	Shader shaderm{ L"skyboxShader.fx" , BlendState::ALPHABLEND, CullState::FRONT, DepthState::LESSEQUAL };
+	mEcsManager->AddShaderComp(shaderm, entity);
+	Texture texturem{};
+	texturem.diffuse = L"";
+	texturem.normal = L"";
+	mEcsManager->AddTextureComp(texturem, entity);
+
+	Transform transCm{};
+	transCm.scale = Vector4(1, 1, 1, 1);
+	transCm.translation = Vector4(0,0, 0, 1);
+
+	
+
+	mEcsManager->AddTransformComp(transCm, entity);
+
 	//AntTweak
 	
 	mGUIManager->AddBar("Testing");
