@@ -109,7 +109,7 @@ void GameScene::Update()
 void GameScene::OnLoad()
 {
 	mCamera = mEcsManager->CreateEntity();
-	Camera cam{ 60, 1, 200 };
+	Camera cam{ 60, 1, 200, true };
 	mEcsManager->AddCameraComp(cam, mCamera);
 	Transform trans{};
 	trans.translation = Vector4(0, 0, -100, 1);

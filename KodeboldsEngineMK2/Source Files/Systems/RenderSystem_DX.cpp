@@ -619,11 +619,8 @@ void RenderSystem_DX::Process()
 //mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
 
 	SetCamera();
+	SetLights();
 
-	if (!mLights.empty())
-	{
-		SetLights();
-	}
 
 	for (const Entity& entity : mEntities)
 	{
@@ -821,8 +818,11 @@ void RenderSystem_DX::SetViewProj()
 /// </summary>
 void RenderSystem_DX::SetLights()
 {
-	mCB.mLightPosition = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mLights[0].ID)->translation)));
-	mCB.mLightColour = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->LightComp(mLights[0].ID)->mColour)));
+	if (!mLights.empty())
+	{
+		mCB.mLightPosition = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mLights[0].ID)->translation)));
+		mCB.mLightColour = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->LightComp(mLights[0].ID)->mColour)));
+	}
 }
 
 /// <summary>
