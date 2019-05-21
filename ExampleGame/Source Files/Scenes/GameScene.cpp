@@ -101,6 +101,16 @@ void GameScene::Update()
 		SpawnLaser(rightLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(0, 0, 20, 1), 40,
 			rightLaser.XYZ() - Vector3(1, 1, 1), rightLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER );
 	}
+
+	//If player collides with floor
+	if (mEcsManager->CollisionComp(mCamera))
+	{
+		if (mEcsManager->CollisionComp(mCamera)->collidedEntityCollisionMask == CustomCollisionMask::FLOOR)
+		{
+			mEcsManager->VelocityComp(mCamera)->velocity.Y = -mEcsManager->VelocityComp(mCamera)->velocity.Y;
+			mEcsManager->TransformComp(mCamera)->translation.Y += mEcsManager->VelocityComp(mCamera)->velocity.Y * mSceneManager->DeltaTime();
+		}
+	}
 }
 
 /// <summary>
@@ -108,26 +118,38 @@ void GameScene::Update()
 /// </summary>
 void GameScene::OnLoad()
 {
+	//Spawn camera
 	mCamera = mEcsManager->CreateEntity();
+<<<<<<< HEAD
 	Camera cam{ 60, 1, 200, true };
+=======
+	Camera cam{ 60, 1, 400 };
+>>>>>>> upstream/master
 	mEcsManager->AddCameraComp(cam, mCamera);
 	Transform trans{};
-	trans.translation = Vector4(0, 0, -100, 1);
+	trans.translation = Vector4(0, 10, -100, 1);
 	trans.scale = Vector4(1, 1, 1, 1);
 	mEcsManager->AddTransformComp(trans, mCamera);
+	//BoxCollider camBox{ trans.translation.XYZ() - Vector3(1, 2, 1), trans.translation.XYZ() + Vector3(1, 2, 1), CustomCollisionMask::PLAYER, CustomCollisionMask::PLAYER };
+	//mEcsManager->AddBoxColliderComp(camBox, mCamera);
+	//Gravity gravCam{};
+	//mEcsManager->AddGravityComp(gravCam, mCamera);
+	//Velocity velCam{};
+	//velCam.maxSpeed = 10;
+	//mEcsManager->AddVelocityComp(velCam, mCamera);
 
 	mCameraSpeed = 10.0f;
 
+	//Spawn player ship
 	mPlayer = mEcsManager->CreateEntity();
 	Geometry geo{ L"ship.obj" };
 	mEcsManager->AddGeometryComp(geo, mPlayer);
-	Shader shader{ L"defaultShader.fx" , BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
+	Shader shader{ L"defaultShader.fx" , BlendState::NOBLEND, CullState::BACK, DepthState::NONE };
 	mEcsManager->AddShaderComp(shader, mPlayer);
 	Texture texture{};
 	texture.diffuse = L"stones.dds";
 	texture.normal = L"stones_NM_height.dds";
 	mEcsManager->AddTextureComp(texture, mPlayer);
-
 	Transform transC{};
 	transC.translation = Vector4(0, 0, -50, 1);
 	transC.scale = Vector4(1, 1, 1, 1);
@@ -141,10 +163,11 @@ void GameScene::OnLoad()
 
 	mPlayerSpeed = 2.0f;
 
+	//Spawn laser gun
 	int gun = mEcsManager->CreateEntity();
 	Geometry geo2{ L"laser_gun.obj" };
 	mEcsManager->AddGeometryComp(geo2, gun);
-	Shader shader2{ L"defaultShader.fx" , BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
+	Shader shader2{ L"defaultShader.fx" , BlendState::NOBLEND, CullState::BACK, DepthState::NONE };
 	mEcsManager->AddShaderComp(shader2, gun);
 	Texture texture2{};
 	texture2.diffuse = L"stones.dds";
@@ -155,6 +178,7 @@ void GameScene::OnLoad()
 	transC2.scale = Vector4(2.0f, 2.0f, 2.0f, 1);
 	mEcsManager->AddTransformComp(transC2, gun);
 
+	//Spawn platform of cubes
 	for(int x = 0; x < 10; x++)
 	{
 		for(int z = 0; z < 10; z++)
@@ -163,18 +187,18 @@ void GameScene::OnLoad()
 
 			Geometry geom{ L"cube.obj" };
 			mEcsManager->AddGeometryComp(geom, entity);
-			Shader shaderm{ L"defaultShader.fx" , BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
+			Shader shaderm{ L"defaultShader.fx" , BlendState::NOBLEND, CullState::BACK, DepthState::NONE };
 			mEcsManager->AddShaderComp(shaderm, entity);
 			Texture texturem{};
 			texturem.diffuse = L"stones.dds";
 			texturem.normal = L"stones_NM_height.dds";
 			mEcsManager->AddTextureComp(texturem, entity);
-
 			Transform transCm{};
 			transCm.scale = Vector4(1, 1, 1, 1);
 			transCm.translation = Vector4(x * 2 - 5, -2, z * 2- 100, 1);
-
 			mEcsManager->AddTransformComp(transCm, entity);
+			BoxCollider floorBox{ transCm.translation.XYZ() - Vector3(1, 1, 1), transCm.translation.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::FLOOR, CustomCollisionMask::FLOOR };
+			mEcsManager->AddBoxColliderComp(floorBox, entity);
 		}
 	}
 
@@ -197,6 +221,19 @@ void GameScene::OnLoad()
 
 
 	mEcsManager->AddTransformComp(transCm, entity);
+
+
+	//Spawn some asteroids
+	for (int i = -20; i < 20; i++)
+	{
+		for (int j = -5; j < 5; j++)
+		{
+			for (int k = 10; k > 2; k--)
+			{
+				SpawnAsteroid(Vector4(5 * i, 5 * j, 10 * k, 1), Vector4(5, 5, 5, 1), Vector4(0, 0, 0, 1), 5, CustomCollisionMask::ASTEROID, L"stones.dds", L"stones_NM_height.dds");
+			}
+		}
+	}
 
 	//AntTweak
 
