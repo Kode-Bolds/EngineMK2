@@ -6,5 +6,6 @@ struct Ray
 	KodeboldsMath::Vector3 origin;
 	KodeboldsMath::Vector3 direction;
 	KodeboldsMath::Vector3 intersectionPoint;
-	int intersectedWith;
+	int collisionMask;
+	int ignoreCollisionMask;
 };
