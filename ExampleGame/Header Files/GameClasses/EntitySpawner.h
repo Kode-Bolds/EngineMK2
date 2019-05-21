@@ -32,7 +32,7 @@ namespace EntitySpawner
 		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
 
 		//Shader component
-		Shader shader{ L"defaultShader.fx", BlendState::ALPHABLEND, CullState::FRONT, DepthState::LESSEQUAL };
+		Shader shader{ L"defaultShader.fx", BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
 		entitySpawnerEcsManager->AddShaderComp(shader, ID);
 
 		//Light component
@@ -46,9 +46,11 @@ namespace EntitySpawner
 		trans.translation = pPosition;
 		entitySpawnerEcsManager->AddTransformComp(trans, ID);
 
+		//Texture component
 		Texture tex{};
+		tex.diffuse = L"stones.dds";
+		tex.normal = L"stones_NM_height.dds";
 		entitySpawnerEcsManager->AddTextureComp(tex, ID);
-
 
 		//Velocity component
 		Velocity vel{ pAcceleration, KodeboldsMath::Vector4(), pMaxSpeed };
@@ -90,7 +92,7 @@ namespace EntitySpawner
 		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
 		
 		//Shader component
-		Shader shader{ L"defaultShader.fx" , BlendState::ALPHABLEND, CullState::FRONT, DepthState::LESSEQUAL };
+		Shader shader{ L"defaultShader.fx" , BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
 		entitySpawnerEcsManager->AddShaderComp(shader, ID);
 
 		//Texture component
@@ -137,7 +139,7 @@ namespace EntitySpawner
 		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
 
 		//Shader component
-		Shader shader{ L"defaultShader.fx", BlendState::ALPHABLEND, CullState::FRONT, DepthState::LESSEQUAL };
+		Shader shader{ L"defaultShader.fx", BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
 		entitySpawnerEcsManager->AddShaderComp(shader, ID);
 
 		//Texture component

@@ -33,7 +33,7 @@ HRESULT VBO_DX::Create(const RenderSystem * pRenderer, const std::wstring& pFile
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = static_cast<UINT>(geometry.first.size() * sizeof(Vertex));
+	bd.ByteWidth = static_cast<UINT>(geometry.second.size() * sizeof(Vertex));
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 	D3D11_SUBRESOURCE_DATA initData;

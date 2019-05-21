@@ -99,7 +99,7 @@ void GameScene::Update()
 
 		Vector4 rightLaser = mEcsManager->TransformComp(mPlayer)->translation + Vector4(25, 5, 0, 0);
 		SpawnLaser(rightLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(0, 0, 20, 1), 40,
-			rightLaser.XYZ() - Vector3(1, 1, 1), rightLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER);
+			rightLaser.XYZ() - Vector3(1, 1, 1), rightLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER );
 	}
 }
 
@@ -121,14 +121,15 @@ void GameScene::OnLoad()
 	mPlayer = mEcsManager->CreateEntity();
 	Geometry geo{ L"ship.obj" };
 	mEcsManager->AddGeometryComp(geo, mPlayer);
-	Shader shader{ L"depthShader.fx" , BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
+	Shader shader{ L"defaultShader.fx" , BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
 	mEcsManager->AddShaderComp(shader, mPlayer);
 	Texture texture{};
 	texture.diffuse = L"stones.dds";
 	texture.normal = L"stones_NM_height.dds";
 	mEcsManager->AddTextureComp(texture, mPlayer);
-	
+
 	Transform transC{};
+	transC.translation = Vector4(0, 0, -50, 1);
 	transC.scale = Vector4(1, 1, 1, 1);
 	mEcsManager->AddTransformComp(transC, mPlayer);
 	Velocity vel{};
@@ -140,6 +141,19 @@ void GameScene::OnLoad()
 
 	mPlayerSpeed = 2.0f;
 
+	int gun = mEcsManager->CreateEntity();
+	Geometry geo2{ L"laser_gun.obj" };
+	mEcsManager->AddGeometryComp(geo2, gun);
+	Shader shader2{ L"defaultShader.fx" , BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
+	mEcsManager->AddShaderComp(shader2, gun);
+	Texture texture2{};
+	texture2.diffuse = L"stones.dds";
+	texture2.normal = L"stones_NM_height.dds";
+	mEcsManager->AddTextureComp(texture2, gun);
+	Transform transC2{};
+	transC2.translation = Vector4(0, 2, -50, 1);
+	transC2.scale = Vector4(2.0f, 2.0f, 2.0f, 1);
+	mEcsManager->AddTransformComp(transC2, gun);
 
 	for(int x = 0; x < 10; x++)
 	{
@@ -160,25 +174,38 @@ void GameScene::OnLoad()
 			transCm.scale = Vector4(1, 1, 1, 1);
 			transCm.translation = Vector4(x * 2 - 5, -2, z * 2- 100, 1);
 
-			if(x == 0 && z == 0)
-			{
-				//transCm.translation = Vector4(0, 0, -96, 1);
-
-			}
-
 			mEcsManager->AddTransformComp(transCm, entity);
-
-
 		}
 	}
+
+	//Skybox
+	int entity = mEcsManager->CreateEntity();
+
+	Geometry geom{ L"cube.obj" };
+	mEcsManager->AddGeometryComp(geom, entity);
+	Shader shaderm{ L"skyboxShader.fx" , BlendState::ALPHABLEND, CullState::FRONT, DepthState::LESSEQUAL };
+	mEcsManager->AddShaderComp(shaderm, entity);
+	Texture texturem{};
+	texturem.diffuse = L"";
+	texturem.normal = L"";
+	mEcsManager->AddTextureComp(texturem, entity);
+
+	Transform transCm{};
+	transCm.scale = Vector4(1, 1, 1, 1);
+	transCm.translation = Vector4(0,0, 0, 1);
+
+
+
+	mEcsManager->AddTransformComp(transCm, entity);
+
 	//AntTweak
-	
+
 	mGUIManager->AddBar("Testing");
 	TwDefine(" Testing size='300 320' valueswidth=200 ");
 	mGUIManager->AddVariable("Testing", "Velocity", TW_TYPE_DIR3F, &mEcsManager->VelocityComp(mPlayer)->velocity, "");
 	mGUIManager->AddVariable("Testing", "Acceleration", TW_TYPE_DIR3F, &mEcsManager->VelocityComp(mPlayer)->acceleration, "");
 	mGUIManager->AddVariable("Testing", "Max Speed", TW_TYPE_FLOAT, &mEcsManager->VelocityComp(mPlayer)->maxSpeed, "");
-	
+
 }
 
 /// <summary>
