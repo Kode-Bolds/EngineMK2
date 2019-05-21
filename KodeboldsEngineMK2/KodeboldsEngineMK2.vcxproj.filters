@@ -279,6 +279,9 @@
     <ClInclude Include="Header Files\DataStructs\CollisionMask.h">
       <Filter>Header Files\DataStructs</Filter>
     </ClInclude>
+    <ClInclude Include="Header Files\DataStructs\ConstantBuffer.h">
+      <Filter>Header Files\DataStructs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">

@@ -290,7 +290,7 @@ void RenderSystem_GL::Process()
 			//If geometry of entity is not already in the buffers, load entities geometry
 			if (mEcsManager->GeometryComp(entity.ID)->filename != mActiveGeometry)
 			{
-				mGeometry = LoadGeometry(entity);
+				LoadGeometry(entity);
 				mGeometry->Load(this);
 				mActiveGeometry = mEcsManager->GeometryComp(entity.ID)->filename;
 			}
@@ -334,54 +334,6 @@ void RenderSystem_GL::ClearView() const
 void RenderSystem_GL::SwapBuffers() const
 {
 	//mSwapChain->Present(1, 0);
-}
-
-/// <summary>
-/// Loads the geometry for the given entity into a VBO object 
-/// </summary>
-/// <param name="pEntity">Entity to load geometry for</param>
-VBO * const RenderSystem_GL::LoadGeometry(const Entity& pEntity) const
-{
-	const auto geometry = mResourceManager->LoadGeometry(this, mEcsManager->GeometryComp(pEntity.ID)->filename);
-	return geometry;
-}
-
-/// <summary>
-/// Loads the shader for the given entity into a shader object
-/// </summary>
-/// <param name="pEntity">Entity to load shader for</param>
-void RenderSystem_GL::LoadShaders(const Entity & pEntity) const
-{
-	const auto shader = mResourceManager->LoadShader(this, mEcsManager->ShaderComp(pEntity.ID)->filename);
-	shader->Load(this);
-}
-
-/// <summary>
-/// Loads the texture for the given entity into a texture object
-/// </summary>
-/// <param name="pEntity">Entity to load texture for</param>
-void RenderSystem_GL::LoadTexture(const Entity & pEntity) const
-{
-	//Loads diffuse texture from texture component
-	auto texture = mResourceManager->LoadTexture(this, mEcsManager->TextureComp(pEntity.ID)->diffuse);
-	if (texture)
-	{
-		texture->Load(this, 0);
-	}
-
-	//Loads normal map texture from texture component
-	texture = mResourceManager->LoadTexture(this, mEcsManager->TextureComp(pEntity.ID)->normal);
-	if (texture)
-	{
-		texture->Load(this, 1);
-	}
-
-	//Loads height map texture from texture component
-	texture = mResourceManager->LoadTexture(this, mEcsManager->TextureComp(pEntity.ID)->height);
-	if (texture)
-	{
-		texture->Load(this, 2);
-	}
 }
 
 /// <summary>

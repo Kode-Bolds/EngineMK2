@@ -6,25 +6,16 @@
 #include <wrl.h>
 #include <directxcolors.h>
 #include "RenderSystem.h"
-
-struct ConstantBuffer
-{
-	DirectX::XMFLOAT4X4 mWorld;
-	DirectX::XMFLOAT4X4 mView;
-	DirectX::XMFLOAT4X4 mProj;
-	DirectX::XMFLOAT4 mLightColour;
-	DirectX::XMFLOAT4 mLightPosition;
-	DirectX::XMFLOAT4 mCameraPosition;
-	DirectX::XMFLOAT4 mColour;
-};
+#include "ConstantBuffer.h"
 
 class RenderSystem_DX : public RenderSystem
 {
 private:
 	std::vector<Entity> mLights;
+	std::vector<Entity> mCameras;
 	HWND mWindow;
 	UINT mWidth{};
-	UINT height{};
+	UINT mHeight{};
 	const Entity* mActiveCamera;
 	VBO* mGeometry;
 	ConstantBuffer mCB;
@@ -77,14 +68,15 @@ private:
 
 	void ClearView() const override;
 	void SwapBuffers() const override;
-	VBO* const LoadGeometry(const Entity& pEntity) const override;
-	void LoadShaders(const Entity& pEntity) const override;
-	void LoadTexture(const Entity& pEntity) const override;
+	void LoadGeometry(const Entity& pEntity) override;
+	void LoadShaders(const Entity& pEntity) override;
+	void LoadTexture(const Entity& pEntity) override;
 
 	void SetViewProj() override;
 	void SetLights() override;
+	void SetCamera() override;
 
-	void CalculateTransform(const Entity& pEntity);
+	void CalculateTransform(const Entity& pEntity) const;
 
 public:
 	explicit RenderSystem_DX(const HWND& pWindow);
