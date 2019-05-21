@@ -11,7 +11,7 @@ using namespace KodeboldsMath;
 /// </summary>
 /// <param name="pMaxOctantSize">Given max size of octants</param>
 /// <param name="pMinOctantSize">Given min size of octants</param>
-CollisionCheckSystem::CollisionCheckSystem(const int pMaxOctantSize, const int pMinOctantSize) 
+CollisionCheckSystem::CollisionCheckSystem(const int pMaxOctantSize, const int pMinOctantSize)
 	: ISystem(std::vector<int>{ComponentType::COMPONENT_BOXCOLLIDER | ComponentType::COMPONENT_TRANSFORM,
 		ComponentType::COMPONENT_SPHERECOLLIDER | ComponentType::COMPONENT_TRANSFORM,
 		ComponentType::COMPONENT_RAY, ComponentType::COMPONENT_TRANSFORM}),
@@ -105,8 +105,8 @@ void CollisionCheckSystem::SplitRegion(OctTreeNode* const pRegion) const
 	const Vector3 center = pRegion->minBounds + halfDimension;
 
 	//Bottom left front
-	pRegion->children[0] = new OctTreeNode(pRegion, 
-		pRegion->minBounds, 
+	pRegion->children[0] = new OctTreeNode(pRegion,
+		pRegion->minBounds,
 		center);
 
 	//Bottom right front
@@ -136,7 +136,7 @@ void CollisionCheckSystem::SplitRegion(OctTreeNode* const pRegion) const
 
 	//Top right back
 	pRegion->children[6] = new OctTreeNode(pRegion,
-		center, 
+		center,
 		pRegion->maxBounds);
 
 	//Top left back
@@ -230,6 +230,13 @@ void CollisionCheckSystem::HandleCollisions(OctTreeNode * const pNode)
 				//If entity j has box collider
 				if (mEcsManager->BoxColliderComp(pNode->entities[j]))
 				{
+					//If i's ignored collision mask contains j's collision mask then continue as this collision will be ignored
+					if ((mEcsManager->BoxColliderComp(pNode->entities[i])->ignoreCollisionMask & mEcsManager->BoxColliderComp(pNode->entities[j])->collisionMask)
+						== mEcsManager->BoxColliderComp(pNode->entities[j])->collisionMask)
+					{
+						continue;
+					}
+
 					//If the entities have collided
 					if (BoxBox(mEcsManager->BoxColliderComp(pNode->entities[i]), mEcsManager->BoxColliderComp(pNode->entities[j])))
 					{
@@ -240,14 +247,22 @@ void CollisionCheckSystem::HandleCollisions(OctTreeNode * const pNode)
 						if (!mEcsManager->CollisionComp(pNode->entities[j]))
 							mEcsManager->AddCollisionComp(Collision{ pNode->entities[i] }, pNode->entities[j]);
 					}
+
 				}
 
 				//If entity j has sphere collider
 				if (mEcsManager->SphereColliderComp(pNode->entities[j]))
 				{
+					//If i's ignored collision mask contains j's collision mask then continue as this collision will be ignored
+					if ((mEcsManager->BoxColliderComp(pNode->entities[i])->ignoreCollisionMask & mEcsManager->SphereColliderComp(pNode->entities[j])->collisionMask)
+						== mEcsManager->SphereColliderComp(pNode->entities[j])->collisionMask)
+					{
+						continue;
+					}
+
 					//If the entities have collided
-					if (BoxSphere(mEcsManager->BoxColliderComp(pNode->entities[i]),
-						mEcsManager->TransformComp(pNode->entities[j])->translation.XYZ(), mEcsManager->SphereColliderComp(pNode->entities[j])))
+					if (BoxSphere(mEcsManager->BoxColliderComp(pNode->entities[i]), mEcsManager->TransformComp(pNode->entities[j])->translation.XYZ(),
+						mEcsManager->SphereColliderComp(pNode->entities[j])))
 					{
 						//Add collision component to entities
 						if (!mEcsManager->CollisionComp(pNode->entities[i]))
@@ -265,6 +280,13 @@ void CollisionCheckSystem::HandleCollisions(OctTreeNode * const pNode)
 				//If entity j has sphere collider
 				if (mEcsManager->SphereColliderComp(pNode->entities[j]))
 				{
+					//If i's ignored collision mask contains j's collision mask then continue as this collision will be ignored
+					if ((mEcsManager->SphereColliderComp(pNode->entities[i])->ignoreCollisionMask & mEcsManager->SphereColliderComp(pNode->entities[j])->collisionMask)
+						== mEcsManager->SphereColliderComp(pNode->entities[j])->collisionMask)
+					{
+						continue;
+					}
+
 					//If the entities have collided
 					if (SphereSphere(mEcsManager->TransformComp(pNode->entities[i])->translation.XYZ(), mEcsManager->SphereColliderComp(pNode->entities[i]),
 						mEcsManager->TransformComp(pNode->entities[j])->translation.XYZ(), mEcsManager->SphereColliderComp(pNode->entities[j])))
@@ -324,8 +346,8 @@ bool CollisionCheckSystem::SphereSphere(const Vector3& pSpherePosA, const Sphere
 bool CollisionCheckSystem::BoxSphere(const BoxCollider* const pBox, const Vector3& pSpherePos, const SphereCollider* const pSphere)
 {
 	return !(pBox->minBounds.X > (pSpherePos.X + pSphere->radius) || pBox->maxBounds.X < (pSpherePos.X - pSphere->radius) ||
-			 pBox->minBounds.Y > (pSpherePos.Y + pSphere->radius) || pBox->maxBounds.Y < (pSpherePos.Y - pSphere->radius) ||
-			 pBox->minBounds.Z > (pSpherePos.Z + pSphere->radius) || pBox->maxBounds.Z < (pSpherePos.Z - pSphere->radius));
+		pBox->minBounds.Y >(pSpherePos.Y + pSphere->radius) || pBox->maxBounds.Y < (pSpherePos.Y - pSphere->radius) ||
+		pBox->minBounds.Z >(pSpherePos.Z + pSphere->radius) || pBox->maxBounds.Z < (pSpherePos.Z - pSphere->radius));
 }
 
 /// <summary>
@@ -337,8 +359,8 @@ bool CollisionCheckSystem::BoxSphere(const BoxCollider* const pBox, const Vector
 bool CollisionCheckSystem::BoxBox(const BoxCollider* const pBoxA, const BoxCollider* const pBoxB)
 {
 	return !(pBoxA->minBounds.X > pBoxB->maxBounds.X || pBoxA->maxBounds.X < pBoxB->minBounds.X ||
-			 pBoxA->minBounds.Y > pBoxB->maxBounds.Y || pBoxA->maxBounds.Y < pBoxB->minBounds.Y ||
-			 pBoxA->minBounds.Z > pBoxB->maxBounds.Z || pBoxA->maxBounds.Z < pBoxB->minBounds.Z);
+		pBoxA->minBounds.Y > pBoxB->maxBounds.Y || pBoxA->maxBounds.Y < pBoxB->minBounds.Y ||
+		pBoxA->minBounds.Z > pBoxB->maxBounds.Z || pBoxA->maxBounds.Z < pBoxB->minBounds.Z);
 }
 
 /// <summary>
