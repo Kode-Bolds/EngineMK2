@@ -573,11 +573,10 @@ void RenderSystem_DX::ReAssignEntity(const Entity& pEntity)
 /// </summary>
 void RenderSystem_DX::Process()
 {
-
 	ClearView();
 
-	mGUIManager->Render();
-	mGUIManager->RenderText();
+	//mGUIManager->Render();
+	//mGUIManager->RenderText();
 
 	/*mContext->VSSetShader(nullptr, 0, 0);
 	mContext->PSSetShader(nullptr, 0, 0);
@@ -692,8 +691,6 @@ void RenderSystem_DX::Process()
 		}
 	}
 	SwapBuffers();
-
-
 }
 
 /// <summary>

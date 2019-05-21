@@ -1,6 +1,5 @@
 #include "GameScene.h"
 #include <windows.h>
-#include <memory>
 #include "Systems.h"
 #include "CustomComponents.h"
 
@@ -37,6 +36,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	std::shared_ptr<ThreadManager> threadManager = ThreadManager::Instance();
 	std::shared_ptr<NetworkManager> networkManager = NetworkManager::Instance();
 	std::shared_ptr<GUIManager> guiManager = GUIManager::Instance();
+	std::shared_ptr<ResourceManager> resourceManager = ResourceManager::Instance();
 
 	//Initialise winsock
 	networkManager->InitWinSock(9171);
@@ -65,6 +65,14 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	Transform transL{};
 	transL.translation = Vector4(0, -20, -10, 1);
 	ecsManager->AddTransformComp(transL, entityID);
+
+
+	auto test = resourceManager->LoadAudio(L"laser.wav");
+	test->Play();
+
+
+
+
 
 
 	// Testing Sprite Loading (GUI)

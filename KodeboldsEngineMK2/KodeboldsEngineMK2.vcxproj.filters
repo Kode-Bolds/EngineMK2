@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Source Files\Managers\AudioManager.cpp">
-      <Filter>Source Files\Managers</Filter>
-    </ClCompile>
     <ClCompile Include="Source Files\Systems\CollisionCheckSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
@@ -88,6 +85,7 @@
     <ClCompile Include="Source Files\KodeBoldsMath\Vector4.cpp">
       <Filter>Source Files\KodeBoldsMath</Filter>
     </ClCompile>
+    <ClCompile Include="Header Files\HelperClasses\Sound.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\Components\AI.h">
@@ -273,11 +271,11 @@
     <ClInclude Include="Header Files\HelperClasses\Text.h">
       <Filter>Header Files\HelperClasses</Filter>
     </ClInclude>
-    <ClInclude Include="Header Files\Managers\AudioManager.h">
-      <Filter>Header Files\Managers</Filter>
-    </ClInclude>
     <ClInclude Include="Header Files\DataStructs\CollisionMask.h">
       <Filter>Header Files\DataStructs</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\Sound.h">
+      <Filter>Header Files\HelperClasses</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

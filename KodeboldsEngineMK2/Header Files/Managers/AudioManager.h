@@ -1,14 +1,10 @@
 #pragma once
-#include "AntTweakBar.h"
-#include <d3d11.h>
 #include <string>
 #include <vector>
 #include <memory>
-#include <algorithm>
 #include <wrl.h>
-#include "ResourceManager.h"
-#include <CommonStates.h>
 #include <xaudio2.h>
+#include <d3d11.h>
 
 // Windows Media Foundation
 #include <mfapi.h>
@@ -23,7 +19,7 @@
 class AudioManager
 {
 private:
-	std::shared_ptr<ResourceManager> mResourceManager = ResourceManager::Instance();
+	//std::shared_ptr<ResourceManager> mResourceManager = ResourceManager::Instance();
 
 	
 	int mDeviceWidth;
@@ -31,7 +27,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Device> mDevice;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> mContext;
 
-	Microsoft::WRL::ComPtr<IXAudio2> dev;
 	IXAudio2MasteringVoice* masterVoice;
 
 	Microsoft::WRL::ComPtr<IMFAttributes> sourceReaderConfiguration;
@@ -41,6 +36,7 @@ private:
 
 public:
 	~AudioManager();
+	Microsoft::WRL::ComPtr<IXAudio2> dev;
 	
 
 	//Singleton pattern
