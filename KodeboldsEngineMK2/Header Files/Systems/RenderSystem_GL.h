@@ -30,9 +30,9 @@ private:
 
 	void ClearView() const override;
 	void SwapBuffers() const override;
-	VBO * const LoadGeometry(const Entity& pEntity) const override;
-	void LoadShaders(const Entity& pEntity) const override;
-	void LoadTexture(const Entity& pEntity) const override;
+	void LoadGeometry(const Entity& pEntity) override;
+	void LoadShaders(const Entity& pEntity) override;
+	void LoadTexture(const Entity& pEntity) override;
 
 	void SetViewProj() override;
 	void SetLights() override;

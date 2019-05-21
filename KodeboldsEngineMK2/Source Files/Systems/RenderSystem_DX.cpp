@@ -47,7 +47,7 @@ HRESULT RenderSystem_DX::Init()
 	RECT rc;
 	GetClientRect(mWindow, &rc);
 	mWidth = rc.right - rc.left;
-	height = rc.bottom - rc.top;
+	mHeight = rc.bottom - rc.top;
 
 	hr = CreateDevice();
 	if (FAILED(hr))
@@ -55,7 +55,7 @@ HRESULT RenderSystem_DX::Init()
 
 
 	//mGUIManager->Init(TW_DIRECT3D11, mDevice.Get(), mWidth, height);
-	mGUIManager->InititialiseGUI(mDevice.Get(), mContext.Get(), mWidth, height);
+	mGUIManager->InititialiseGUI(mDevice.Get(), mContext.Get(), mWidth, mHeight);
 
 
 	hr = CreateSwapChain();
@@ -88,12 +88,12 @@ HRESULT RenderSystem_DX::Init()
 	mContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//improved object reporting for finding memory leaks
-	//#ifdef _DEBUG
-	//	Microsoft::WRL::ComPtr<ID3D11Debug> DebugDevice = nullptr;
-	//	hr = mDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(DebugDevice.GetAddressOf()));
-	//
-	//	hr = DebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
-	//#endif
+#ifdef _DEBUG
+	Microsoft::WRL::ComPtr<ID3D11Debug> DebugDevice = nullptr;
+	hr = mDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(DebugDevice.GetAddressOf()));
+
+	hr = DebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+#endif
 
 	return hr;
 }
@@ -187,7 +187,7 @@ HRESULT RenderSystem_DX::CreateSwapChain()
 		DXGI_SWAP_CHAIN_DESC1 sd;
 		ZeroMemory(&sd, sizeof(sd));
 		sd.Width = mWidth;
-		sd.Height = height;
+		sd.Height = mHeight;
 		sd.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		sd.SampleDesc.Count = 1;
 		sd.SampleDesc.Quality = 0;
@@ -208,7 +208,7 @@ HRESULT RenderSystem_DX::CreateSwapChain()
 		ZeroMemory(&sd, sizeof(sd));
 		sd.BufferCount = 1;
 		sd.BufferDesc.Width = mWidth;
-		sd.BufferDesc.Height = height;
+		sd.BufferDesc.Height = mHeight;
 		sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		sd.BufferDesc.RefreshRate.Numerator = 60;
 		sd.BufferDesc.RefreshRate.Denominator = 1;
@@ -262,7 +262,7 @@ HRESULT RenderSystem_DX::CreateDepth()
 	D3D11_TEXTURE2D_DESC depthDesc;
 	ZeroMemory(&depthDesc, sizeof(depthDesc));
 	depthDesc.Width = mWidth;
-	depthDesc.Height = height;
+	depthDesc.Height = mHeight;
 	depthDesc.MipLevels = 1;
 	depthDesc.ArraySize = 1;
 	depthDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -442,7 +442,7 @@ void RenderSystem_DX::CreateViewport() const
 	// Setup the viewport
 	D3D11_VIEWPORT vp;
 	vp.Width = static_cast<float>(mWidth);
-	vp.Height = static_cast<float>(height);
+	vp.Height = static_cast<float>(mHeight);
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
 	vp.TopLeftX = 0;
@@ -500,7 +500,7 @@ void RenderSystem_DX::AssignEntity(const Entity& pEntity)
 	if ((pEntity.componentMask & mMasks[1]) == mMasks[1])
 	{
 		//If the entity has a light component then find it in the lights
-		const auto entity = find_if(mLights.begin(), mLights.end(), [&](const Entity & entity) {return entity.ID == pEntity.ID; });
+		const auto entity = find_if(mLights.begin(), mLights.end(), [&](const Entity & pEntity2) {return pEntity2.ID == pEntity.ID; });
 		if (entity == mLights.end())
 		{
 			//If not found then add it
@@ -514,13 +514,20 @@ void RenderSystem_DX::AssignEntity(const Entity& pEntity)
 	}
 
 	//If the entity is marked as a camera set it to the active camera
-	//TODO: Implement multiple cameras
 	if ((pEntity.componentMask & mMasks[2]) == mMasks[2])
 	{
-		mActiveCamera = &pEntity;
-
-		//if already in the list, then update mask
-		//mActiveCamera->componentMask = pEntity.componentMask;
+		//If the entity has a light component then find it in the lights
+		const auto entity = find_if(mCameras.begin(), mCameras.end(), [&](const Entity & pEntity2) {return pEntity2.ID == pEntity.ID; });
+		if (entity == mCameras.end())
+		{
+			//If not found then add it
+			mCameras.push_back(pEntity);
+		}
+		else
+		{
+			//If already in the list, then update mask
+			entity->componentMask = pEntity.componentMask;
+		}
 	}
 }
 
@@ -546,7 +553,7 @@ void RenderSystem_DX::ReAssignEntity(const Entity& pEntity)
 	if ((pEntity.componentMask & mMasks[1]) == mMasks[1])
 	{
 		//If the entity has a light component then find it in the lights
-		const auto entity = find_if(mLights.begin(), mLights.end(), [&](const Entity & entity) {return entity.ID == pEntity.ID; });
+		const auto entity = find_if(mLights.begin(), mLights.end(), [&](const Entity & pEntity2) {return pEntity2.ID == pEntity.ID; });
 		if (entity == mLights.end())
 		{
 			//If not found then add it
@@ -561,10 +568,30 @@ void RenderSystem_DX::ReAssignEntity(const Entity& pEntity)
 	else
 	{
 		//If the mask doesn't match then remove it (if it wasn't in the list then the remove acts as a search to confirm it is not there)
-		mLights.erase(remove_if(mLights.begin(), mLights.end(), [&](const Entity & entity) {return entity.ID == pEntity.ID; }), mLights.end());
+		mLights.erase(remove_if(mLights.begin(), mLights.end(), [&](const Entity & pEntity2) {return pEntity2.ID == pEntity.ID; }), mLights.end());
 	}
 
-	//TODO: Implement multiple cameras
+	//Checks if entity mask matches the camera mask
+	if ((pEntity.componentMask & mMasks[2]) == mMasks[2])
+	{
+		//If the entity has a light component then find it in the lights
+		const auto entity = find_if(mCameras.begin(), mCameras.end(), [&](const Entity & pEntity2) {return pEntity2.ID == pEntity.ID; });
+		if (entity == mCameras.end())
+		{
+			//If not found then add it
+			mCameras.push_back(pEntity);
+		}
+		else
+		{
+			//If already in the list, then update mask
+			entity->componentMask = pEntity.componentMask;
+		}
+	}
+	else
+	{
+		//If the mask doesn't match then remove it (if it wasn't in the list then the remove acts as a search to confirm it is not there)
+		mCameras.erase(remove_if(mCameras.begin(), mCameras.end(), [&](const Entity & pEntity2) {return pEntity2.ID == pEntity.ID; }), mCameras.end());
+	}
 }
 
 /// <summary>
@@ -573,11 +600,10 @@ void RenderSystem_DX::ReAssignEntity(const Entity& pEntity)
 /// </summary>
 void RenderSystem_DX::Process()
 {
-
 	ClearView();
 
-	mGUIManager->Render();
-	mGUIManager->RenderText();
+	//mGUIManager->Render();
+	//mGUIManager->RenderText();
 
 	/*mContext->VSSetShader(nullptr, 0, 0);
 	mContext->PSSetShader(nullptr, 0, 0);
@@ -589,13 +615,11 @@ void RenderSystem_DX::Process()
 	mContext->OMSetBlendState(nullptr, nullptr, 0);
 	mContext->OMSetDepthStencilState(nullptr, 0);
 */
-	//mContext->OMSetRenderTargets(0, nullptr, nullptr);
-	//mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
+//mContext->OMSetRenderTargets(0, nullptr, nullptr);
+//mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
 
-	if (mActiveCamera)
-	{
-		SetViewProj();
-	}
+	SetCamera();
+
 	if (!mLights.empty())
 	{
 		SetLights();
@@ -605,77 +629,16 @@ void RenderSystem_DX::Process()
 	{
 		if (entity.ID != -1)
 		{
-			CalculateTransform(entity);
 
-			//If geometry of entity is not already in the buffers, load entities geometry
-			if (mEcsManager->GeometryComp(entity.ID)->filename != mActiveGeometry)
-			{
-				mGeometry = LoadGeometry(entity);
-				mGeometry->Load(this);
-				mActiveGeometry = mEcsManager->GeometryComp(entity.ID)->filename;
-			}
+			LoadGeometry(entity);
 			LoadTexture(entity);
-			//If shader of entity is not already in the buffers, load entities shader
-			if (mEcsManager->ShaderComp(entity.ID)->filename != mActiveShader)
-			{
-				LoadShaders(entity);
-				mActiveShader = mEcsManager->ShaderComp(entity.ID)->filename;
-			}
-
-			//if the render states have changed, load the appropriate ones for this shader
-			const BlendState blend = mEcsManager->ShaderComp(entity.ID)->blendState;
-			if (blend != mActiveBlend)
-			{
-				float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-				const auto blendSample = 0xffffffff;
-				if (blend == BlendState::NOBLEND)
-				{
-					mContext->OMSetBlendState(mNoBlend.Get(), blendFactor, blendSample);
-				}
-				else if (blend == BlendState::ALPHABLEND)
-				{
-					mContext->OMSetBlendState(mAlphaBlend.Get(), blendFactor, blendSample);
-				}
-			}
-			const CullState cull = mEcsManager->ShaderComp(entity.ID)->cullState;
-			if (cull != mActiveCull)
-			{
-				if (cull == CullState::NONE)
-				{
-					mContext->RSSetState(mRastNoCullState.Get());
-				}
-				else if (cull == CullState::FRONT)
-				{
-					mContext->RSSetState(mRastFrontCullState.Get());
-				}
-				else if (cull == CullState::BACK)
-				{
-					mContext->RSSetState(mRastBackCullState.Get());
-				}
-				else if (cull == CullState::WIREFRAME)
-				{
-					mContext->RSSetState(mRastWireframeState.Get());
-				}
-			}
-
-			const DepthState depth = mEcsManager->ShaderComp(entity.ID)->depthState;
-			if (depth != mActiveDepth)
-			{
-				if (depth == DepthState::NONE)
-				{
-					mContext->OMSetDepthStencilState(mDepthNone.Get(), 1);
-				}
-				else if (depth == DepthState::LESSEQUAL)
-				{
-					mContext->OMSetDepthStencilState(mDepthLessEqual.Get(), 1);
-				}
-			}
-
+			LoadShaders(entity);
 
 			//Set world matrix
+			CalculateTransform(entity);
 			mCB.mWorld = XMFLOAT4X4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(entity.ID)->transform)));
 
-			//Set colour if colour
+			//Set colour if there is a colour component attached
 			if ((entity.componentMask & ComponentType::COMPONENT_COLOUR) == ComponentType::COMPONENT_COLOUR)
 			{
 				mCB.mColour = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->ColourComp(entity.ID)->mColour)));
@@ -692,8 +655,6 @@ void RenderSystem_DX::Process()
 		}
 	}
 	SwapBuffers();
-
-
 }
 
 /// <summary>
@@ -717,47 +678,111 @@ void RenderSystem_DX::SwapBuffers() const
 /// Loads the geometry for the given entity into a VBO object 
 /// </summary>
 /// <param name="pEntity">Entity to load geometry for</param>
-VBO* const RenderSystem_DX::LoadGeometry(const Entity& pEntity) const
+void RenderSystem_DX::LoadGeometry(const Entity& pEntity)
 {
-	const auto geometry = mResourceManager->LoadGeometry(this, mEcsManager->GeometryComp(pEntity.ID)->filename);
-	return geometry;
+	//If geometry of entity is not already in the buffers, load entities geometry
+	if (mEcsManager->GeometryComp(pEntity.ID)->filename != mActiveGeometry)
+	{
+		mGeometry = mResourceManager->LoadGeometry(this, mEcsManager->GeometryComp(pEntity.ID)->filename);
+		mGeometry->Load(this);
+		mActiveGeometry = mEcsManager->GeometryComp(pEntity.ID)->filename;
+	}
 }
 
 /// <summary>
 /// Loads the shader for the given entity into a shader object
 /// </summary>
 /// <param name="pEntity">Entity to load shader for</param>
-void RenderSystem_DX::LoadShaders(const Entity& pEntity) const
+void RenderSystem_DX::LoadShaders(const Entity& pEntity)
 {
-	const auto shader = mResourceManager->LoadShader(this, mEcsManager->ShaderComp(pEntity.ID)->filename);
-	shader->Load(this);
+	const Shader* s = mEcsManager->ShaderComp(pEntity.ID);
+	//If shader of entity is not already in the buffers, load entities shader
+	if (s->filename != mActiveShader)
+	{
+		const auto shader = mResourceManager->LoadShader(this, mEcsManager->ShaderComp(pEntity.ID)->filename);
+		shader->Load(this);
+		mActiveShader = s->filename;
+
+		//if the render states have changed, load the appropriate ones for this shader
+		const BlendState blend = s->blendState;
+		if (blend != mActiveBlend)
+		{
+			float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+			const auto blendSample = 0xffffffff;
+			if (blend == BlendState::NOBLEND)
+			{
+				mContext->OMSetBlendState(mNoBlend.Get(), blendFactor, blendSample);
+			}
+			else if (blend == BlendState::ALPHABLEND)
+			{
+				mContext->OMSetBlendState(mAlphaBlend.Get(), blendFactor, blendSample);
+			}
+		}
+
+		const CullState cull = s->cullState;
+		if (cull != mActiveCull)
+		{
+			if (cull == CullState::NONE)
+			{
+				mContext->RSSetState(mRastNoCullState.Get());
+			}
+			else if (cull == CullState::FRONT)
+			{
+				mContext->RSSetState(mRastFrontCullState.Get());
+			}
+			else if (cull == CullState::BACK)
+			{
+				mContext->RSSetState(mRastBackCullState.Get());
+			}
+			else if (cull == CullState::WIREFRAME)
+			{
+				mContext->RSSetState(mRastWireframeState.Get());
+			}
+		}
+
+		const DepthState depth = s->depthState;
+		if (depth != mActiveDepth)
+		{
+			if (depth == DepthState::NONE)
+			{
+				mContext->OMSetDepthStencilState(mDepthNone.Get(), 1);
+			}
+			else if (depth == DepthState::LESSEQUAL)
+			{
+				mContext->OMSetDepthStencilState(mDepthLessEqual.Get(), 1);
+			}
+		}
+	}
 }
 
 /// <summary>
 /// Loads the texture for the given entity into a texture object
 /// </summary>
 /// <param name="pEntity">Entity to load texture for</param>
-void RenderSystem_DX::LoadTexture(const Entity& pEntity) const
+void RenderSystem_DX::LoadTexture(const Entity& pEntity)
 {
-	//Loads diffuse texture from texture component
-	auto texture = mResourceManager->LoadTexture(this, mEcsManager->TextureComp(pEntity.ID)->diffuse);
-	if (texture)
+	if (mEcsManager->TextureComp(pEntity.ID))
 	{
-		texture->Load(this, 0);
-	}
+		//Loads diffuse texture from texture component
+		auto texture = mResourceManager->LoadTexture(this, mEcsManager->TextureComp(pEntity.ID)->diffuse);
+		if (texture)
+		{
+			texture->Load(this, 0);
+		}
 
-	//Loads normal map texture from texture component
-	texture = mResourceManager->LoadTexture(this, mEcsManager->TextureComp(pEntity.ID)->normal);
-	if (texture)
-	{
-		texture->Load(this, 1);
-	}
+		//Loads normal map texture from texture component
+		texture = mResourceManager->LoadTexture(this, mEcsManager->TextureComp(pEntity.ID)->normal);
+		if (texture)
+		{
+			texture->Load(this, 1);
+		}
 
-	//Loads height map texture from texture component
-	texture = mResourceManager->LoadTexture(this, mEcsManager->TextureComp(pEntity.ID)->height);
-	if (texture)
-	{
-		texture->Load(this, 2);
+		//Loads height map texture from texture component
+		texture = mResourceManager->LoadTexture(this, mEcsManager->TextureComp(pEntity.ID)->height);
+		if (texture)
+		{
+			texture->Load(this, 2);
+		}
 	}
 }
 
@@ -784,7 +809,7 @@ void RenderSystem_DX::SetViewProj()
 
 	//Calculates the projection matrix and sets it in the constant buffer
 	const float fov = XMConvertToRadians(mEcsManager->CameraComp(mActiveCamera->ID)->FOV);
-	const float aspectRatio = static_cast<float>(mWidth) / static_cast<float>(height);
+	const float aspectRatio = static_cast<float>(mWidth) / static_cast<float>(mHeight);
 	const float nearClip = mEcsManager->CameraComp(mActiveCamera->ID)->nearPlane;
 	const float farClip = mEcsManager->CameraComp(mActiveCamera->ID)->farPlane;
 
@@ -801,10 +826,29 @@ void RenderSystem_DX::SetLights()
 }
 
 /// <summary>
+/// Sets the currently active camera based on the active bool in the camera component (no support for multiple active cameras)
+/// </summary>
+void RenderSystem_DX::SetCamera()
+{
+	for (const auto& camera : mCameras)
+	{
+		const auto cameraComp = mEcsManager->CameraComp(camera.ID);
+		if (cameraComp->active)
+		{
+			mActiveCamera = &camera;
+		}
+	}
+	if (mActiveCamera)
+	{
+		SetViewProj();
+	}
+}
+
+/// <summary>
 /// Calculates the transform of a given entity based on the translation, rotation and scale of the entity
 /// </summary>
 /// <param name="pEntity">Given entity to calculate transform for</param>
-void RenderSystem_DX::CalculateTransform(const Entity& pEntity)
+void RenderSystem_DX::CalculateTransform(const Entity& pEntity) const
 {
 	Transform* t = mEcsManager->TransformComp(pEntity.ID);
 	const auto scale = KodeboldsMath::ScaleMatrix(t->scale);
