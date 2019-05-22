@@ -4,6 +4,347 @@ using namespace KodeboldsMath;
 using namespace EntitySpawner;
 
 /// <summary>
+/// 
+/// </summary>
+void GameScene::Movement()
+{
+	//Forward movement
+	if (mInputManager->KeyDown(KEYS::KEY_W))
+	{
+		//If ship cam is active, move ship
+		if (mEcsManager->CameraComp(mPlayerShipCam)->active)
+		{
+			mEcsManager->VelocityComp(mPlayerShip)->acceleration += mEcsManager->TransformComp(mPlayerShip)->forward * mShipSpeed;
+			mEcsManager->VelocityComp(mPlayerShipCam)->acceleration += mEcsManager->TransformComp(mPlayerShipCam)->forward * mShipSpeed;
+		}
+		//If player cam is active, move player cam
+		if (mEcsManager->CameraComp(mPlayer)->active)
+		{
+			mEcsManager->VelocityComp(mPlayer)->acceleration += mEcsManager->TransformComp(mPlayer)->forward * mPlayerSpeed;
+			mEcsManager->VelocityComp(mPlayerGun)->acceleration += mEcsManager->TransformComp(mPlayerGun)->forward * mPlayerSpeed;
+		}
+		//If free cam is active, move free cam
+		if (mEcsManager->CameraComp(mCamera)->active)
+		{
+			mEcsManager->VelocityComp(mCamera)->acceleration += mEcsManager->TransformComp(mCamera)->forward * mCameraSpeed;
+		}
+	}
+	else if (mInputManager->KeyUp(KEYS::KEY_W))
+	{
+		//If ship cam is active, move ship
+		if (mEcsManager->CameraComp(mPlayerShipCam)->active)
+		{
+			mEcsManager->VelocityComp(mPlayerShip)->acceleration -= mEcsManager->TransformComp(mPlayerShip)->forward * mShipSpeed;
+			mEcsManager->VelocityComp(mPlayerShipCam)->acceleration -= mEcsManager->TransformComp(mPlayerShipCam)->forward * mShipSpeed;
+		}
+		//If player cam is active, move player cam
+		if (mEcsManager->CameraComp(mPlayer)->active)
+		{
+			mEcsManager->VelocityComp(mPlayer)->acceleration -= mEcsManager->TransformComp(mPlayer)->forward * mPlayerSpeed;
+			mEcsManager->VelocityComp(mPlayerGun)->acceleration -= mEcsManager->TransformComp(mPlayerGun)->forward * mPlayerSpeed;
+		}
+		//If free cam is active, move free cam
+		if (mEcsManager->CameraComp(mCamera)->active)
+		{
+			mEcsManager->VelocityComp(mCamera)->acceleration -= mEcsManager->TransformComp(mCamera)->forward * mCameraSpeed;
+		}
+	}
+
+	//Backwards movement
+	if (mInputManager->KeyDown(KEYS::KEY_S))
+	{
+		//If ship cam is active, move ship
+		if (mEcsManager->CameraComp(mPlayerShipCam)->active)
+		{
+			mEcsManager->VelocityComp(mPlayerShip)->acceleration += mEcsManager->TransformComp(mPlayerShip)->forward * -mShipSpeed;
+			mEcsManager->VelocityComp(mPlayerShipCam)->acceleration += mEcsManager->TransformComp(mPlayerShipCam)->forward * -mShipSpeed;
+		}
+		//If player cam is active, move player cam
+		if (mEcsManager->CameraComp(mPlayer)->active)
+		{
+			mEcsManager->VelocityComp(mPlayer)->acceleration += mEcsManager->TransformComp(mPlayer)->forward * -mPlayerSpeed;
+			mEcsManager->VelocityComp(mPlayerGun)->acceleration += mEcsManager->TransformComp(mPlayerGun)->forward * -mPlayerSpeed;
+		}
+		//If free cam is active, move free cam
+		if (mEcsManager->CameraComp(mCamera)->active)
+		{
+			mEcsManager->VelocityComp(mCamera)->acceleration += mEcsManager->TransformComp(mCamera)->forward * -mCameraSpeed;
+		}
+	}
+	else if (mInputManager->KeyUp(KEYS::KEY_S))
+	{
+		//If ship cam is active, move ship
+		if (mEcsManager->CameraComp(mPlayerShipCam)->active)
+		{
+			mEcsManager->VelocityComp(mPlayerShip)->acceleration -= mEcsManager->TransformComp(mPlayerShip)->forward * -mShipSpeed;
+			mEcsManager->VelocityComp(mPlayerShipCam)->acceleration -= mEcsManager->TransformComp(mPlayerShipCam)->forward * -mShipSpeed;
+		}
+		//If player cam is active, move player cam
+		if (mEcsManager->CameraComp(mPlayer)->active)
+		{
+			mEcsManager->VelocityComp(mPlayer)->acceleration -= mEcsManager->TransformComp(mPlayer)->forward * -mPlayerSpeed;
+			mEcsManager->VelocityComp(mPlayerGun)->acceleration -= mEcsManager->TransformComp(mPlayerGun)->forward * -mPlayerSpeed;
+		}
+		//If free cam is active, move free cam
+		if (mEcsManager->CameraComp(mCamera)->active)
+		{
+			mEcsManager->VelocityComp(mCamera)->acceleration -= mEcsManager->TransformComp(mCamera)->forward * -mCameraSpeed;
+		}
+	}
+
+	//Left movement
+	if (mInputManager->KeyDown(KEYS::KEY_A))
+	{
+		//If ship cam is active, move ship
+		if (mEcsManager->CameraComp(mPlayerShipCam)->active)
+		{
+			mEcsManager->VelocityComp(mPlayerShip)->acceleration += mEcsManager->TransformComp(mPlayerShip)->right * -mShipSpeed;
+			mEcsManager->VelocityComp(mPlayerShipCam)->acceleration += mEcsManager->TransformComp(mPlayerShipCam)->right * -mShipSpeed;
+		}
+		//If player cam is active, move player cam
+		if (mEcsManager->CameraComp(mPlayer)->active)
+		{
+			mEcsManager->VelocityComp(mPlayer)->acceleration += mEcsManager->TransformComp(mPlayer)->right * -mPlayerSpeed;
+			mEcsManager->VelocityComp(mPlayerGun)->acceleration += mEcsManager->TransformComp(mPlayerGun)->right * -mPlayerSpeed;
+		}
+		//If free cam is active, move free cam
+		if (mEcsManager->CameraComp(mCamera)->active)
+		{
+			mEcsManager->VelocityComp(mCamera)->acceleration += mEcsManager->TransformComp(mCamera)->right * -mCameraSpeed;
+		}
+	}
+	else if (mInputManager->KeyUp(KEYS::KEY_A))
+	{
+		//If ship cam is active, move ship
+		if (mEcsManager->CameraComp(mPlayerShipCam)->active)
+		{
+			mEcsManager->VelocityComp(mPlayerShip)->acceleration -= mEcsManager->TransformComp(mPlayerShip)->right * -mShipSpeed;
+			mEcsManager->VelocityComp(mPlayerShipCam)->acceleration -= mEcsManager->TransformComp(mPlayerShipCam)->right * -mShipSpeed;
+		}
+		//If player cam is active, move player cam
+		if (mEcsManager->CameraComp(mPlayer)->active)
+		{
+			mEcsManager->VelocityComp(mPlayer)->acceleration -= mEcsManager->TransformComp(mPlayer)->right * -mPlayerSpeed;
+			mEcsManager->VelocityComp(mPlayerGun)->acceleration -= mEcsManager->TransformComp(mPlayerGun)->right * -mPlayerSpeed;
+		}
+		//If free cam is active, move free cam
+		if (mEcsManager->CameraComp(mCamera)->active)
+		{
+			mEcsManager->VelocityComp(mCamera)->acceleration -= mEcsManager->TransformComp(mCamera)->right * -mCameraSpeed;
+		}
+	}
+
+	//Right movement
+	if (mInputManager->KeyDown(KEYS::KEY_D))
+	{
+		//If ship cam is active, move ship
+		if (mEcsManager->CameraComp(mPlayerShipCam)->active)
+		{
+			mEcsManager->VelocityComp(mPlayerShip)->acceleration += mEcsManager->TransformComp(mPlayerShip)->right * mShipSpeed;
+			mEcsManager->VelocityComp(mPlayerShipCam)->acceleration += mEcsManager->TransformComp(mPlayerShipCam)->right * mShipSpeed;
+		}
+		//If player cam is active, move player cam
+		if (mEcsManager->CameraComp(mPlayer)->active)
+		{
+			mEcsManager->VelocityComp(mPlayer)->acceleration += mEcsManager->TransformComp(mPlayer)->right * mPlayerSpeed;
+			mEcsManager->VelocityComp(mPlayerGun)->acceleration += mEcsManager->TransformComp(mPlayerGun)->right * mPlayerSpeed;
+		}
+		//If free cam is active, move free cam
+		if (mEcsManager->CameraComp(mCamera)->active)
+		{
+			mEcsManager->VelocityComp(mCamera)->acceleration += mEcsManager->TransformComp(mCamera)->right * mCameraSpeed;
+		}
+	}
+	else if (mInputManager->KeyUp(KEYS::KEY_D))
+	{
+		//If ship cam is active, move ship
+		if (mEcsManager->CameraComp(mPlayerShipCam)->active)
+		{
+			mEcsManager->VelocityComp(mPlayerShip)->acceleration -= mEcsManager->TransformComp(mPlayerShip)->right * mShipSpeed;
+			mEcsManager->VelocityComp(mPlayerShipCam)->acceleration -= mEcsManager->TransformComp(mPlayerShipCam)->right * mShipSpeed;
+		}
+		//If player cam is active, move player cam
+		if (mEcsManager->CameraComp(mPlayer)->active)
+		{
+			mEcsManager->VelocityComp(mPlayer)->acceleration -= mEcsManager->TransformComp(mPlayer)->right * mPlayerSpeed;
+			mEcsManager->VelocityComp(mPlayerGun)->acceleration -= mEcsManager->TransformComp(mPlayerGun)->right * mPlayerSpeed;
+		}
+		//If free cam is active, move free cam
+		if (mEcsManager->CameraComp(mCamera)->active)
+		{
+			mEcsManager->VelocityComp(mCamera)->acceleration -= mEcsManager->TransformComp(mCamera)->right * mCameraSpeed;
+		}
+	}
+
+	//Up movement
+	if (mInputManager->KeyDown(KEYS::KEY_SPACE))
+	{
+		//If ship cam is active, move ship
+		if (mEcsManager->CameraComp(mPlayerShipCam)->active)
+		{
+			mEcsManager->VelocityComp(mPlayerShip)->acceleration += mEcsManager->TransformComp(mPlayerShip)->up * mShipSpeed;
+			mEcsManager->VelocityComp(mPlayerShipCam)->acceleration += mEcsManager->TransformComp(mPlayerShipCam)->up * mShipSpeed;
+		}
+		//If player cam is active, move player cam
+		if (mEcsManager->CameraComp(mPlayer)->active)
+		{
+			mEcsManager->VelocityComp(mPlayer)->velocity += mEcsManager->TransformComp(mPlayer)->up * mPlayerJumpSpeed;
+			mEcsManager->VelocityComp(mPlayerGun)->velocity += mEcsManager->TransformComp(mPlayerGun)->up * mPlayerJumpSpeed;
+		}
+		//If free cam is active, move free cam
+		if (mEcsManager->CameraComp(mCamera)->active)
+		{
+			mEcsManager->VelocityComp(mCamera)->acceleration += mEcsManager->TransformComp(mCamera)->up * mCameraSpeed;
+		}
+	}
+	else if (mInputManager->KeyUp(KEYS::KEY_SPACE))
+	{
+		//If ship cam is active, move ship
+		if (mEcsManager->CameraComp(mPlayerShipCam)->active)
+		{
+			mEcsManager->VelocityComp(mPlayerShip)->acceleration -= mEcsManager->TransformComp(mPlayerShip)->up * mShipSpeed;
+			mEcsManager->VelocityComp(mPlayerShipCam)->acceleration -= mEcsManager->TransformComp(mPlayerShipCam)->up * mShipSpeed;
+		}
+		//If free cam is active, move free cam
+		if (mEcsManager->CameraComp(mCamera)->active)
+		{
+			mEcsManager->VelocityComp(mCamera)->acceleration -= mEcsManager->TransformComp(mCamera)->up * mCameraSpeed;
+		}
+	}
+
+	//Down movement
+	if (mInputManager->KeyDown(KEYS::KEY_LEFT_CTRL))
+	{
+		//If ship cam is active, move ship
+		if (mEcsManager->CameraComp(mPlayerShipCam)->active)
+		{
+			mEcsManager->VelocityComp(mPlayerShip)->acceleration += mEcsManager->TransformComp(mPlayerShip)->up * -mShipSpeed;
+			mEcsManager->VelocityComp(mPlayerShipCam)->acceleration += mEcsManager->TransformComp(mPlayerShipCam)->up * -mShipSpeed;
+		}
+		//If free cam is active, move free cam
+		if (mEcsManager->CameraComp(mCamera)->active)
+		{
+			mEcsManager->VelocityComp(mCamera)->acceleration += mEcsManager->TransformComp(mCamera)->up * -mCameraSpeed;
+		}
+	}
+	else if (mInputManager->KeyUp(KEYS::KEY_LEFT_CTRL))
+	{
+		//If ship cam is active, move ship
+		if (mEcsManager->CameraComp(mPlayerShipCam)->active)
+		{
+			mEcsManager->VelocityComp(mPlayerShip)->acceleration -= mEcsManager->TransformComp(mPlayerShip)->up * -mShipSpeed;
+			mEcsManager->VelocityComp(mPlayerShipCam)->acceleration -= mEcsManager->TransformComp(mPlayerShipCam)->up * -mShipSpeed;
+		}
+		//If free cam is active, move free cam
+		if (mEcsManager->CameraComp(mCamera)->active)
+		{
+			mEcsManager->VelocityComp(mCamera)->acceleration -= mEcsManager->TransformComp(mCamera)->up * -mCameraSpeed;
+		}
+	}
+
+	//Freeze currently active camera, removing all velocity
+	if (mInputManager->KeyDown(KEYS::KEY_LEFT_SHIFT))
+	{
+		//If ship cam is active, freeze ship
+		if (mEcsManager->CameraComp(mPlayerShipCam)->active)
+		{
+			mEcsManager->VelocityComp(mPlayerShip)->velocity = Vector4(0, 0, 0, 1);
+			mEcsManager->VelocityComp(mPlayerShipCam)->velocity = Vector4(0, 0, 0, 1);
+		}
+		//If player cam is active, freeze player cam
+		if (mEcsManager->CameraComp(mPlayer)->active)
+		{
+			mEcsManager->VelocityComp(mPlayer)->velocity = Vector4(0, 0, 0, 1);
+			mEcsManager->VelocityComp(mPlayerGun)->velocity = Vector4(0, 0, 0, 1);
+		}
+		//If free cam is active, freeze free cam
+		if (mEcsManager->CameraComp(mCamera)->active)
+		{
+			mEcsManager->VelocityComp(mCamera)->velocity = Vector4(0, 0, 0, 1);
+		}
+	}
+}
+
+/// <summary>
+/// 
+/// </summary>
+void GameScene::Rotation()
+{
+	//Rotate left
+	if (mInputManager->KeyHeld(KEYS::KEY_Q))
+	{
+		//If ship cam is active, rotate ship
+		if (mEcsManager->CameraComp(mPlayerShipCam)->active)
+		{
+			mEcsManager->TransformComp(mPlayerShip)->transform *= RotationMatrixAxis(1 * mSceneManager->DeltaTime(), mEcsManager->TransformComp(mPlayerShip)->up);
+			mEcsManager->TransformComp(mPlayerShipCam)->transform *= RotationMatrixAxis(-1 * mSceneManager->DeltaTime(), mEcsManager->TransformComp(mPlayerShip)->up);
+		}
+		//If player cam is active, rotate player
+		if (mEcsManager->CameraComp(mPlayer)->active)
+		{
+			mEcsManager->TransformComp(mPlayer)->transform *= RotationMatrixAxis(1 * mSceneManager->DeltaTime(), mEcsManager->TransformComp(mPlayer)->up);
+			mEcsManager->TransformComp(mPlayerGun)->transform *= RotationMatrixAxis(-1 * mSceneManager->DeltaTime(), mEcsManager->TransformComp(mPlayer)->up);
+		}
+		//If free cam is active, rotate free cam
+		if (mEcsManager->CameraComp(mCamera)->active)
+		{
+			mEcsManager->TransformComp(mCamera)->transform *= RotationMatrixAxis(-1 * mSceneManager->DeltaTime(), mEcsManager->TransformComp(mCamera)->up);
+		}
+	}
+	//Rotate right
+	if (mInputManager->KeyHeld(KEYS::KEY_E))
+	{
+		//If ship cam is active, rotate ship
+		if (mEcsManager->CameraComp(mPlayerShipCam)->active)
+		{
+			mEcsManager->TransformComp(mPlayerShip)->transform *= RotationMatrixAxis(-1 * mSceneManager->DeltaTime(), mEcsManager->TransformComp(mPlayerShip)->up);
+			mEcsManager->TransformComp(mPlayerShipCam)->transform *= RotationMatrixAxis(1 * mSceneManager->DeltaTime(), mEcsManager->TransformComp(mPlayerShip)->up);
+		}
+		//If player cam is active, rotate player
+		if (mEcsManager->CameraComp(mPlayer)->active)
+		{
+			mEcsManager->TransformComp(mPlayer)->transform *= RotationMatrixAxis(-1 * mSceneManager->DeltaTime(), mEcsManager->TransformComp(mPlayer)->up);
+			mEcsManager->TransformComp(mPlayerGun)->transform *= RotationMatrixAxis(1 * mSceneManager->DeltaTime(), mEcsManager->TransformComp(mPlayer)->up);
+		}
+		//If free cam is active, rotate free cam
+		if (mEcsManager->CameraComp(mCamera)->active)
+		{
+			mEcsManager->TransformComp(mCamera)->transform *= RotationMatrixAxis(1 * mSceneManager->DeltaTime(), mEcsManager->TransformComp(mCamera)->up);
+		}
+	}
+}
+
+/// <summary>
+/// 
+/// </summary>
+void GameScene::Shooting()
+{
+	//Fire on left click
+	if (mInputManager->KeyDown(KEYS::MOUSE_BUTTON_LEFT))
+	{
+		//If ship cam is active, fire ship lasers
+		if (mEcsManager->CameraComp(mPlayerShipCam)->active)
+		{
+			Vector4 leftLaser = mEcsManager->TransformComp(mPlayerShip)->translation + ((mEcsManager->TransformComp(mPlayerGun)->right * -24) + (mEcsManager->TransformComp(mPlayerGun)->up * 5));
+			SpawnLaser(leftLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(0, 0, 20, 1), 40,
+				leftLaser.XYZ() - Vector3(1, 1, 1), leftLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER);
+
+			Vector4 rightLaser = mEcsManager->TransformComp(mPlayerShip)->translation + ((mEcsManager->TransformComp(mPlayerGun)->right * 24) + (mEcsManager->TransformComp(mPlayerGun)->up * 5));
+			SpawnLaser(rightLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(0, 0, 20, 1), 40,
+				rightLaser.XYZ() - Vector3(1, 1, 1), rightLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER);
+		}
+
+		//If player cam is active, fire gun
+		if (mEcsManager->CameraComp(mPlayer)->active)
+		{
+			Vector4 gunBarrel = mEcsManager->TransformComp(mPlayerGun)->translation + (mEcsManager->TransformComp(mPlayerGun)->forward * 1);
+			SpawnLaser(gunBarrel, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(0, 0, 20, 1), 40,
+				gunBarrel.XYZ() - Vector3(1, 1, 1), gunBarrel.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER);
+		}
+	}
+}
+
+/// <summary>
 /// Default constructor
 /// </summary>
 GameScene::GameScene()
@@ -22,94 +363,52 @@ GameScene::~GameScene()
 /// </summary>
 void GameScene::Update()
 {
-	//
-	if (mInputManager->KeyHeld(KEYS::KEY_W))
+	Movement();
+	Rotation();
+	Shooting();
+
+	//Switch between cameras
+	//Ship
+	if (mInputManager->KeyDown(KEYS::KEY_F1))
 	{
-		//mEcsManager->VelocityComp(mPlayer)->acceleration.Z = mPlayerSpeed;
-		mEcsManager->TransformComp(mCamera)->translation += mEcsManager->TransformComp(mCamera)->forward * mCameraSpeed * mSceneManager->DeltaTime();
+		mEcsManager->CameraComp(mPlayerShipCam)->active = true;
+		mEcsManager->CameraComp(mPlayer)->active = false;
+		mEcsManager->CameraComp(mCamera)->active = false;
 	}
-	else if (mInputManager->KeyHeld(KEYS::KEY_S))
+	//Player
+	if (mInputManager->KeyDown(KEYS::KEY_F2))
 	{
-		//mEcsManager->VelocityComp(mPlayer)->acceleration.Z = -mPlayerSpeed;
-		mEcsManager->TransformComp(mCamera)->translation -= mEcsManager->TransformComp(mCamera)->forward * mCameraSpeed * mSceneManager->DeltaTime();
+		mEcsManager->CameraComp(mPlayerShipCam)->active = false;
+		mEcsManager->CameraComp(mPlayer)->active = true;
+		mEcsManager->CameraComp(mCamera)->active = false;
 	}
-	else
+	//Free cam
+	if (mInputManager->KeyDown(KEYS::KEY_F3))
 	{
-		//mEcsManager->VelocityComp(mPlayer)->acceleration.Z = 0;
+		mEcsManager->CameraComp(mPlayerShipCam)->active = false;
+		mEcsManager->CameraComp(mPlayer)->active = false;
+		mEcsManager->CameraComp(mCamera)->active = true;
 	}
 
-	//
-	if (mInputManager->KeyHeld(KEYS::KEY_A))
+	//If player collides with floor turn off gravity and set Y velocity to 0
+	if (mEcsManager->CollisionComp(mPlayer))
 	{
-		//mEcsManager->VelocityComp(mPlayer)->acceleration.X = -mPlayerSpeed;
-		mEcsManager->TransformComp(mCamera)->translation -= mEcsManager->TransformComp(mCamera)->right * mCameraSpeed * mSceneManager->DeltaTime();
-	}
-	else if (mInputManager->KeyHeld(KEYS::KEY_D))
-	{
-		//mEcsManager->VelocityComp(mPlayer)->acceleration.X = mPlayerSpeed;
-		mEcsManager->TransformComp(mCamera)->translation += mEcsManager->TransformComp(mCamera)->right * mCameraSpeed * mSceneManager->DeltaTime();
-	}
-	else
-	{
-		//mEcsManager->VelocityComp(mPlayer)->acceleration.X = 0;
-	}
-
-	//
-	if (mInputManager->KeyHeld(KEYS::KEY_SPACE))
-	{
-		//mEcsManager->VelocityComp(mPlayer)->acceleration.Y = mPlayerSpeed;
-		mEcsManager->TransformComp(mCamera)->translation += mEcsManager->TransformComp(mCamera)->up * mCameraSpeed * mSceneManager->DeltaTime();
-	}
-	else if (mInputManager->KeyHeld(KEYS::KEY_LEFT_CTRL))
-	{
-		//mEcsManager->VelocityComp(mPlayer)->acceleration.Y = -mPlayerSpeed;
-		mEcsManager->TransformComp(mCamera)->translation -= mEcsManager->TransformComp(mCamera)->up * mCameraSpeed * mSceneManager->DeltaTime();
-	}
-	else
-	{
-		//mEcsManager->VelocityComp(mPlayer)->acceleration.Y = 0;
-	}
-
-	//
-	if (mInputManager->KeyHeld(KEYS::KEY_Q))
-	{
-		mEcsManager->TransformComp(mCamera)->rotation -= Vector4(0, 1, 0, 0) * mSceneManager->DeltaTime();
-	}
-	if (mInputManager->KeyHeld(KEYS::KEY_E))
-	{
-		mEcsManager->TransformComp(mCamera)->rotation += Vector4(0, 1, 0, 0) * mSceneManager->DeltaTime();
-	}
-
-	//
-	if (mInputManager->KeyDown(KEYS::KEY_LEFT_SHIFT))
-	{
-		mPlayerSpeed *= 2;
-	}
-	else if(mInputManager->KeyUp(KEYS::KEY_LEFT_SHIFT))
-	{
-		mPlayerSpeed /= 2;
-	}
-
-	//
-	if (mInputManager->KeyDown(KEYS::MOUSE_BUTTON_LEFT))
-	{
-		Vector4 leftLaser = mEcsManager->TransformComp(mPlayer)->translation + Vector4(-25, 5, 0, 0);
-		SpawnLaser(leftLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(0, 0, 20, 1), 40,
-			leftLaser.XYZ() - Vector3(1, 1, 1), leftLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER);
-
-		Vector4 rightLaser = mEcsManager->TransformComp(mPlayer)->translation + Vector4(25, 5, 0, 0);
-		SpawnLaser(rightLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(0, 0, 20, 1), 40,
-			rightLaser.XYZ() - Vector3(1, 1, 1), rightLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER );
-	}
-
-	//If player collides with floor
-	if (mEcsManager->CollisionComp(mCamera))
-	{
-		if (mEcsManager->CollisionComp(mCamera)->collidedEntityCollisionMask == CustomCollisionMask::FLOOR)
+		if (mEcsManager->CollisionComp(mPlayer)->collidedEntityCollisionMask == CustomCollisionMask::FLOOR)
 		{
-			mEcsManager->VelocityComp(mCamera)->velocity.Y = -mEcsManager->VelocityComp(mCamera)->velocity.Y;
-			mEcsManager->TransformComp(mCamera)->translation.Y += mEcsManager->VelocityComp(mCamera)->velocity.Y * mSceneManager->DeltaTime();
+			if (mEcsManager->GravityComp(mPlayer))
+			{
+				mEcsManager->RemoveGravityComp(mPlayer);
+				mEcsManager->VelocityComp(mPlayer)->velocity.Y = 0;
+				mEcsManager->RemoveGravityComp(mPlayerGun);
+				mEcsManager->VelocityComp(mPlayerGun)->velocity.Y = 0;
+			}
 		}
+	}
+	//Add gravity back if not colliding with floor
+	else if (!mEcsManager->GravityComp(mPlayer))
+	{
+		mEcsManager->AddGravityComp(Gravity{}, mPlayer);
+		mEcsManager->AddGravityComp(Gravity{}, mPlayerGun);
 	}
 }
 
@@ -118,62 +417,27 @@ void GameScene::Update()
 /// </summary>
 void GameScene::OnLoad()
 {
-	//Spawn camera
-	mCamera = mEcsManager->CreateEntity();
-	Camera cam{ 60, 1, 200, true };
+	//Spawn player ship and attached camera
+	mPlayerShipStartPos = Vector4(0, 0, -50, 1);
+	mPlayerShip = SpawnShip(mPlayerShipStartPos, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 40, mPlayerShipStartPos.XYZ() - Vector3(30, 30, 15), mPlayerShipStartPos.XYZ() + Vector3(30, 30, 15),
+		CustomCollisionMask::SHIP, CustomCollisionMask::SHIP | CustomCollisionMask::LASER | CustomCollisionMask::PLAYER, L"stones.dds", L"stones_NM_height.dds");
+	mPlayerShipCam = SpawnCamera(mPlayerShipStartPos + Vector4(0, 30, -70, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 60, 1, 400, 40);
+	mEcsManager->CameraComp(mPlayerShipCam)->active = true;
 
-	mEcsManager->AddCameraComp(cam, mCamera);
-	Transform trans{};
-	trans.translation = Vector4(0, 10, -100, 1);
-	trans.scale = Vector4(1, 1, 1, 1);
-	mEcsManager->AddTransformComp(trans, mCamera);
-	//BoxCollider camBox{ trans.translation.XYZ() - Vector3(1, 2, 1), trans.translation.XYZ() + Vector3(1, 2, 1), CustomCollisionMask::PLAYER, CustomCollisionMask::PLAYER };
-	//mEcsManager->AddBoxColliderComp(camBox, mCamera);
-	//Gravity gravCam{};
-	//mEcsManager->AddGravityComp(gravCam, mCamera);
-	//Velocity velCam{};
-	//velCam.maxSpeed = 10;
-	//mEcsManager->AddVelocityComp(velCam, mCamera);
+	//Spawn player camera and attached laser gun model
+	mPlayerStartPos = Vector4(0, 50, -100, 1);
+	mPlayer = SpawnPlayer(mPlayerStartPos, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 60, 1, 400, 5, mPlayerStartPos.XYZ() - Vector3(1, 2, 1), mPlayerStartPos.XYZ() + Vector3(1, 2, 1),
+		CustomCollisionMask::PLAYER, CustomCollisionMask::PLAYER | CustomCollisionMask::LASER | CustomCollisionMask::SHIP);
+	mPlayerGun = SpawnLaserGun(mPlayerStartPos + Vector4(1, -1, 3.0f, 0), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), L"stones.dds", L"stones_NM_height.dds", 5);
 
-	mCameraSpeed = 10.0f;
+	//Spawn free cam
+	mCamera = SpawnCamera(Vector4(5, 2, -100, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 60, 1, 400, 20);
 
-	//Spawn player ship
-	mPlayer = mEcsManager->CreateEntity();
-	Geometry geo{ L"ship.obj" };
-	mEcsManager->AddGeometryComp(geo, mPlayer);
-	Shader shader{ L"defaultShader.fx" , BlendState::NOBLEND, CullState::BACK, DepthState::NONE };
-	mEcsManager->AddShaderComp(shader, mPlayer);
-	Texture texture{};
-	texture.diffuse = L"stones.dds";
-	texture.normal = L"stones_NM_height.dds";
-	mEcsManager->AddTextureComp(texture, mPlayer);
-	Transform transC{};
-	transC.translation = Vector4(0, 0, -50, 1);
-	transC.scale = Vector4(1, 1, 1, 1);
-	mEcsManager->AddTransformComp(transC, mPlayer);
-	Velocity vel{};
-	vel.acceleration = Vector4(0, 0.0f, 0, 1);
-	vel.maxSpeed = 50;
-	mEcsManager->AddVelocityComp(vel, mPlayer);
-	Colour colour2{ Vector4(1, 1, 1, 1) };
-	mEcsManager->AddColourComp(colour2, mPlayer);
-
-	mPlayerSpeed = 2.0f;
-
-	//Spawn laser gun
-	int gun = mEcsManager->CreateEntity();
-	Geometry geo2{ L"laser_gun.obj" };
-	mEcsManager->AddGeometryComp(geo2, gun);
-	Shader shader2{ L"defaultShader.fx" , BlendState::NOBLEND, CullState::BACK, DepthState::NONE };
-	mEcsManager->AddShaderComp(shader2, gun);
-	Texture texture2{};
-	texture2.diffuse = L"stones.dds";
-	texture2.normal = L"stones_NM_height.dds";
-	mEcsManager->AddTextureComp(texture2, gun);
-	Transform transC2{};
-	transC2.translation = Vector4(0, 2, -50, 1);
-	transC2.scale = Vector4(2.0f, 2.0f, 2.0f, 1);
-	mEcsManager->AddTransformComp(transC2, gun);
+	//Set acceleration speeds
+	mPlayerSpeed = 10.0f;
+	mPlayerJumpSpeed = 20.0f;
+	mShipSpeed = 20.0f;
+	mCameraSpeed = 20.0f;
 
 	//Spawn platform of cubes
 	for(int x = 0; x < 10; x++)
@@ -206,17 +470,9 @@ void GameScene::OnLoad()
 	mEcsManager->AddGeometryComp(geom, entity);
 	Shader shaderm{ L"skyboxShader.fx" , BlendState::ALPHABLEND, CullState::FRONT, DepthState::LESSEQUAL };
 	mEcsManager->AddShaderComp(shaderm, entity);
-	Texture texturem{};
-	texturem.diffuse = L"";
-	texturem.normal = L"";
-	mEcsManager->AddTextureComp(texturem, entity);
-
 	Transform transCm{};
 	transCm.scale = Vector4(1, 1, 1, 1);
 	transCm.translation = Vector4(0,0, 0, 1);
-
-
-
 	mEcsManager->AddTransformComp(transCm, entity);
 
 

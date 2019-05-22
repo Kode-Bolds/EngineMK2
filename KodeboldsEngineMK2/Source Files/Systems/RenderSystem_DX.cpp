@@ -2,14 +2,6 @@
 
 using namespace DirectX;
 
-//NOT YET IMPLEMENTED:
-//Blend states
-//Depth states
-//Cull states
-//Texture loading
-//Instance rendering
-
-
 /// <summary>
 /// Constructor
 /// Sets component mask to contain a transform component, a geometry and a shader component
