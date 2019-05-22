@@ -23,9 +23,22 @@ private:
 	std::shared_ptr<GUIManager> mGUIManager = GUIManager::Instance();
 
 	int mPlayer;
+	int mPlayerGun;
+	int mPlayerShip;
+	int mPlayerShipCam;
 	int mCamera;
-	float mCameraSpeed;
 	float mPlayerSpeed;
+	float mPlayerJumpSpeed;
+	float mShipSpeed;
+	float mCameraSpeed;
+
+	KodeboldsMath::Vector4 mPlayerShipStartPos;
+	KodeboldsMath::Vector4 mPlayerStartPos;
+	KodeboldsMath::Vector4 mFreeCamStartPos;
+
+	void Movement();
+	void Rotation();
+	void Shooting();
 
 public:
 	//Structors

@@ -87,10 +87,6 @@ void MovementSystem::Process()
 				mEcsManager->BoxColliderComp(entity.ID)->minBounds += (mEcsManager->VelocityComp(entity.ID)->velocity * static_cast<float>(mSceneManager->DeltaTime())).XYZ();
 				mEcsManager->BoxColliderComp(entity.ID)->maxBounds += (mEcsManager->VelocityComp(entity.ID)->velocity * static_cast<float>(mSceneManager->DeltaTime())).XYZ();
 			}
-			if (mEcsManager->SphereColliderComp(entity.ID))
-			{
-
-			}
 		}
 	}
 }
