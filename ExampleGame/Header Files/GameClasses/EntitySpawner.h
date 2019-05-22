@@ -135,11 +135,11 @@ namespace EntitySpawner
 		int ID = entitySpawnerEcsManager->CreateEntity();
 
 		//Geometry component
-		Geometry geo{ L"asteroid.obj" };
+		Geometry geo{ L"sphere.obj" };
 		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
 
 		//Shader component
-		Shader shader{ L"defaultShader.fx", BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
+		Shader shader{ L"defaultShader.fx", BlendState::NOBLEND, CullState::BACK, DepthState::NONE };
 		entitySpawnerEcsManager->AddShaderComp(shader, ID);
 
 		//Texture component
