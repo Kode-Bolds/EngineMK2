@@ -481,18 +481,34 @@ void GameScene::OnLoad()
 		mEcsManager->AddTransformComp(transCm, particleEntity);
 	}
 
-	//Skybox
-	int entity = mEcsManager->CreateEntity();
+	{
+		//Sun
+		int entity = mEcsManager->CreateEntity();
 
-	Geometry geom{ L"cube.obj" };
-	mEcsManager->AddGeometryComp(geom, entity);
-	Shader shaderm{ L"skyboxShader.fx" , BlendState::ALPHABLEND, CullState::FRONT, DepthState::LESSEQUAL };
-	mEcsManager->AddShaderComp(shaderm, entity);
-	Transform transCm{};
-	transCm.scale = Vector4(1, 1, 1, 1);
-	transCm.translation = Vector4(0,0, 0, 1);
-	mEcsManager->AddTransformComp(transCm, entity);
+		Geometry geom{ L"sphere.obj" };
+		mEcsManager->AddGeometryComp(geom, entity);
+		Shader shaderm{ L"sunShader.fx" , BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
 
+		mEcsManager->AddShaderComp(shaderm, entity);
+		Transform transCm{};
+		transCm.scale = Vector4(100, 100, 100, 1);
+		transCm.translation = Vector4(0, 0, 1, 1);
+		mEcsManager->AddTransformComp(transCm, entity);
+	}
+
+	{
+		//Skybox
+		int entity = mEcsManager->CreateEntity();
+
+		Geometry geom{ L"cube.obj" };
+		mEcsManager->AddGeometryComp(geom, entity);
+		Shader shaderm{ L"skyboxShader.fx" , BlendState::ALPHABLEND, CullState::FRONT, DepthState::LESSEQUAL };
+		mEcsManager->AddShaderComp(shaderm, entity);
+		Transform transCm{};
+		transCm.scale = Vector4(1, 1, 1, 1);
+		transCm.translation = Vector4(0, 0, 0, 1);
+		mEcsManager->AddTransformComp(transCm, entity);
+	}
 
 	//Spawn some asteroids
 	for (int i = -20; i < 20; i++)
@@ -501,7 +517,7 @@ void GameScene::OnLoad()
 		{
 			for (int k = 10; k > 2; k--)
 			{
-				SpawnAsteroid(Vector4(5 * i, 5 * j, 10 * k, 1), Vector4(5, 5, 5, 1), Vector4(0, 0, 0, 1), 5, CustomCollisionMask::ASTEROID, L"stones.dds", L"stones_NM_height.dds");
+				SpawnAsteroid(Vector4(5 * i, 5 * j, 100 + 10 * k, 1), Vector4(5, 5, 5, 1), Vector4(0, 0, 0, 1), 5, CustomCollisionMask::ASTEROID, L"stones.dds", L"stones_NM_height.dds");
 			}
 		}
 	}
