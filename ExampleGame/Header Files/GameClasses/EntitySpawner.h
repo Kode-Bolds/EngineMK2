@@ -32,7 +32,7 @@ namespace EntitySpawner
 		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
 
 		//Shader component
-		Shader shader{ L"defaultShader.fx", BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
+		Shader shader{ L"errorShader.fx", BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
 		entitySpawnerEcsManager->AddShaderComp(shader, ID);
 
 		//Light component

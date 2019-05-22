@@ -155,9 +155,9 @@ void GameScene::OnLoad()
 	transC2.scale = Vector4(2.0f, 2.0f, 2.0f, 1);
 	mEcsManager->AddTransformComp(transC2, gun);
 
-	for(int x = 0; x < 10; x++)
+	for (int x = 0; x < 10; x++)
 	{
-		for(int z = 0; z < 10; z++)
+		for (int z = 0; z < 10; z++)
 		{
 			int entity = mEcsManager->CreateEntity();
 
@@ -172,32 +172,48 @@ void GameScene::OnLoad()
 
 			Transform transCm{};
 			transCm.scale = Vector4(1, 1, 1, 1);
-			transCm.translation = Vector4(x * 2 - 5, -2, z * 2- 100, 1);
+			transCm.translation = Vector4(x * 2 - 5, -2, z * 2 - 100, 1);
 
 			mEcsManager->AddTransformComp(transCm, entity);
 		}
 	}
+	{
+		int particleEntity = mEcsManager->CreateEntity();
+		Geometry geom{ L"quad100.obj" };
+		mEcsManager->AddGeometryComp(geom, particleEntity);
+		Shader shaderm{ L"errorShader.fx" , BlendState::ALPHABLEND, CullState::WIREFRAME, DepthState::LESSEQUAL };
+		mEcsManager->AddShaderComp(shaderm, particleEntity);
+		Texture texturem{};
+		texturem.diffuse = L"";
+		texturem.normal = L"";
+		mEcsManager->AddTextureComp(texturem, particleEntity);
 
-	//Skybox
-	int entity = mEcsManager->CreateEntity();
+		Transform transCm{};
+		transCm.scale = Vector4(1, 1, 1, 1);
+		transCm.translation = Vector4(0, 0, 0, 1);
 
-	Geometry geom{ L"cube.obj" };
-	mEcsManager->AddGeometryComp(geom, entity);
-	Shader shaderm{ L"skyboxShader.fx" , BlendState::ALPHABLEND, CullState::FRONT, DepthState::LESSEQUAL };
-	mEcsManager->AddShaderComp(shaderm, entity);
-	Texture texturem{};
-	texturem.diffuse = L"";
-	texturem.normal = L"";
-	mEcsManager->AddTextureComp(texturem, entity);
+		mEcsManager->AddTransformComp(transCm, particleEntity);
+	}
 
-	Transform transCm{};
-	transCm.scale = Vector4(1, 1, 1, 1);
-	transCm.translation = Vector4(0,0, 0, 1);
+	{
+		//Skybox
+		int entity = mEcsManager->CreateEntity();
 
+		Geometry geom{ L"cube.obj" };
+		mEcsManager->AddGeometryComp(geom, entity);
+		Shader shaderm{ L"skyboxShader.fx" , BlendState::ALPHABLEND, CullState::FRONT, DepthState::LESSEQUAL };
+		mEcsManager->AddShaderComp(shaderm, entity);
+		Texture texturem{};
+		texturem.diffuse = L"";
+		texturem.normal = L"";
+		mEcsManager->AddTextureComp(texturem, entity);
 
+		Transform transCm{};
+		transCm.scale = Vector4(1, 1, 1, 1);
+		transCm.translation = Vector4(0, 0, 0, 1);
 
-	mEcsManager->AddTransformComp(transCm, entity);
-
+		mEcsManager->AddTransformComp(transCm, entity);
+	}
 	//AntTweak
 
 	mGUIManager->AddBar("Testing");
