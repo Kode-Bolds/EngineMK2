@@ -16,11 +16,14 @@ using namespace DirectX;
 /// Initialises directX device, and cleans up directX resources if failed
 /// </summary>
 /// <param name="pWindow">A handle to the win32 window</param>
-RenderSystem_DX::RenderSystem_DX(const HWND& pWindow)
+/// <param name="pMaxLights">The maximum number of lights in the render system</param>
+RenderSystem_DX::RenderSystem_DX(const HWND& pWindow, const int pMaxLights)
 	: RenderSystem(std::vector<int>{ ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_GEOMETRY | ComponentType::COMPONENT_SHADER,
-		ComponentType::COMPONENT_LIGHT,
-		ComponentType::COMPONENT_CAMERA }),
-	mWindow(pWindow), mActiveCamera(nullptr)
+		ComponentType::COMPONENT_POINTLIGHT,
+		ComponentType::COMPONENT_DIRECTIONALLIGHT,
+		ComponentType::COMPONENT_CAMERA },
+		pMaxLights), 
+mWindow(pWindow), mActiveCamera(nullptr), mActiveGeometry(L""), mActiveShader(L"")
 {
 	if (FAILED(Init()))
 	{
@@ -472,6 +475,20 @@ HRESULT RenderSystem_DX::CreateConstantBuffers()
 	mContext->VSSetConstantBuffers(0, 1, mConstantBuffer.GetAddressOf());
 	mContext->PSSetConstantBuffers(0, 1, mConstantBuffer.GetAddressOf());
 
+	D3D11_BUFFER_DESC bufferDesc2;
+	ZeroMemory(&bufferDesc2, sizeof(bufferDesc2));
+	bufferDesc2.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc2.ByteWidth = sizeof(LightingBuffer);
+	bufferDesc2.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bufferDesc2.CPUAccessFlags = 0;
+	hr = mDevice->CreateBuffer(&bufferDesc2, nullptr, mLightingBuffer.GetAddressOf());
+	if (FAILED(hr))
+	{
+		return hr;
+	}
+	mContext->VSSetConstantBuffers(1, 1, mLightingBuffer.GetAddressOf());
+	mContext->PSSetConstantBuffers(1, 1, mLightingBuffer.GetAddressOf());
+
 	return hr;
 }
 
@@ -496,15 +513,32 @@ void RenderSystem_DX::AssignEntity(const Entity& pEntity)
 		mEntities[pEntity.ID] = pEntity;
 	}
 
-	//Checks if entity mask matches the light mask
+	//Checks if entity mask matches the point light mask
 	if ((pEntity.componentMask & mMasks[1]) == mMasks[1])
 	{
 		//If the entity has a light component then find it in the lights
-		const auto entity = find_if(mLights.begin(), mLights.end(), [&](const Entity & pEntity2) {return pEntity2.ID == pEntity.ID; });
-		if (entity == mLights.end())
+		const auto entity = find_if(mPointLights.begin(), mPointLights.end(), [&](const Entity & pEntity2) {return pEntity2.ID == pEntity.ID; });
+		if (entity == mPointLights.end())
 		{
 			//If not found then add it
-			mLights.push_back(pEntity);
+			mPointLights.push_back(pEntity);
+		}
+		else
+		{
+			//If already in the list, then update mask
+			entity->componentMask = pEntity.componentMask;
+		}
+	}
+
+	//Checks if entity mask matches the directional light mask
+	if ((pEntity.componentMask & mMasks[2]) == mMasks[2])
+	{
+		//If the entity has a light component then find it in the lights
+		const auto entity = find_if(mDirectionalLights.begin(), mDirectionalLights.end(), [&](const Entity & pEntity2) {return pEntity2.ID == pEntity.ID; });
+		if (entity == mDirectionalLights.end())
+		{
+			//If not found then add it
+			mDirectionalLights.push_back(pEntity);
 		}
 		else
 		{
@@ -514,7 +548,7 @@ void RenderSystem_DX::AssignEntity(const Entity& pEntity)
 	}
 
 	//If the entity is marked as a camera set it to the active camera
-	if ((pEntity.componentMask & mMasks[2]) == mMasks[2])
+	if ((pEntity.componentMask & mMasks[3]) == mMasks[3])
 	{
 		//If the entity has a light component then find it in the lights
 		const auto entity = find_if(mCameras.begin(), mCameras.end(), [&](const Entity & pEntity2) {return pEntity2.ID == pEntity.ID; });
@@ -549,15 +583,15 @@ void RenderSystem_DX::ReAssignEntity(const Entity& pEntity)
 		mEntities[pEntity.ID].ID = -1;
 	}
 
-	//Checks if entity mask matches the light mask
+	//Checks if entity mask matches the point light mask
 	if ((pEntity.componentMask & mMasks[1]) == mMasks[1])
 	{
 		//If the entity has a light component then find it in the lights
-		const auto entity = find_if(mLights.begin(), mLights.end(), [&](const Entity & pEntity2) {return pEntity2.ID == pEntity.ID; });
-		if (entity == mLights.end())
+		const auto entity = find_if(mPointLights.begin(), mPointLights.end(), [&](const Entity & pEntity2) {return pEntity2.ID == pEntity.ID; });
+		if (entity == mPointLights.end())
 		{
 			//If not found then add it
-			mLights.push_back(pEntity);
+			mPointLights.push_back(pEntity);
 		}
 		else
 		{
@@ -568,11 +602,33 @@ void RenderSystem_DX::ReAssignEntity(const Entity& pEntity)
 	else
 	{
 		//If the mask doesn't match then remove it (if it wasn't in the list then the remove acts as a search to confirm it is not there)
-		mLights.erase(remove_if(mLights.begin(), mLights.end(), [&](const Entity & pEntity2) {return pEntity2.ID == pEntity.ID; }), mLights.end());
+		mPointLights.erase(remove_if(mPointLights.begin(), mPointLights.end(), [&](const Entity & pEntity2) {return pEntity2.ID == pEntity.ID; }), mPointLights.end());
+	}
+
+	//Checks if entity mask matches the directional light mask
+	if ((pEntity.componentMask & mMasks[2]) == mMasks[2])
+	{
+		//If the entity has a light component then find it in the lights
+		const auto entity = find_if(mDirectionalLights.begin(), mDirectionalLights.end(), [&](const Entity & pEntity2) {return pEntity2.ID == pEntity.ID; });
+		if (entity == mDirectionalLights.end())
+		{
+			//If not found then add it
+			mDirectionalLights.push_back(pEntity);
+		}
+		else
+		{
+			//If already in the list, then update mask
+			entity->componentMask = pEntity.componentMask;
+		}
+	}
+	else
+	{
+		//If the mask doesn't match then remove it (if it wasn't in the list then the remove acts as a search to confirm it is not there)
+		mDirectionalLights.erase(remove_if(mDirectionalLights.begin(), mDirectionalLights.end(), [&](const Entity & pEntity2) {return pEntity2.ID == pEntity.ID; }), mDirectionalLights.end());
 	}
 
 	//Checks if entity mask matches the camera mask
-	if ((pEntity.componentMask & mMasks[2]) == mMasks[2])
+	if ((pEntity.componentMask & mMasks[3]) == mMasks[3])
 	{
 		//If the entity has a light component then find it in the lights
 		const auto entity = find_if(mCameras.begin(), mCameras.end(), [&](const Entity & pEntity2) {return pEntity2.ID == pEntity.ID; });
@@ -647,6 +703,7 @@ void RenderSystem_DX::Process()
 
 			//Update constant buffer
 			mContext->UpdateSubresource(mConstantBuffer.Get(), 0, nullptr, &mCB, 0, 0);
+			mContext->UpdateSubresource(mLightingBuffer.Get(), 0, nullptr, &mLightCB, 0, 0);
 
 			mGeometry->Draw(this);
 		}
@@ -696,7 +753,7 @@ void RenderSystem_DX::LoadShaders(const Entity& pEntity)
 	//If shader of entity is not already in the buffers, load entities shader
 	if (s->filename != mActiveShader)
 	{
-		const auto shader = mResourceManager->LoadShader(this, mEcsManager->ShaderComp(pEntity.ID)->filename);
+		const auto shader = mResourceManager->LoadShader(this, s->filename);
 		shader->Load(this);
 		mActiveShader = s->filename;
 
@@ -818,10 +875,30 @@ void RenderSystem_DX::SetViewProj()
 /// </summary>
 void RenderSystem_DX::SetLights()
 {
-	if (!mLights.empty())
+	mLightCB.numDirLights = mDirectionalLights.size();
+	int totalLights = 0;
+	for (int i = 0; i < mLightCB.numDirLights && totalLights <= mMaxLights; ++i)
 	{
-		mCB.mLightPosition = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mLights[0].ID)->translation)));
-		mCB.mLightColour = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->LightComp(mLights[0].ID)->mColour)));
+		const auto dlComp = mEcsManager->DirectionalLightComp(mDirectionalLights[i].ID);
+		const DirectionalLightCB dl{ 
+			XMFLOAT3(reinterpret_cast<float*>(&dlComp->mDirection)),
+			XMFLOAT4(reinterpret_cast<float*>(&dlComp->mColour))
+		};
+		mLightCB.dirLights[i] = dl;
+		++totalLights;
+	}
+
+	mLightCB.numPointLights = mPointLights.size();
+	for (int i = 0; i < mLightCB.numPointLights && totalLights <= mMaxLights; ++i)
+	{
+		const auto plComp = mEcsManager->PointLightComp(mPointLights[i].ID);
+		const PointLightCB pl{
+			XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mPointLights[i].ID)->translation))),
+			XMFLOAT4(reinterpret_cast<float*>(&plComp->mColour)),
+			plComp->mRange 
+		};
+		mLightCB.pointLights[i] = pl;
+		++totalLights;
 	}
 }
 

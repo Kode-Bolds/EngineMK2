@@ -4,14 +4,15 @@ struct DirectionalLight
 {
 	float3 direction;
 	float4 colour;
+	float padding;
 };
 
 struct Pointlight
 {
 	float4 position;
 	float4 colour;
-
 	float range;
+	float3 padding;
 };
 
 
@@ -23,24 +24,22 @@ cbuffer ConstantBuffer : register(b0)
 	float4x4 World;
 	float4x4 View;
 	float4x4 Projection;
-	float4 LightColour;
-	float4 LightPosition;
 	float4 CameraPosition;
 	float4 Colour;
-	//float4 Time;
+	float Time;
+	float3 padding;
 }
 
 //A lighting buffer would be nice, could do with setting ambient light in here too
 
 cbuffer LightingBuffer : register (b1)
 {
-	int numDirLights;
+	float numDirLights;
 	DirectionalLight dirLights[2];
 
-	int numPointLights; //5 max
+	float numPointLights; //5 max
 	Pointlight pointLights[5];
-
-	
+	float2 padding2;
 }
 
 Texture2D txDiffuse : register(t0);
@@ -143,7 +142,6 @@ float4 PS(PS_INPUT input) : SV_Target
 	noiseVal += smoothstep(0.8, 1, pow(noiseVal3, 20) );
 
 	float3 starColour = lerp(float3(1, .5, 0.025), float3(0.025, .5, 1), random(input.TexCoord)) * noiseVal;
-
 
 	float3 finalColour = starColour + smoke.rrr;
 	return float4(finalColour, 1);
