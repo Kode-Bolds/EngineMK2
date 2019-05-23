@@ -10,7 +10,7 @@ namespace EntitySpawner
 	static std::shared_ptr<ECSManager> entitySpawnerEcsManager = ECSManager::Instance();
 
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 	/// <param name="pPosition"></param>
 	/// <param name="pScale"></param>
@@ -33,7 +33,7 @@ namespace EntitySpawner
 		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
 
 		//Shader component
-		Shader shader{ L"defaultShader.fx", BlendState::NOBLEND, CullState::BACK, DepthState::NONE };
+		Shader shader{ L"errorShader.fx", BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
 		entitySpawnerEcsManager->AddShaderComp(shader, ID);
 
 		//Light component
@@ -49,10 +49,10 @@ namespace EntitySpawner
     
 		// Audio Component
 		Audio audio{};
-		audio.mSound = pSound;
+		//audio.mSound = pSound;
 		audio.active = true;
 		audio.loop = false;
-		entitySpawnerEcsManager->AddAudioComp(audio, ID);
+		//entitySpawnerEcsManager->AddAudioComp(audio, ID);
 
     //Texture component
 		Texture tex{};
@@ -76,7 +76,7 @@ namespace EntitySpawner
 	}
 
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 	/// <param name="pPosition"></param>
 	/// <param name="pScale"></param>
@@ -127,7 +127,7 @@ namespace EntitySpawner
 	}
 
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 	/// <param name="pPosition"></param>
 	/// <param name="pScale"></param>
@@ -173,7 +173,7 @@ namespace EntitySpawner
 		return ID;
 	}
 
-	static int SpawnLaserGun(const KodeboldsMath::Vector4& pPosition, const KodeboldsMath::Vector4& pScale, const KodeboldsMath::Vector4& pRotation, const std::wstring& pDiffuse, 
+	static int SpawnLaserGun(const KodeboldsMath::Vector4& pPosition, const KodeboldsMath::Vector4& pScale, const KodeboldsMath::Vector4& pRotation, const std::wstring& pDiffuse,
 		const std::wstring& pNormal, const float& pMaxSpeed)
 	{
 		int ID = entitySpawnerEcsManager->CreateEntity();

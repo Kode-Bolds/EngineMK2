@@ -4,7 +4,7 @@ using namespace KodeboldsMath;
 using namespace EntitySpawner;
 
 /// <summary>
-/// 
+///
 /// </summary>
 void GameScene::Movement()
 {
@@ -266,7 +266,7 @@ void GameScene::Movement()
 }
 
 /// <summary>
-/// 
+///
 /// </summary>
 void GameScene::Rotation()
 {
@@ -315,7 +315,7 @@ void GameScene::Rotation()
 }
 
 /// <summary>
-/// 
+///
 /// </summary>
 void GameScene::Shooting()
 {
@@ -369,7 +369,7 @@ void GameScene::Update()
 
 	//Switch between cameras
 	//Ship
-	if (mInputManager->KeyDown(KEYS::KEY_F1))
+	if (mInputManager->KeyDown(KEYS::KEY_F1)){}
 	else if (mInputManager->KeyUp(KEYS::KEY_LEFT_SHIFT))
 	{
 		mEcsManager->CameraComp(mPlayerShipCam)->active = true;
@@ -443,7 +443,7 @@ void GameScene::OnLoad()
 	mEcsManager->AddTransformComp(trans, mCamera);
 	mCameraSpeed = 10.0f;
 
-	mPlayer = mEcsManager->CreateEntity();
+	/*mPlayer = mEcsManager->CreateEntity();
 	Geometry geo{ L"ship.obj" };
 	mEcsManager->AddGeometryComp(geo, mPlayer);
 	Shader shader{ L"depthShader.fx" , BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
@@ -452,7 +452,7 @@ void GameScene::OnLoad()
 	texture.diffuse = L"stones.dds";
 	texture.normal = L"stones_NM_height.dds";
 	mEcsManager->AddTextureComp(texture, mPlayer);
-
+	*/
 	//// Audio Component
 	//Audio audio{};
 	//audio.mSound = mEngineSound;
@@ -480,7 +480,7 @@ void GameScene::OnLoad()
 
 
 	//Spawn free cam
-	mCamera = SpawnCamera(Vector4(5, 2, -100, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 60, 1, 400, 20);
+	mCamera = SpawnCamera(Vector4(5, 2, -100, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 60, 1, 10000, 50);
 
 	//Set acceleration speeds
 	mPlayerSpeed = 10.0f;
@@ -505,33 +505,60 @@ void GameScene::OnLoad()
 			mEcsManager->AddTextureComp(texturem, entity);
 			Transform transCm{};
 			transCm.scale = Vector4(1, 1, 1, 1);
+			transCm.translation = Vector4(x * 2 - 5, -2, z * 2 - 100, 1);
 
-			transCm.translation = Vector4(x * 2 - 5, -2, z * 2- 100, 1);
 			mEcsManager->AddTransformComp(transCm, entity);
 			BoxCollider floorBox{ transCm.translation.XYZ() - Vector3(1, 1, 1), transCm.translation.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::FLOOR, CustomCollisionMask::FLOOR };
 			mEcsManager->AddBoxColliderComp(floorBox, entity);
 		}
 	}
+	{
+		int particleEntity = mEcsManager->CreateEntity();
+		Geometry geom{ L"quad100.obj" };
+		mEcsManager->AddGeometryComp(geom, particleEntity);
+		Shader shaderm{ L"thrusterShader.fx" , BlendState::ALPHABLEND, CullState::FRONT, DepthState::LESSEQUAL };
+		mEcsManager->AddShaderComp(shaderm, particleEntity);
+		Texture texturem{};
+		texturem.diffuse = L"";
+		texturem.normal = L"";
+		mEcsManager->AddTextureComp(texturem, particleEntity);
 
-	//Skybox
-	int entity = mEcsManager->CreateEntity();
-			transCm.translation = Vector4(x * 2 - 5, -2, z * 2 - 100, 1);
+		Transform transCm{};
+		transCm.scale = Vector4(10, 10, 10, 10);
+		transCm.translation = Vector4(0, 0, 0, 1);
 
-			if (x == 0 && z == 0)
-			{
-				//transCm.translation = Vector4(0, 0, -96, 1);
+		mEcsManager->AddTransformComp(transCm, particleEntity);
+	}
 
-			}
+	{
+		//Sun
+		int entity = mEcsManager->CreateEntity();
 
-	Geometry geom{ L"cube.obj" };
-	mEcsManager->AddGeometryComp(geom, entity);
-	Shader shaderm{ L"skyboxShader.fx" , BlendState::ALPHABLEND, CullState::FRONT, DepthState::LESSEQUAL };
-	mEcsManager->AddShaderComp(shaderm, entity);
-	Transform transCm{};
-	transCm.scale = Vector4(1, 1, 1, 1);
-	transCm.translation = Vector4(0,0, 0, 1);
-	mEcsManager->AddTransformComp(transCm, entity);
+		Geometry geom{ L"sphere.obj" };
+		mEcsManager->AddGeometryComp(geom, entity);
+		Shader shaderm{ L"sunShader.fx" , BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
 
+		mEcsManager->AddShaderComp(shaderm, entity);
+		Transform transCm{};
+		transCm.translation = Vector4(0, 0, 1250, 1);
+
+		transCm.scale = Vector4(500, 500, 500, 1);
+		mEcsManager->AddTransformComp(transCm, entity);
+	}
+
+	{
+		//Skybox
+		int entity = mEcsManager->CreateEntity();
+
+		Geometry geom{ L"cube.obj" };
+		mEcsManager->AddGeometryComp(geom, entity);
+		Shader shaderm{ L"skyboxShader.fx" , BlendState::ALPHABLEND, CullState::FRONT, DepthState::LESSEQUAL };
+		mEcsManager->AddShaderComp(shaderm, entity);
+		Transform transCm{};
+		transCm.scale = Vector4(1, 1, 1, 1);
+		transCm.translation = Vector4(0, 0, 0, 1);
+		mEcsManager->AddTransformComp(transCm, entity);
+	}
 
 	//Spawn some asteroids
 	for (int i = -20; i < 20; i++)

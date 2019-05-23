@@ -1,17 +1,32 @@
 //--------------------------------------------------------------------------------------
 // Constant Buffer Variables
 //--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
+// Constant Buffer Variables
+//--------------------------------------------------------------------------------------
 cbuffer ConstantBuffer : register(b0)
 {
 	float4x4 World;
 	float4x4 View;
 	float4x4 Projection;
-	float4 LightColour;
-	float4 LightPosition;
 	float4 CameraPosition;
 	float4 Colour;
-	//float4 Time;
+	float Time;
+	float3 padding3;
 }
+
+//A lighting buffer would be nice, could do with setting ambient light in here too
+/*
+cbuffer LightingBuffer : register (b1)
+{
+	float numDirLights;
+	float3 padding4;
+	DirectionalLight dirLights[2];
+
+	float numPointLights; //5 max
+	float3 padding5;
+	Pointlight pointLights[5];
+}*/
 
 //cbuffer ConstantBufferUniform : register (b1)
 //{
