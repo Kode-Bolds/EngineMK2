@@ -15,8 +15,8 @@ struct ConstantBuffer
 struct DirectionalLightCB
 {
 	DirectX::XMFLOAT3 direction;
-	DirectX::XMFLOAT4 colour;
 	float padding;
+	DirectX::XMFLOAT4 colour;
 };
 
 struct PointLightCB
@@ -29,11 +29,12 @@ struct PointLightCB
 
 struct LightingBuffer
 {
-	int numDirLights;
+	float numDirLights;
+	DirectX::XMFLOAT3 padding;
 	DirectionalLightCB dirLights[2];
 
-	int numPointLights;
+	float numPointLights;
+	DirectX::XMFLOAT3 padding2;
 	PointLightCB pointLights[5];
-	DirectX::XMFLOAT2 padding;
 };
 

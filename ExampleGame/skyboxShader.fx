@@ -1,10 +1,8 @@
-
-
 struct DirectionalLight
 {
 	float3 direction;
-	float4 colour;
 	float padding;
+	float4 colour;
 };
 
 struct Pointlight
@@ -12,9 +10,8 @@ struct Pointlight
 	float4 position;
 	float4 colour;
 	float range;
-	float3 padding;
+	float3 padding2;
 };
-
 
 //--------------------------------------------------------------------------------------
 // Constant Buffer Variables
@@ -27,7 +24,7 @@ cbuffer ConstantBuffer : register(b0)
 	float4 CameraPosition;
 	float4 Colour;
 	float Time;
-	float3 padding;
+	float3 padding3;
 }
 
 //A lighting buffer would be nice, could do with setting ambient light in here too
@@ -35,11 +32,12 @@ cbuffer ConstantBuffer : register(b0)
 cbuffer LightingBuffer : register (b1)
 {
 	float numDirLights;
+	float3 padding4;
 	DirectionalLight dirLights[2];
 
 	float numPointLights; //5 max
+	float3 padding5;
 	Pointlight pointLights[5];
-	float2 padding2;
 }
 
 Texture2D txDiffuse : register(t0);

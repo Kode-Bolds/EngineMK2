@@ -489,42 +489,42 @@ void GameScene::OnLoad()
 	}
 
 	const int dLight = mEcsManager->CreateEntity();
-	DirectionalLight dl{Vector4(0,-1,-1,1), Vector4(1,0,0,1)};
+	DirectionalLight dl{Vector4(0,-1,-1,1), Vector4(0.1f,0,0,1)};
 	mEcsManager->AddDirectionalLightComp(dl, dLight);
 
 	const int dLight2 = mEcsManager->CreateEntity();
-	DirectionalLight dl2{ Vector4(1,-1,1,1), Vector4(0,1,0,1) };
+	DirectionalLight dl2{ Vector4(1,-1,1,1), Vector4(0,0.1f,0,1) };
 	mEcsManager->AddDirectionalLightComp(dl2, dLight2);
 
 	const int pLight = mEcsManager->CreateEntity();
-	PointLight pl{ Vector4(0,1,0,1), 2};
+	PointLight pl{ Vector4(0.1f,0.2f,0,1), 5};
 	mEcsManager->AddPointLightComp(pl, pLight);
 	Transform t;
-	t.translation = Vector4(0 * 2 - 5, -2, 0 * 2 - 100, 1);
-	t.scale = Vector4(1,1,1,1);
+	t.translation = Vector4(2 * 2 - 5, 0, 2 * 2 - 100, 1);
+	t.scale = Vector4(1, 1, 1, 1);
 	mEcsManager->AddTransformComp(t, pLight);
 
 	const int pLight2 = mEcsManager->CreateEntity();
-	PointLight pl2{ Vector4(0,0.5,0.3,1), 2};
+	PointLight pl2{ Vector4(0,0.2f,0.3f,1), 5};
 	mEcsManager->AddPointLightComp(pl2, pLight2);
 	Transform t2;
-	t2.translation = Vector4(10 * 2 - 5, -2, 0 * 2 - 100, 1);
+	t2.translation = Vector4(5 * 2 - 5, 0, 2 * 2 - 100, 1);
 	t2.scale = Vector4(1, 1, 1, 1);
 	mEcsManager->AddTransformComp(t2, pLight2);
 
 	const int pLight3 = mEcsManager->CreateEntity();
-	PointLight pl3{ Vector4(0.3,1,0,1), 2};
+	PointLight pl3{ Vector4(0.3f,0.1f,0,1), 5};
 	mEcsManager->AddPointLightComp(pl3, pLight3);
 	Transform t3;
-	t3.translation = Vector4(0 * 2 - 5, -2, 10 * 2 - 100, 1);
+	t3.translation = Vector4(2 * 2 - 5, 0, 5 * 2 - 100, 1);
 	t3.scale = Vector4(1, 1, 1, 1);
 	mEcsManager->AddTransformComp(t3, pLight3);
 
 	const int pLight4 = mEcsManager->CreateEntity();
-	PointLight pl4{ Vector4(0.3,0.5,0.2,1) , 2};
+	PointLight pl4{ Vector4(0.3f,0.5f,0.2f,1) , 5};
 	mEcsManager->AddPointLightComp(pl4, pLight4);
 	Transform t4;
-	t4.translation = Vector4(10 * 2 - 5, -2, 10 * 2 - 100, 1);
+	t4.translation = Vector4(5 * 2 - 5, 0, 5 * 2 - 100, 1);
 	t4.scale = Vector4(1, 1, 1, 1);
 	mEcsManager->AddTransformComp(t4, pLight4);
 

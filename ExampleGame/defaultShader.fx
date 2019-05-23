@@ -1,8 +1,8 @@
 struct DirectionalLight
 {
 	float3 direction;
-	float4 colour;
 	float padding;
+	float4 colour;
 };
 
 struct Pointlight
@@ -12,7 +12,6 @@ struct Pointlight
 	float range;
 	float3 padding2;
 };
-
 
 //--------------------------------------------------------------------------------------
 // Constant Buffer Variables
@@ -33,11 +32,12 @@ cbuffer ConstantBuffer : register(b0)
 cbuffer LightingBuffer : register (b1)
 {
 	float numDirLights;
+	float3 padding4;
 	DirectionalLight dirLights[2];
 
 	float numPointLights; //5 max
+	float3 padding5;
 	Pointlight pointLights[5];
-	float2 padding4;
 }
 
 Texture2D txDiffuse : register(t0);
@@ -145,7 +145,7 @@ float4 PS(PS_INPUT input) : SV_Target
 	for (int i = 0; i < numDirLights; ++i)
 	{
 		float4 lightColour = CalcLightColour(matDiffuse, matSpec, viewDirection, dirLights[i].direction, dirLights[i].colour, input);
-		outputCol += saturate(lightColour + outputCol);
+		outputCol = saturate(lightColour + outputCol);
 	}
 
 	//Test directional light - Remove when buffers in & uncomment above
@@ -163,7 +163,7 @@ float4 PS(PS_INPUT input) : SV_Target
 
 		float intensity = 1 - min(distance(pointLights[i].position.xyz, input.PosWorld.xyz) / pointLights[i].range, 1);
 		float4 lightColour = CalcLightColour(matDiffuse, matSpec, viewDirection, lightDir, pointLights[i].colour, input) * intensity;
-		outputCol += saturate(lightColour + outputCol);
+		outputCol = saturate(lightColour + outputCol);
 	}
 
 

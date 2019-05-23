@@ -868,12 +868,14 @@ void RenderSystem_DX::SetViewProj()
 void RenderSystem_DX::SetLights()
 {
 	mLightCB.numDirLights = mDirectionalLights.size();
+
 	int totalLights = 0;
 	for (int i = 0; i < mLightCB.numDirLights && totalLights <= mMaxLights; ++i)
 	{
 		const auto dlComp = mEcsManager->DirectionalLightComp(mDirectionalLights[i].ID);
 		const DirectionalLightCB dl{ 
 			XMFLOAT3(reinterpret_cast<float*>(&dlComp->mDirection)),
+			1.0f,
 			XMFLOAT4(reinterpret_cast<float*>(&dlComp->mColour))
 		};
 		mLightCB.dirLights[i] = dl;
@@ -887,7 +889,8 @@ void RenderSystem_DX::SetLights()
 		const PointLightCB pl{
 			XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mPointLights[i].ID)->translation))),
 			XMFLOAT4(reinterpret_cast<float*>(&plComp->mColour)),
-			plComp->mRange 
+			plComp->mRange,
+			XMFLOAT3(0,0,0)
 		};
 		mLightCB.pointLights[i] = pl;
 		++totalLights;
