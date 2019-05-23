@@ -91,6 +91,9 @@
 <<<<<<< HEAD
 =======
     <ClCompile Include="Header Files\HelperClasses\Sound.cpp" />
+<<<<<<< HEAD
+>>>>>>> parent of 96b83d6... Added sound - still refactoring
+=======
 >>>>>>> parent of 96b83d6... Added sound - still refactoring
   </ItemGroup>
   <ItemGroup>
@@ -302,6 +305,7 @@
       <Filter>Header Files\HelperClasses</Filter>
     </ClInclude>
 <<<<<<< HEAD
+<<<<<<< HEAD
     <ClInclude Include="Header Files\Systems\AudioSystem_GL.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
@@ -334,6 +338,8 @@
 =======
 >>>>>>> parent of 0f257ec... Merge branch 'master' into master
     </ClInclude>
+=======
+>>>>>>> parent of 96b83d6... Added sound - still refactoring
 =======
 >>>>>>> parent of 96b83d6... Added sound - still refactoring
   </ItemGroup>

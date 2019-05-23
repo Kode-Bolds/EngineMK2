@@ -38,6 +38,10 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	std::shared_ptr<NetworkManager> networkManager = NetworkManager::Instance();
 	std::shared_ptr<GUIManager> guiManager = GUIManager::Instance();
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	std::shared_ptr<ResourceManager> resourceManager = ResourceManager::Instance();
+>>>>>>> parent of 96b83d6... Added sound - still refactoring
 =======
 	std::shared_ptr<ResourceManager> resourceManager = ResourceManager::Instance();
 >>>>>>> parent of 96b83d6... Added sound - still refactoring
@@ -72,7 +76,10 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 96b83d6... Added sound - still refactoring
 	auto test = resourceManager->LoadAudio(L"laser.wav");
 	test->Play();
 

@@ -87,6 +87,7 @@ void GameScene::Update()
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	else if (mInputManager->KeyUp(KEYS::KEY_LEFT_SHIFT))
 =======
 }
@@ -141,6 +142,9 @@ void GameScene::Update()
 =======
 	else if(mInputManager->KeyUp(KEYS::KEY_LEFT_SHIFT))
 >>>>>>> parent of 96b83d6... Added sound - still refactoring
+=======
+	else if(mInputManager->KeyUp(KEYS::KEY_LEFT_SHIFT))
+>>>>>>> parent of 96b83d6... Added sound - still refactoring
 	{
 		mPlayerSpeed /= 2;
 	}
@@ -158,6 +162,7 @@ void GameScene::Update()
 		Vector4 rightLaser = mEcsManager->TransformComp(mPlayer)->translation + Vector4(25, 5, 0, 0);
 		SpawnLaser(rightLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(0, 0, 20, 1), 40,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			rightLaser.XYZ() - Vector3(1, 1, 1), rightLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER, mLaserSound);
 =======
 		mEcsManager->AddGravityComp(Gravity{}, mPlayer);
@@ -174,6 +179,9 @@ void GameScene::Update()
 =======
 			rightLaser.XYZ() - Vector3(1, 1, 1), rightLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER);
 >>>>>>> parent of 96b83d6... Added sound - still refactoring
+=======
+			rightLaser.XYZ() - Vector3(1, 1, 1), rightLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER);
+>>>>>>> parent of 96b83d6... Added sound - still refactoring
 	}
 }
 
@@ -186,10 +194,13 @@ void GameScene::OnLoad()
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	// Audio Files
 	mLaserSound = resourceManager->LoadAudio(L"laser.wav");
 	mEngineSound = resourceManager->LoadAudio(L"engine.wav");
 
+=======
+>>>>>>> parent of 96b83d6... Added sound - still refactoring
 =======
 >>>>>>> parent of 96b83d6... Added sound - still refactoring
 	mCamera = mEcsManager->CreateEntity();
@@ -225,6 +236,7 @@ void GameScene::OnLoad()
 	mPlayerSpeed = 2.0f;
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for (int x = 0; x < 10; x++)
 =======
@@ -266,6 +278,9 @@ void GameScene::OnLoad()
 =======
 	for(int x = 0; x < 10; x++)
 >>>>>>> parent of 96b83d6... Added sound - still refactoring
+=======
+	for(int x = 0; x < 10; x++)
+>>>>>>> parent of 96b83d6... Added sound - still refactoring
 	{
 		for(int z = 0; z < 10; z++)
 		{
@@ -286,7 +301,11 @@ void GameScene::OnLoad()
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			transCm.translation = Vector4(x * 2 - 5, -2, z * 2 - 100, 1);
+=======
+			transCm.translation = Vector4(x * 2 - 5, -2, z * 2- 100, 1);
+>>>>>>> parent of 96b83d6... Added sound - still refactoring
 =======
 			transCm.translation = Vector4(x * 2 - 5, -2, z * 2- 100, 1);
 >>>>>>> parent of 96b83d6... Added sound - still refactoring

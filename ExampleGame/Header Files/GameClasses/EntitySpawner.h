@@ -50,6 +50,7 @@ namespace EntitySpawner
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		// Audio Component
 		Audio audio{};
 		audio.mSound = pSound;
@@ -66,6 +67,8 @@ namespace EntitySpawner
 =======
 		//Texture component
 >>>>>>> parent of 0f257ec... Merge branch 'master' into master
+=======
+>>>>>>> parent of 96b83d6... Added sound - still refactoring
 =======
 >>>>>>> parent of 96b83d6... Added sound - still refactoring
 		Texture tex{};

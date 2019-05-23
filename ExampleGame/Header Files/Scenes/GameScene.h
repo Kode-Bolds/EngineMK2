@@ -30,6 +30,7 @@ private:
 =======
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	KodeboldsMath::Vector4 mPlayerShipStartPos;
 	KodeboldsMath::Vector4 mPlayerStartPos;
 	KodeboldsMath::Vector4 mFreeCamStartPos;
@@ -39,6 +40,8 @@ private:
 	void Shooting();
 >>>>>>> parent of 0f257ec... Merge branch 'master' into master
 
+=======
+>>>>>>> parent of 96b83d6... Added sound - still refactoring
 =======
 >>>>>>> parent of 96b83d6... Added sound - still refactoring
 public:
