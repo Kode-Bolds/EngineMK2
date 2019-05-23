@@ -467,7 +467,7 @@ void GameScene::OnLoad()
 		int particleEntity = mEcsManager->CreateEntity();
 		Geometry geom{ L"quad100.obj" };
 		mEcsManager->AddGeometryComp(geom, particleEntity);
-		Shader shaderm{ L"errorShader.fx" , BlendState::ALPHABLEND, CullState::WIREFRAME, DepthState::LESSEQUAL };
+		Shader shaderm{ L"thrusterShader.fx" , BlendState::ALPHABLEND, CullState::FRONT, DepthState::LESSEQUAL };
 		mEcsManager->AddShaderComp(shaderm, particleEntity);
 		Texture texturem{};
 		texturem.diffuse = L"";
@@ -475,7 +475,7 @@ void GameScene::OnLoad()
 		mEcsManager->AddTextureComp(texturem, particleEntity);
 
 		Transform transCm{};
-		transCm.scale = Vector4(1, 1, 1, 1);
+		transCm.scale = Vector4(10, 10, 10, 10);
 		transCm.translation = Vector4(0, 0, 0, 1);
 
 		mEcsManager->AddTransformComp(transCm, particleEntity);
@@ -487,7 +487,7 @@ void GameScene::OnLoad()
 
 		Geometry geom{ L"sphere.obj" };
 		mEcsManager->AddGeometryComp(geom, entity);
-		Shader shaderm{ L"sunShader.fx" , BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
+		Shader shaderm{ L"sunShader.fx" , BlendState::ALPHABLEND, CullState::BACK, DepthState::NONE };
 
 		mEcsManager->AddShaderComp(shaderm, entity);
 		Transform transCm{};
