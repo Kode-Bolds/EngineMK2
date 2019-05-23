@@ -1001,6 +1001,7 @@
   <ItemGroup>
     <ClCompile Include="Source Files\main.cpp" />
     <ClCompile Include="Source Files\Scenes\GameScene.cpp" />
+    <ClCompile Include="Source Files\Systems\CollisionResponseSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\Components\CustomComp1.h" />
@@ -1010,6 +1011,7 @@
     <ClInclude Include="Header Files\CustomCollisionMask.h" />
     <ClInclude Include="Header Files\GameClasses\EntitySpawner.h" />
     <ClInclude Include="Header Files\Scenes\GameScene.h" />
+    <ClInclude Include="Header Files\Systems\CollisionResponseSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="crosshair.png" />

@@ -104,6 +104,9 @@
     <ClCompile Include="Source Files\Scenes\GameScene.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Source Files\Systems\CollisionResponseSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\Scenes\GameScene.h">
@@ -126,6 +129,9 @@
     </ClInclude>
     <ClInclude Include="Header Files\GameClasses\EntitySpawner.h">
       <Filter>Header Files\GameClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Systems\CollisionResponseSystem.h">
+      <Filter>Header Files\Systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

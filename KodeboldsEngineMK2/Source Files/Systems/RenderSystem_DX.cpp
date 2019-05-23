@@ -683,6 +683,9 @@ void RenderSystem_DX::Process()
 			CalculateTransform(entity);
 			mCB.mWorld = XMFLOAT4X4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(entity.ID)->transform)));
 
+			//Set time
+			mCB.time = static_cast<float>(mSceneManager->Time());
+
 			//Set colour if there is a colour component attached
 			if ((entity.componentMask & ComponentType::COMPONENT_COLOUR) == ComponentType::COMPONENT_COLOUR)
 			{
@@ -929,7 +932,7 @@ void RenderSystem_DX::CalculateTransform(const Entity& pEntity) const
 		* KodeboldsMath::RotationMatrixY(t->rotation.Y)
 		* KodeboldsMath::RotationMatrixZ(t->rotation.Z);
 
-	t->transform = scale * rotation * translation;
+	t->transform = translation * rotation * scale;
 	t->forward = KodeboldsMath::Vector4(t->transform._31, t->transform._32, t->transform._33, 1.0f).Normalise();
 	t->up = KodeboldsMath::Vector4(t->transform._21, t->transform._22, t->transform._23, 1.0f).Normalise();
 	t->right = KodeboldsMath::Vector4(t->transform._11, t->transform._12, t->transform._13, 1.0f).Normalise();

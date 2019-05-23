@@ -2,6 +2,7 @@
 #include <windows.h>
 #include "Systems.h"
 #include "CustomComponents.h"
+#include "CollisionResponseSystem.h"
 
 #pragma comment(lib, "KodeboldsEngineMK2.lib")
 
@@ -56,7 +57,8 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 #endif
 
 	ecsManager->AddUpdateSystem(std::make_shared<MovementSystem>());
-	ecsManager->AddUpdateSystem(std::make_shared<CollisionCheckSystem>(500, 50));
+	ecsManager->AddUpdateSystem(std::make_shared<CollisionCheckSystem>(1000, 50));
+	ecsManager->AddUpdateSystem(std::make_shared<CollisionResponseSystem>());
 
 	// Audio systems
 #ifdef DIRECTX

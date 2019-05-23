@@ -7,6 +7,7 @@
 #include "ResourceManager.h"
 #include "Vector4.h"
 #include "Components.h"
+#include "SceneManager.h"
 
 class RenderSystem : public ISystem
 {
@@ -16,6 +17,7 @@ protected:
 	std::shared_ptr<GUIManager> mGUIManager = GUIManager::Instance();
 	std::shared_ptr<ECSManager> mEcsManager = ECSManager::Instance();
 	std::shared_ptr<ResourceManager>  mResourceManager = ResourceManager::Instance();
+	std::shared_ptr<SceneManager> mSceneManager = SceneManager::Instance();
 
 	int mMaxLights;
 
