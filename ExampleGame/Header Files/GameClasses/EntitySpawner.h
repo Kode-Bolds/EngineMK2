@@ -23,7 +23,7 @@ namespace EntitySpawner
 	/// <param name="pIgnoreCollisionMask"></param>
 	/// <returns></returns>
 	static int SpawnLaser(const KodeboldsMath::Vector4& pPosition, const KodeboldsMath::Vector4& pScale, const KodeboldsMath::Vector4& pRotation, const KodeboldsMath::Vector4& pColour,
-		const KodeboldsMath::Vector4& pAcceleration, const float& pMaxSpeed, const KodeboldsMath::Vector3& pBoxMin, const KodeboldsMath::Vector3& pBoxMax, const int pIgnoreCollisionMask, Sound* pSound)
+		const KodeboldsMath::Vector4& pAcceleration, const float& pMaxSpeed, const KodeboldsMath::Vector3& pBoxMin, const KodeboldsMath::Vector3& pBoxMax, const int pIgnoreCollisionMask)
 	{
 		int ID = entitySpawnerEcsManager->CreateEntity();
 
@@ -46,6 +46,7 @@ namespace EntitySpawner
 		trans.translation = pPosition;
 		entitySpawnerEcsManager->AddTransformComp(trans, ID);
 
+<<<<<<< HEAD
 		// Audio Component
 		Audio audio{};
 		audio.mSound = pSound;
@@ -53,6 +54,9 @@ namespace EntitySpawner
 		audio.loop = false;
 		entitySpawnerEcsManager->AddAudioComp(audio, ID);
 
+=======
+		//Texture component
+>>>>>>> parent of 0f257ec... Merge branch 'master' into master
 		Texture tex{};
 		entitySpawnerEcsManager->AddTextureComp(tex, ID);
 

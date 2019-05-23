@@ -85,7 +85,38 @@ void GameScene::Update()
 	{
 		mPlayerSpeed *= 2;
 	}
+<<<<<<< HEAD
 	else if (mInputManager->KeyUp(KEYS::KEY_LEFT_SHIFT))
+=======
+}
+
+/// <summary>
+/// Default constructor
+/// </summary>
+GameScene::GameScene()
+{
+}
+
+/// <summary>
+/// Default destructor
+/// </summary>
+GameScene::~GameScene()
+{
+}
+
+/// <summary>
+/// Update loop for the scene
+/// </summary>
+void GameScene::Update()
+{
+	Movement();
+	Rotation();
+	Shooting();
+
+	//Switch between cameras
+	//Ship
+	if (mInputManager->KeyDown(KEYS::KEY_F1))
+>>>>>>> parent of 0f257ec... Merge branch 'master' into master
 	{
 		mPlayerSpeed /= 2;
 	}
@@ -93,6 +124,7 @@ void GameScene::Update()
 	//
 	if (mInputManager->KeyDown(KEYS::MOUSE_BUTTON_LEFT))
 	{
+<<<<<<< HEAD
 		Vector4 leftLaser = mEcsManager->TransformComp(mPlayer)->translation + Vector4(-25, 5, 0, 0);
 		SpawnLaser(leftLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(0, 0, 20, 1), 40,
 			leftLaser.XYZ() - Vector3(1, 1, 1), leftLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER, mLaserSound);
@@ -100,6 +132,10 @@ void GameScene::Update()
 		Vector4 rightLaser = mEcsManager->TransformComp(mPlayer)->translation + Vector4(25, 5, 0, 0);
 		SpawnLaser(rightLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(0, 0, 20, 1), 40,
 			rightLaser.XYZ() - Vector3(1, 1, 1), rightLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER, mLaserSound);
+=======
+		mEcsManager->AddGravityComp(Gravity{}, mPlayer);
+		mEcsManager->AddGravityComp(Gravity{}, mPlayerGun);
+>>>>>>> parent of 0f257ec... Merge branch 'master' into master
 	}
 }
 
@@ -108,6 +144,7 @@ void GameScene::Update()
 /// </summary>
 void GameScene::OnLoad()
 {
+<<<<<<< HEAD
 	// Audio Files
 	mLaserSound = resourceManager->LoadAudio(L"laser.wav");
 	mEngineSound = resourceManager->LoadAudio(L"engine.wav");
@@ -152,8 +189,34 @@ void GameScene::OnLoad()
 
 
 	for (int x = 0; x < 10; x++)
+=======
+	//Spawn player ship and attached camera
+	mPlayerShipStartPos = Vector4(0, 0, -50, 1);
+	mPlayerShip = SpawnShip(mPlayerShipStartPos, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 40, mPlayerShipStartPos.XYZ() - Vector3(30, 30, 15), mPlayerShipStartPos.XYZ() + Vector3(30, 30, 15),
+		CustomCollisionMask::SHIP, CustomCollisionMask::SHIP | CustomCollisionMask::LASER | CustomCollisionMask::PLAYER, L"stones.dds", L"stones_NM_height.dds");
+	mPlayerShipCam = SpawnCamera(mPlayerShipStartPos + Vector4(0, 30, -70, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 60, 1, 400, 40);
+	mEcsManager->CameraComp(mPlayerShipCam)->active = true;
+
+	//Spawn player camera and attached laser gun model
+	mPlayerStartPos = Vector4(0, 50, -100, 1);
+	mPlayer = SpawnPlayer(mPlayerStartPos, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 60, 1, 400, 5, mPlayerStartPos.XYZ() - Vector3(1, 2, 1), mPlayerStartPos.XYZ() + Vector3(1, 2, 1),
+		CustomCollisionMask::PLAYER, CustomCollisionMask::PLAYER | CustomCollisionMask::LASER | CustomCollisionMask::SHIP);
+	mPlayerGun = SpawnLaserGun(mPlayerStartPos + Vector4(1, -1, 3.0f, 0), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), L"stones.dds", L"stones_NM_height.dds", 5);
+
+	//Spawn free cam
+	mCamera = SpawnCamera(Vector4(5, 2, -100, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 60, 1, 400, 20);
+
+	//Set acceleration speeds
+	mPlayerSpeed = 10.0f;
+	mPlayerJumpSpeed = 20.0f;
+	mShipSpeed = 20.0f;
+	mCameraSpeed = 20.0f;
+
+	//Spawn platform of cubes
+	for(int x = 0; x < 10; x++)
+>>>>>>> parent of 0f257ec... Merge branch 'master' into master
 	{
-		for (int z = 0; z < 10; z++)
+		for(int z = 0; z < 10; z++)
 		{
 			int entity = mEcsManager->CreateEntity();
 
@@ -168,6 +231,7 @@ void GameScene::OnLoad()
 
 			Transform transCm{};
 			transCm.scale = Vector4(1, 1, 1, 1);
+<<<<<<< HEAD
 			transCm.translation = Vector4(x * 2 - 5, -2, z * 2 - 100, 1);
 
 			if (x == 0 && z == 0)
@@ -175,6 +239,17 @@ void GameScene::OnLoad()
 				//transCm.translation = Vector4(0, 0, -96, 1);
 
 			}
+=======
+			transCm.translation = Vector4(x * 2 - 5, -2, z * 2- 100, 1);
+			mEcsManager->AddTransformComp(transCm, entity);
+			BoxCollider floorBox{ transCm.translation.XYZ() - Vector3(1, 1, 1), transCm.translation.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::FLOOR, CustomCollisionMask::FLOOR };
+			mEcsManager->AddBoxColliderComp(floorBox, entity);
+		}
+	}
+
+	//Skybox
+	int entity = mEcsManager->CreateEntity();
+>>>>>>> parent of 0f257ec... Merge branch 'master' into master
 
 			mEcsManager->AddTransformComp(transCm, entity);
 

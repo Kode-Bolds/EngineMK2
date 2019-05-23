@@ -15,8 +15,6 @@
 #include "TextureObject_GL.h"
 #include "ECSManager.h"
 #include "Sprite.h"
-#include <Audio.h>
-#include "Sound.h"
 
 class RenderSystem;
 
@@ -29,29 +27,24 @@ class ResourceManager
 	//std::vector< std::pair< string, AUDIOBUFFER>> mSounds;
 
 
+
 	//Private constructor for singleton pattern
 	ResourceManager();
 
 public:
 	~ResourceManager();
 
-	std::vector<std::pair<std::wstring, Sound*>> mSounds;
 	std::vector<std::pair<std::wstring, Sprite>> mSprites{};
 	//Singleton pattern
 	//Deleted copy constructor and assignment operator so no copies of the singleton instance can be made
 	ResourceManager(const ResourceManager& pResourceManager) = delete;
 	ResourceManager& operator=(ResourceManager const&) = delete;
 
-	const TextureObject* const LoadTexture(const RenderSystem* const pRenderer, const std::wstring& pFilename);
-	VBO* const LoadGeometry(const RenderSystem* const pRenderer, const std::wstring& pFilename);
+	const TextureObject * const LoadTexture(const RenderSystem * const pRenderer, const std::wstring& pFilename);
+	VBO * const LoadGeometry(const RenderSystem * const pRenderer, const std::wstring& pFilename);
 	//AUDIOBUFFER LoadAudio(string filename);
-	const ShaderObject* const LoadShader(const RenderSystem* const pRenderer, const std::wstring& pFilename);
-
+	const ShaderObject * const LoadShader(const RenderSystem * const pRenderer, const std::wstring& pFilename);
 
 	static std::shared_ptr< ResourceManager > Instance();
-
-	DirectX::AUDIO_ENGINE_FLAGS eflags = DirectX::AUDIO_ENGINE_FLAGS::AudioEngine_Default;
-	std::unique_ptr<DirectX::AudioEngine> mAudEngine = std::make_unique<DirectX::AudioEngine>(eflags);
-	Sound* LoadAudio(std::wstring pFileName);
 };
 
