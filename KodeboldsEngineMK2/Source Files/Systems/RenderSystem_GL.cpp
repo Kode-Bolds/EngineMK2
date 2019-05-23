@@ -14,7 +14,13 @@
 /// Initialises directX device, and cleans up directX resources if failed
 /// </summary>
 /// <param name="pWindow">A handle to the win32 window</param>
-RenderSystem_GL::RenderSystem_GL(const HWND& pWindow) : RenderSystem(std::vector<int>{ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_GEOMETRY | ComponentType::COMPONENT_SHADER | ComponentType::COMPONENT_COLOUR}),
+/// <param name="pMaxLights">the maximum number of lights in this renderer</param>
+RenderSystem_GL::RenderSystem_GL(const HWND& pWindow, const int pMaxLights) 
+ : RenderSystem(std::vector<int>{ ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_GEOMETRY | ComponentType::COMPONENT_SHADER,
+	ComponentType::COMPONENT_POINTLIGHT,
+	ComponentType::COMPONENT_DIRECTIONALLIGHT,
+	ComponentType::COMPONENT_CAMERA },
+	pMaxLights),
 mWindow(pWindow), mActiveCamera(nullptr)
 {
 	if (FAILED(Init()))
@@ -197,7 +203,7 @@ void RenderSystem_GL::AssignEntity(const Entity & pEntity)
 	}
 
 	//Checks if entity mask matches the light mask
-	if ((pEntity.componentMask & ComponentType::COMPONENT_LIGHT) == ComponentType::COMPONENT_LIGHT)
+	if ((pEntity.componentMask & ComponentType::COMPONENT_POINTLIGHT) == ComponentType::COMPONENT_POINTLIGHT)
 	{
 		//If the entity has a light component then find it in the lights
 		const auto entity = find_if(mLights.begin(), mLights.end(), [&](const Entity& entity) {return entity.ID == pEntity.ID; });
@@ -243,7 +249,7 @@ void RenderSystem_GL::ReAssignEntity(const Entity & pEntity)
 	}
 
 	//Checks if entity mask matches the light mask
-	if ((pEntity.componentMask & ComponentType::COMPONENT_LIGHT) == ComponentType::COMPONENT_LIGHT)
+	if ((pEntity.componentMask & ComponentType::COMPONENT_POINTLIGHT) == ComponentType::COMPONENT_POINTLIGHT)
 	{
 		//If the entity has a light component then find it in the lights
 		const auto entity = find_if(mLights.begin(), mLights.end(), [&](const Entity& entity) {return entity.ID == pEntity.ID; });

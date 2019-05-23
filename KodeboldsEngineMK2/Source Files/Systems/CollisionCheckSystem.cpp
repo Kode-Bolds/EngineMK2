@@ -70,7 +70,7 @@ void CollisionCheckSystem::ReAssignEntity(const Entity & pEntity)
 /// </summary>
 void CollisionCheckSystem::Process()
 {
-	//Loop through all entites in the system
+	//Loop through all entities in the system
 	for (const auto& entity : mEntities)
 	{
 		//If the system has been assigned this entity, the entity has a velocity component and the entity is already in the tree
@@ -258,6 +258,7 @@ void CollisionCheckSystem::Insert(OctTreeNode * const pNode, const unsigned shor
 /// Calculates collisions for the given node, then recursively calls itself on the children of the given node
 /// </summary>
 /// <param name="pNode">Given node to calculate collisions for</param>
+/// <param name="pParentEntities">The entities contained within all of the parent nodes in this branch</param>
 void CollisionCheckSystem::HandleCollisions(OctTreeNode * const pNode, std::vector<unsigned short> pParentEntities)
 {
 	//Loop through entities in this node
@@ -270,9 +271,9 @@ void CollisionCheckSystem::HandleCollisions(OctTreeNode * const pNode, std::vect
 		}
 
 		//Check for collision with entities in the parent nodes
-		for (int j = 0; j < pParentEntities.size(); j++)
+		for (const auto& parentEntity : pParentEntities)
 		{
-			CollisionBetweenEntities(pNode->entities[i], pParentEntities[j]);
+			CollisionBetweenEntities(pNode->entities[i], parentEntity);
 		}
 	}
 

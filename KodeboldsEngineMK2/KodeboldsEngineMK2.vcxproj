@@ -91,9 +91,10 @@
     <ClInclude Include="Header Files\Components\Components.h" />
     <ClInclude Include="Header Files\Components\ComponentType.h" />
     <ClInclude Include="Header Files\Components\CustomComponent.h" />
+    <ClInclude Include="Header Files\Components\DirectionalLight.h" />
     <ClInclude Include="Header Files\Components\Geometry.h" />
     <ClInclude Include="Header Files\Components\Gravity.h" />
-    <ClInclude Include="Header Files\Components\Light.h" />
+    <ClInclude Include="Header Files\Components\PointLight.h" />
     <ClInclude Include="Header Files\Components\Ray.h" />
     <ClInclude Include="Header Files\Components\Shader.h" />
     <ClInclude Include="Header Files\Components\SphereCollider.h" />
@@ -106,6 +107,7 @@
     <ClInclude Include="Header Files\DataStructs\CullState.h" />
     <ClInclude Include="Header Files\DataStructs\DepthState.h" />
     <ClInclude Include="Header Files\DataStructs\Entity.h" />
+    <ClInclude Include="Header Files\DataStructs\Light.h" />
     <ClInclude Include="Header Files\DataStructs\OctTreeNode.h" />
     <ClInclude Include="Header Files\DataStructs\Vertex.h" />
     <ClInclude Include="Header Files\HelperClasses\ObjLoader.h" />

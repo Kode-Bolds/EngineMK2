@@ -11,11 +11,13 @@
 class RenderSystem : public ISystem
 {
 protected:
-	RenderSystem(const std::vector<int>& pMasks);
+	RenderSystem(const std::vector<int>& pMasks, const int pMaxLights);
 
 	std::shared_ptr<GUIManager> mGUIManager = GUIManager::Instance();
 	std::shared_ptr<ECSManager> mEcsManager = ECSManager::Instance();
 	std::shared_ptr<ResourceManager>  mResourceManager = ResourceManager::Instance();
+
+	int mMaxLights;
 
 public:
 	virtual ~RenderSystem() {};

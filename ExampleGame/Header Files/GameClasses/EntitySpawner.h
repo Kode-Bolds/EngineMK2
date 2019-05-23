@@ -36,8 +36,8 @@ namespace EntitySpawner
 		entitySpawnerEcsManager->AddShaderComp(shader, ID);
 
 		//Light component
-		Light light{ pColour };
-		entitySpawnerEcsManager->AddLightComp(light, ID);
+		PointLight light{ pColour };
+		//entitySpawnerEcsManager->AddPointLightComp(light, ID);
 
 		//Transform component
 		Transform trans{};
