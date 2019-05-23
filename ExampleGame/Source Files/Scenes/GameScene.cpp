@@ -431,7 +431,7 @@ void GameScene::OnLoad()
 	mPlayerGun = SpawnLaserGun(mPlayerStartPos + Vector4(1, -1, 3.0f, 0), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), L"stones.dds", L"stones_NM_height.dds", 5);
 
 	//Spawn free cam
-	mCamera = SpawnCamera(Vector4(5, 2, -100, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 60, 1, 400, 20);
+	mCamera = SpawnCamera(Vector4(5, 2, -100, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 60, 1, 10000, 50);
 
 	//Set acceleration speeds
 	mPlayerSpeed = 10.0f;
@@ -491,8 +491,9 @@ void GameScene::OnLoad()
 
 		mEcsManager->AddShaderComp(shaderm, entity);
 		Transform transCm{};
-		transCm.scale = Vector4(100, 100, 100, 1);
-		transCm.translation = Vector4(0, 0, 1, 1);
+		transCm.translation = Vector4(0, 0, 3, 1);
+
+		transCm.scale = Vector4(500, 500, 500, 1);
 		mEcsManager->AddTransformComp(transCm, entity);
 	}
 
