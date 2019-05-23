@@ -11,14 +11,16 @@
 class RenderSystem_DX : public RenderSystem
 {
 private:
-	std::vector<Entity> mLights;
+	std::vector<Entity> mPointLights;
+	std::vector<Entity> mDirectionalLights;
 	std::vector<Entity> mCameras;
 	HWND mWindow;
 	UINT mWidth{};
 	UINT mHeight{};
 	const Entity* mActiveCamera;
-	VBO* mGeometry;
-	ConstantBuffer mCB;
+	VBO* mGeometry{};
+	ConstantBuffer mCB{};
+	LightingBuffer mLightCB{};
 
 	std::wstring mActiveGeometry;
 	std::wstring mActiveShader;
@@ -40,7 +42,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> mDepthStencil = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> mDepthStencilView = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> mConstantBuffer = nullptr;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> mConstantBufferUniform = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> mLightingBuffer = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11SamplerState> mTexSampler = nullptr;
 
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState> mRastWireframeState = nullptr;
@@ -79,7 +81,7 @@ private:
 	void CalculateTransform(const Entity& pEntity) const;
 
 public:
-	explicit RenderSystem_DX(const HWND& pWindow);
+	explicit RenderSystem_DX(const HWND& pWindow, const int pMaxLights);
 	virtual ~RenderSystem_DX();
 
 
