@@ -116,6 +116,23 @@ void GameScene::Update()
 	//Switch between cameras
 	//Ship
 	if (mInputManager->KeyDown(KEYS::KEY_F1))
+<<<<<<< HEAD
+>>>>>>> parent of 0f257ec... Merge branch 'master' into master
+=======
+	{
+		mEcsManager->CameraComp(mPlayerShipCam)->active = true;
+		mEcsManager->CameraComp(mPlayer)->active = false;
+		mEcsManager->CameraComp(mCamera)->active = false;
+	}
+	//Player
+	if (mInputManager->KeyDown(KEYS::KEY_F2))
+	{
+		mEcsManager->CameraComp(mPlayerShipCam)->active = false;
+		mEcsManager->CameraComp(mPlayer)->active = true;
+		mEcsManager->CameraComp(mCamera)->active = false;
+	}
+	//Free cam
+	if (mInputManager->KeyDown(KEYS::KEY_F3))
 >>>>>>> parent of 0f257ec... Merge branch 'master' into master
 	{
 		mPlayerSpeed /= 2;
@@ -124,6 +141,7 @@ void GameScene::Update()
 	//
 	if (mInputManager->KeyDown(KEYS::MOUSE_BUTTON_LEFT))
 	{
+<<<<<<< HEAD
 <<<<<<< HEAD
 		Vector4 leftLaser = mEcsManager->TransformComp(mPlayer)->translation + Vector4(-25, 5, 0, 0);
 		SpawnLaser(leftLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(0, 0, 20, 1), 40,
@@ -136,6 +154,10 @@ void GameScene::Update()
 		mEcsManager->AddGravityComp(Gravity{}, mPlayer);
 		mEcsManager->AddGravityComp(Gravity{}, mPlayerGun);
 >>>>>>> parent of 0f257ec... Merge branch 'master' into master
+=======
+		mEcsManager->AddGravityComp(Gravity{}, mPlayer);
+		mEcsManager->AddGravityComp(Gravity{}, mPlayerGun);
+>>>>>>> parent of 0f257ec... Merge branch 'master' into master
 	}
 }
 
@@ -144,6 +166,7 @@ void GameScene::Update()
 /// </summary>
 void GameScene::OnLoad()
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	// Audio Files
 	mLaserSound = resourceManager->LoadAudio(L"laser.wav");
@@ -190,6 +213,8 @@ void GameScene::OnLoad()
 
 	for (int x = 0; x < 10; x++)
 =======
+=======
+>>>>>>> parent of 0f257ec... Merge branch 'master' into master
 	//Spawn player ship and attached camera
 	mPlayerShipStartPos = Vector4(0, 0, -50, 1);
 	mPlayerShip = SpawnShip(mPlayerShipStartPos, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 40, mPlayerShipStartPos.XYZ() - Vector3(30, 30, 15), mPlayerShipStartPos.XYZ() + Vector3(30, 30, 15),
@@ -214,6 +239,9 @@ void GameScene::OnLoad()
 
 	//Spawn platform of cubes
 	for(int x = 0; x < 10; x++)
+<<<<<<< HEAD
+>>>>>>> parent of 0f257ec... Merge branch 'master' into master
+=======
 >>>>>>> parent of 0f257ec... Merge branch 'master' into master
 	{
 		for(int z = 0; z < 10; z++)
@@ -232,6 +260,7 @@ void GameScene::OnLoad()
 			Transform transCm{};
 			transCm.scale = Vector4(1, 1, 1, 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			transCm.translation = Vector4(x * 2 - 5, -2, z * 2 - 100, 1);
 
 			if (x == 0 && z == 0)
@@ -240,6 +269,8 @@ void GameScene::OnLoad()
 
 			}
 =======
+=======
+>>>>>>> parent of 0f257ec... Merge branch 'master' into master
 			transCm.translation = Vector4(x * 2 - 5, -2, z * 2- 100, 1);
 			mEcsManager->AddTransformComp(transCm, entity);
 			BoxCollider floorBox{ transCm.translation.XYZ() - Vector3(1, 1, 1), transCm.translation.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::FLOOR, CustomCollisionMask::FLOOR };
@@ -249,9 +280,21 @@ void GameScene::OnLoad()
 
 	//Skybox
 	int entity = mEcsManager->CreateEntity();
+<<<<<<< HEAD
 >>>>>>> parent of 0f257ec... Merge branch 'master' into master
 
 			mEcsManager->AddTransformComp(transCm, entity);
+=======
+
+	Geometry geom{ L"cube.obj" };
+	mEcsManager->AddGeometryComp(geom, entity);
+	Shader shaderm{ L"skyboxShader.fx" , BlendState::ALPHABLEND, CullState::FRONT, DepthState::LESSEQUAL };
+	mEcsManager->AddShaderComp(shaderm, entity);
+	Transform transCm{};
+	transCm.scale = Vector4(1, 1, 1, 1);
+	transCm.translation = Vector4(0,0, 0, 1);
+	mEcsManager->AddTransformComp(transCm, entity);
+>>>>>>> parent of 0f257ec... Merge branch 'master' into master
 
 
 		}

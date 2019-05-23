@@ -275,10 +275,20 @@
     </ClInclude>
     <ClInclude Include="Header Files\Managers\AudioManager.h">
       <Filter>Header Files\Managers</Filter>
+<<<<<<< HEAD
+=======
     </ClInclude>
     <ClInclude Include="Header Files\DataStructs\CollisionMask.h">
       <Filter>Header Files\DataStructs</Filter>
     </ClInclude>
+    <ClInclude Include="Header Files\DataStructs\ConstantBuffer.h">
+      <Filter>Header Files\DataStructs</Filter>
+>>>>>>> parent of 0f257ec... Merge branch 'master' into master
+    </ClInclude>
+    <ClInclude Include="Header Files\DataStructs\CollisionMask.h">
+      <Filter>Header Files\DataStructs</Filter>
+    </ClInclude>
+<<<<<<< HEAD
 <<<<<<< HEAD
     <ClInclude Include="Header Files\HelperClasses\Sound.h">
       <Filter>Header Files\HelperClasses</Filter>
@@ -298,11 +308,16 @@
     <ClInclude Include="Header Files\DataStructs\Light.h">
       <Filter>Header Files\DataStructs</Filter>
     </ClInclude>
+=======
+>>>>>>> parent of 0f257ec... Merge branch 'master' into master
     <ClInclude Include="Header Files\Components\PointLight.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\Components\DirectionalLight.h">
       <Filter>Header Files\Components</Filter>
+<<<<<<< HEAD
+>>>>>>> parent of 0f257ec... Merge branch 'master' into master
+=======
 >>>>>>> parent of 0f257ec... Merge branch 'master' into master
     </ClInclude>
   </ItemGroup>
