@@ -11,6 +11,7 @@ class VBO_DX :
 private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> mVertices{};
 	Microsoft::WRL::ComPtr<ID3D11Buffer> mIndices{};
+	Microsoft::WRL::ComPtr<ID3D11Buffer> mInstance{};
 
 public:
 	VBO_DX();
