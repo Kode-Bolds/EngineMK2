@@ -48,13 +48,13 @@ namespace EntitySpawner
 		entitySpawnerEcsManager->AddTransformComp(trans, ID);
     
 		// Audio Component
-		Audio audio{};
+		//Audio audio{};
 		//audio.mSound = pSound;
-		audio.active = true;
-		audio.loop = false;
+		//audio.active = true;
+		//audio.loop = false;
 		//entitySpawnerEcsManager->AddAudioComp(audio, ID);
 
-    //Texture component
+		//Texture component
 		Texture tex{};
 		tex.diffuse = L"stones.dds";
 		tex.normal = L"stones_NM_height.dds";
@@ -90,7 +90,7 @@ namespace EntitySpawner
 	/// <param name="pNormal"></param>
 	/// <returns></returns>
 	static int SpawnShip(const KodeboldsMath::Vector4& pPosition, const KodeboldsMath::Vector4& pScale, const KodeboldsMath::Vector4& pRotation, const float& pMaxSpeed,
-		const KodeboldsMath::Vector3& pBoxMin, const KodeboldsMath::Vector3& pBoxMax, const int pCollisionMask, const int pIgnoreCollisionMask, const std::wstring& pDiffuse,
+		const float& pRadius, const int pCollisionMask, const int pIgnoreCollisionMask, const std::wstring& pDiffuse,
 		const std::wstring& pNormal)
 	{
 		int ID = entitySpawnerEcsManager->CreateEntity();
@@ -120,8 +120,8 @@ namespace EntitySpawner
 		entitySpawnerEcsManager->AddVelocityComp(vel, ID);
 
 		//BoxCollider component
-		BoxCollider box{ pBoxMin, pBoxMax, pCollisionMask, pIgnoreCollisionMask };
-		entitySpawnerEcsManager->AddBoxColliderComp(box, ID);
+		SphereCollider sphere{ pRadius, pCollisionMask, pIgnoreCollisionMask };
+		entitySpawnerEcsManager->AddSphereColliderComp(sphere, ID);
 
 		return ID;
 	}
