@@ -25,7 +25,18 @@ private:
 	int mPlayer;
 	int mCamera;
 	float mCameraSpeed;
+<<<<<<< HEAD
 	float mPlayerSpeed;
+=======
+
+	KodeboldsMath::Vector4 mPlayerShipStartPos;
+	KodeboldsMath::Vector4 mPlayerStartPos;
+	KodeboldsMath::Vector4 mFreeCamStartPos;
+
+	void Movement();
+	void Rotation();
+	void Shooting();
+>>>>>>> parent of 0f257ec... Merge branch 'master' into master
 
 public:
 	//Structors

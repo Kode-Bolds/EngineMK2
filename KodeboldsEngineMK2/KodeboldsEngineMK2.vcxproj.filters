@@ -276,7 +276,10 @@
     <ClInclude Include="Header Files\Managers\AudioManager.h">
       <Filter>Header Files\Managers</Filter>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 0f257ec... Merge branch 'master' into master
     </ClInclude>
     <ClInclude Include="Header Files\DataStructs\CollisionMask.h">
       <Filter>Header Files\DataStructs</Filter>
@@ -288,6 +291,7 @@
     <ClInclude Include="Header Files\DataStructs\CollisionMask.h">
       <Filter>Header Files\DataStructs</Filter>
     </ClInclude>
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     <ClInclude Include="Header Files\HelperClasses\Sound.h">
@@ -310,12 +314,17 @@
     </ClInclude>
 =======
 >>>>>>> parent of 0f257ec... Merge branch 'master' into master
+=======
+>>>>>>> parent of 0f257ec... Merge branch 'master' into master
     <ClInclude Include="Header Files\Components\PointLight.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\Components\DirectionalLight.h">
       <Filter>Header Files\Components</Filter>
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of 0f257ec... Merge branch 'master' into master
+=======
 >>>>>>> parent of 0f257ec... Merge branch 'master' into master
 =======
 >>>>>>> parent of 0f257ec... Merge branch 'master' into master
