@@ -106,4 +106,12 @@
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
+<<<<<<< HEAD
+=======
+  <ItemGroup>
+    <Media Include="laser.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+  </ItemGroup>
+>>>>>>> parent of 96b83d6... Added sound - still refactoring
 </Project>

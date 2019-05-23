@@ -49,6 +49,7 @@ namespace EntitySpawner
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		// Audio Component
 		Audio audio{};
 		audio.mSound = pSound;
@@ -65,6 +66,8 @@ namespace EntitySpawner
 =======
 		//Texture component
 >>>>>>> parent of 0f257ec... Merge branch 'master' into master
+=======
+>>>>>>> parent of 96b83d6... Added sound - still refactoring
 		Texture tex{};
 		entitySpawnerEcsManager->AddTextureComp(tex, ID);
 
@@ -107,15 +110,15 @@ namespace EntitySpawner
 		//Geometry component
 		Geometry geo{ L"ship.obj" };
 		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
-
+		
 		//Shader component
 		Shader shader{ L"defaultShader.fx" , BlendState::ALPHABLEND, CullState::FRONT, DepthState::LESSEQUAL };
 		entitySpawnerEcsManager->AddShaderComp(shader, ID);
 
 		//Texture component
-		Texture texture{ pDiffuse, pNormal, L"" };
+		Texture texture{pDiffuse, pNormal, L""};
 		entitySpawnerEcsManager->AddTextureComp(texture, ID);
-
+		
 		//Transform component
 		Transform trans{};
 		trans.scale = pScale;
@@ -171,7 +174,7 @@ namespace EntitySpawner
 		entitySpawnerEcsManager->AddTransformComp(trans, ID);
 
 		//SphereCollider component
-		SphereCollider sphere{ pRadius, CustomCollisionMask::ASTEROID, pIgnoreCollisionMask };
+		SphereCollider sphere{pRadius, CustomCollisionMask::ASTEROID, pIgnoreCollisionMask};
 		entitySpawnerEcsManager->AddSphereColliderComp(sphere, ID);
 
 		return ID;

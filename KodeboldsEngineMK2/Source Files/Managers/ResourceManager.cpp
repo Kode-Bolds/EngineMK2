@@ -130,6 +130,18 @@ const ShaderObject * const ResourceManager::LoadShader(const RenderSystem * cons
 	return mShaders.back().second;
 }
 
+<<<<<<< HEAD
+=======
+Sound* ResourceManager::LoadAudio(std::wstring pFileName)
+{
+	Sound* sound = new Sound();
+	sound->SetSound(mAudEngine.get(), pFileName);
+
+	mSounds.emplace_back(make_pair(pFileName, sound));
+	return mSounds.back().second;
+}
+
+>>>>>>> parent of 96b83d6... Added sound - still refactoring
 /// <summary>
 /// Creates a singleton instance of Resource Manager if one hasn't been created before
 /// Returns pointer to the instance of Resource Manager
