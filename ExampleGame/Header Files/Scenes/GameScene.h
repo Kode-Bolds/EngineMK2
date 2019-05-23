@@ -36,6 +36,8 @@ private:
 	KodeboldsMath::Vector4 mPlayerStartPos;
 	KodeboldsMath::Vector4 mFreeCamStartPos;
 
+	bool mPlayerIsGrounded;
+
 	void Movement();
 	void Rotation();
 	void Shooting();

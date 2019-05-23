@@ -15,7 +15,7 @@ void GameScene::Movement()
 		if (mEcsManager->CameraComp(mPlayerShipCam)->active)
 		{
 			mEcsManager->VelocityComp(mPlayerShip)->acceleration += mEcsManager->TransformComp(mPlayerShip)->forward * mShipSpeed;
-			mEcsManager->VelocityComp(mPlayerShipCam)->acceleration += mEcsManager->TransformComp(mPlayerShipCam)->forward * mShipSpeed;
+			mEcsManager->VelocityComp(mPlayerShipCam)->acceleration += mEcsManager->TransformComp(mPlayerShip)->forward * mShipSpeed;
 		}
 		//If player cam is active, move player cam
 		if (mEcsManager->CameraComp(mPlayer)->active)
@@ -35,7 +35,7 @@ void GameScene::Movement()
 		if (mEcsManager->CameraComp(mPlayerShipCam)->active)
 		{
 			mEcsManager->VelocityComp(mPlayerShip)->acceleration -= mEcsManager->TransformComp(mPlayerShip)->forward * mShipSpeed;
-			mEcsManager->VelocityComp(mPlayerShipCam)->acceleration -= mEcsManager->TransformComp(mPlayerShipCam)->forward * mShipSpeed;
+			mEcsManager->VelocityComp(mPlayerShipCam)->acceleration -= mEcsManager->TransformComp(mPlayerShip)->forward * mShipSpeed;
 		}
 		//If player cam is active, move player cam
 		if (mEcsManager->CameraComp(mPlayer)->active)
@@ -186,7 +186,7 @@ void GameScene::Movement()
 			mEcsManager->VelocityComp(mPlayerShipCam)->acceleration += mEcsManager->TransformComp(mPlayerShipCam)->up * mShipSpeed;
 		}
 		//If player cam is active, move player cam
-		if (mEcsManager->CameraComp(mPlayer)->active)
+		if (mEcsManager->CameraComp(mPlayer)->active && mPlayerIsGrounded)
 		{
 			mEcsManager->VelocityComp(mPlayer)->velocity += mEcsManager->TransformComp(mPlayer)->up * mPlayerJumpSpeed;
 			mEcsManager->VelocityComp(mPlayerGun)->velocity += mEcsManager->TransformComp(mPlayer)->up * mPlayerJumpSpeed;
@@ -327,11 +327,11 @@ void GameScene::Shooting()
 		{
 			Vector4 leftLaser = mEcsManager->TransformComp(mPlayerShip)->translation + ((mEcsManager->TransformComp(mPlayerShip)->right * -23) + (mEcsManager->TransformComp(mPlayerShip)->up * 5));
 			SpawnLaser(leftLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), mEcsManager->TransformComp(mPlayerShip)->forward * 40, 40,
-				leftLaser.XYZ() - Vector3(1, 1, 1), leftLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER);
+				leftLaser.XYZ() - Vector3(1, 1, 1), leftLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER, 100);
 
 			Vector4 rightLaser = mEcsManager->TransformComp(mPlayerShip)->translation + ((mEcsManager->TransformComp(mPlayerShip)->right * 23) + (mEcsManager->TransformComp(mPlayerShip)->up * 5));
 			SpawnLaser(rightLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), mEcsManager->TransformComp(mPlayerShip)->forward * 40, 40,
-				rightLaser.XYZ() - Vector3(1, 1, 1), rightLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER);
+				rightLaser.XYZ() - Vector3(1, 1, 1), rightLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER, 100);
 		}
 
 		//If player cam is active, fire gun
@@ -339,7 +339,7 @@ void GameScene::Shooting()
 		{
 			Vector4 gunBarrel = mEcsManager->TransformComp(mPlayerGun)->translation + (mEcsManager->TransformComp(mPlayerGun)->forward * -2);
 			SpawnLaser(gunBarrel, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), mEcsManager->TransformComp(mPlayerGun)->forward * -30, 40,
-				gunBarrel.XYZ() - Vector3(1, 1, 1), gunBarrel.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER);
+				gunBarrel.XYZ() - Vector3(1, 1, 1), gunBarrel.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER, 50);
 		}
 	}
 }
@@ -390,25 +390,30 @@ void GameScene::Update()
 		mEcsManager->CameraComp(mCamera)->active = true;
 	}
 
-	//If player collides with floor turn off gravity and set Y velocity to 0
-	if (mEcsManager->CollisionComp(mPlayer))
+	//If the player doesn't have a gravity component
+	if (!mEcsManager->GravityComp(mPlayer))
 	{
-		if (mEcsManager->CollisionComp(mPlayer)->collidedEntityCollisionMask == CustomCollisionMask::FLOOR)
+		//Check if the player is colliding with something, else add gravity
+		if (mEcsManager->CollisionComp(mPlayer))
 		{
-			if (mEcsManager->GravityComp(mPlayer))
+			//If it's not the floor, player is not grounded, add gravity
+			if (!mEcsManager->CollisionComp(mPlayer)->collidedEntityCollisionMask == CustomCollisionMask::FLOOR)
 			{
-				mEcsManager->RemoveGravityComp(mPlayer);
-				mEcsManager->VelocityComp(mPlayer)->velocity.Y = 0;
-				mEcsManager->RemoveGravityComp(mPlayerGun);
-				mEcsManager->VelocityComp(mPlayerGun)->velocity.Y = 0;
+				mEcsManager->AddGravityComp(Gravity{}, mPlayer);
+				mEcsManager->AddGravityComp(Gravity{}, mPlayerGun);
+				mPlayerIsGrounded = false;
+			}
+			else
+			{
+				mPlayerIsGrounded = true;
 			}
 		}
-	}
-	//Add gravity back if not colliding with floor
-	else if (!mEcsManager->GravityComp(mPlayer))
-	{
-		mEcsManager->AddGravityComp(Gravity{}, mPlayer);
-		mEcsManager->AddGravityComp(Gravity{}, mPlayerGun);
+		else
+		{
+			mEcsManager->AddGravityComp(Gravity{}, mPlayer);
+			mEcsManager->AddGravityComp(Gravity{}, mPlayerGun);
+			mPlayerIsGrounded = false;
+		}
 	}
 }
 
@@ -483,50 +488,50 @@ void GameScene::OnLoad()
 		{
 			for (int k = 10; k > 2; k--)
 			{
-				SpawnAsteroid(Vector4(20 * i, 20 * j, 40 * k, 1), Vector4(5, 5, 5, 1), Vector4(0, 0, 0, 1), 5, CustomCollisionMask::ASTEROID, L"stones.dds", L"stones_NM_height.dds");
+				SpawnAsteroid(Vector4(20 * i, 20 * j, 40 * k, 1), Vector4(5, 5, 5, 1), Vector4(0, 0, 0, 1), 5, 0, L"stones.dds", L"stones_NM_height.dds");
 			}
 		}
 	}
 
 	const int dLight = mEcsManager->CreateEntity();
-	DirectionalLight dl{Vector4(0,-1,-1,1), Vector4(0.1f,0,0,1)};
+	DirectionalLight dl{Vector4(0,-1,-1,1), Vector4(0.5f,0.5f,0.5f,1)};
 	mEcsManager->AddDirectionalLightComp(dl, dLight);
 
 	const int dLight2 = mEcsManager->CreateEntity();
 	DirectionalLight dl2{ Vector4(1,-1,1,1), Vector4(0,0.1f,0,1) };
 	mEcsManager->AddDirectionalLightComp(dl2, dLight2);
 
-	const int pLight = mEcsManager->CreateEntity();
-	PointLight pl{ Vector4(0.1f,0.2f,0,1), 5};
-	mEcsManager->AddPointLightComp(pl, pLight);
-	Transform t;
-	t.translation = Vector4(2 * 2 - 5, 0, 2 * 2 - 100, 1);
-	t.scale = Vector4(1, 1, 1, 1);
-	mEcsManager->AddTransformComp(t, pLight);
+	//const int pLight = mEcsManager->CreateEntity();
+	//PointLight pl{ Vector4(0.1f,0.2f,0,1), 5};
+	//mEcsManager->AddPointLightComp(pl, pLight);
+	//Transform t;
+	//t.translation = Vector4(2 * 2 - 5, 0, 2 * 2 - 100, 1);
+	//t.scale = Vector4(1, 1, 1, 1);
+	//mEcsManager->AddTransformComp(t, pLight);
 
-	const int pLight2 = mEcsManager->CreateEntity();
-	PointLight pl2{ Vector4(0,0.2f,0.3f,1), 5};
-	mEcsManager->AddPointLightComp(pl2, pLight2);
-	Transform t2;
-	t2.translation = Vector4(5 * 2 - 5, 0, 2 * 2 - 100, 1);
-	t2.scale = Vector4(1, 1, 1, 1);
-	mEcsManager->AddTransformComp(t2, pLight2);
+	//const int pLight2 = mEcsManager->CreateEntity();
+	//PointLight pl2{ Vector4(0,0.2f,0.3f,1), 5};
+	//mEcsManager->AddPointLightComp(pl2, pLight2);
+	//Transform t2;
+	//t2.translation = Vector4(5 * 2 - 5, 0, 2 * 2 - 100, 1);
+	//t2.scale = Vector4(1, 1, 1, 1);
+	//mEcsManager->AddTransformComp(t2, pLight2);
 
-	const int pLight3 = mEcsManager->CreateEntity();
-	PointLight pl3{ Vector4(0.3f,0.1f,0,1), 5};
-	mEcsManager->AddPointLightComp(pl3, pLight3);
-	Transform t3;
-	t3.translation = Vector4(2 * 2 - 5, 0, 5 * 2 - 100, 1);
-	t3.scale = Vector4(1, 1, 1, 1);
-	mEcsManager->AddTransformComp(t3, pLight3);
+	//const int pLight3 = mEcsManager->CreateEntity();
+	//PointLight pl3{ Vector4(0.3f,0.1f,0,1), 5};
+	//mEcsManager->AddPointLightComp(pl3, pLight3);
+	//Transform t3;
+	//t3.translation = Vector4(2 * 2 - 5, 0, 5 * 2 - 100, 1);
+	//t3.scale = Vector4(1, 1, 1, 1);
+	//mEcsManager->AddTransformComp(t3, pLight3);
 
-	const int pLight4 = mEcsManager->CreateEntity();
-	PointLight pl4{ Vector4(0.3f,0.5f,0.2f,1) , 5};
-	mEcsManager->AddPointLightComp(pl4, pLight4);
-	Transform t4;
-	t4.translation = Vector4(5 * 2 - 5, 0, 5 * 2 - 100, 1);
-	t4.scale = Vector4(1, 1, 1, 1);
-	mEcsManager->AddTransformComp(t4, pLight4);
+	//const int pLight4 = mEcsManager->CreateEntity();
+	//PointLight pl4{ Vector4(0.3f,0.5f,0.2f,1) , 5};
+	//mEcsManager->AddPointLightComp(pl4, pLight4);
+	//Transform t4;
+	//t4.translation = Vector4(5 * 2 - 5, 0, 5 * 2 - 100, 1);
+	//t4.scale = Vector4(1, 1, 1, 1);
+	//mEcsManager->AddTransformComp(t4, pLight4);
 
 	//AntTweak
 	mGUIManager->AddBar("Testing");
