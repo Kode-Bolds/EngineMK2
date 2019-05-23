@@ -21,6 +21,7 @@ private:
 #endif
 	std::shared_ptr<SceneManager> mSceneManager = SceneManager::Instance();
 	std::shared_ptr<GUIManager> mGUIManager = GUIManager::Instance();
+	std::shared_ptr<ResourceManager> resourceManager = ResourceManager::Instance();
 
 	int mPlayer;
 	int mPlayerGun;
@@ -36,9 +37,14 @@ private:
 	KodeboldsMath::Vector4 mPlayerStartPos;
 	KodeboldsMath::Vector4 mFreeCamStartPos;
 
+	bool mPlayerIsGrounded;
+
 	void Movement();
 	void Rotation();
 	void Shooting();
+
+	Sound* mLaserSound = nullptr;
+	Sound* mEngineSound = nullptr;
 
 public:
 	//Structors

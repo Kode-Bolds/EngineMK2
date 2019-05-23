@@ -40,6 +40,7 @@ cbuffer LightingBuffer : register (b1)
 	Pointlight pointLights[5];
 }
 
+
 Texture2D txDiffuse : register(t0);
 SamplerState txDiffSampler : register(s0);
 

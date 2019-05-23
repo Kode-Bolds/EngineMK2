@@ -82,6 +82,7 @@ PS_INPUT VS(VS_INPUT input)
 	output.Normal = normalize(output.Normal);
 	output.PosWorld = mul(float4(input.Pos, 1.0f), World);
 	output.TexCoord = input.TexCoord;
+	output.TexCoord.y = 1 - output.TexCoord.y;
 
 	return output;
 }

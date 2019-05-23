@@ -102,18 +102,13 @@ void GUIManager::InititialiseGUI(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	mContext = pContext;
 
 	mSpriteBatch = std::make_unique<DirectX::SpriteBatch>(pContext);
-	m_states = std::make_unique<DirectX::CommonStates>(pDevice);
-
-	//Microsoft::WRL::ComPtr<ID3D11Texture2D> cat;
-	//mResource.As(&cat);
-	//CD3D11_TEXTURE2D_DESC catDesc;
-	//cat->GetDesc(&catDesc);
-
+	mStates = std::make_unique<DirectX::CommonStates>(pDevice);
 }
+
 void GUIManager::Render()
 {
 
-	mSpriteBatch->Begin(DirectX::SpriteSortMode_Deferred, m_states->NonPremultiplied(), nullptr, nullptr, nullptr, nullptr);
+	mSpriteBatch->Begin(DirectX::SpriteSortMode_Deferred, mStates->NonPremultiplied(), nullptr, nullptr, nullptr, nullptr);
 
 	mResourceManager->mSprites.at(0).second.mPosition.x += 1;
 
@@ -125,10 +120,9 @@ void GUIManager::Render()
 
 	mSpriteBatch->End();
 }
-
 void GUIManager::RenderText()
 {
-	mSpriteBatch->Begin(DirectX::SpriteSortMode_Deferred, m_states->NonPremultiplied(), nullptr, nullptr, nullptr, nullptr);
+	mSpriteBatch->Begin(DirectX::SpriteSortMode_Deferred, mStates->NonPremultiplied(), nullptr, nullptr, nullptr, nullptr);
 	for (int i = 0; i < mTexts.size(); i++)
 	{
 		DirectX::XMVECTOR origin = DirectX::XMVectorSet(mTexts[i].mOrigin.x, mTexts[i].mOrigin.y, 0, 0);// mFonts[0]->MeasureString(pText);
@@ -141,6 +135,7 @@ void GUIManager::RenderText()
 
 
 }
+
 void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale)
 {
 	Sprite sprite;
@@ -168,7 +163,6 @@ void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOr
 	mResourceManager->mSprites.back().second.mWidth = desc.Width;
 	mResourceManager->mSprites.back().second.mHeight = desc.Height;
 }
-
 void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, SpritePosition pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale)
 {
 	KodeboldsMath::Vector2 position;
@@ -191,7 +185,6 @@ void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOr
 
 	LoadSprite(pFileName, pOrigin, position, pPadding, pRotation, pScale);
 }
-
 void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale)
 {
 	Sprite sprite;
@@ -231,7 +224,6 @@ void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, Kode
 
 	mResourceManager->mSprites.back().second.mOrigin = DirectX::XMFLOAT2(origin.X, origin.Y);
 }
-
 void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, SpritePosition pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale)
 {
 	Sprite sprite;
@@ -314,7 +306,6 @@ void GUIManager::Write(const wchar_t* pText, KodeboldsMath::Vector2 pOrigin, Kod
 
 	mTexts.emplace_back(text);
 }
-
 void GUIManager::Write(const wchar_t* pText, KodeboldsMath::Vector2 pOrigin, TextPosition pPosition, KodeboldsMath::Vector2 pPadding, const wchar_t* pFontName, float pRotation, float pScale, KodeboldsMath::Vector4 pColour)
 {
 	KodeboldsMath::Vector2 position;
@@ -337,7 +328,6 @@ void GUIManager::Write(const wchar_t* pText, KodeboldsMath::Vector2 pOrigin, Tex
 
 	Write(pText, pOrigin, position, pPadding, pFontName, pRotation, pScale, pColour);
 }
-
 void GUIManager::Write(const wchar_t* pText, TextOrigin pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, const wchar_t* pFontName, float pRotation, float pScale, KodeboldsMath::Vector4 pColour)
 {
 	// TODO:
@@ -368,7 +358,6 @@ void GUIManager::Write(const wchar_t* pText, TextOrigin pOrigin, KodeboldsMath::
 
 	mTexts.emplace_back(text);
 }
-
 void GUIManager::Write(const wchar_t* pText, TextOrigin pOrigin, TextPosition pPosition, KodeboldsMath::Vector2 pPadding, const wchar_t* pFontName, float pRotation, float pScale, KodeboldsMath::Vector4 pColour)
 {
 	// TODO:

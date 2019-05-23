@@ -681,6 +681,9 @@ void RenderSystem_DX::Process()
 			//Set world matrix
 			mCB.mWorld = XMFLOAT4X4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(entity.ID)->transform)));
 
+			//Set time
+			mCB.time = static_cast<float>(mSceneManager->Time());
+
 			//Set colour if there is a colour component attached
 			if ((entity.componentMask & ComponentType::COMPONENT_COLOUR) == ComponentType::COMPONENT_COLOUR)
 			{
@@ -911,4 +914,3 @@ void RenderSystem_DX::SetCamera()
 		SetViewProj();
 	}
 }
-
