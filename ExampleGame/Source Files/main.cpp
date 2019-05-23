@@ -36,7 +36,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	std::shared_ptr<ThreadManager> threadManager = ThreadManager::Instance();
 	std::shared_ptr<NetworkManager> networkManager = NetworkManager::Instance();
 	std::shared_ptr<GUIManager> guiManager = GUIManager::Instance();
-	std::shared_ptr<ResourceManager> resourceManager = ResourceManager::Instance();
+
 
 	//Initialise winsock
 	networkManager->InitWinSock(9171);
@@ -58,6 +58,14 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	ecsManager->AddUpdateSystem(std::make_shared<MovementSystem>());
 	ecsManager->AddUpdateSystem(std::make_shared<CollisionCheckSystem>(500, 50));
 
+	// Audio systems
+#ifdef DIRECTX
+	ecsManager->AddUpdateSystem(std::make_shared<AudioSystem_DX>());
+#elif OPENGL
+	ecsManager->AddUpdateSystem(std::make_shared<AudioSystem_GL>());
+#endif
+	
+
 	//Create camera
 	int entityID = ecsManager->CreateEntity();
 	Light light{ Vector4(1, 1, 1, 1) };
@@ -67,8 +75,8 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	ecsManager->AddTransformComp(transL, entityID);
 
 
-	auto test = resourceManager->LoadAudio(L"laser.wav");
-	test->Play();
+
+	////test->Play();
 
 
 

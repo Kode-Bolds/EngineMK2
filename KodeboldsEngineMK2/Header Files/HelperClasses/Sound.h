@@ -8,6 +8,8 @@ private:
 	std::unique_ptr<DirectX::SoundEffect> mSound;
 
 public:
+	std::wstring filename;
+
 	Sound();
 	~Sound();
 

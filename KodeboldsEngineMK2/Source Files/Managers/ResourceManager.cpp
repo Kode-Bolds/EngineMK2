@@ -132,6 +132,15 @@ const ShaderObject* const ResourceManager::LoadShader(const RenderSystem* const 
 
 Sound* ResourceManager::LoadAudio(std::wstring pFileName)
 {
+	// check if the sound already exists,
+	for (int i = 0; i < mSounds.size(); i++)
+	{
+		if (mSounds[i].first == pFileName) {
+			return mSounds[i].second;
+		}
+	}
+
+	// if not create new sound
 	Sound* sound = new Sound();
 	sound->SetSound(mAudEngine.get(), pFileName);
 

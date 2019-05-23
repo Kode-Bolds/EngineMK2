@@ -86,6 +86,15 @@
       <Filter>Source Files\KodeBoldsMath</Filter>
     </ClCompile>
     <ClCompile Include="Header Files\HelperClasses\Sound.cpp" />
+    <ClCompile Include="Source Files\Systems\AudioSystem_DX.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Systems\AudioSystem_GL.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Systems\AudioSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\Components\AI.h">
@@ -276,6 +285,15 @@
     </ClInclude>
     <ClInclude Include="Header Files\HelperClasses\Sound.h">
       <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Systems\AudioSystem_GL.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Systems\AudioSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Systems\AudioSystem_DX.h">
+      <Filter>Header Files\Systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -85,7 +85,7 @@ void GameScene::Update()
 	{
 		mPlayerSpeed *= 2;
 	}
-	else if(mInputManager->KeyUp(KEYS::KEY_LEFT_SHIFT))
+	else if (mInputManager->KeyUp(KEYS::KEY_LEFT_SHIFT))
 	{
 		mPlayerSpeed /= 2;
 	}
@@ -95,11 +95,11 @@ void GameScene::Update()
 	{
 		Vector4 leftLaser = mEcsManager->TransformComp(mPlayer)->translation + Vector4(-25, 5, 0, 0);
 		SpawnLaser(leftLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(0, 0, 20, 1), 40,
-			leftLaser.XYZ() - Vector3(1, 1, 1), leftLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER);
+			leftLaser.XYZ() - Vector3(1, 1, 1), leftLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER, mLaserSound);
 
 		Vector4 rightLaser = mEcsManager->TransformComp(mPlayer)->translation + Vector4(25, 5, 0, 0);
 		SpawnLaser(rightLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(0, 0, 20, 1), 40,
-			rightLaser.XYZ() - Vector3(1, 1, 1), rightLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER);
+			rightLaser.XYZ() - Vector3(1, 1, 1), rightLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER, mLaserSound);
 	}
 }
 
@@ -108,6 +108,10 @@ void GameScene::Update()
 /// </summary>
 void GameScene::OnLoad()
 {
+	// Audio Files
+	mLaserSound = resourceManager->LoadAudio(L"laser.wav");
+	mEngineSound = resourceManager->LoadAudio(L"engine.wav");
+
 	mCamera = mEcsManager->CreateEntity();
 	Camera cam{ 60, 1, 200 };
 	mEcsManager->AddCameraComp(cam, mCamera);
@@ -115,7 +119,6 @@ void GameScene::OnLoad()
 	trans.translation = Vector4(0, 0, -100, 1);
 	trans.scale = Vector4(1, 1, 1, 1);
 	mEcsManager->AddTransformComp(trans, mCamera);
-
 	mCameraSpeed = 10.0f;
 
 	mPlayer = mEcsManager->CreateEntity();
@@ -127,7 +130,14 @@ void GameScene::OnLoad()
 	texture.diffuse = L"stones.dds";
 	texture.normal = L"stones_NM_height.dds";
 	mEcsManager->AddTextureComp(texture, mPlayer);
-	
+
+	//// Audio Component
+	//Audio audio{};
+	//audio.mSound = mEngineSound;
+	//audio.active = true;
+	//audio.loop = false;
+	//entitySpawnerEcsManager->AddAudioComp(audio, mPlayer);
+
 	Transform transC{};
 	transC.scale = Vector4(1, 1, 1, 1);
 	mEcsManager->AddTransformComp(transC, mPlayer);
@@ -141,9 +151,9 @@ void GameScene::OnLoad()
 	mPlayerSpeed = 2.0f;
 
 
-	for(int x = 0; x < 10; x++)
+	for (int x = 0; x < 10; x++)
 	{
-		for(int z = 0; z < 10; z++)
+		for (int z = 0; z < 10; z++)
 		{
 			int entity = mEcsManager->CreateEntity();
 
@@ -158,9 +168,9 @@ void GameScene::OnLoad()
 
 			Transform transCm{};
 			transCm.scale = Vector4(1, 1, 1, 1);
-			transCm.translation = Vector4(x * 2 - 5, -2, z * 2- 100, 1);
+			transCm.translation = Vector4(x * 2 - 5, -2, z * 2 - 100, 1);
 
-			if(x == 0 && z == 0)
+			if (x == 0 && z == 0)
 			{
 				//transCm.translation = Vector4(0, 0, -96, 1);
 
@@ -172,13 +182,13 @@ void GameScene::OnLoad()
 		}
 	}
 	//AntTweak
-	
+
 	mGUIManager->AddBar("Testing");
 	TwDefine(" Testing size='300 320' valueswidth=200 ");
 	mGUIManager->AddVariable("Testing", "Velocity", TW_TYPE_DIR3F, &mEcsManager->VelocityComp(mPlayer)->velocity, "");
 	mGUIManager->AddVariable("Testing", "Acceleration", TW_TYPE_DIR3F, &mEcsManager->VelocityComp(mPlayer)->acceleration, "");
 	mGUIManager->AddVariable("Testing", "Max Speed", TW_TYPE_FLOAT, &mEcsManager->VelocityComp(mPlayer)->maxSpeed, "");
-	
+
 }
 
 /// <summary>
