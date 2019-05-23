@@ -69,15 +69,6 @@
     <FxCompile Include="depthPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="skyboxShader.fx">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="skyboxVS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="skyboxPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\main.cpp">

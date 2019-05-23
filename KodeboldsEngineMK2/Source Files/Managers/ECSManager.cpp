@@ -49,8 +49,7 @@ ECSManager::ECSManager()
 	mColourEntityMap.resize(MAX_ENTITIES);
 	mGeometryEntityMap.resize(MAX_ENTITIES);
 	mGravityEntityMap.resize(MAX_ENTITIES);
-	mPointLightEntityMap.resize(MAX_ENTITIES);
-	mDirectionalLightEntityMap.resize(MAX_ENTITIES);
+	mLightEntityMap.resize(MAX_ENTITIES);
 	mRayEntityMap.resize(MAX_ENTITIES);
 	mShaderEntityMap.resize(MAX_ENTITIES);
 	mSphereColliderEntityMap.resize(MAX_ENTITIES);
@@ -81,7 +80,7 @@ std::shared_ptr<ECSManager> ECSManager::Instance()
 /// Get method for the rendering frequency
 /// </summary>
 /// <returns>Rendering frequency</returns>
-int ECSManager::RenderingFrequency() const
+const int& ECSManager::RenderingFrequency()
 {
 	return mRenderingFrequency;
 }
@@ -99,7 +98,7 @@ void ECSManager::SetMaxEntities(const int pEntityCount)
 /// Get method for the max entities value
 /// </summary>
 /// <returns>Max entities value</returns>
-int ECSManager::MaxEntities() const
+const int ECSManager::MaxEntities()
 {
 	return MAX_ENTITIES;
 }
@@ -107,7 +106,8 @@ int ECSManager::MaxEntities() const
 /// <summary>
 /// Creates an entity with the given name
 /// </summary>
-int ECSManager::CreateEntity()
+/// <param name="pEntityName">Given name of the entity to create</param>
+const int ECSManager::CreateEntity()
 {
 	unsigned short entityID = 0;
 	if (!mFreeEntityIDs.empty())
@@ -128,7 +128,7 @@ int ECSManager::CreateEntity()
 /// <summary>
 /// Destroys an entity with the given name and all components owned by it
 /// </summary>
-/// <param name="pEntityID">Given id of the entity to delete</param>
+/// <param name="pEntityName">Given name of the entity to delete</param>
 void ECSManager::DestroyEntity(const int pEntityID)
 {
 	//Find entity with matching ID
@@ -175,15 +175,10 @@ void ECSManager::DestroyEntity(const int pEntityID)
 	{
 		RemoveGravityComp(pEntityID);
 	}
-	//Point Light Comp
-	if ((entity->componentMask & ComponentType::COMPONENT_POINTLIGHT) == ComponentType::COMPONENT_POINTLIGHT)
+	//Light Comp
+	if ((entity->componentMask & ComponentType::COMPONENT_LIGHT) == ComponentType::COMPONENT_LIGHT)
 	{
-		RemovePointLightComp(pEntityID);
-	}
-	//Directional Light Comp
-	if ((entity->componentMask & ComponentType::COMPONENT_DIRECTIONALLIGHT) == ComponentType::COMPONENT_DIRECTIONALLIGHT)
-	{
-		RemoveDirectionalLightComp(pEntityID);
+		RemoveLightComp(pEntityID);
 	}
 	//Ray Comp
 	if ((entity->componentMask & ComponentType::COMPONENT_RAY) == ComponentType::COMPONENT_RAY)
@@ -533,58 +528,30 @@ void ECSManager::AddGravityComp(const Gravity & pGravity, const int pEntityID)
 }
 
 /// <summary>
-/// Adds a Point Light component to the entity with a given ID
+/// Adds a Light component to the entity with a given ID
 /// </summary>
 /// <param name="pLight">Light component to add</param>
 /// <param name="pEntityID">Given ID of the entity</param>
-void ECSManager::AddPointLightComp(const PointLight & pLight, const int pEntityID)
+void ECSManager::AddLightComp(const Light & pLight, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
 
-	if (mPointLightFreeList.empty())
+	if (mLightFreeList.empty())
 	{
 		//Push onto back if no free slots and map to back
-		mPointLights.push_back(pLight);
-		mPointLightEntityMap[pEntityID] = static_cast<unsigned short>(mPointLights.size() - 1);
+		mLights.push_back(pLight);
+		mLightEntityMap[pEntityID] = static_cast<unsigned short>(mLights.size() - 1);
 	}
 	else
 	{
 		//Insert into free slot and map to free slot
-		mPointLights[mPointLightFreeList.back()] = pLight;
-		mPointLightEntityMap[pEntityID] = static_cast<unsigned short>(mPointLightFreeList.back());
-		mPointLightFreeList.pop_back();
+		mLights[mLightFreeList.back()] = pLight;
+		mLightEntityMap[pEntityID] = static_cast<unsigned short>(mLightFreeList.back());
+		mLightFreeList.pop_back();
 	}
 
 	//Adjust mask then assign entity
-	entity->componentMask |= ComponentType::COMPONENT_POINTLIGHT;
-	AssignEntity(*entity);
-}
-
-/// <summary>
-/// Adds a Directional Light component to the entity with a given ID
-/// </summary>
-/// <param name="pLight">Light component to add</param>
-/// <param name="pEntityID">Given ID of the entity</param>
-void ECSManager::AddDirectionalLightComp(const DirectionalLight & pLight, const int pEntityID)
-{
-	Entity* entity = &mEntities[pEntityID];
-
-	if (mDirectionalLightFreeList.empty())
-	{
-		//Push onto back if no free slots and map to back
-		mDirectionalLights.push_back(pLight);
-		mDirectionalLightEntityMap[pEntityID] = static_cast<unsigned short>(mDirectionalLights.size() - 1);
-	}
-	else
-	{
-		//Insert into free slot and map to free slot
-		mDirectionalLights[mDirectionalLightFreeList.back()] = pLight;
-		mDirectionalLightEntityMap[pEntityID] = static_cast<unsigned short>(mDirectionalLightFreeList.back());
-		mDirectionalLightFreeList.pop_back();
-	}
-
-	//Adjust mask then assign entity
-	entity->componentMask |= ComponentType::COMPONENT_DIRECTIONALLIGHT;
+	entity->componentMask |= ComponentType::COMPONENT_LIGHT;
 	AssignEntity(*entity);
 }
 
@@ -923,34 +890,18 @@ void ECSManager::RemoveGravityComp(const int pEntityID)
 /// Removes a Light component from the entity with a given ID
 /// </summary>
 /// <param name="pEntityID">Given ID of the entity</param>
-void ECSManager::RemovePointLightComp(const int pEntityID)
+void ECSManager::RemoveLightComp(const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
 
 	//Checks if entity actually owns a component of this type
-	if ((entity->componentMask & ComponentType::COMPONENT_POINTLIGHT) == ComponentType::COMPONENT_POINTLIGHT)
+	if ((entity->componentMask & ComponentType::COMPONENT_LIGHT) == ComponentType::COMPONENT_LIGHT)
 	{
 		//Add slot in light array to free list
-		mPointLightFreeList.push_back(mPointLightEntityMap[pEntityID]);
+		mLightFreeList.push_back(mLightEntityMap[pEntityID]);
 
 		//Update mask and reassign entity
-		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_POINTLIGHT; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
-		ReAssignEntity(*entity);
-	}
-}
-
-void ECSManager::RemoveDirectionalLightComp(const int pEntityID)
-{
-	Entity* entity = &mEntities[pEntityID];
-
-	//Checks if entity actually owns a component of this type
-	if ((entity->componentMask & ComponentType::COMPONENT_DIRECTIONALLIGHT) == ComponentType::COMPONENT_DIRECTIONALLIGHT)
-	{
-		//Add slot in light array to free list
-		mDirectionalLightFreeList.push_back(mDirectionalLightEntityMap[pEntityID]);
-
-		//Update mask and reassign entity
-		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_DIRECTIONALLIGHT; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
+		entity->componentMask = entity->componentMask &= ~ComponentType::COMPONENT_LIGHT; //Performs a bitwise & between the entities mask and the bitwise complement of the components mask
 		ReAssignEntity(*entity);
 	}
 }
@@ -1202,22 +1153,12 @@ Gravity * const ECSManager::GravityComp(const int pEntityID)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to AI component</returns>
-PointLight * const ECSManager::PointLightComp(const int pEntityID)
+Light * const ECSManager::LightComp(const int pEntityID)
 {
 	//Checks if entity actually owns a component of this type
-	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_POINTLIGHT) == ComponentType::COMPONENT_POINTLIGHT)
+	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_LIGHT) == ComponentType::COMPONENT_LIGHT)
 	{
-		return &mPointLights[mPointLightEntityMap[pEntityID]];
-	}
-	return nullptr;
-}
-
-DirectionalLight * const ECSManager::DirectionalLightComp(const int pEntityID)
-{
-	//Checks if entity actually owns a component of this type
-	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_DIRECTIONALLIGHT) == ComponentType::COMPONENT_DIRECTIONALLIGHT)
-	{
-		return &mDirectionalLights[mDirectionalLightEntityMap[pEntityID]];
+		return &mLights[mLightEntityMap[pEntityID]];
 	}
 	return nullptr;
 }

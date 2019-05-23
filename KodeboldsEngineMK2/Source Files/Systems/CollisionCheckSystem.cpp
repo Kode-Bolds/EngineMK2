@@ -11,7 +11,7 @@ using namespace KodeboldsMath;
 /// </summary>
 /// <param name="pMaxOctantSize">Given max size of octants</param>
 /// <param name="pMinOctantSize">Given min size of octants</param>
-CollisionCheckSystem::CollisionCheckSystem(const int pMaxOctantSize, const int pMinOctantSize)
+CollisionCheckSystem::CollisionCheckSystem(const int pMaxOctantSize, const int pMinOctantSize) 
 	: ISystem(std::vector<int>{ComponentType::COMPONENT_BOXCOLLIDER | ComponentType::COMPONENT_TRANSFORM,
 		ComponentType::COMPONENT_SPHERECOLLIDER | ComponentType::COMPONENT_TRANSFORM,
 		ComponentType::COMPONENT_RAY, ComponentType::COMPONENT_TRANSFORM}),
@@ -70,50 +70,9 @@ void CollisionCheckSystem::ReAssignEntity(const Entity & pEntity)
 /// </summary>
 void CollisionCheckSystem::Process()
 {
-	//Loop through all entities in the system
-	for (const auto& entity : mEntities)
-	{
-		//If the system has been assigned this entity, the entity has a velocity component and the entity is already in the tree
-		if (entity.ID != -1 && mEcsManager->VelocityComp(entity.ID) && mEntityNodeMap[entity.ID])
-		{
-			//If the entity has a velocity greater than 0
-			if (mEcsManager->VelocityComp(entity.ID)->velocity.Magnitude() > 0)
-			{
-				//If the entity has a box collider
-				if (mEcsManager->BoxColliderComp(entity.ID))
-				{
-					//If the entity is no longer within it's enclosed region, remove it and re-insert it into the tree
-					if (!BoxInsideRegion(mEntityNodeMap[entity.ID], entity.ID))
-					{
-						mEntitiesToRemove.push(static_cast<unsigned short>(entity.ID));
-						mEntitiesToInsert.push(static_cast<unsigned short>(entity.ID));
-					}
-				}
-
-				//If the entity has a sphere collider
-				if (mEcsManager->SphereColliderComp(entity.ID))
-				{
-					//If the entity is no longer within it's enclosed region, remove it and re-insert it into the tree
-					if (!SphereInsideRegion(mEntityNodeMap[entity.ID], entity.ID))
-					{
-						mEntitiesToRemove.push(static_cast<unsigned short>(entity.ID));
-						mEntitiesToInsert.push(static_cast<unsigned short>(entity.ID));
-					}
-				}
-			}
-		}
-
-		//If the system has been assigned this entity and it has a collision component
-		if (entity.ID != -1 && mEcsManager->CollisionComp(entity.ID))
-		{
-			//Remove collision component from previous frame
-			mEcsManager->RemoveCollisionComp(entity.ID);
-		}
-	}
-
 	UpdateTree();
 
-	HandleCollisions(mOctTree, std::vector<unsigned short>{});
+	HandleCollisions(mOctTree);
 }
 
 /// <summary>
@@ -146,8 +105,8 @@ void CollisionCheckSystem::SplitRegion(OctTreeNode* const pRegion) const
 	const Vector3 center = pRegion->minBounds + halfDimension;
 
 	//Bottom left front
-	pRegion->children[0] = new OctTreeNode(pRegion,
-		pRegion->minBounds,
+	pRegion->children[0] = new OctTreeNode(pRegion, 
+		pRegion->minBounds, 
 		center);
 
 	//Bottom right front
@@ -177,7 +136,7 @@ void CollisionCheckSystem::SplitRegion(OctTreeNode* const pRegion) const
 
 	//Top right back
 	pRegion->children[6] = new OctTreeNode(pRegion,
-		center,
+		center, 
 		pRegion->maxBounds);
 
 	//Top left back
@@ -198,6 +157,14 @@ void CollisionCheckSystem::SplitRegion(OctTreeNode* const pRegion) const
 /// </summary>
 void CollisionCheckSystem::UpdateTree()
 {
+	//Process the insertion queue until it's empty
+	while (!mEntitiesToInsert.empty())
+	{
+		//Begin insertion of entity into oct tree
+		Insert(mOctTree, mEntitiesToInsert.front());
+		mEntitiesToInsert.pop();
+	}
+
 	//Process the removal queue until it's empty
 	while (!mEntitiesToRemove.empty())
 	{
@@ -210,14 +177,6 @@ void CollisionCheckSystem::UpdateTree()
 
 		mEntitiesToRemove.pop();
 	}
-
-	//Process the insertion queue until it's empty
-	while (!mEntitiesToInsert.empty())
-	{
-		//Begin insertion of entity into oct tree
-		Insert(mOctTree, mEntitiesToInsert.front());
-		mEntitiesToInsert.pop();
-	}
 }
 
 /// <summary>
@@ -225,7 +184,7 @@ void CollisionCheckSystem::UpdateTree()
 /// </summary>
 /// <param name="pNode">Given node to insert entity into</param>
 /// <param name="pEntity">Given entity to insert</param>
-void CollisionCheckSystem::Insert(OctTreeNode * const pNode, const unsigned short pEntity)
+void CollisionCheckSystem::Insert(OctTreeNode * const pNode, const int pEntity)
 {
 	//Loop through children and see if any children enclose the entities collider
 	for (auto& child : pNode->children)
@@ -258,29 +217,68 @@ void CollisionCheckSystem::Insert(OctTreeNode * const pNode, const unsigned shor
 /// Calculates collisions for the given node, then recursively calls itself on the children of the given node
 /// </summary>
 /// <param name="pNode">Given node to calculate collisions for</param>
-/// <param name="pParentEntities">The entities contained within all of the parent nodes in this branch</param>
-void CollisionCheckSystem::HandleCollisions(OctTreeNode * const pNode, std::vector<unsigned short> pParentEntities)
+void CollisionCheckSystem::HandleCollisions(OctTreeNode * const pNode)
 {
-	//Loop through entities in this node
+	//Loop through entities in this node, checking collisions with each other
 	for (int i = 0; i < pNode->entities.size(); i++)
 	{
-		//Check for collisions with other entities in this node
 		for (int j = i + 1; j < pNode->entities.size(); j++)
 		{
-			CollisionBetweenEntities(pNode->entities[i], pNode->entities[j]);
-		}
+			//If entity i has box collider
+			if (mEcsManager->BoxColliderComp(pNode->entities[i]))
+			{
+				//If entity j has box collider
+				if (mEcsManager->BoxColliderComp(pNode->entities[j]))
+				{
+					//If the entities have collided
+					if (BoxBox(mEcsManager->BoxColliderComp(pNode->entities[i]), mEcsManager->BoxColliderComp(pNode->entities[j])))
+					{
+						//Add collision component to entities
+						if (!mEcsManager->CollisionComp(pNode->entities[i]))
+							mEcsManager->AddCollisionComp(Collision{ pNode->entities[j] }, pNode->entities[i]);
 
-		//Check for collision with entities in the parent nodes
-		for (const auto& parentEntity : pParentEntities)
-		{
-			CollisionBetweenEntities(pNode->entities[i], parentEntity);
-		}
-	}
+						if (!mEcsManager->CollisionComp(pNode->entities[j]))
+							mEcsManager->AddCollisionComp(Collision{ pNode->entities[i] }, pNode->entities[j]);
+					}
+				}
 
-	//Add this nodes entities to the parent entities list
-	for (const auto& entity : pNode->entities)
-	{
-		pParentEntities.push_back(entity);
+				//If entity j has sphere collider
+				if (mEcsManager->SphereColliderComp(pNode->entities[j]))
+				{
+					//If the entities have collided
+					if (BoxSphere(mEcsManager->BoxColliderComp(pNode->entities[i]),
+						mEcsManager->TransformComp(pNode->entities[j])->translation.XYZ(), mEcsManager->SphereColliderComp(pNode->entities[j])))
+					{
+						//Add collision component to entities
+						if (!mEcsManager->CollisionComp(pNode->entities[i]))
+							mEcsManager->AddCollisionComp(Collision{ pNode->entities[j] }, pNode->entities[i]);
+
+						if (!mEcsManager->CollisionComp(j))
+							mEcsManager->AddCollisionComp(Collision{ pNode->entities[i] }, pNode->entities[j]);
+					}
+				}
+			}
+
+			//If entity i has sphere collider
+			if (mEcsManager->SphereColliderComp(pNode->entities[i]))
+			{
+				//If entity j has sphere collider
+				if (mEcsManager->SphereColliderComp(pNode->entities[j]))
+				{
+					//If the entities have collided
+					if (SphereSphere(mEcsManager->TransformComp(pNode->entities[i])->translation.XYZ(), mEcsManager->SphereColliderComp(pNode->entities[i]),
+						mEcsManager->TransformComp(pNode->entities[j])->translation.XYZ(), mEcsManager->SphereColliderComp(pNode->entities[j])))
+					{
+						//Add collision component to entities
+						if (!mEcsManager->CollisionComp(pNode->entities[i]))
+							mEcsManager->AddCollisionComp(Collision{ pNode->entities[j] }, pNode->entities[i]);
+
+						if (!mEcsManager->CollisionComp(pNode->entities[j]))
+							mEcsManager->AddCollisionComp(Collision{ pNode->entities[i] }, pNode->entities[j]);
+					}
+				}
+			}
+		}
 	}
 
 	//Loop through children of node
@@ -289,101 +287,9 @@ void CollisionCheckSystem::HandleCollisions(OctTreeNode * const pNode, std::vect
 		//If child exists
 		if (child)
 		{
-			HandleCollisions(child, pParentEntities);
+			HandleCollisions(child);
 		}
 	}
-
-	return;
-}
-
-/// <summary>
-/// Checks for a collision between two given entities and adds a collision component if a collision is found
-/// </summary>
-/// <param name="pEntityA">Given entity A</param>
-/// <param name="pEntityB">Given entity B</param>
-void CollisionCheckSystem::CollisionBetweenEntities(const unsigned short pEntityA, const unsigned short pEntityB)
-{
-	//If entity i has box collider
-	if (mEcsManager->BoxColliderComp(pEntityA))
-	{
-		//If entity j has box collider
-		if (mEcsManager->BoxColliderComp(pEntityB))
-		{
-			//If i's ignored collision mask contains j's collision mask then return as this collision will be ignored
-			if ((mEcsManager->BoxColliderComp(pEntityA)->ignoreCollisionMask & mEcsManager->BoxColliderComp(pEntityB)->collisionMask)
-				== mEcsManager->BoxColliderComp(pEntityB)->collisionMask)
-			{
-				return;
-			}
-
-			//If the entities have collided
-			if (BoxBox(mEcsManager->BoxColliderComp(pEntityA), mEcsManager->BoxColliderComp(pEntityB)))
-			{
-				//Add collision component to entities
-				if (!mEcsManager->CollisionComp(pEntityA))
-					mEcsManager->AddCollisionComp(Collision{ pEntityB, mEcsManager->BoxColliderComp(pEntityB)->collisionMask }, pEntityA);
-
-				if (!mEcsManager->CollisionComp(pEntityB))
-					mEcsManager->AddCollisionComp(Collision{ pEntityA, mEcsManager->BoxColliderComp(pEntityA)->collisionMask }, pEntityB);
-				return;
-			}
-
-		}
-
-		//If entity j has sphere collider
-		if (mEcsManager->SphereColliderComp(pEntityB))
-		{
-			//If i's ignored collision mask contains j's collision mask then return as this collision will be ignored
-			if ((mEcsManager->BoxColliderComp(pEntityA)->ignoreCollisionMask & mEcsManager->SphereColliderComp(pEntityB)->collisionMask)
-				== mEcsManager->SphereColliderComp(pEntityB)->collisionMask)
-			{
-				return;
-			}
-
-			//If the entities have collided
-			if (BoxSphere(mEcsManager->BoxColliderComp(pEntityA), mEcsManager->TransformComp(pEntityB)->translation.XYZ(),
-				mEcsManager->SphereColliderComp(pEntityB)))
-			{
-				//Add collision component to entities
-				if (!mEcsManager->CollisionComp(pEntityA))
-					mEcsManager->AddCollisionComp(Collision{ pEntityB, mEcsManager->SphereColliderComp(pEntityB)->collisionMask }, pEntityA);
-
-				if (!mEcsManager->CollisionComp(pEntityB))
-					mEcsManager->AddCollisionComp(Collision{ pEntityA, mEcsManager->BoxColliderComp(pEntityA)->collisionMask }, pEntityB);
-				return;
-			}
-		}
-	}
-
-	//If entity i has sphere collider
-	if (mEcsManager->SphereColliderComp(pEntityA))
-	{
-		//If entity j has sphere collider
-		if (mEcsManager->SphereColliderComp(pEntityB))
-		{
-			//If i's ignored collision mask contains j's collision mask then return as this collision will be ignored
-			if ((mEcsManager->SphereColliderComp(pEntityA)->ignoreCollisionMask & mEcsManager->SphereColliderComp(pEntityB)->collisionMask)
-				== mEcsManager->SphereColliderComp(pEntityB)->collisionMask)
-			{
-				return;
-			}
-
-			//If the entities have collided
-			if (SphereSphere(mEcsManager->TransformComp(pEntityA)->translation.XYZ(), mEcsManager->SphereColliderComp(pEntityA),
-				mEcsManager->TransformComp(pEntityB)->translation.XYZ(), mEcsManager->SphereColliderComp(pEntityB)))
-			{
-				//Add collision component to entities
-				if (!mEcsManager->CollisionComp(pEntityA))
-					mEcsManager->AddCollisionComp(Collision{ pEntityB, mEcsManager->SphereColliderComp(pEntityB)->collisionMask }, pEntityA);
-
-				if (!mEcsManager->CollisionComp(pEntityB))
-					mEcsManager->AddCollisionComp(Collision{ pEntityA, mEcsManager->SphereColliderComp(pEntityA)->collisionMask }, pEntityB);
-				return;
-			}
-		}
-	}
-
-	return;
 }
 
 /// <summary>
@@ -418,8 +324,8 @@ bool CollisionCheckSystem::SphereSphere(const Vector3& pSpherePosA, const Sphere
 bool CollisionCheckSystem::BoxSphere(const BoxCollider* const pBox, const Vector3& pSpherePos, const SphereCollider* const pSphere)
 {
 	return !(pBox->minBounds.X > (pSpherePos.X + pSphere->radius) || pBox->maxBounds.X < (pSpherePos.X - pSphere->radius) ||
-		pBox->minBounds.Y >(pSpherePos.Y + pSphere->radius) || pBox->maxBounds.Y < (pSpherePos.Y - pSphere->radius) ||
-		pBox->minBounds.Z >(pSpherePos.Z + pSphere->radius) || pBox->maxBounds.Z < (pSpherePos.Z - pSphere->radius));
+			 pBox->minBounds.Y > (pSpherePos.Y + pSphere->radius) || pBox->maxBounds.Y < (pSpherePos.Y - pSphere->radius) ||
+			 pBox->minBounds.Z > (pSpherePos.Z + pSphere->radius) || pBox->maxBounds.Z < (pSpherePos.Z - pSphere->radius));
 }
 
 /// <summary>
@@ -431,8 +337,8 @@ bool CollisionCheckSystem::BoxSphere(const BoxCollider* const pBox, const Vector
 bool CollisionCheckSystem::BoxBox(const BoxCollider* const pBoxA, const BoxCollider* const pBoxB)
 {
 	return !(pBoxA->minBounds.X > pBoxB->maxBounds.X || pBoxA->maxBounds.X < pBoxB->minBounds.X ||
-		pBoxA->minBounds.Y > pBoxB->maxBounds.Y || pBoxA->maxBounds.Y < pBoxB->minBounds.Y ||
-		pBoxA->minBounds.Z > pBoxB->maxBounds.Z || pBoxA->maxBounds.Z < pBoxB->minBounds.Z);
+			 pBoxA->minBounds.Y > pBoxB->maxBounds.Y || pBoxA->maxBounds.Y < pBoxB->minBounds.Y ||
+			 pBoxA->minBounds.Z > pBoxB->maxBounds.Z || pBoxA->maxBounds.Z < pBoxB->minBounds.Z);
 }
 
 /// <summary>
@@ -449,7 +355,7 @@ bool CollisionCheckSystem::RayBox()
 /// <param name="pNode">Node containing the given region</param>
 /// <param name="pEntity">Entity that owns the given AABB</param>
 /// <returns>bool representing whether it is enclosed or not</returns>
-bool CollisionCheckSystem::BoxInsideRegion(OctTreeNode * const pNode, const unsigned short pEntity) const
+bool CollisionCheckSystem::BoxInsideRegion(OctTreeNode * const pNode, const int pEntity) const
 {
 	return (//If the min bounds of the box are greater than the min bounds of the region
 		mEcsManager->BoxColliderComp(pEntity)->minBounds.X > pNode->minBounds.X &&
@@ -469,7 +375,7 @@ bool CollisionCheckSystem::BoxInsideRegion(OctTreeNode * const pNode, const unsi
 /// <param name="pNode">Node containing the given region</param>
 /// <param name="pEntity">Entity that owns the given sphere collider</param>
 /// <returns>bool representing whether it is enclosed or not</returns>
-bool CollisionCheckSystem::SphereInsideRegion(OctTreeNode * const pNode, const unsigned short pEntity) const
+bool CollisionCheckSystem::SphereInsideRegion(OctTreeNode * const pNode, const int pEntity) const
 {
 	return (//If the min bounds of the sphere are greater than the min bounds of the region
 		mEcsManager->TransformComp(pEntity)->translation.X - mEcsManager->SphereColliderComp(pEntity)->radius > pNode->minBounds.X &&

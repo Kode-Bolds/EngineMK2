@@ -80,13 +80,6 @@ void MovementSystem::Process()
 			//Modify translation and transform by velocity
 			mEcsManager->TransformComp(entity.ID)->translation += mEcsManager->VelocityComp(entity.ID)->velocity * static_cast<float>(mSceneManager->DeltaTime());
 			mEcsManager->TransformComp(entity.ID)->transform *= KodeboldsMath::TranslationMatrix(mEcsManager->VelocityComp(entity.ID)->velocity * static_cast<float>(mSceneManager->DeltaTime()));
-
-			//Modify the entities box collider bounds
-			if (mEcsManager->BoxColliderComp(entity.ID))
-			{
-				mEcsManager->BoxColliderComp(entity.ID)->minBounds += (mEcsManager->VelocityComp(entity.ID)->velocity * static_cast<float>(mSceneManager->DeltaTime())).XYZ();
-				mEcsManager->BoxColliderComp(entity.ID)->maxBounds += (mEcsManager->VelocityComp(entity.ID)->velocity * static_cast<float>(mSceneManager->DeltaTime())).XYZ();
-			}
 		}
 	}
 }

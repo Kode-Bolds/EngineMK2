@@ -5,5 +5,4 @@ struct Camera
 	float FOV;
 	float nearPlane;
 	float farPlane;
-	bool active;
 };

@@ -121,6 +121,9 @@
     <ClInclude Include="Header Files\Components\Geometry.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Header Files\Components\Light.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
     <ClInclude Include="Header Files\Components\Shader.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
@@ -279,18 +282,6 @@
     </ClInclude>
     <ClInclude Include="Header Files\DataStructs\CollisionMask.h">
       <Filter>Header Files\DataStructs</Filter>
-    </ClInclude>
-    <ClInclude Include="Header Files\DataStructs\ConstantBuffer.h">
-      <Filter>Header Files\DataStructs</Filter>
-    </ClInclude>
-    <ClInclude Include="Header Files\DataStructs\Light.h">
-      <Filter>Header Files\DataStructs</Filter>
-    </ClInclude>
-    <ClInclude Include="Header Files\Components\PointLight.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Header Files\Components\DirectionalLight.h">
-      <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\HelperClasses\Sound.h">
       <Filter>Header Files\HelperClasses</Filter>

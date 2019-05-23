@@ -30,15 +30,15 @@ private:
 
 	void ClearView() const override;
 	void SwapBuffers() const override;
-	void LoadGeometry(const Entity& pEntity) override;
-	void LoadShaders(const Entity& pEntity) override;
-	void LoadTexture(const Entity& pEntity) override;
+	VBO * const LoadGeometry(const Entity& pEntity) const override;
+	void LoadShaders(const Entity& pEntity) const override;
+	void LoadTexture(const Entity& pEntity) const override;
 
 	void SetViewProj() override;
 	void SetLights() override;
 
 public:
-	explicit RenderSystem_GL(const HWND& pWindow, const int pMaxLights);
+	explicit RenderSystem_GL(const HWND& pWindow);
 	virtual ~RenderSystem_GL();
 
 

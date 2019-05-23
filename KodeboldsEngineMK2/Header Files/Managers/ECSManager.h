@@ -30,8 +30,7 @@ private:
 	std::vector<Colour> mColours;
 	std::vector<Geometry> mGeometries;
 	std::vector<Gravity> mGravities;
-	std::vector<PointLight> mPointLights;
-	std::vector<DirectionalLight> mDirectionalLights;
+	std::vector<Light> mLights;
 	std::vector<Ray> mRays;
 	std::vector<Shader> mShaders;
 	std::vector<SphereCollider> mSphereColliders;
@@ -55,8 +54,7 @@ private:
 	std::vector<unsigned short> mColourEntityMap;
 	std::vector<unsigned short> mGeometryEntityMap;
 	std::vector<unsigned short> mGravityEntityMap;
-	std::vector<unsigned short> mPointLightEntityMap;
-	std::vector<unsigned short> mDirectionalLightEntityMap;
+	std::vector<unsigned short> mLightEntityMap;
 	std::vector<unsigned short> mRayEntityMap;
 	std::vector<unsigned short> mShaderEntityMap;
 	std::vector<unsigned short> mSphereColliderEntityMap;
@@ -73,8 +71,7 @@ private:
 	std::vector<unsigned short> mColourFreeList;
 	std::vector<unsigned short> mGeometryFreeList;
 	std::vector<unsigned short> mGravityFreeList;
-	std::vector<unsigned short> mPointLightFreeList;
-	std::vector<unsigned short> mDirectionalLightFreeList;
+	std::vector<unsigned short> mLightFreeList;
 	std::vector<unsigned short> mRayFreeList;
 	std::vector<unsigned short> mShaderFreeList;
 	std::vector<unsigned short> mSphereColliderFreeList;
@@ -111,12 +108,12 @@ public:
 	static std::shared_ptr<ECSManager> Instance();
 
 	//Frequencies get/sets
-	int RenderingFrequency() const;
+	const int& RenderingFrequency();
 
 	//Entity creation
 	void SetMaxEntities(const int pEntityCount);
-	int MaxEntities() const;
-	int CreateEntity();
+	const int MaxEntities();
+	const int CreateEntity();
 	void DestroyEntity(const int pEntityID);
 
 	//System management
@@ -160,8 +157,7 @@ public:
 	void AddColourComp(const Colour& pColour, const int pEntityID);
 	void AddGeometryComp(const Geometry& pGeometry, const int pEntityID);
 	void AddGravityComp(const Gravity& pGravity, const int pEntityID);
-	void AddPointLightComp(const PointLight& pLight, const int pEntityID);
-	void AddDirectionalLightComp(const DirectionalLight& pLight, const int pEntityID);
+	void AddLightComp(const Light& pLight, const int pEntityID);
 	void AddRayComp(const Ray& pRay, const int pEntityID);
 	void AddShaderComp(const Shader& pShader, const int pEntityID);
 	void AddSphereColliderComp(const SphereCollider& pSphereCollider, const int pEntityID);
@@ -224,8 +220,7 @@ public:
 	void RemoveColourComp(const int pEntityID);
 	void RemoveGeometryComp(const int pEntityID);
 	void RemoveGravityComp(const int pEntityID);
-	void RemovePointLightComp(const int pEntityID);
-	void RemoveDirectionalLightComp(const int pEntityID);
+	void RemoveLightComp(const int pEntityID);
 	void RemoveRayComp(const int pEntityID);
 	void RemoveShaderComp(const int pEntityID);
 	void RemoveSphereColliderComp(const int pEntityID);
@@ -278,8 +273,7 @@ public:
 	Colour* const ColourComp(const int pEntityID);
 	Geometry* const GeometryComp(const int pEntityID);
 	Gravity* const GravityComp(const int pEntityID);
-	PointLight* const PointLightComp(const int pEntityID);
-	DirectionalLight* const DirectionalLightComp(const int pEntityID);
+	Light* const LightComp(const int pEntityID);
 	Ray* const RayComp(const int pEntityID);
 	Shader* const ShaderComp(const int pEntityID);
 	SphereCollider* const SphereColliderComp(const int pEntityID);

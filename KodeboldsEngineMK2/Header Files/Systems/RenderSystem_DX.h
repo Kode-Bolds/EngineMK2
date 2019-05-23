@@ -6,21 +6,28 @@
 #include <wrl.h>
 #include <directxcolors.h>
 #include "RenderSystem.h"
-#include "ConstantBuffer.h"
+
+struct ConstantBuffer
+{
+	DirectX::XMFLOAT4X4 mWorld;
+	DirectX::XMFLOAT4X4 mView;
+	DirectX::XMFLOAT4X4 mProj;
+	DirectX::XMFLOAT4 mLightColour;
+	DirectX::XMFLOAT4 mLightPosition;
+	DirectX::XMFLOAT4 mCameraPosition;
+	DirectX::XMFLOAT4 mColour;
+};
 
 class RenderSystem_DX : public RenderSystem
 {
 private:
-	std::vector<Entity> mPointLights;
-	std::vector<Entity> mDirectionalLights;
-	std::vector<Entity> mCameras;
+	std::vector<Entity> mLights;
 	HWND mWindow;
 	UINT mWidth{};
-	UINT mHeight{};
+	UINT height{};
 	const Entity* mActiveCamera;
-	VBO* mGeometry{};
-	ConstantBuffer mCB{};
-	LightingBuffer mLightCB{};
+	VBO* mGeometry;
+	ConstantBuffer mCB;
 
 	std::wstring mActiveGeometry;
 	std::wstring mActiveShader;
@@ -42,7 +49,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> mDepthStencil = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> mDepthStencilView = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> mConstantBuffer = nullptr;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> mLightingBuffer = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> mConstantBufferUniform = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11SamplerState> mTexSampler = nullptr;
 
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState> mRastWireframeState = nullptr;
@@ -70,18 +77,17 @@ private:
 
 	void ClearView() const override;
 	void SwapBuffers() const override;
-	void LoadGeometry(const Entity& pEntity) override;
-	void LoadShaders(const Entity& pEntity) override;
-	void LoadTexture(const Entity& pEntity) override;
+	VBO* const LoadGeometry(const Entity& pEntity) const override;
+	void LoadShaders(const Entity& pEntity) const override;
+	void LoadTexture(const Entity& pEntity) const override;
 
 	void SetViewProj() override;
 	void SetLights() override;
-	void SetCamera() override;
 
-	void CalculateTransform(const Entity& pEntity) const;
+	void CalculateTransform(const Entity& pEntity);
 
 public:
-	explicit RenderSystem_DX(const HWND& pWindow, const int pMaxLights);
+	explicit RenderSystem_DX(const HWND& pWindow);
 	virtual ~RenderSystem_DX();
 
 

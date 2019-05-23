@@ -50,9 +50,9 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 
 	//Render systems
 #ifdef DIRECTX
-	ecsManager->AddRenderSystem(std::make_shared<RenderSystem_DX>(hWnd, 7));
+	ecsManager->AddRenderSystem(std::make_shared<RenderSystem_DX>(hWnd));
 #elif OPENGL
-	ecsManager->AddRenderSystem(std::make_shared<RenderSystem_GL>(hWnd, 7));
+	ecsManager->AddRenderSystem(std::make_shared<RenderSystem_DX>(hWnd));
 #endif
 
 	ecsManager->AddUpdateSystem(std::make_shared<MovementSystem>());
@@ -68,6 +68,8 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 
 	//Create camera
 	int entityID = ecsManager->CreateEntity();
+	Light light{ Vector4(1, 1, 1, 1) };
+	ecsManager->AddLightComp(light, entityID);
 	Transform transL{};
 	transL.translation = Vector4(0, -20, -10, 1);
 	ecsManager->AddTransformComp(transL, entityID);

@@ -24,22 +24,9 @@ private:
 	std::shared_ptr<ResourceManager> resourceManager = ResourceManager::Instance();
 
 	int mPlayer;
-	int mPlayerGun;
-	int mPlayerShip;
-	int mPlayerShipCam;
 	int mCamera;
-	float mPlayerSpeed;
-	float mPlayerJumpSpeed;
-	float mShipSpeed;
 	float mCameraSpeed;
-
-	KodeboldsMath::Vector4 mPlayerShipStartPos;
-	KodeboldsMath::Vector4 mPlayerStartPos;
-	KodeboldsMath::Vector4 mFreeCamStartPos;
-
-	void Movement();
-	void Rotation();
-	void Shooting();
+	float mPlayerSpeed;
 
 	Sound* mLaserSound = nullptr;
 	Sound* mEngineSound = nullptr;

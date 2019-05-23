@@ -32,12 +32,12 @@ namespace EntitySpawner
 		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
 
 		//Shader component
-		Shader shader{ L"defaultShader.fx", BlendState::NOBLEND, CullState::BACK, DepthState::NONE };
+		Shader shader{ L"defaultShader.fx", BlendState::ALPHABLEND, CullState::FRONT, DepthState::LESSEQUAL };
 		entitySpawnerEcsManager->AddShaderComp(shader, ID);
 
 		//Light component
-		PointLight light{ pColour };
-		//entitySpawnerEcsManager->AddPointLightComp(light, ID);
+		Light light{ pColour };
+		entitySpawnerEcsManager->AddLightComp(light, ID);
 
 		//Transform component
 		Transform trans{};
@@ -45,7 +45,7 @@ namespace EntitySpawner
 		trans.rotation = pRotation;
 		trans.translation = pPosition;
 		entitySpawnerEcsManager->AddTransformComp(trans, ID);
-    
+
 		// Audio Component
 		Audio audio{};
 		audio.mSound = pSound;
@@ -53,11 +53,9 @@ namespace EntitySpawner
 		audio.loop = false;
 		entitySpawnerEcsManager->AddAudioComp(audio, ID);
 
-    //Texture component
 		Texture tex{};
-		tex.diffuse = L"stones.dds";
-		tex.normal = L"stones_NM_height.dds";
 		entitySpawnerEcsManager->AddTextureComp(tex, ID);
+
 
 		//Velocity component
 		Velocity vel{ pAcceleration, KodeboldsMath::Vector4(), pMaxSpeed };
@@ -99,7 +97,7 @@ namespace EntitySpawner
 		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
 
 		//Shader component
-		Shader shader{ L"defaultShader.fx" , BlendState::NOBLEND, CullState::BACK, DepthState::NONE };
+		Shader shader{ L"defaultShader.fx" , BlendState::ALPHABLEND, CullState::FRONT, DepthState::LESSEQUAL };
 		entitySpawnerEcsManager->AddShaderComp(shader, ID);
 
 		//Texture component
@@ -142,11 +140,11 @@ namespace EntitySpawner
 		int ID = entitySpawnerEcsManager->CreateEntity();
 
 		//Geometry component
-		Geometry geo{ L"sphere.obj" };
+		Geometry geo{ L"asteroid.obj" };
 		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
 
 		//Shader component
-		Shader shader{ L"defaultShader.fx", BlendState::NOBLEND, CullState::BACK, DepthState::NONE };
+		Shader shader{ L"defaultShader.fx", BlendState::ALPHABLEND, CullState::FRONT, DepthState::LESSEQUAL };
 		entitySpawnerEcsManager->AddShaderComp(shader, ID);
 
 		//Texture component
@@ -163,98 +161,6 @@ namespace EntitySpawner
 		//SphereCollider component
 		SphereCollider sphere{ pRadius, CustomCollisionMask::ASTEROID, pIgnoreCollisionMask };
 		entitySpawnerEcsManager->AddSphereColliderComp(sphere, ID);
-
-		return ID;
-	}
-
-	static int SpawnLaserGun(const KodeboldsMath::Vector4& pPosition, const KodeboldsMath::Vector4& pScale, const KodeboldsMath::Vector4& pRotation, const std::wstring& pDiffuse, 
-		const std::wstring& pNormal, const float& pMaxSpeed)
-	{
-		int ID = entitySpawnerEcsManager->CreateEntity();
-
-		//Geometry component
-		Geometry geo{ L"laser_gun.obj" };
-		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
-
-		//Shader component
-		Shader shader{ L"defaultShader.fx", BlendState::NOBLEND, CullState::BACK, DepthState::NONE };
-		entitySpawnerEcsManager->AddShaderComp(shader, ID);
-
-		//Texture component
-		Texture texture{ pDiffuse, pNormal, L"" };
-		entitySpawnerEcsManager->AddTextureComp(texture, ID);
-
-		//Transform component
-		Transform trans{};
-		trans.scale = pScale;
-		trans.rotation = pRotation;
-		trans.translation = pPosition;
-		entitySpawnerEcsManager->AddTransformComp(trans, ID);
-
-		//Velocity component
-		Velocity vel{};
-		vel.maxSpeed = pMaxSpeed;
-		entitySpawnerEcsManager->AddVelocityComp(vel, ID);
-
-		//Gravity component
-		Gravity grav{};
-		entitySpawnerEcsManager->AddGravityComp(grav, ID);
-
-		return ID;
-	}
-
-	static int SpawnCamera(const KodeboldsMath::Vector4& pPosition, const KodeboldsMath::Vector4& pScale, const KodeboldsMath::Vector4& pRotation, const float& pFOV,
-		const int pNear, const int pFar, const float& pMaxSpeed)
-	{
-		int ID = entitySpawnerEcsManager->CreateEntity();
-
-		//Camera component
-		Camera cam{ pFOV, pNear, pFar, false };
-		entitySpawnerEcsManager->AddCameraComp(cam, ID);
-
-		//Transform component
-		Transform trans{};
-		trans.translation = pPosition;
-		trans.scale = pScale;
-		trans.rotation = pRotation;
-		entitySpawnerEcsManager->AddTransformComp(trans, ID);
-
-		//Velocity component
-		Velocity vel{};
-		vel.maxSpeed = pMaxSpeed;
-		entitySpawnerEcsManager->AddVelocityComp(vel, ID);
-
-		return ID;
-	}
-
-	static int SpawnPlayer(const KodeboldsMath::Vector4& pPosition, const KodeboldsMath::Vector4& pScale, const KodeboldsMath::Vector4& pRotation, const float& pFOV,
-		const int pNear, const int pFar, const float& pMaxSpeed, const KodeboldsMath::Vector3& pBoxMin, const KodeboldsMath::Vector3& pBoxMax, const int pCollisionMask, const int pIgnoreCollisionMask)
-	{
-		int ID = entitySpawnerEcsManager->CreateEntity();
-
-		//Camera component
-		Camera cam{ pFOV, pNear, pFar, false };
-		entitySpawnerEcsManager->AddCameraComp(cam, ID);
-
-		//Transform component
-		Transform trans{};
-		trans.scale = pScale;
-		trans.rotation = pRotation;
-		trans.translation = pPosition;
-		entitySpawnerEcsManager->AddTransformComp(trans, ID);
-
-		//Velocity component
-		Velocity vel{};
-		vel.maxSpeed = pMaxSpeed;
-		entitySpawnerEcsManager->AddVelocityComp(vel, ID);
-
-		//BoxCollider component
-		BoxCollider box{ pBoxMin, pBoxMax, pCollisionMask, pIgnoreCollisionMask };
-		entitySpawnerEcsManager->AddBoxColliderComp(box, ID);
-
-		//Gravity component
-		Gravity grav{};
-		entitySpawnerEcsManager->AddGravityComp(grav, ID);
 
 		return ID;
 	}
