@@ -4,7 +4,7 @@ using namespace KodeboldsMath;
 using namespace EntitySpawner;
 
 /// <summary>
-/// 
+///
 /// </summary>
 void GameScene::Movement()
 {
@@ -266,7 +266,7 @@ void GameScene::Movement()
 }
 
 /// <summary>
-/// 
+///
 /// </summary>
 void GameScene::Rotation()
 {
@@ -315,7 +315,7 @@ void GameScene::Rotation()
 }
 
 /// <summary>
-/// 
+///
 /// </summary>
 void GameScene::Shooting()
 {
@@ -370,6 +370,7 @@ void GameScene::Update()
 	//Switch between cameras
 	//Ship
 	if (mInputManager->KeyDown(KEYS::KEY_F1))
+	else if (mInputManager->KeyUp(KEYS::KEY_LEFT_SHIFT))
 	{
 		mEcsManager->CameraComp(mPlayerShipCam)->active = true;
 		mEcsManager->CameraComp(mPlayer)->active = false;
@@ -409,6 +410,13 @@ void GameScene::Update()
 	{
 		mEcsManager->AddGravityComp(Gravity{}, mPlayer);
 		mEcsManager->AddGravityComp(Gravity{}, mPlayerGun);
+		Vector4 leftLaser = mEcsManager->TransformComp(mPlayer)->translation + Vector4(-25, 5, 0, 0);
+		SpawnLaser(leftLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(0, 0, 20, 1), 40,
+			leftLaser.XYZ() - Vector3(1, 1, 1), leftLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER, mLaserSound);
+
+		Vector4 rightLaser = mEcsManager->TransformComp(mPlayer)->translation + Vector4(25, 5, 0, 0);
+		SpawnLaser(rightLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(0, 0, 20, 1), 40,
+			rightLaser.XYZ() - Vector3(1, 1, 1), rightLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER, mLaserSound);
 	}
 }
 
@@ -424,11 +432,54 @@ void GameScene::OnLoad()
 	mPlayerShipCam = SpawnCamera(mPlayerShipStartPos + Vector4(0, 30, -70, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 60, 1, 400, 40);
 	mEcsManager->CameraComp(mPlayerShipCam)->active = true;
 
+	// Audio Files
+	mLaserSound = resourceManager->LoadAudio(L"laser.wav");
+	mEngineSound = resourceManager->LoadAudio(L"engine.wav");
+
+	mCamera = mEcsManager->CreateEntity();
+	Camera cam{ 60, 1, 200 };
+	mEcsManager->AddCameraComp(cam, mCamera);
+	Transform trans{};
+	trans.translation = Vector4(0, 0, -100, 1);
+	trans.scale = Vector4(1, 1, 1, 1);
+	mEcsManager->AddTransformComp(trans, mCamera);
+	mCameraSpeed = 10.0f;
+
+	mPlayer = mEcsManager->CreateEntity();
+	Geometry geo{ L"ship.obj" };
+	mEcsManager->AddGeometryComp(geo, mPlayer);
+	Shader shader{ L"depthShader.fx" , BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
+	mEcsManager->AddShaderComp(shader, mPlayer);
+	Texture texture{};
+	texture.diffuse = L"stones.dds";
+	texture.normal = L"stones_NM_height.dds";
+	mEcsManager->AddTextureComp(texture, mPlayer);
+
+	//// Audio Component
+	//Audio audio{};
+	//audio.mSound = mEngineSound;
+	//audio.active = true;
+	//audio.loop = false;
+	//entitySpawnerEcsManager->AddAudioComp(audio, mPlayer);
+
+	Transform transC{};
+	transC.scale = Vector4(1, 1, 1, 1);
+	mEcsManager->AddTransformComp(transC, mPlayer);
+	Velocity vel{};
+	vel.acceleration = Vector4(0, 0.0f, 0, 1);
+	vel.maxSpeed = 50;
+	mEcsManager->AddVelocityComp(vel, mPlayer);
+	Colour colour2{ Vector4(1, 1, 1, 1) };
+	mEcsManager->AddColourComp(colour2, mPlayer);
+
+	mPlayerSpeed = 2.0f;
+
 	//Spawn player camera and attached laser gun model
 	mPlayerStartPos = Vector4(0, 50, -100, 1);
 	mPlayer = SpawnPlayer(mPlayerStartPos, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 60, 1, 400, 5, mPlayerStartPos.XYZ() - Vector3(1, 2, 1), mPlayerStartPos.XYZ() + Vector3(1, 2, 1),
 		CustomCollisionMask::PLAYER, CustomCollisionMask::PLAYER | CustomCollisionMask::LASER | CustomCollisionMask::SHIP);
 	mPlayerGun = SpawnLaserGun(mPlayerStartPos + Vector4(1, -1, 3.0f, 0), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), L"stones.dds", L"stones_NM_height.dds", 5);
+
 
 	//Spawn free cam
 	mCamera = SpawnCamera(Vector4(5, 2, -100, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 60, 1, 10000, 50);
@@ -440,7 +491,7 @@ void GameScene::OnLoad()
 	mCameraSpeed = 20.0f;
 
 	//Spawn platform of cubes
-	for(int x = 0; x < 10; x++)
+	for (int x = 0; x < 10; x++)
 	{
 		for (int z = 0; z < 10; z++)
 		{
@@ -523,8 +574,47 @@ void GameScene::OnLoad()
 		}
 	}
 
-	//AntTweak
+	const int dLight = mEcsManager->CreateEntity();
+	DirectionalLight dl{Vector4(0,-1,-1,1), Vector4(0.1f,0,0,1)};
+	mEcsManager->AddDirectionalLightComp(dl, dLight);
 
+	const int dLight2 = mEcsManager->CreateEntity();
+	DirectionalLight dl2{ Vector4(1,-1,1,1), Vector4(0,0.1f,0,1) };
+	mEcsManager->AddDirectionalLightComp(dl2, dLight2);
+
+	const int pLight = mEcsManager->CreateEntity();
+	PointLight pl{ Vector4(0.1f,0.2f,0,1), 5};
+	mEcsManager->AddPointLightComp(pl, pLight);
+	Transform t;
+	t.translation = Vector4(2 * 2 - 5, 0, 2 * 2 - 100, 1);
+	t.scale = Vector4(1, 1, 1, 1);
+	mEcsManager->AddTransformComp(t, pLight);
+
+	const int pLight2 = mEcsManager->CreateEntity();
+	PointLight pl2{ Vector4(0,0.2f,0.3f,1), 5};
+	mEcsManager->AddPointLightComp(pl2, pLight2);
+	Transform t2;
+	t2.translation = Vector4(5 * 2 - 5, 0, 2 * 2 - 100, 1);
+	t2.scale = Vector4(1, 1, 1, 1);
+	mEcsManager->AddTransformComp(t2, pLight2);
+
+	const int pLight3 = mEcsManager->CreateEntity();
+	PointLight pl3{ Vector4(0.3f,0.1f,0,1), 5};
+	mEcsManager->AddPointLightComp(pl3, pLight3);
+	Transform t3;
+	t3.translation = Vector4(2 * 2 - 5, 0, 5 * 2 - 100, 1);
+	t3.scale = Vector4(1, 1, 1, 1);
+	mEcsManager->AddTransformComp(t3, pLight3);
+
+	const int pLight4 = mEcsManager->CreateEntity();
+	PointLight pl4{ Vector4(0.3f,0.5f,0.2f,1) , 5};
+	mEcsManager->AddPointLightComp(pl4, pLight4);
+	Transform t4;
+	t4.translation = Vector4(5 * 2 - 5, 0, 5 * 2 - 100, 1);
+	t4.scale = Vector4(1, 1, 1, 1);
+	mEcsManager->AddTransformComp(t4, pLight4);
+
+	//AntTweak
 	mGUIManager->AddBar("Testing");
 	TwDefine(" Testing size='300 320' valueswidth=200 ");
 	mGUIManager->AddVariable("Testing", "Velocity", TW_TYPE_DIR3F, &mEcsManager->VelocityComp(mPlayer)->velocity, "");

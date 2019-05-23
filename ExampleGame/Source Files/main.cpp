@@ -1,6 +1,5 @@
 #include "GameScene.h"
 #include <windows.h>
-#include <memory>
 #include "Systems.h"
 #include "CustomComponents.h"
 
@@ -38,6 +37,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	std::shared_ptr<NetworkManager> networkManager = NetworkManager::Instance();
 	std::shared_ptr<GUIManager> guiManager = GUIManager::Instance();
 
+
 	//Initialise winsock
 	networkManager->InitWinSock(9171);
 
@@ -50,21 +50,35 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 
 	//Render systems
 #ifdef DIRECTX
-	ecsManager->AddRenderSystem(std::make_shared<RenderSystem_DX>(hWnd));
+	ecsManager->AddRenderSystem(std::make_shared<RenderSystem_DX>(hWnd, 7));
 #elif OPENGL
-	ecsManager->AddRenderSystem(std::make_shared<RenderSystem_DX>(hWnd));
+	ecsManager->AddRenderSystem(std::make_shared<RenderSystem_GL>(hWnd, 7));
 #endif
 
 	ecsManager->AddUpdateSystem(std::make_shared<MovementSystem>());
 	ecsManager->AddUpdateSystem(std::make_shared<CollisionCheckSystem>(500, 50));
 
+	// Audio systems
+#ifdef DIRECTX
+	ecsManager->AddUpdateSystem(std::make_shared<AudioSystem_DX>());
+#elif OPENGL
+	ecsManager->AddUpdateSystem(std::make_shared<AudioSystem_GL>());
+#endif
+	
+
 	//Create camera
 	int entityID = ecsManager->CreateEntity();
-	Light light{ Vector4(1, 1, 1, 1) };
-	ecsManager->AddLightComp(light, entityID);
 	Transform transL{};
 	transL.translation = Vector4(0, -20, -10, 1);
 	ecsManager->AddTransformComp(transL, entityID);
+
+
+
+	////test->Play();
+
+
+
+
 
 
 	// Testing Sprite Loading (GUI)

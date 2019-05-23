@@ -51,6 +51,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Header Files\HelperClasses\Sound.cpp" />
     <ClCompile Include="Source Files\HelperClasses\ObjLoader.cpp" />
     <ClCompile Include="Source Files\HelperClasses\ShaderObject_GL.cpp" />
     <ClCompile Include="Source Files\HelperClasses\Task.cpp" />
@@ -65,7 +66,6 @@
     <ClCompile Include="Source Files\KodeboldsMath\Vector2.cpp" />
     <ClCompile Include="Source Files\KodeboldsMath\Vector3.cpp" />
     <ClCompile Include="Source Files\KodeBoldsMath\Vector4.cpp" />
-    <ClCompile Include="Source Files\Managers\AudioManager.cpp" />
     <ClCompile Include="Source Files\Managers\GUIManager.cpp" />
     <ClCompile Include="Source Files\Managers\ECSManager.cpp" />
     <ClCompile Include="Source Files\Managers\InputManager.cpp" />
@@ -75,6 +75,9 @@
     <ClCompile Include="Source Files\Managers\ResourceManager.cpp" />
     <ClCompile Include="Source Files\Managers\SceneManager.cpp" />
     <ClCompile Include="Source Files\Managers\ThreadManager.cpp" />
+    <ClCompile Include="Source Files\Systems\AudioSystem.cpp" />
+    <ClCompile Include="Source Files\Systems\AudioSystem_DX.cpp" />
+    <ClCompile Include="Source Files\Systems\AudioSystem_GL.cpp" />
     <ClCompile Include="Source Files\Systems\CollisionCheckSystem.cpp" />
     <ClCompile Include="Source Files\Systems\MovementSystem.cpp" />
     <ClCompile Include="Source Files\Systems\RenderSystem_DX.cpp" />
@@ -91,9 +94,10 @@
     <ClInclude Include="Header Files\Components\Components.h" />
     <ClInclude Include="Header Files\Components\ComponentType.h" />
     <ClInclude Include="Header Files\Components\CustomComponent.h" />
+    <ClInclude Include="Header Files\Components\DirectionalLight.h" />
     <ClInclude Include="Header Files\Components\Geometry.h" />
     <ClInclude Include="Header Files\Components\Gravity.h" />
-    <ClInclude Include="Header Files\Components\Light.h" />
+    <ClInclude Include="Header Files\Components\PointLight.h" />
     <ClInclude Include="Header Files\Components\Ray.h" />
     <ClInclude Include="Header Files\Components\Shader.h" />
     <ClInclude Include="Header Files\Components\SphereCollider.h" />
@@ -106,10 +110,12 @@
     <ClInclude Include="Header Files\DataStructs\CullState.h" />
     <ClInclude Include="Header Files\DataStructs\DepthState.h" />
     <ClInclude Include="Header Files\DataStructs\Entity.h" />
+    <ClInclude Include="Header Files\DataStructs\Light.h" />
     <ClInclude Include="Header Files\DataStructs\OctTreeNode.h" />
     <ClInclude Include="Header Files\DataStructs\Vertex.h" />
     <ClInclude Include="Header Files\HelperClasses\ObjLoader.h" />
     <ClInclude Include="Header Files\HelperClasses\ShaderObject_GL.h" />
+    <ClInclude Include="Header Files\HelperClasses\Sound.h" />
     <ClInclude Include="Header Files\HelperClasses\Sprite.h" />
     <ClInclude Include="Header Files\HelperClasses\Task.h" />
     <ClInclude Include="Header Files\HelperClasses\Text.h" />
@@ -127,7 +133,6 @@
     <ClInclude Include="Header Files\KodeboldsMath\Vector2.h" />
     <ClInclude Include="Header Files\KodeboldsMath\Vector3.h" />
     <ClInclude Include="Header Files\KodeBoldsMath\Vector4.h" />
-    <ClInclude Include="Header Files\Managers\AudioManager.h" />
     <ClInclude Include="Header Files\Managers\GUIManager.h" />
     <ClInclude Include="Header Files\Managers\ECSManager.h" />
     <ClInclude Include="Header Files\Managers\InputManager.h" />
@@ -139,6 +144,9 @@
     <ClInclude Include="Header Files\HelperClasses\Scene.h" />
     <ClInclude Include="Header Files\Managers\SceneManager.h" />
     <ClInclude Include="Header Files\Managers\ThreadManager.h" />
+    <ClInclude Include="Header Files\Systems\AudioSystem.h" />
+    <ClInclude Include="Header Files\Systems\AudioSystem_DX.h" />
+    <ClInclude Include="Header Files\Systems\AudioSystem_GL.h" />
     <ClInclude Include="Header Files\Systems\CollisionCheckSystem.h" />
     <ClInclude Include="Header Files\Systems\ISystem.h" />
     <ClInclude Include="Header Files\Systems\MovementSystem.h" />
@@ -154,84 +162,84 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{20D1FD96-5E35-44E4-AC0E-CEB0AD22C9A3}</ProjectGuid>
     <RootNamespace>KodeboldsEngineMK2</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug - OpenGL|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug - DirectX|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release - OpenGL|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release - DirectX|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug - OpenGL|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug - DirectX|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release - OpenGL|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release - DirectX|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
