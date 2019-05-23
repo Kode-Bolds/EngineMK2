@@ -23,24 +23,24 @@ cbuffer ConstantBuffer : register(b0)
 	float4x4 World;
 	float4x4 View;
 	float4x4 Projection;
-	float4 LightColour;
-	float4 LightPosition;
 	float4 CameraPosition;
 	float4 Colour;
-	//float4 Time;
+	float Time;
+	float3 padding3;
 }
+	//float4 Time;
 
 //A lighting buffer would be nice, could do with setting ambient light in here too
 
 cbuffer LightingBuffer : register (b1)
 {
-	int numDirLights;
+	float numDirLights;
+	float3 padding4;
 	DirectionalLight dirLights[2];
 
-	int numPointLights; //5 max
+	float numPointLights; //5 max
+	float3 padding5;
 	Pointlight pointLights[5];
-
-	
 }
 
 Texture2D txDiffuse : register(t0);
@@ -215,7 +215,6 @@ float4 PS(PS_INPUT input) : SV_Target
 	colour += pow(rim.rrr, 3);
 
 	//colour = noise(input.TexCoord * 25);
-
 	return float4(colour,1);
 
 }

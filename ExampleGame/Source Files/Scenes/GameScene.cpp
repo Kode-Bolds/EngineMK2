@@ -443,7 +443,7 @@ void GameScene::OnLoad()
 	mEcsManager->AddTransformComp(trans, mCamera);
 	mCameraSpeed = 10.0f;
 
-	mPlayer = mEcsManager->CreateEntity();
+	/*mPlayer = mEcsManager->CreateEntity();
 	Geometry geo{ L"ship.obj" };
 	mEcsManager->AddGeometryComp(geo, mPlayer);
 	Shader shader{ L"depthShader.fx" , BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
@@ -452,7 +452,7 @@ void GameScene::OnLoad()
 	texture.diffuse = L"stones.dds";
 	texture.normal = L"stones_NM_height.dds";
 	mEcsManager->AddTextureComp(texture, mPlayer);
-
+	*/
 	//// Audio Component
 	//Audio audio{};
 	//audio.mSound = mEngineSound;
@@ -536,11 +536,11 @@ void GameScene::OnLoad()
 
 		Geometry geom{ L"sphere.obj" };
 		mEcsManager->AddGeometryComp(geom, entity);
-		Shader shaderm{ L"sunShader.fx" , BlendState::ALPHABLEND, CullState::BACK, DepthState::NONE };
+		Shader shaderm{ L"sunShader.fx" , BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
 
 		mEcsManager->AddShaderComp(shaderm, entity);
 		Transform transCm{};
-		transCm.translation = Vector4(0, 0, 3, 1);
+		transCm.translation = Vector4(0, 0, 1250, 1);
 
 		transCm.scale = Vector4(500, 500, 500, 1);
 		mEcsManager->AddTransformComp(transCm, entity);

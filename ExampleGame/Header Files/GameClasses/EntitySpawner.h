@@ -49,10 +49,10 @@ namespace EntitySpawner
     
 		// Audio Component
 		Audio audio{};
-		audio.mSound = pSound;
+		//audio.mSound = pSound;
 		audio.active = true;
 		audio.loop = false;
-		entitySpawnerEcsManager->AddAudioComp(audio, ID);
+		//entitySpawnerEcsManager->AddAudioComp(audio, ID);
 
     //Texture component
 		Texture tex{};
