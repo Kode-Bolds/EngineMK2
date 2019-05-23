@@ -15,13 +15,13 @@ void GameScene::Movement()
 		if (mEcsManager->CameraComp(mPlayerShipCam)->active)
 		{
 			mEcsManager->VelocityComp(mPlayerShip)->acceleration += mEcsManager->TransformComp(mPlayerShip)->forward * mShipSpeed;
-			mEcsManager->VelocityComp(mPlayerShipCam)->acceleration += mEcsManager->TransformComp(mPlayerShipCam)->forward * mShipSpeed;
+			mEcsManager->VelocityComp(mPlayerShipCam)->acceleration += mEcsManager->TransformComp(mPlayerShip)->forward * mShipSpeed;
 		}
 		//If player cam is active, move player cam
 		if (mEcsManager->CameraComp(mPlayer)->active)
 		{
 			mEcsManager->VelocityComp(mPlayer)->acceleration += mEcsManager->TransformComp(mPlayer)->forward * mPlayerSpeed;
-			mEcsManager->VelocityComp(mPlayerGun)->acceleration += mEcsManager->TransformComp(mPlayerGun)->forward * mPlayerSpeed;
+			mEcsManager->VelocityComp(mPlayerGun)->acceleration += mEcsManager->TransformComp(mPlayer)->forward * mPlayerSpeed;
 		}
 		//If free cam is active, move free cam
 		if (mEcsManager->CameraComp(mCamera)->active)
@@ -35,13 +35,13 @@ void GameScene::Movement()
 		if (mEcsManager->CameraComp(mPlayerShipCam)->active)
 		{
 			mEcsManager->VelocityComp(mPlayerShip)->acceleration -= mEcsManager->TransformComp(mPlayerShip)->forward * mShipSpeed;
-			mEcsManager->VelocityComp(mPlayerShipCam)->acceleration -= mEcsManager->TransformComp(mPlayerShipCam)->forward * mShipSpeed;
+			mEcsManager->VelocityComp(mPlayerShipCam)->acceleration -= mEcsManager->TransformComp(mPlayerShip)->forward * mShipSpeed;
 		}
 		//If player cam is active, move player cam
 		if (mEcsManager->CameraComp(mPlayer)->active)
 		{
 			mEcsManager->VelocityComp(mPlayer)->acceleration -= mEcsManager->TransformComp(mPlayer)->forward * mPlayerSpeed;
-			mEcsManager->VelocityComp(mPlayerGun)->acceleration -= mEcsManager->TransformComp(mPlayerGun)->forward * mPlayerSpeed;
+			mEcsManager->VelocityComp(mPlayerGun)->acceleration -= mEcsManager->TransformComp(mPlayer)->forward * mPlayerSpeed;
 		}
 		//If free cam is active, move free cam
 		if (mEcsManager->CameraComp(mCamera)->active)
@@ -63,7 +63,7 @@ void GameScene::Movement()
 		if (mEcsManager->CameraComp(mPlayer)->active)
 		{
 			mEcsManager->VelocityComp(mPlayer)->acceleration += mEcsManager->TransformComp(mPlayer)->forward * -mPlayerSpeed;
-			mEcsManager->VelocityComp(mPlayerGun)->acceleration += mEcsManager->TransformComp(mPlayerGun)->forward * -mPlayerSpeed;
+			mEcsManager->VelocityComp(mPlayerGun)->acceleration += mEcsManager->TransformComp(mPlayer)->forward * -mPlayerSpeed;
 		}
 		//If free cam is active, move free cam
 		if (mEcsManager->CameraComp(mCamera)->active)
@@ -83,7 +83,7 @@ void GameScene::Movement()
 		if (mEcsManager->CameraComp(mPlayer)->active)
 		{
 			mEcsManager->VelocityComp(mPlayer)->acceleration -= mEcsManager->TransformComp(mPlayer)->forward * -mPlayerSpeed;
-			mEcsManager->VelocityComp(mPlayerGun)->acceleration -= mEcsManager->TransformComp(mPlayerGun)->forward * -mPlayerSpeed;
+			mEcsManager->VelocityComp(mPlayerGun)->acceleration -= mEcsManager->TransformComp(mPlayer)->forward * -mPlayerSpeed;
 		}
 		//If free cam is active, move free cam
 		if (mEcsManager->CameraComp(mCamera)->active)
@@ -105,7 +105,7 @@ void GameScene::Movement()
 		if (mEcsManager->CameraComp(mPlayer)->active)
 		{
 			mEcsManager->VelocityComp(mPlayer)->acceleration += mEcsManager->TransformComp(mPlayer)->right * -mPlayerSpeed;
-			mEcsManager->VelocityComp(mPlayerGun)->acceleration += mEcsManager->TransformComp(mPlayerGun)->right * -mPlayerSpeed;
+			mEcsManager->VelocityComp(mPlayerGun)->acceleration += mEcsManager->TransformComp(mPlayer)->right * -mPlayerSpeed;
 		}
 		//If free cam is active, move free cam
 		if (mEcsManager->CameraComp(mCamera)->active)
@@ -125,7 +125,7 @@ void GameScene::Movement()
 		if (mEcsManager->CameraComp(mPlayer)->active)
 		{
 			mEcsManager->VelocityComp(mPlayer)->acceleration -= mEcsManager->TransformComp(mPlayer)->right * -mPlayerSpeed;
-			mEcsManager->VelocityComp(mPlayerGun)->acceleration -= mEcsManager->TransformComp(mPlayerGun)->right * -mPlayerSpeed;
+			mEcsManager->VelocityComp(mPlayerGun)->acceleration -= mEcsManager->TransformComp(mPlayer)->right * -mPlayerSpeed;
 		}
 		//If free cam is active, move free cam
 		if (mEcsManager->CameraComp(mCamera)->active)
@@ -147,7 +147,7 @@ void GameScene::Movement()
 		if (mEcsManager->CameraComp(mPlayer)->active)
 		{
 			mEcsManager->VelocityComp(mPlayer)->acceleration += mEcsManager->TransformComp(mPlayer)->right * mPlayerSpeed;
-			mEcsManager->VelocityComp(mPlayerGun)->acceleration += mEcsManager->TransformComp(mPlayerGun)->right * mPlayerSpeed;
+			mEcsManager->VelocityComp(mPlayerGun)->acceleration += mEcsManager->TransformComp(mPlayer)->right * mPlayerSpeed;
 		}
 		//If free cam is active, move free cam
 		if (mEcsManager->CameraComp(mCamera)->active)
@@ -167,7 +167,7 @@ void GameScene::Movement()
 		if (mEcsManager->CameraComp(mPlayer)->active)
 		{
 			mEcsManager->VelocityComp(mPlayer)->acceleration -= mEcsManager->TransformComp(mPlayer)->right * mPlayerSpeed;
-			mEcsManager->VelocityComp(mPlayerGun)->acceleration -= mEcsManager->TransformComp(mPlayerGun)->right * mPlayerSpeed;
+			mEcsManager->VelocityComp(mPlayerGun)->acceleration -= mEcsManager->TransformComp(mPlayer)->right * mPlayerSpeed;
 		}
 		//If free cam is active, move free cam
 		if (mEcsManager->CameraComp(mCamera)->active)
@@ -186,10 +186,10 @@ void GameScene::Movement()
 			mEcsManager->VelocityComp(mPlayerShipCam)->acceleration += mEcsManager->TransformComp(mPlayerShipCam)->up * mShipSpeed;
 		}
 		//If player cam is active, move player cam
-		if (mEcsManager->CameraComp(mPlayer)->active)
+		if (mEcsManager->CameraComp(mPlayer)->active && mPlayerIsGrounded)
 		{
 			mEcsManager->VelocityComp(mPlayer)->velocity += mEcsManager->TransformComp(mPlayer)->up * mPlayerJumpSpeed;
-			mEcsManager->VelocityComp(mPlayerGun)->velocity += mEcsManager->TransformComp(mPlayerGun)->up * mPlayerJumpSpeed;
+			mEcsManager->VelocityComp(mPlayerGun)->velocity += mEcsManager->TransformComp(mPlayer)->up * mPlayerJumpSpeed;
 		}
 		//If free cam is active, move free cam
 		if (mEcsManager->CameraComp(mCamera)->active)
@@ -325,21 +325,21 @@ void GameScene::Shooting()
 		//If ship cam is active, fire ship lasers
 		if (mEcsManager->CameraComp(mPlayerShipCam)->active)
 		{
-			Vector4 leftLaser = mEcsManager->TransformComp(mPlayerShip)->translation + ((mEcsManager->TransformComp(mPlayerGun)->right * -24) + (mEcsManager->TransformComp(mPlayerGun)->up * 5));
-			SpawnLaser(leftLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(0, 0, 20, 1), 40,
-				leftLaser.XYZ() - Vector3(1, 1, 1), leftLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER);
+			Vector4 leftLaser = mEcsManager->TransformComp(mPlayerShip)->translation + ((mEcsManager->TransformComp(mPlayerShip)->right * -23) + (mEcsManager->TransformComp(mPlayerShip)->up * 5));
+			SpawnLaser(leftLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), mEcsManager->TransformComp(mPlayerShip)->forward * 40, 40,
+				leftLaser.XYZ() - Vector3(1, 1, 1), leftLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER, 100);
 
-			Vector4 rightLaser = mEcsManager->TransformComp(mPlayerShip)->translation + ((mEcsManager->TransformComp(mPlayerGun)->right * 24) + (mEcsManager->TransformComp(mPlayerGun)->up * 5));
-			SpawnLaser(rightLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(0, 0, 20, 1), 40,
-				rightLaser.XYZ() - Vector3(1, 1, 1), rightLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER);
+			Vector4 rightLaser = mEcsManager->TransformComp(mPlayerShip)->translation + ((mEcsManager->TransformComp(mPlayerShip)->right * 23) + (mEcsManager->TransformComp(mPlayerShip)->up * 5));
+			SpawnLaser(rightLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), mEcsManager->TransformComp(mPlayerShip)->forward * 40, 40,
+				rightLaser.XYZ() - Vector3(1, 1, 1), rightLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER, 100);
 		}
 
 		//If player cam is active, fire gun
 		if (mEcsManager->CameraComp(mPlayer)->active)
 		{
-			Vector4 gunBarrel = mEcsManager->TransformComp(mPlayerGun)->translation + (mEcsManager->TransformComp(mPlayerGun)->forward * 1);
-			SpawnLaser(gunBarrel, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(0, 0, 20, 1), 40,
-				gunBarrel.XYZ() - Vector3(1, 1, 1), gunBarrel.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER);
+			Vector4 gunBarrel = mEcsManager->TransformComp(mPlayerGun)->translation + (mEcsManager->TransformComp(mPlayerGun)->forward * -2);
+			SpawnLaser(gunBarrel, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), mEcsManager->TransformComp(mPlayerGun)->forward * -30, 40,
+				gunBarrel.XYZ() - Vector3(1, 1, 1), gunBarrel.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER, 50);
 		}
 	}
 }
@@ -391,32 +391,30 @@ void GameScene::Update()
 		mEcsManager->CameraComp(mCamera)->active = true;
 	}
 
-	//If player collides with floor turn off gravity and set Y velocity to 0
-	if (mEcsManager->CollisionComp(mPlayer))
+	//If the player doesn't have a gravity component
+	if (!mEcsManager->GravityComp(mPlayer))
 	{
-		if (mEcsManager->CollisionComp(mPlayer)->collidedEntityCollisionMask == CustomCollisionMask::FLOOR)
+		//Check if the player is colliding with something, else add gravity
+		if (mEcsManager->CollisionComp(mPlayer))
 		{
-			if (mEcsManager->GravityComp(mPlayer))
+			//If it's not the floor, player is not grounded, add gravity
+			if (!mEcsManager->CollisionComp(mPlayer)->collidedEntityCollisionMask == CustomCollisionMask::FLOOR)
 			{
-				mEcsManager->RemoveGravityComp(mPlayer);
-				mEcsManager->VelocityComp(mPlayer)->velocity.Y = 0;
-				mEcsManager->RemoveGravityComp(mPlayerGun);
-				mEcsManager->VelocityComp(mPlayerGun)->velocity.Y = 0;
+				mEcsManager->AddGravityComp(Gravity{}, mPlayer);
+				mEcsManager->AddGravityComp(Gravity{}, mPlayerGun);
+				mPlayerIsGrounded = false;
+			}
+			else
+			{
+				mPlayerIsGrounded = true;
 			}
 		}
-	}
-	//Add gravity back if not colliding with floor
-	else if (!mEcsManager->GravityComp(mPlayer))
-	{
-		mEcsManager->AddGravityComp(Gravity{}, mPlayer);
-		mEcsManager->AddGravityComp(Gravity{}, mPlayerGun);
-		Vector4 leftLaser = mEcsManager->TransformComp(mPlayer)->translation + Vector4(-25, 5, 0, 0);
-		SpawnLaser(leftLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(0, 0, 20, 1), 40,
-			leftLaser.XYZ() - Vector3(1, 1, 1), leftLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER, mLaserSound);
-
-		Vector4 rightLaser = mEcsManager->TransformComp(mPlayer)->translation + Vector4(25, 5, 0, 0);
-		SpawnLaser(rightLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(0, 0, 20, 1), 40,
-			rightLaser.XYZ() - Vector3(1, 1, 1), rightLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER, mLaserSound);
+		else
+		{
+			mEcsManager->AddGravityComp(Gravity{}, mPlayer);
+			mEcsManager->AddGravityComp(Gravity{}, mPlayerGun);
+			mPlayerIsGrounded = false;
+		}
 	}
 }
 
@@ -429,7 +427,7 @@ void GameScene::OnLoad()
 	mPlayerShipStartPos = Vector4(0, 0, -50, 1);
 	mPlayerShip = SpawnShip(mPlayerShipStartPos, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 40, mPlayerShipStartPos.XYZ() - Vector3(30, 30, 15), mPlayerShipStartPos.XYZ() + Vector3(30, 30, 15),
 		CustomCollisionMask::SHIP, CustomCollisionMask::SHIP | CustomCollisionMask::LASER | CustomCollisionMask::PLAYER, L"stones.dds", L"stones_NM_height.dds");
-	mPlayerShipCam = SpawnCamera(mPlayerShipStartPos + Vector4(0, 30, -70, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 60, 1, 400, 40);
+	mPlayerShipCam = SpawnCamera(mPlayerShipStartPos + Vector4(0, 40, -70, 1), Vector4(1, 1, 1, 1), Vector4(0.2f, 0, 0, 0), 60, 1, 400, 40);
 	mEcsManager->CameraComp(mPlayerShipCam)->active = true;
 
 	// Audio Files
@@ -478,7 +476,7 @@ void GameScene::OnLoad()
 	mPlayerStartPos = Vector4(0, 50, -100, 1);
 	mPlayer = SpawnPlayer(mPlayerStartPos, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 60, 1, 400, 5, mPlayerStartPos.XYZ() - Vector3(1, 2, 1), mPlayerStartPos.XYZ() + Vector3(1, 2, 1),
 		CustomCollisionMask::PLAYER, CustomCollisionMask::PLAYER | CustomCollisionMask::LASER | CustomCollisionMask::SHIP);
-	mPlayerGun = SpawnLaserGun(mPlayerStartPos + Vector4(1, -1, 3.0f, 0), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), L"stones.dds", L"stones_NM_height.dds", 5);
+	mPlayerGun = SpawnLaserGun(mPlayerStartPos + Vector4(1, -1, 2.0f, 0), Vector4(1, 1, 1, 1), Vector4(0, 3.14f, 0, 1), L"stones.dds", L"stones_NM_height.dds", 5);
 
 
 	//Spawn free cam
@@ -542,50 +540,50 @@ void GameScene::OnLoad()
 		{
 			for (int k = 10; k > 2; k--)
 			{
-				SpawnAsteroid(Vector4(5 * i, 5 * j, 10 * k, 1), Vector4(5, 5, 5, 1), Vector4(0, 0, 0, 1), 5, CustomCollisionMask::ASTEROID, L"stones.dds", L"stones_NM_height.dds");
+				SpawnAsteroid(Vector4(20 * i, 20 * j, 40 * k, 1), Vector4(5, 5, 5, 1), Vector4(0, 0, 0, 1), 5, 0, L"stones.dds", L"stones_NM_height.dds");
 			}
 		}
 	}
 
 	const int dLight = mEcsManager->CreateEntity();
-	DirectionalLight dl{Vector4(0,-1,-1,1), Vector4(0.1f,0,0,1)};
+	DirectionalLight dl{Vector4(0,-1,-1,1), Vector4(0.5f,0.5f,0.5f,1)};
 	mEcsManager->AddDirectionalLightComp(dl, dLight);
 
 	const int dLight2 = mEcsManager->CreateEntity();
 	DirectionalLight dl2{ Vector4(1,-1,1,1), Vector4(0,0.1f,0,1) };
 	mEcsManager->AddDirectionalLightComp(dl2, dLight2);
 
-	const int pLight = mEcsManager->CreateEntity();
-	PointLight pl{ Vector4(0.1f,0.2f,0,1), 5};
-	mEcsManager->AddPointLightComp(pl, pLight);
-	Transform t;
-	t.translation = Vector4(2 * 2 - 5, 0, 2 * 2 - 100, 1);
-	t.scale = Vector4(1, 1, 1, 1);
-	mEcsManager->AddTransformComp(t, pLight);
+	//const int pLight = mEcsManager->CreateEntity();
+	//PointLight pl{ Vector4(0.1f,0.2f,0,1), 5};
+	//mEcsManager->AddPointLightComp(pl, pLight);
+	//Transform t;
+	//t.translation = Vector4(2 * 2 - 5, 0, 2 * 2 - 100, 1);
+	//t.scale = Vector4(1, 1, 1, 1);
+	//mEcsManager->AddTransformComp(t, pLight);
 
-	const int pLight2 = mEcsManager->CreateEntity();
-	PointLight pl2{ Vector4(0,0.2f,0.3f,1), 5};
-	mEcsManager->AddPointLightComp(pl2, pLight2);
-	Transform t2;
-	t2.translation = Vector4(5 * 2 - 5, 0, 2 * 2 - 100, 1);
-	t2.scale = Vector4(1, 1, 1, 1);
-	mEcsManager->AddTransformComp(t2, pLight2);
+	//const int pLight2 = mEcsManager->CreateEntity();
+	//PointLight pl2{ Vector4(0,0.2f,0.3f,1), 5};
+	//mEcsManager->AddPointLightComp(pl2, pLight2);
+	//Transform t2;
+	//t2.translation = Vector4(5 * 2 - 5, 0, 2 * 2 - 100, 1);
+	//t2.scale = Vector4(1, 1, 1, 1);
+	//mEcsManager->AddTransformComp(t2, pLight2);
 
-	const int pLight3 = mEcsManager->CreateEntity();
-	PointLight pl3{ Vector4(0.3f,0.1f,0,1), 5};
-	mEcsManager->AddPointLightComp(pl3, pLight3);
-	Transform t3;
-	t3.translation = Vector4(2 * 2 - 5, 0, 5 * 2 - 100, 1);
-	t3.scale = Vector4(1, 1, 1, 1);
-	mEcsManager->AddTransformComp(t3, pLight3);
+	//const int pLight3 = mEcsManager->CreateEntity();
+	//PointLight pl3{ Vector4(0.3f,0.1f,0,1), 5};
+	//mEcsManager->AddPointLightComp(pl3, pLight3);
+	//Transform t3;
+	//t3.translation = Vector4(2 * 2 - 5, 0, 5 * 2 - 100, 1);
+	//t3.scale = Vector4(1, 1, 1, 1);
+	//mEcsManager->AddTransformComp(t3, pLight3);
 
-	const int pLight4 = mEcsManager->CreateEntity();
-	PointLight pl4{ Vector4(0.3f,0.5f,0.2f,1) , 5};
-	mEcsManager->AddPointLightComp(pl4, pLight4);
-	Transform t4;
-	t4.translation = Vector4(5 * 2 - 5, 0, 5 * 2 - 100, 1);
-	t4.scale = Vector4(1, 1, 1, 1);
-	mEcsManager->AddTransformComp(t4, pLight4);
+	//const int pLight4 = mEcsManager->CreateEntity();
+	//PointLight pl4{ Vector4(0.3f,0.5f,0.2f,1) , 5};
+	//mEcsManager->AddPointLightComp(pl4, pLight4);
+	//Transform t4;
+	//t4.translation = Vector4(5 * 2 - 5, 0, 5 * 2 - 100, 1);
+	//t4.scale = Vector4(1, 1, 1, 1);
+	//mEcsManager->AddTransformComp(t4, pLight4);
 
 	//AntTweak
 	mGUIManager->AddBar("Testing");
