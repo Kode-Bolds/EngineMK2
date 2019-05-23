@@ -31,6 +31,10 @@ namespace KodeboldsMath
 
 		//Operator overloads
 		Matrix4& operator*=(const Matrix4& rhs);
+
+		Vector4 ExtractTranslation() const;
+		Vector4 ExtractScale() const;
+		Vector4 ExtractRotation() const;
 	};
 
 	//Operator overloads

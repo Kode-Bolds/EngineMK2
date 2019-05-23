@@ -4,3 +4,4 @@
 #include "RenderSystem_GL.h"
 #include "MovementSystem.h"
 #include "CollisionCheckSystem.h"
+#include "TransformSystem.h"

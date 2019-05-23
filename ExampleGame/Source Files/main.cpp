@@ -55,6 +55,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	ecsManager->AddRenderSystem(std::make_shared<RenderSystem_GL>(hWnd, 7));
 #endif
 
+	ecsManager->AddUpdateSystem(std::make_shared<TransformSystem>());
 	ecsManager->AddUpdateSystem(std::make_shared<MovementSystem>());
 	ecsManager->AddUpdateSystem(std::make_shared<CollisionCheckSystem>(500, 50));
 

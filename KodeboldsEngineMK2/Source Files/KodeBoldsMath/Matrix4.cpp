@@ -97,3 +97,24 @@ Matrix4 & Matrix4::operator*=(const Matrix4 & rhs)
 	return *this;
 }
 
+Vector4 Matrix4::ExtractTranslation() const
+{
+	return Vector4(_14, _24, _34, _44); 
+}
+
+Vector4 Matrix4::ExtractScale() const
+{
+	return Vector4(_11, _22, _33, _44);
+}
+
+Vector4 Matrix4::ExtractRotation() const
+{
+
+	if (_11 == 1.0f || _11 == -1.0f)
+	{
+		return Vector4(0, atan2f(_13, _34), 0, 1);
+	}
+
+	return Vector4(asin(_21), atan2(-_31, _11), atan2(-_23, _22), 1);
+}
+

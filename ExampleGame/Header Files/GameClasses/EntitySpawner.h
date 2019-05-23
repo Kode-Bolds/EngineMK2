@@ -201,9 +201,6 @@ namespace EntitySpawner
 	{
 		int ID = entitySpawnerEcsManager->CreateEntity();
 
-		//Camera component
-		Camera cam{ pFOV, pNear, pFar, false };
-		entitySpawnerEcsManager->AddCameraComp(cam, ID);
 
 		//Transform component
 		Transform trans{};
@@ -211,6 +208,10 @@ namespace EntitySpawner
 		trans.scale = pScale;
 		trans.rotation = pRotation;
 		entitySpawnerEcsManager->AddTransformComp(trans, ID);
+
+		//Camera component
+		Camera cam{ pFOV, pNear, pFar, false };
+		entitySpawnerEcsManager->AddCameraComp(cam, ID);
 
 		//Velocity component
 		Velocity vel{};
