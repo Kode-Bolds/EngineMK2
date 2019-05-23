@@ -202,8 +202,11 @@ void CollisionCheckSystem::UpdateTree()
 	while (!mEntitiesToRemove.empty())
 	{
 		//Get the node of the entity to remove from the entity node map, then remove the entity from that nodes entity list
-		std::vector<unsigned short>* nodeEntities = &mEntityNodeMap[mEntitiesToRemove.front()]->entities;
-		nodeEntities->erase(remove(nodeEntities->begin(), nodeEntities->end(), mEntitiesToRemove.front()), nodeEntities->end());
+		if (mEntityNodeMap[mEntitiesToRemove.front()])
+		{
+			std::vector<unsigned short>* nodeEntities = &mEntityNodeMap[mEntitiesToRemove.front()]->entities;
+			nodeEntities->erase(remove(nodeEntities->begin(), nodeEntities->end(), mEntitiesToRemove.front()), nodeEntities->end());
+		}
 
 		//Set entities node to null
 		mEntityNodeMap[mEntitiesToRemove.front()] = nullptr;

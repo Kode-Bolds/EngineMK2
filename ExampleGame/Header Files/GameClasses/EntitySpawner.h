@@ -23,8 +23,7 @@ namespace EntitySpawner
 	/// <param name="pIgnoreCollisionMask"></param>
 	/// <returns></returns>
 	static int SpawnLaser(const KodeboldsMath::Vector4& pPosition, const KodeboldsMath::Vector4& pScale, const KodeboldsMath::Vector4& pRotation, const KodeboldsMath::Vector4& pColour,
-		const KodeboldsMath::Vector4& pAcceleration, const float& pMaxSpeed, const KodeboldsMath::Vector3& pBoxMin, const KodeboldsMath::Vector3& pBoxMax, const int pIgnoreCollisionMask,
-		const float& pLightRange)
+		const KodeboldsMath::Vector4& pAcceleration, const float& pMaxSpeed, const float& pRadius, const int pCollisionMask, const int pIgnoreCollisionMask, const float& pLightRange)
 	{
 		int ID = entitySpawnerEcsManager->CreateEntity();
 
@@ -38,7 +37,7 @@ namespace EntitySpawner
 
 		//Light component
 		PointLight light{ pColour, pLightRange };
-		entitySpawnerEcsManager->AddPointLightComp(light, ID);
+		//entitySpawnerEcsManager->AddPointLightComp(light, ID);
 
 		//Transform component
 		Transform trans{};
@@ -68,9 +67,9 @@ namespace EntitySpawner
 		Colour colour{ pColour };
 		entitySpawnerEcsManager->AddColourComp(colour, ID);
 
-		//BoxCollider component
-		BoxCollider box{ pBoxMin, pBoxMax, CustomCollisionMask::LASER, pIgnoreCollisionMask };
-		entitySpawnerEcsManager->AddBoxColliderComp(box, ID);
+		//SphereCollider component
+		SphereCollider sphere{ pRadius, pCollisionMask, pIgnoreCollisionMask };
+		entitySpawnerEcsManager->AddSphereColliderComp(sphere, ID);
 
 		return ID;
 	}
@@ -119,7 +118,7 @@ namespace EntitySpawner
 		vel.maxSpeed = pMaxSpeed;
 		entitySpawnerEcsManager->AddVelocityComp(vel, ID);
 
-		//BoxCollider component
+		//SphereCollider component
 		SphereCollider sphere{ pRadius, pCollisionMask, pIgnoreCollisionMask };
 		entitySpawnerEcsManager->AddSphereColliderComp(sphere, ID);
 
