@@ -370,6 +370,7 @@ void GameScene::Update()
 	//Switch between cameras
 	//Ship
 	if (mInputManager->KeyDown(KEYS::KEY_F1))
+	else if (mInputManager->KeyUp(KEYS::KEY_LEFT_SHIFT))
 	{
 		mEcsManager->CameraComp(mPlayerShipCam)->active = true;
 		mEcsManager->CameraComp(mPlayer)->active = false;
@@ -429,11 +430,54 @@ void GameScene::OnLoad()
 	mPlayerShipCam = SpawnCamera(mPlayerShipStartPos + Vector4(0, 40, -70, 1), Vector4(1, 1, 1, 1), Vector4(0.2f, 0, 0, 0), 60, 1, 400, 40);
 	mEcsManager->CameraComp(mPlayerShipCam)->active = true;
 
+	// Audio Files
+	mLaserSound = resourceManager->LoadAudio(L"laser.wav");
+	mEngineSound = resourceManager->LoadAudio(L"engine.wav");
+
+	mCamera = mEcsManager->CreateEntity();
+	Camera cam{ 60, 1, 200 };
+	mEcsManager->AddCameraComp(cam, mCamera);
+	Transform trans{};
+	trans.translation = Vector4(0, 0, -100, 1);
+	trans.scale = Vector4(1, 1, 1, 1);
+	mEcsManager->AddTransformComp(trans, mCamera);
+	mCameraSpeed = 10.0f;
+
+	mPlayer = mEcsManager->CreateEntity();
+	Geometry geo{ L"ship.obj" };
+	mEcsManager->AddGeometryComp(geo, mPlayer);
+	Shader shader{ L"depthShader.fx" , BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
+	mEcsManager->AddShaderComp(shader, mPlayer);
+	Texture texture{};
+	texture.diffuse = L"stones.dds";
+	texture.normal = L"stones_NM_height.dds";
+	mEcsManager->AddTextureComp(texture, mPlayer);
+
+	//// Audio Component
+	//Audio audio{};
+	//audio.mSound = mEngineSound;
+	//audio.active = true;
+	//audio.loop = false;
+	//entitySpawnerEcsManager->AddAudioComp(audio, mPlayer);
+
+	Transform transC{};
+	transC.scale = Vector4(1, 1, 1, 1);
+	mEcsManager->AddTransformComp(transC, mPlayer);
+	Velocity vel{};
+	vel.acceleration = Vector4(0, 0.0f, 0, 1);
+	vel.maxSpeed = 50;
+	mEcsManager->AddVelocityComp(vel, mPlayer);
+	Colour colour2{ Vector4(1, 1, 1, 1) };
+	mEcsManager->AddColourComp(colour2, mPlayer);
+
+	mPlayerSpeed = 2.0f;
+
 	//Spawn player camera and attached laser gun model
 	mPlayerStartPos = Vector4(0, 50, -100, 1);
 	mPlayer = SpawnPlayer(mPlayerStartPos, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 60, 1, 400, 5, mPlayerStartPos.XYZ() - Vector3(1, 2, 1), mPlayerStartPos.XYZ() + Vector3(1, 2, 1),
 		CustomCollisionMask::PLAYER, CustomCollisionMask::PLAYER | CustomCollisionMask::LASER | CustomCollisionMask::SHIP);
 	mPlayerGun = SpawnLaserGun(mPlayerStartPos + Vector4(1, -1, 2.0f, 0), Vector4(1, 1, 1, 1), Vector4(0, 3.14f, 0, 1), L"stones.dds", L"stones_NM_height.dds", 5);
+
 
 	//Spawn free cam
 	mCamera = SpawnCamera(Vector4(5, 2, -100, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 60, 1, 400, 20);
@@ -445,9 +489,9 @@ void GameScene::OnLoad()
 	mCameraSpeed = 20.0f;
 
 	//Spawn platform of cubes
-	for(int x = 0; x < 10; x++)
+	for (int x = 0; x < 10; x++)
 	{
-		for(int z = 0; z < 10; z++)
+		for (int z = 0; z < 10; z++)
 		{
 			int entity = mEcsManager->CreateEntity();
 
@@ -461,6 +505,7 @@ void GameScene::OnLoad()
 			mEcsManager->AddTextureComp(texturem, entity);
 			Transform transCm{};
 			transCm.scale = Vector4(1, 1, 1, 1);
+
 			transCm.translation = Vector4(x * 2 - 5, -2, z * 2- 100, 1);
 			mEcsManager->AddTransformComp(transCm, entity);
 			BoxCollider floorBox{ transCm.translation.XYZ() - Vector3(1, 1, 1), transCm.translation.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::FLOOR, CustomCollisionMask::FLOOR };
@@ -470,6 +515,13 @@ void GameScene::OnLoad()
 
 	//Skybox
 	int entity = mEcsManager->CreateEntity();
+			transCm.translation = Vector4(x * 2 - 5, -2, z * 2 - 100, 1);
+
+			if (x == 0 && z == 0)
+			{
+				//transCm.translation = Vector4(0, 0, -96, 1);
+
+			}
 
 	Geometry geom{ L"cube.obj" };
 	mEcsManager->AddGeometryComp(geom, entity);

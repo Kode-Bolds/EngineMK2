@@ -46,8 +46,15 @@ namespace EntitySpawner
 		trans.rotation = pRotation;
 		trans.translation = pPosition;
 		entitySpawnerEcsManager->AddTransformComp(trans, ID);
+    
+		// Audio Component
+		Audio audio{};
+		audio.mSound = pSound;
+		audio.active = true;
+		audio.loop = false;
+		entitySpawnerEcsManager->AddAudioComp(audio, ID);
 
-		//Texture component
+    //Texture component
 		Texture tex{};
 		tex.diffuse = L"stones.dds";
 		tex.normal = L"stones_NM_height.dds";
