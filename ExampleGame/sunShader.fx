@@ -190,21 +190,29 @@ float4 PS(PS_INPUT input) : SV_Target
 {
 	float fill = 0;
 
-	float2 uv = input.TexCoord * 10 + noise(input.TexCoord * 2); //+ (noise(input.TexCoord * 20));// *time;
-	
+	float2 uv = input.TexCoord * 5 + noise((input.TexCoord) * 2) + Time * 0.01; //+ (noise(input.TexCoord * 20));// *time;
+	//uv.x += Time;
+
 	//colour = 1. * smoothstep(.18, .2, noise(uv)); // Big black drops
 	fill += smoothstep(-.55, .2, noise2(uv*10.)); // Black splatter
-	fill -= smoothstep(.35, .8, noise2(uv*10.));
+	fill -= smoothstep(.35 + (sin(Time) * 0.3), .8, noise2(uv*10.));
 
-	fill = pow((1 - fill), 10);
+	fill = pow((1 - fill), sin(Time.x) + 10);
 
 	float3 sunBrightSpot = float3(1, 1, 0.9) * fill;
 
 	float3 sunOrange = float3(1, 0.5, 0);
-	float3 sunYellow = float3(1, 1, 0);
+	float3 sunYellow = float3(0.1, 0.1, 0);
+
+	
+	float testNoise = noise2((input.TexCoord * 50) - Time);
+	float testNoise2 = noise2((input.TexCoord * 100) + Time);
 
 
-	float3 sunColour = lerp(sunOrange, sunYellow, noise2(input.TexCoord * 200));
+	//return (testNoise * testNoise2).rrrr;
+
+
+	float3 sunColour = lerp(sunOrange, sunYellow, testNoise * testNoise2);
 	float3 colour = sunColour + sunBrightSpot ;
 
 

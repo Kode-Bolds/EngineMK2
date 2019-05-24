@@ -484,7 +484,7 @@ void GameScene::OnLoad()
 		int particleEntity = mEcsManager->CreateEntity();
 		Geometry geom{ L"quad100.obj" };
 		mEcsManager->AddGeometryComp(geom, particleEntity);
-		Shader shaderm{ L"thrusterShader.fx" , BlendState::ALPHABLEND, CullState::FRONT, DepthState::LESSEQUAL };
+		Shader shaderm{ L"thrusterShader.fx" , BlendState::ALPHABLEND, CullState::FRONT, DepthState::NONE };
 		mEcsManager->AddShaderComp(shaderm, particleEntity);
 		Texture texturem{};
 		texturem.diffuse = L"";
@@ -504,7 +504,7 @@ void GameScene::OnLoad()
 
 		Geometry geom{ L"sphere.obj" };
 		mEcsManager->AddGeometryComp(geom, entity);
-		Shader shaderm{ L"sunShader.fx" , BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
+		Shader shaderm{ L"sunShader.fx" , BlendState::NOBLEND, CullState::BACK, DepthState::LESSEQUAL };
 
 		mEcsManager->AddShaderComp(shaderm, entity);
 		Transform transCm{};
@@ -520,7 +520,7 @@ void GameScene::OnLoad()
 
 		Geometry geom{ L"cube.obj" };
 		mEcsManager->AddGeometryComp(geom, entity);
-		Shader shaderm{ L"skyboxShader.fx" , BlendState::ALPHABLEND, CullState::FRONT, DepthState::LESSEQUAL };
+		Shader shaderm{ L"skyboxShader.fx" , BlendState::NOBLEND, CullState::FRONT, DepthState::LESSEQUAL };
 		mEcsManager->AddShaderComp(shaderm, entity);
 		Transform transCm{};
 		transCm.scale = Vector4(1, 1, 1, 1);
