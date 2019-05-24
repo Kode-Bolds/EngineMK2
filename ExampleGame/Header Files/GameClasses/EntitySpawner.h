@@ -69,7 +69,7 @@ namespace EntitySpawner
 		entitySpawnerEcsManager->AddColourComp(colour, ID);
 
 		//BoxCollider component
-		BoxCollider box{ pBoxMin, pBoxMax, CustomCollisionMask::LASER, pIgnoreCollisionMask };
+		BoxCollider box{ pBoxMin, pBoxMax, CustomCollisionMask::NONE, pIgnoreCollisionMask };
 		entitySpawnerEcsManager->AddBoxColliderComp(box, ID);
 
 		return ID;
@@ -119,7 +119,7 @@ namespace EntitySpawner
 		vel.maxSpeed = pMaxSpeed;
 		entitySpawnerEcsManager->AddVelocityComp(vel, ID);
 
-		//BoxCollider component
+		//SphereCollider component
 		SphereCollider sphere{ pRadius, pCollisionMask, pIgnoreCollisionMask };
 		entitySpawnerEcsManager->AddSphereColliderComp(sphere, ID);
 
@@ -214,9 +214,6 @@ namespace EntitySpawner
 	{
 		int ID = entitySpawnerEcsManager->CreateEntity();
 
-		//Camera component
-		Camera cam{ pFOV, pNear, pFar, false };
-		entitySpawnerEcsManager->AddCameraComp(cam, ID);
 
 		//Transform component
 		Transform trans{};
@@ -224,6 +221,10 @@ namespace EntitySpawner
 		trans.scale = pScale;
 		trans.rotation = pRotation;
 		entitySpawnerEcsManager->AddTransformComp(trans, ID);
+
+		//Camera component
+		Camera cam{ pFOV, pNear, pFar, false };
+		entitySpawnerEcsManager->AddCameraComp(cam, ID);
 
 		//Velocity component
 		Velocity vel{};

@@ -60,7 +60,10 @@ Vector4 & Vector4::Clamp(float pMagnitude)
 /// <returns>Normalised vector</returns>
 Vector4 & Vector4::Normalise()
 {
-	return this->Clamp(1);
+	this->XYZ() /= W;
+	W = 1;
+	float magnitude = this->Magnitude();
+	return *this /= magnitude;
 }
 
 /// <summary>

@@ -11,11 +11,11 @@ using namespace DirectX;
 /// <param name="pMaxLights">The maximum number of lights in the render system</param>
 RenderSystem_DX::RenderSystem_DX(const HWND& pWindow, const int pMaxLights)
 	: RenderSystem(std::vector<int>{ ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_GEOMETRY | ComponentType::COMPONENT_SHADER,
-		ComponentType::COMPONENT_POINTLIGHT,
+		ComponentType::COMPONENT_POINTLIGHT | ComponentType::COMPONENT_TRANSFORM,
 		ComponentType::COMPONENT_DIRECTIONALLIGHT,
 		ComponentType::COMPONENT_CAMERA },
-		pMaxLights), 
-mWindow(pWindow), mActiveCamera(nullptr), mActiveGeometry(L""), mActiveShader(L"")
+		pMaxLights),
+	mWindow(pWindow), mActiveCamera(nullptr), mActiveGeometry(L""), mActiveShader(L"")
 {
 	if (FAILED(Init()))
 	{
@@ -58,6 +58,10 @@ HRESULT RenderSystem_DX::Init()
 		return hr;
 
 	hr = CreateRenderTarget();
+	if (FAILED(hr))
+		return hr;
+
+	hr = CreateBlend();
 	if (FAILED(hr))
 		return hr;
 
@@ -285,7 +289,7 @@ HRESULT RenderSystem_DX::CreateDepth()
 
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
 	ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
-	depthStencilDesc.DepthEnable = TRUE;
+	depthStencilDesc.DepthEnable = FALSE;
 	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
 	depthStencilDesc.DepthFunc = D3D11_COMPARISON_NEVER;
 	hr = mDevice->CreateDepthStencilState(&depthStencilDesc, mDepthNone.GetAddressOf());
@@ -666,21 +670,19 @@ void RenderSystem_DX::Process()
 //mContext->OMSetRenderTargets(0, nullptr, nullptr);
 //mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
 
+
 	SetCamera();
 	SetLights();
-
 
 	for (const Entity& entity : mEntities)
 	{
 		if (entity.ID != -1)
 		{
-
 			LoadGeometry(entity);
 			LoadTexture(entity);
 			LoadShaders(entity);
 
 			//Set world matrix
-			CalculateTransform(entity);
 			mCB.mWorld = XMFLOAT4X4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(entity.ID)->transform)));
 
 			//Set time
@@ -840,15 +842,13 @@ void RenderSystem_DX::LoadTexture(const Entity& pEntity)
 /// </summary>
 void RenderSystem_DX::SetViewProj()
 {
-	CalculateTransform(*mActiveCamera);
-
 	//Calculates the view matrix and sets it in the constant buffer
 	const XMFLOAT4 position(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mActiveCamera->ID)->translation)));
 	mCB.mCameraPosition = position;
 
-	KodeboldsMath::Vector4 lookAtV = mEcsManager->TransformComp(mActiveCamera->ID)->translation + mEcsManager->TransformComp(mActiveCamera->ID)->forward;
-	const XMFLOAT4 lookAt(reinterpret_cast<float*>(&(lookAtV)));
-	const XMFLOAT4 up(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mActiveCamera->ID)->up)));
+	KodeboldsMath::Vector4 lookAtV = mEcsManager->TransformComp(mActiveCamera->ID)->translation + mEcsManager->TransformComp(mActiveCamera->ID)->forward.Normalise();
+	const XMFLOAT4 lookAt(reinterpret_cast<float*>(&lookAtV));
+	const XMFLOAT4 up(reinterpret_cast<float*>(&mEcsManager->TransformComp(mActiveCamera->ID)->up.Normalise()));
 
 	const XMVECTOR posVec = XMLoadFloat4(&position);
 	const XMVECTOR lookAtVec = XMLoadFloat4(&lookAt);
@@ -876,7 +876,7 @@ void RenderSystem_DX::SetLights()
 	for (int i = 0; i < mLightCB.numDirLights && totalLights <= mMaxLights; ++i)
 	{
 		const auto dlComp = mEcsManager->DirectionalLightComp(mDirectionalLights[i].ID);
-		const DirectionalLightCB dl{ 
+		const DirectionalLightCB dl{
 			XMFLOAT3(reinterpret_cast<float*>(&dlComp->mDirection)),
 			1.0f,
 			XMFLOAT4(reinterpret_cast<float*>(&dlComp->mColour))
@@ -918,23 +918,3 @@ void RenderSystem_DX::SetCamera()
 		SetViewProj();
 	}
 }
-
-/// <summary>
-/// Calculates the transform of a given entity based on the translation, rotation and scale of the entity
-/// </summary>
-/// <param name="pEntity">Given entity to calculate transform for</param>
-void RenderSystem_DX::CalculateTransform(const Entity& pEntity) const
-{
-	Transform* t = mEcsManager->TransformComp(pEntity.ID);
-	const auto scale = KodeboldsMath::ScaleMatrix(t->scale);
-	const auto translation = KodeboldsMath::TranslationMatrix(t->translation);
-	const auto rotation = KodeboldsMath::RotationMatrixX(t->rotation.X)
-		* KodeboldsMath::RotationMatrixY(t->rotation.Y)
-		* KodeboldsMath::RotationMatrixZ(t->rotation.Z);
-
-	t->transform = translation * rotation * scale;
-	t->forward = KodeboldsMath::Vector4(t->transform._31, t->transform._32, t->transform._33, 1.0f).Normalise();
-	t->up = KodeboldsMath::Vector4(t->transform._21, t->transform._22, t->transform._23, 1.0f).Normalise();
-	t->right = KodeboldsMath::Vector4(t->transform._11, t->transform._12, t->transform._13, 1.0f).Normalise();
-}
-

@@ -107,10 +107,10 @@ namespace KodeboldsMath
 		const float yZ = pAxis.Y * pAxis.Z;
 
 		Matrix4 matrix(
-			//Column 1             //Column 2            //Column 3             //Column 4
-			(c + xSqrd) * oneSubC, (xY * oneSubC) - zS, (xZ * oneSubC) + yS, 0,  //Row 1
-			(xY * oneSubC) + zS, (c + ySqrd) * oneSubC, (yZ * oneSubC) - xS, 0,  //Row 2
-			(xZ * oneSubC) - yS, (yZ * oneSubC) + xS, (c + zSqrd) * oneSubC, 0,  //Row 3
+			//Column 1              //Column 2              //Column 3               //Column 4
+			c + (xSqrd * oneSubC),  (xY * oneSubC) - zS,    (xZ * oneSubC) + yS,     0,         //Row 1
+			(xY * oneSubC) + zS,    c + (ySqrd * oneSubC),  (yZ * oneSubC) - xS,     0,         //Row 2
+			(xZ * oneSubC) - yS,    (yZ * oneSubC) + xS,    c + (zSqrd * oneSubC),   0,         //Row 3
 			0, 0, 0, 1); //Row 4
 
 		return matrix;
