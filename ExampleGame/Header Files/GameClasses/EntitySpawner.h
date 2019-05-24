@@ -70,7 +70,7 @@ namespace EntitySpawner
 
 		//BoxCollider component
 		BoxCollider box{ pBoxMin, pBoxMax, CustomCollisionMask::NONE, pIgnoreCollisionMask };
-		//entitySpawnerEcsManager->AddBoxColliderComp(box, ID);
+		entitySpawnerEcsManager->AddBoxColliderComp(box, ID);
 
 		return ID;
 	}

@@ -289,7 +289,7 @@ HRESULT RenderSystem_DX::CreateDepth()
 
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
 	ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
-	depthStencilDesc.DepthEnable = TRUE;
+	depthStencilDesc.DepthEnable = FALSE;
 	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
 	depthStencilDesc.DepthFunc = D3D11_COMPARISON_NEVER;
 	hr = mDevice->CreateDepthStencilState(&depthStencilDesc, mDepthNone.GetAddressOf());
