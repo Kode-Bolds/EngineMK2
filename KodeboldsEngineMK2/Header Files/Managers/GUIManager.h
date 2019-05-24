@@ -28,7 +28,6 @@ private:
 	std::unique_ptr<DirectX::SpriteBatch> mSpriteBatch;
 	std::unique_ptr<DirectX::CommonStates> mStates;
 	std::vector<std::unique_ptr<DirectX::SpriteFont>> mFonts;
-	std::vector<Text> mTexts;
 
 	//Private constructor for singleton pattern
 	GUIManager();
@@ -73,9 +72,11 @@ public:
 
 
 	//----------- STANDARD GUI -----------\\ 
+	std::vector<Text> mTexts;
 	void InititialiseGUI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const int pWidth, const int pHeight);
 	void Render();
 	void RenderText();
+	void Clear();
 
 	// Loads .spritefont files from disk
 	void LoadFont(const wchar_t* pFontName);

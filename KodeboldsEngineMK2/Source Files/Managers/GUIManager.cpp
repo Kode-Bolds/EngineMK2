@@ -110,7 +110,7 @@ void GUIManager::Render()
 
 	mSpriteBatch->Begin(DirectX::SpriteSortMode_Deferred, mStates->NonPremultiplied(), nullptr, nullptr, nullptr, nullptr);
 
-	mResourceManager->mSprites.at(0).second.mPosition.x += 1;
+	//mResourceManager->mSprites.at(0).second.mPosition.x += 1;
 
 	for (int i = 0; i < mResourceManager->mSprites.size(); i++)
 	{
@@ -129,11 +129,16 @@ void GUIManager::RenderText()
 		DirectX::XMVECTOR position = DirectX::XMVectorSet(mTexts[i].mPosition.x, mTexts[i].mPosition.y, 0, 0);
 		DirectX::XMVECTOR colour = DirectX::XMVectorSet(mTexts[i].mColour.x, mTexts[i].mColour.y, mTexts[i].mColour.z, mTexts[i].mColour.w);
 
-		mFonts[i]->DrawString(mSpriteBatch.get(), mTexts[i].mText, position, colour, mTexts[i].mRotation, origin, 1.0f);
+		mFonts[i]->DrawString(mSpriteBatch.get(), mTexts[i].mText, position, colour, mTexts[i].mRotation, origin, mTexts[i].mScale);
 	}
 	mSpriteBatch->End();
 
 
+}
+
+void GUIManager::Clear()
+{
+	
 }
 
 void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale)

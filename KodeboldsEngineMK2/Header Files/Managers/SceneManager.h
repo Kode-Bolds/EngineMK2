@@ -7,6 +7,8 @@
 #include "ThreadManager.h"
 #include "InputManager_DX.h"
 #include "InputManager_GL.h"
+#include "GUIManager.h"
+#include "ResourceManager.h"
 
 class SceneManager
 {
@@ -14,6 +16,8 @@ private:
 	//Managers
 	std::shared_ptr<ECSManager> mEcsManager = ECSManager::Instance();
 	std::shared_ptr<ThreadManager> mThreadManager = ThreadManager::Instance();
+	std::shared_ptr<GUIManager> mGUIManager = GUIManager::Instance();
+	std::shared_ptr<ResourceManager> mResourceManager = ResourceManager::Instance();
 #ifdef  DIRECTX
 	std::shared_ptr<InputManager_DX> mInputManager = InputManager_DX::Instance();
 #elif OPENGL
@@ -64,6 +68,8 @@ public:
 		if (mScene)
 		{
 			mScene->OnUnload();
+			mResourceManager->mSprites.clear();
+			mGUIManager->mTexts.clear();
 		}
 
 		//Create new scene of type T
@@ -74,6 +80,8 @@ public:
 
 		//Set start time of scene
 		mStartTime = std::chrono::high_resolution_clock::now();
+
+		
 	};
 
 	//Singleton pattern
