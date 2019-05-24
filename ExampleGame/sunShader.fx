@@ -220,7 +220,7 @@ float4 PS(PS_INPUT input) : SV_Target
 
 	float rim = 1 - saturate(dot(viewDirection, input.Normal));
 
-	//colour += pow(rim.rrr, 3);
+	colour += pow(rim.rrr, 3);
 
 	//colour = noise(input.TexCoord * 25);
 	return float4(colour,1);
