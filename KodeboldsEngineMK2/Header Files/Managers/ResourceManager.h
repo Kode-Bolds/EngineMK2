@@ -52,8 +52,8 @@ public:
 
 	static std::shared_ptr< ResourceManager > Instance();
 
-	DirectX::AUDIO_ENGINE_FLAGS eflags = DirectX::AUDIO_ENGINE_FLAGS::AudioEngine_Default;
-	std::unique_ptr<DirectX::AudioEngine> mAudEngine = std::make_unique<DirectX::AudioEngine>(eflags);
+	DirectX::AUDIO_ENGINE_FLAGS eflags = DirectX::AUDIO_ENGINE_FLAGS::AudioEngine_EnvironmentalReverb | DirectX::AUDIO_ENGINE_FLAGS::AudioEngine_ReverbUseFilters;;
+	std::unique_ptr<DirectX::AudioEngine> mAudioEngine = std::make_unique<DirectX::AudioEngine>(eflags);
 	Sound* LoadAudio(std::wstring pFileName);
 };
 

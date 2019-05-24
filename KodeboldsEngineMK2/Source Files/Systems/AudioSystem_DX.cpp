@@ -54,7 +54,7 @@ void AudioSystem_DX::Process()
 				// play the sound
 				mEcsManager->AudioComp(entity.ID)->mSound->Play(
 					mEcsManager->AudioComp(entity.ID)->volume,
-					mEcsManager->AudioComp(entity.ID)->pitch, 
+					mEcsManager->AudioComp(entity.ID)->pitch,
 					mEcsManager->AudioComp(entity.ID)->pan);
 
 				// after playing the sound, it becomes inactive unless it is set to loop

@@ -435,7 +435,7 @@ void GameScene::OnLoad()
 
 	//Spawn player ship and attached camera
 	mPlayerShipStartPos = Vector4(0, 0, -50, 1);
-	mPlayerShip = SpawnShip(mPlayerShipStartPos, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 40, 60, CustomCollisionMask::SHIP, 
+	mPlayerShip = SpawnShip(mPlayerShipStartPos, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 40, 60, CustomCollisionMask::SHIP,
 		CustomCollisionMask::SHIP | CustomCollisionMask::LASER | CustomCollisionMask::PLAYER, L"stones.dds", L"stones_NM_height.dds");
 	mPlayerShipCam = SpawnCamera(mPlayerShipStartPos + Vector4(0, 40, -70, 1), Vector4(1, 1, 1, 1), Vector4(0.2f, 0, 0, 0), 60, 1, 400, 40);
 	mEcsManager->CameraComp(mPlayerShipCam)->active = true;
@@ -541,7 +541,7 @@ void GameScene::OnLoad()
 	}
 
 	const int dLight = mEcsManager->CreateEntity();
-	DirectionalLight dl{Vector4(0,-1,-1,1), Vector4(0.5f,0.5f,0.5f,1)};
+	DirectionalLight dl{ Vector4(0,-1,-1,1), Vector4(0.5f,0.5f,0.5f,1) };
 	mEcsManager->AddDirectionalLightComp(dl, dLight);
 
 	const int dLight2 = mEcsManager->CreateEntity();
@@ -549,7 +549,7 @@ void GameScene::OnLoad()
 	mEcsManager->AddDirectionalLightComp(dl2, dLight2);
 
 	const int pLight = mEcsManager->CreateEntity();
-	PointLight pl{ Vector4(1.0f,1.0f,1.0f,1), 50};
+	PointLight pl{ Vector4(1.0f,1.0f,1.0f,1), 50 };
 	mEcsManager->AddPointLightComp(pl, pLight);
 	Transform t;
 	t.translation = Vector4(5, 20, -100, 1);

@@ -17,9 +17,3 @@ void Sound::Play(float pVolume, float pPitch, float pPan)
 {
 	mSound->Play(pVolume, pPitch, pPan);
 }
-
-//std::unique_ptr<DirectX::SoundEffectInstance> Sound::CreateInstance()
-//{
-//	auto effect = mSound->CreateInstance();
-//	return effect;
-//}
