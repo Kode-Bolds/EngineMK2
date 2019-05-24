@@ -77,6 +77,8 @@ struct PS_INPUT
 PS_INPUT VS(VS_INPUT input)
 {
 	PS_INPUT output = (PS_INPUT)0;
+	input.Pos.z *= 10;
+	input.Pos.x += sin(Time + input.Pos.z * 10) * 10;
 	output.Pos = mul(float4(input.Pos, 1.0f), World);
 	output.Pos = mul(output.Pos, View);
 	output.Pos = mul(output.Pos, Projection);
@@ -139,5 +141,5 @@ float4 PS(PS_INPUT input) : SV_Target
 	//return
 
 	float distFromCentre = 1 - saturate(distance(float2(0.5, 0.5), input.TexCoord));
-return float4(distFromCentre.rrr, 0.0);
+return float4(distFromCentre.rrrr);// , 1);
 }

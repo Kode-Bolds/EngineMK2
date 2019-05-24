@@ -61,6 +61,10 @@ HRESULT RenderSystem_DX::Init()
 	if (FAILED(hr))
 		return hr;
 
+	hr = CreateBlend();
+	if (FAILED(hr))
+		return hr;
+
 	hr = CreateDepth();
 	if (FAILED(hr))
 		return hr;
@@ -285,16 +289,16 @@ HRESULT RenderSystem_DX::CreateDepth()
 
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
 	ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
-	depthStencilDesc.DepthEnable = TRUE;
-	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
-	depthStencilDesc.DepthFunc = D3D11_COMPARISON_NEVER;
+	depthStencilDesc.DepthEnable = false;
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 	hr = mDevice->CreateDepthStencilState(&depthStencilDesc, mDepthNone.GetAddressOf());
 	if (FAILED(hr))
 		return hr;
 
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc2;
 	ZeroMemory(&depthStencilDesc2, sizeof(D3D11_DEPTH_STENCIL_DESC));
-	depthStencilDesc2.DepthEnable = TRUE;
+	depthStencilDesc2.DepthEnable = true;
 	depthStencilDesc2.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	depthStencilDesc2.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 	mDevice->CreateDepthStencilState(&depthStencilDesc2, mDepthLessEqual.GetAddressOf());
@@ -367,18 +371,19 @@ HRESULT RenderSystem_DX::CreateBlend()
 {
 	auto hr{ S_OK };
 
+	//ALPHA BLENDING
 	D3D11_BLEND_DESC blendDesc;
 	ZeroMemory(&blendDesc, sizeof(D3D11_BLEND_DESC));
 	blendDesc.RenderTarget[0].BlendEnable = TRUE;
 	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
 	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
 	blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
 	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
 	blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
 	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	blendDesc.AlphaToCoverageEnable = FALSE;
-	blendDesc.IndependentBlendEnable = FALSE;
+	blendDesc.AlphaToCoverageEnable = TRUE;
+	blendDesc.IndependentBlendEnable = TRUE;
 
 	hr = mDevice->CreateBlendState(&blendDesc, mAlphaBlend.GetAddressOf());
 	if (FAILED(hr))
@@ -386,11 +391,12 @@ HRESULT RenderSystem_DX::CreateBlend()
 		return hr;
 	}
 
+	//NO BLEND
 	D3D11_BLEND_DESC blendDesc2;
 	ZeroMemory(&blendDesc, sizeof(D3D11_BLEND_DESC));
 	blendDesc2.RenderTarget[0].BlendEnable = FALSE;
-	blendDesc2.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-	blendDesc2.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	blendDesc2.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	blendDesc2.RenderTarget[0].DestBlend = D3D11_BLEND_ZERO;
 	blendDesc2.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
 	blendDesc2.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 	blendDesc2.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;

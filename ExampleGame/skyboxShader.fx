@@ -136,7 +136,7 @@ float4 PS(PS_INPUT input) : SV_Target
 	float smoke = 1 - saturate(smoothstep(0.1, 0.11, noise((input.TexCoord + float2(0.5,0.25)) * 65) * noise(input.TexCoord * 50))) * random(input.TexCoord);
 	smoke *= 0.0025;
 
-	noiseVal = smoothstep(0.8,1,pow(noiseVal, 20));
+	noiseVal = smoothstep(0.8,1, pow(noiseVal, 20));
 	noiseVal += smoothstep(0.8, 1, pow(noiseVal2, 20));
 	noiseVal += smoothstep(0.8, 1, pow(noiseVal3, 20) );
 
