@@ -36,6 +36,8 @@ public:
 	~ResourceManager();
 
 	std::vector<std::pair<std::wstring, Sound*>> mSounds;
+	std::vector<std::pair<std::wstring, DirectX::SoundEffectInstance*>> mSoundEffects;
+
 	std::vector<std::pair<std::wstring, Sprite>> mSprites{};
 	//Singleton pattern
 	//Deleted copy constructor and assignment operator so no copies of the singleton instance can be made

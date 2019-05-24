@@ -14,5 +14,6 @@ public:
 	~Sound();
 
 	void SetSound(DirectX::AudioEngine* pAudioEngine, std::wstring pFileName);
-	void Play();
+	void Play(float pVolume, float pPitch, float pPan);
+	//std::unique_ptr<DirectX::SoundEffectInstance> CreateInstance();
 };

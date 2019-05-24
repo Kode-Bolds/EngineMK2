@@ -46,12 +46,15 @@ namespace EntitySpawner
 		trans.rotation = pRotation;
 		trans.translation = pPosition;
 		entitySpawnerEcsManager->AddTransformComp(trans, ID);
-    
+
 		// Audio Component
 		Audio audio{};
 		audio.mSound = pSound;
 		audio.active = true;
 		audio.loop = false;
+		audio.volume = 0.5f;
+		audio.pitch = 1.0f;
+		audio.pan = 0.0f;
 		entitySpawnerEcsManager->AddAudioComp(audio, ID);
 
 		//Texture component
