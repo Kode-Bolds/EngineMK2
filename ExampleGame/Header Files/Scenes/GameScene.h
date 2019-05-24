@@ -43,8 +43,8 @@ private:
 	void Rotation();
 	void Shooting();
 
-	Sound* mLaserSound = nullptr;
-	Sound* mEngineSound = nullptr;
+	Sound* mLaserSound;
+	Sound* mEngineSound;
 
 public:
 	//Structors
