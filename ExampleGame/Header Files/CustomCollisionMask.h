@@ -7,5 +7,7 @@ typedef struct : CollisionMask
 	{
 		LASER = CUSTOM_MASK,
 		ASTEROID = CUSTOM_MASK << 1,
+		FLOOR = CUSTOM_MASK << 2,
+		SHIP = CUSTOM_MASK << 3,
 	};
 }CustomCollisionMask;

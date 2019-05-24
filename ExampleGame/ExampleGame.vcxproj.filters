@@ -69,6 +69,33 @@
     <FxCompile Include="depthPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="skyboxShader.fx">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="skyboxVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="skyboxPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="sunPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="sunShader.fx">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="sunVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="thrusterPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="thrusterShader.fx">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="thrusterVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\main.cpp">
@@ -76,6 +103,9 @@
     </ClCompile>
     <ClCompile Include="Source Files\Scenes\GameScene.cpp">
       <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Systems\CollisionResponseSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -100,18 +130,21 @@
     <ClInclude Include="Header Files\GameClasses\EntitySpawner.h">
       <Filter>Header Files\GameClasses</Filter>
     </ClInclude>
+    <ClInclude Include="Header Files\Systems\CollisionResponseSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="crosshair.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
-<<<<<<< HEAD
-=======
   <ItemGroup>
     <Media Include="laser.wav">
       <Filter>Resource Files</Filter>
     </Media>
+    <Media Include="engine.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
   </ItemGroup>
->>>>>>> parent of 96b83d6... Added sound - still refactoring
 </Project>

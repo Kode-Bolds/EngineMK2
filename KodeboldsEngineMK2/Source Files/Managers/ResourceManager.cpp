@@ -6,14 +6,14 @@ using namespace std;
 /// <summary>
 /// Default constructor
 /// </summary>
-ResourceManager::ResourceManager() 
+ResourceManager::ResourceManager()
 {
 }
 
 /// <summary>
 /// Default destructor
 /// </summary>
-ResourceManager::~ResourceManager() 
+ResourceManager::~ResourceManager()
 {
 }
 
@@ -24,7 +24,7 @@ ResourceManager::~ResourceManager()
 /// <param name="pRenderer">The render system used for creation of texture object</param>
 /// <param name="pFilename">Filename of the texture</param>
 /// <returns>Handle to the texture object associated with the file name</returns>
-const TextureObject * const ResourceManager::LoadTexture(const RenderSystem * const pRenderer, const std::wstring & pFilename)
+const TextureObject* const ResourceManager::LoadTexture(const RenderSystem* const pRenderer, const std::wstring& pFilename)
 {
 	auto hr{ S_OK };
 	//find and return from map
@@ -62,7 +62,7 @@ const TextureObject * const ResourceManager::LoadTexture(const RenderSystem * co
 /// <param name="pRenderer">The render system used for the creation of the geometry object</param>
 /// <param name="pFilename">Filename of the geometry</param>
 /// <returns>Handle to the VBO associated with the file name</returns>
-VBO * const ResourceManager::LoadGeometry(const RenderSystem * const pRenderer, const std::wstring& pFilename)
+VBO* const ResourceManager::LoadGeometry(const RenderSystem* const pRenderer, const std::wstring& pFilename)
 {
 	auto hr{ S_OK };
 	//find and return from map
@@ -97,7 +97,7 @@ VBO * const ResourceManager::LoadGeometry(const RenderSystem * const pRenderer, 
 /// <param name="pRenderer">The render system used for the creation of the shader object</param>
 /// <param name="pFilename">Filename of the shader</param>
 /// <returns>Handle to the shader object associated with the file name</returns>
-const ShaderObject * const ResourceManager::LoadShader(const RenderSystem * const pRenderer, const std::wstring & pFilename)
+const ShaderObject* const ResourceManager::LoadShader(const RenderSystem* const pRenderer, const std::wstring& pFilename)
 {
 	auto hr{ S_OK };
 	//find and return from map
@@ -110,7 +110,7 @@ const ShaderObject * const ResourceManager::LoadShader(const RenderSystem * cons
 	}
 	//else create a new shader
 #ifdef  DIRECTX
-	ShaderObject* newShader =  new ShaderObject_DX();
+	ShaderObject* newShader = new ShaderObject_DX();
 #elif OPENGL
 	ShaderObject* newShader = new ShaderObject_GL();
 #endif
@@ -130,10 +130,17 @@ const ShaderObject * const ResourceManager::LoadShader(const RenderSystem * cons
 	return mShaders.back().second;
 }
 
-<<<<<<< HEAD
-=======
 Sound* ResourceManager::LoadAudio(std::wstring pFileName)
 {
+	// check if the sound already exists,
+	for (int i = 0; i < mSounds.size(); i++)
+	{
+		if (mSounds[i].first == pFileName) {
+			return mSounds[i].second;
+		}
+	}
+
+	// if not create new sound
 	Sound* sound = new Sound();
 	sound->SetSound(mAudEngine.get(), pFileName);
 
@@ -141,7 +148,6 @@ Sound* ResourceManager::LoadAudio(std::wstring pFileName)
 	return mSounds.back().second;
 }
 
->>>>>>> parent of 96b83d6... Added sound - still refactoring
 /// <summary>
 /// Creates a singleton instance of Resource Manager if one hasn't been created before
 /// Returns pointer to the instance of Resource Manager

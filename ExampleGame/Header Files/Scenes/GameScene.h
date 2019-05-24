@@ -21,29 +21,31 @@ private:
 #endif
 	std::shared_ptr<SceneManager> mSceneManager = SceneManager::Instance();
 	std::shared_ptr<GUIManager> mGUIManager = GUIManager::Instance();
+	std::shared_ptr<ResourceManager> resourceManager = ResourceManager::Instance();
 
 	int mPlayer;
+	int mPlayerGun;
+	int mPlayerShip;
+	int mPlayerShipCam;
 	int mCamera;
-	float mCameraSpeed;
-<<<<<<< HEAD
 	float mPlayerSpeed;
-=======
+	float mPlayerJumpSpeed;
+	float mShipSpeed;
+	float mCameraSpeed;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 	KodeboldsMath::Vector4 mPlayerShipStartPos;
 	KodeboldsMath::Vector4 mPlayerStartPos;
 	KodeboldsMath::Vector4 mFreeCamStartPos;
 
+	bool mPlayerIsGrounded;
+
 	void Movement();
 	void Rotation();
 	void Shooting();
->>>>>>> parent of 0f257ec... Merge branch 'master' into master
 
-=======
->>>>>>> parent of 96b83d6... Added sound - still refactoring
-=======
->>>>>>> parent of 96b83d6... Added sound - still refactoring
+	Sound* mLaserSound = nullptr;
+	Sound* mEngineSound = nullptr;
+
 public:
 	//Structors
 	GameScene();

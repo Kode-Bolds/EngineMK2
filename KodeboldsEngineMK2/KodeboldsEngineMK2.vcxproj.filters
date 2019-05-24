@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Source Files\Managers\AudioManager.cpp">
-      <Filter>Source Files\Managers</Filter>
-    </ClCompile>
     <ClCompile Include="Source Files\Systems\CollisionCheckSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
@@ -88,13 +85,16 @@
     <ClCompile Include="Source Files\KodeBoldsMath\Vector4.cpp">
       <Filter>Source Files\KodeBoldsMath</Filter>
     </ClCompile>
-<<<<<<< HEAD
-=======
     <ClCompile Include="Header Files\HelperClasses\Sound.cpp" />
-<<<<<<< HEAD
->>>>>>> parent of 96b83d6... Added sound - still refactoring
-=======
->>>>>>> parent of 96b83d6... Added sound - still refactoring
+    <ClCompile Include="Source Files\Systems\AudioSystem_DX.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Systems\AudioSystem_GL.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Systems\AudioSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\Components\AI.h">
@@ -119,9 +119,6 @@
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\Components\Geometry.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Header Files\Components\Light.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\Components\Shader.h">
@@ -280,32 +277,24 @@
     <ClInclude Include="Header Files\HelperClasses\Text.h">
       <Filter>Header Files\HelperClasses</Filter>
     </ClInclude>
-    <ClInclude Include="Header Files\Managers\AudioManager.h">
-      <Filter>Header Files\Managers</Filter>
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> parent of 0f257ec... Merge branch 'master' into master
-    </ClInclude>
     <ClInclude Include="Header Files\DataStructs\CollisionMask.h">
       <Filter>Header Files\DataStructs</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\DataStructs\ConstantBuffer.h">
       <Filter>Header Files\DataStructs</Filter>
->>>>>>> parent of 0f257ec... Merge branch 'master' into master
     </ClInclude>
-    <ClInclude Include="Header Files\DataStructs\CollisionMask.h">
+    <ClInclude Include="Header Files\DataStructs\Light.h">
       <Filter>Header Files\DataStructs</Filter>
     </ClInclude>
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
+    <ClInclude Include="Header Files\Components\PointLight.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Components\DirectionalLight.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
     <ClInclude Include="Header Files\HelperClasses\Sound.h">
       <Filter>Header Files\HelperClasses</Filter>
     </ClInclude>
-<<<<<<< HEAD
-<<<<<<< HEAD
     <ClInclude Include="Header Files\Systems\AudioSystem_GL.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
@@ -314,34 +303,7 @@
     </ClInclude>
     <ClInclude Include="Header Files\Systems\AudioSystem_DX.h">
       <Filter>Header Files\Systems</Filter>
-=======
-    <ClInclude Include="Header Files\DataStructs\ConstantBuffer.h">
-      <Filter>Header Files\DataStructs</Filter>
     </ClInclude>
-    <ClInclude Include="Header Files\DataStructs\Light.h">
-      <Filter>Header Files\DataStructs</Filter>
-    </ClInclude>
-=======
->>>>>>> parent of 0f257ec... Merge branch 'master' into master
-=======
->>>>>>> parent of 0f257ec... Merge branch 'master' into master
-    <ClInclude Include="Header Files\Components\PointLight.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Header Files\Components\DirectionalLight.h">
-      <Filter>Header Files\Components</Filter>
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> parent of 0f257ec... Merge branch 'master' into master
-=======
->>>>>>> parent of 0f257ec... Merge branch 'master' into master
-=======
->>>>>>> parent of 0f257ec... Merge branch 'master' into master
-    </ClInclude>
-=======
->>>>>>> parent of 96b83d6... Added sound - still refactoring
-=======
->>>>>>> parent of 96b83d6... Added sound - still refactoring
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
