@@ -61,6 +61,10 @@ HRESULT RenderSystem_DX::Init()
 	if (FAILED(hr))
 		return hr;
 
+	hr = CreateBlend();
+	if (FAILED(hr))
+		return hr;
+
 	hr = CreateDepth();
 	if (FAILED(hr))
 		return hr;

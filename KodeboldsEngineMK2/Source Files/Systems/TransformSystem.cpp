@@ -97,9 +97,9 @@ void TransformSystem::CalculateDirections(const Entity& pEntity) const
 	Transform* t = mEcsManager->TransformComp(pEntity.ID);
 	if (t)
 	{
-		t->forward = KodeboldsMath::Vector4(t->transform._31, t->transform._32, t->transform._33, 1.0f);
-		t->up = KodeboldsMath::Vector4(t->transform._21, t->transform._22, t->transform._23, 1.0f);
-		t->right = KodeboldsMath::Vector4(t->transform._11, t->transform._12, t->transform._13, 1.0f);
+		t->forward = KodeboldsMath::Vector4(t->transform._31, t->transform._32, t->transform._33, t->transform._34).Normalise();
+		t->up = KodeboldsMath::Vector4(t->transform._21, t->transform._22, t->transform._23, t->transform._24).Normalise();
+		t->right = KodeboldsMath::Vector4(t->transform._11, t->transform._12, t->transform._13, t->transform._14).Normalise();
 	}
 }
 

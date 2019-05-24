@@ -277,7 +277,7 @@ void GameScene::Rotation()
 		//If ship cam is active, rotate ship
 		if (mEcsManager->CameraComp(mPlayerShipCam)->active)
 		{
-			//mEcsManager->TransformComp(mPlayerShip)->transform *= RotationMatrixAxis(1 * mSceneManager->DeltaTime(), mEcsManager->TransformComp(mPlayerShip)->up);
+			mEcsManager->TransformComp(mPlayerShip)->transform *= RotationMatrixAxis(1 * mSceneManager->DeltaTime(), mEcsManager->TransformComp(mPlayerShip)->up.Normalise());
 			auto translateToOrigin = TranslationMatrix(
 				Vector4(-mEcsManager->TransformComp(mPlayerShip)->translation.X, -mEcsManager->TransformComp(mPlayerShip)->translation.Y, -mEcsManager->TransformComp(mPlayerShip)->translation.Z, 1));
 			auto rotation = RotationMatrixAxis(-1 * mSceneManager->DeltaTime(), mEcsManager->TransformComp(mPlayerShip)->up.Normalise());
@@ -332,7 +332,7 @@ void GameScene::Shooting()
 		//If ship cam is active, fire ship lasers
 		if (mEcsManager->CameraComp(mPlayerShipCam)->active)
 		{
-
+			
 			Vector4 leftLaser = mEcsManager->TransformComp(mPlayerShip)->translation + ((mEcsManager->TransformComp(mPlayerShip)->right * -23) + (mEcsManager->TransformComp(mPlayerShip)->up * 5));
 			SpawnLaser(leftLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), mEcsManager->TransformComp(mPlayerShip)->forward * 40, 40,
 				leftLaser.XYZ() - Vector3(1, 1, 1), leftLaser.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::LASER | CustomCollisionMask::PLAYER, 100);
@@ -441,10 +441,13 @@ void GameScene::OnLoad()
 	//audio.loop = false;
 	//entitySpawnerEcsManager->AddAudioComp(audio, mPlayer);
 
+	mCamera = SpawnCamera(Vector4(5, 2, -100, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 60, 1, 10000, 50);
+
+
 	//Spawn player ship and attached camera
 	mPlayerShipStartPos = Vector4(0, 0, -50, 1);
-	mPlayerShip = SpawnShip(mPlayerShipStartPos, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 40, 60, CustomCollisionMask::SHIP, 
-		CustomCollisionMask::SHIP | CustomCollisionMask::LASER | CustomCollisionMask::PLAYER, L"stones.dds", L"stones_NM_height.dds");
+	mPlayerShip = SpawnShip(mPlayerShipStartPos, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), 40, 60, CustomCollisionMask::SHIP, 
+		CustomCollisionMask::SHIP | CustomCollisionMask::LASER | CustomCollisionMask::PLAYER | CustomCollisionMask::FLOOR, L"stones.dds", L"stones_NM_height.dds");
 	mPlayerShipCam = SpawnCamera(mPlayerShipStartPos + Vector4(0, 40, -70, 1), Vector4(1, 1, 1, 1), Vector4(0.2f, 0, 0, 0), 60, 1, 400, 40);
 	mEcsManager->CameraComp(mPlayerShipCam)->active = true;
 
@@ -456,7 +459,6 @@ void GameScene::OnLoad()
 
 
 	//Spawn free cam
-	mCamera = SpawnCamera(Vector4(5, 2, -100, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 60, 1, 10000, 50);
 
 	//Set acceleration speeds
 	mPlayerSpeed = 10.0f;
@@ -465,29 +467,29 @@ void GameScene::OnLoad()
 	mCameraSpeed = 20.0f;
 
 	//Spawn platform of cubes
-	for (int x = 0; x < 10; x++)
-	{
-		for (int z = 0; z < 10; z++)
-		{
-			int entity = mEcsManager->CreateEntity();
+	//for (int x = 0; x < 10; x++)
+	//{
+	//	for (int z = 0; z < 10; z++)
+	//	{
+	//		int entity = mEcsManager->CreateEntity();
 
-			Geometry geom{ L"cube.obj" };
-			mEcsManager->AddGeometryComp(geom, entity);
-			Shader shaderm{ L"defaultShader.fx" , BlendState::NOBLEND, CullState::BACK, DepthState::NONE };
-			mEcsManager->AddShaderComp(shaderm, entity);
-			Texture texturem{};
-			texturem.diffuse = L"stones.dds";
-			texturem.normal = L"stones_NM_height.dds";
-			mEcsManager->AddTextureComp(texturem, entity);
-			Transform transCm{};
-			transCm.scale = Vector4(1, 1, 1, 1);
-			transCm.translation = Vector4(x * 2 - 5, -2, z * 2 - 100, 1);
+	//		Geometry geom{ L"cube.obj" };
+	//		mEcsManager->AddGeometryComp(geom, entity);
+	//		Shader shaderm{ L"defaultShader.fx" , BlendState::NOBLEND, CullState::BACK, DepthState::NONE };
+	//		mEcsManager->AddShaderComp(shaderm, entity);
+	//		Texture texturem{};
+	//		texturem.diffuse = L"stones.dds";
+	//		texturem.normal = L"stones_NM_height.dds";
+	//		mEcsManager->AddTextureComp(texturem, entity);
+	//		Transform transCm{};
+	//		transCm.scale = Vector4(1, 1, 1, 1);
+	//		transCm.translation = Vector4(x * 2 - 5, -2, z * 2 - 100, 1);
 
-			mEcsManager->AddTransformComp(transCm, entity);
-			BoxCollider floorBox{ transCm.translation.XYZ() - Vector3(1, 1, 1), transCm.translation.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::FLOOR, CustomCollisionMask::FLOOR };
-			mEcsManager->AddBoxColliderComp(floorBox, entity);
-		}
-	}
+	//		mEcsManager->AddTransformComp(transCm, entity);
+	//		BoxCollider floorBox{ transCm.translation.XYZ() - Vector3(1, 1, 1), transCm.translation.XYZ() + Vector3(1, 1, 1), CustomCollisionMask::FLOOR, CustomCollisionMask::FLOOR };
+	//		mEcsManager->AddBoxColliderComp(floorBox, entity);
+	//	}
+	//}
 	{
 		int particleEntity = mEcsManager->CreateEntity();
 		Geometry geom{ L"quad100.obj" };
@@ -552,9 +554,9 @@ void GameScene::OnLoad()
 	DirectionalLight dl{Vector4(0,-1,-1,1), Vector4(0.5f,0.5f,0.5f,1)};
 	mEcsManager->AddDirectionalLightComp(dl, dLight);
 
-	const int dLight2 = mEcsManager->CreateEntity();
-	DirectionalLight dl2{ Vector4(1,-1,1,1), Vector4(0,0.1f,0,1) };
-	mEcsManager->AddDirectionalLightComp(dl2, dLight2);
+	//const int dLight2 = mEcsManager->CreateEntity();
+	//DirectionalLight dl2{ Vector4(1,-1,1,1), Vector4(0,0.1f,0,1) };
+	//mEcsManager->AddDirectionalLightComp(dl2, dLight2);
 
 	const int pLight = mEcsManager->CreateEntity();
 	PointLight pl{ Vector4(1.0f,1.0f,1.0f,1), 50};

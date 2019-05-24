@@ -69,8 +69,8 @@ namespace EntitySpawner
 		entitySpawnerEcsManager->AddColourComp(colour, ID);
 
 		//BoxCollider component
-		BoxCollider box{ pBoxMin, pBoxMax, CustomCollisionMask::LASER, pIgnoreCollisionMask };
-		entitySpawnerEcsManager->AddBoxColliderComp(box, ID);
+		BoxCollider box{ pBoxMin, pBoxMax, CustomCollisionMask::NONE, pIgnoreCollisionMask };
+		//entitySpawnerEcsManager->AddBoxColliderComp(box, ID);
 
 		return ID;
 	}
@@ -119,7 +119,7 @@ namespace EntitySpawner
 		vel.maxSpeed = pMaxSpeed;
 		entitySpawnerEcsManager->AddVelocityComp(vel, ID);
 
-		//BoxCollider component
+		//SphereCollider component
 		SphereCollider sphere{ pRadius, pCollisionMask, pIgnoreCollisionMask };
 		entitySpawnerEcsManager->AddSphereColliderComp(sphere, ID);
 
