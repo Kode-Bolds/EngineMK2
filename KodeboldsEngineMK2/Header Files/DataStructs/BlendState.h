@@ -2,7 +2,7 @@
 
 enum class BlendState
 {
-	WHATS_A_SYLLABLE,
+	NOTSET,
 	NOBLEND,
 	ALPHABLEND
 };
