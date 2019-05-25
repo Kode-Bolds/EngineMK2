@@ -77,7 +77,8 @@ struct PS_INPUT
 PS_INPUT VS(VS_INPUT input)
 {
 	PS_INPUT output = (PS_INPUT)0;
-	input.Pos.z *= 10;
+	input.Pos.xyz *= 0.5;
+	input.Pos.z *= -10;
 	input.Pos.x += sin(Time + input.Pos.z * 10) * 10;
 	output.Pos = mul(float4(input.Pos, 1.0f), World);
 	output.Pos = mul(output.Pos, View);

@@ -465,7 +465,7 @@ void GameScene::OnLoad()
 
 			Geometry geom{ L"cube.obj" };
 			mEcsManager->AddGeometryComp(geom, entity);
-			Shader shaderm{ L"defaultShader.fx" , BlendState::NOBLEND, CullState::BACK, DepthState::NONE };
+			Shader shaderm{ L"defaultShader.fx" , BlendState::NOBLEND, CullState::BACK, DepthState::LESSEQUAL };
 			mEcsManager->AddShaderComp(shaderm, entity);
 			Texture texturem{};
 			texturem.diffuse = L"stones.dds";
@@ -480,23 +480,7 @@ void GameScene::OnLoad()
 			mEcsManager->AddBoxColliderComp(floorBox, entity);
 		}
 	}
-	{
-		int particleEntity = mEcsManager->CreateEntity();
-		Geometry geom{ L"quad100.obj" };
-		mEcsManager->AddGeometryComp(geom, particleEntity);
-		Shader shaderm{ L"thrusterShader.fx" , BlendState::ALPHABLEND, CullState::FRONT, DepthState::NONE };
-		mEcsManager->AddShaderComp(shaderm, particleEntity);
-		Texture texturem{};
-		texturem.diffuse = L"";
-		texturem.normal = L"";
-		mEcsManager->AddTextureComp(texturem, particleEntity);
-
-		Transform transCm{};
-		transCm.scale = Vector4(10, 10, 10, 10);
-		transCm.translation = Vector4(0, 0, 0, 1);
-
-		mEcsManager->AddTransformComp(transCm, particleEntity);
-	}
+	
 
 	{
 		//Sun
@@ -538,6 +522,24 @@ void GameScene::OnLoad()
 				SpawnAsteroid(Vector4(20 * i, 20 * j, 40 * k, 1), Vector4(5, 5, 5, 1), Vector4(0, 0, 0, 1), 5, 0, L"stones.dds", L"stones_NM_height.dds");
 			}
 		}
+	}
+
+	{
+		int particleEntity = mEcsManager->CreateEntity();
+		Geometry geom{ L"quad100.obj" };
+		mEcsManager->AddGeometryComp(geom, particleEntity);
+		Shader shaderm{ L"thrusterShader.fx" , BlendState::ALPHABLEND, CullState::FRONT, DepthState::NONE };
+		mEcsManager->AddShaderComp(shaderm, particleEntity);
+		Texture texturem{};
+		texturem.diffuse = L"";
+		texturem.normal = L"";
+		mEcsManager->AddTextureComp(texturem, particleEntity);
+
+		Transform transCm{};
+		transCm.scale = Vector4(10, 10, 10, 10);
+		transCm.translation = Vector4(0, 0, 0, 1);
+
+		mEcsManager->AddTransformComp(transCm, particleEntity);
 	}
 
 	const int dLight = mEcsManager->CreateEntity();
