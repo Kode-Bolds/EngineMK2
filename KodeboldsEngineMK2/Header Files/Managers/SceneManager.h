@@ -68,11 +68,6 @@ public:
 		if (mScene)
 		{
 			mScene->OnUnload();
-
-			// Clears GUI from previous scene
-			mResourceManager->mSprites.clear();
-			mGUIManager->mTexts.clear();
-
 		}
 
 		//Create new scene of type T
