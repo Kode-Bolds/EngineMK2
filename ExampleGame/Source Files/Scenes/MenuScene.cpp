@@ -39,7 +39,8 @@ void MenuScene::Update()
 void MenuScene::OnLoad()
 {
 	//Audio Files
-	//mMenuMusic = resourceManager->LoadAudio(L"MenuMusic........");
+	mMenuMusic = resourceManager->LoadAudio(L"space.wav");
+	mMenuMusic->Play(1.0f, 1.0f, 0.0f);
 
 	mGUIManager->LoadSprite(L"Spaceship.png", GUIManager::SpriteOrigin::CENTRE, GUIManager::SpritePosition::CENTRE_MIDDLE, Vector2(0, 0), 0, 1);
 

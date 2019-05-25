@@ -1021,7 +1021,9 @@
   </ItemGroup>
   <ItemGroup>
     <Media Include="engine.wav" />
+    <Media Include="explosion.wav" />
     <Media Include="laser.wav" />
+    <Media Include="space.wav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
