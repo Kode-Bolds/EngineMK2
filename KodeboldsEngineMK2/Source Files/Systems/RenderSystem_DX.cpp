@@ -14,14 +14,9 @@ RenderSystem_DX::RenderSystem_DX(const HWND& pWindow, const int pMaxPointLights,
 		ComponentType::COMPONENT_POINTLIGHT,
 		ComponentType::COMPONENT_DIRECTIONALLIGHT,
 		ComponentType::COMPONENT_CAMERA },
-<<<<<<< HEAD
 		pMaxPointLights,
 		pMaxDirLights),
 mWindow(pWindow), mActiveCamera(nullptr), mActiveGeometry(L""), mActiveShader(L"")
-=======
-		pMaxLights),
-	mWindow(pWindow), mActiveCamera(nullptr), mActiveGeometry(L""), mActiveShader(L"")
->>>>>>> upstream/master
 {
 	if (FAILED(Init()))
 	{
