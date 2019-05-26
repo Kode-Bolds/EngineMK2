@@ -44,7 +44,7 @@ cbuffer LightingBuffer : register (b1)
 
 cbuffer ParticleBuffer : register (b2)
 {
-	float ttl ;
+	//float ttl ;
 	float3 padding6;
 }
 
@@ -124,7 +124,7 @@ PS_INPUT VS(VS_INPUT input)
 	
 
 	
-	//float ttl = 1;
+	float ttl = 1;
 	float4 inPos = float4(input.Pos, 1);
 	float lifeTime = ttl - ((Time + index) % ttl);
 
