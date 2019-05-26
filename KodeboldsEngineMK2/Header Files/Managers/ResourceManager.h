@@ -17,6 +17,7 @@
 #include "Sprite.h"
 #include <Audio.h>
 #include "Sound.h"
+#include "Button.h"
 
 class RenderSystem;
 
@@ -36,7 +37,12 @@ public:
 	~ResourceManager();
 
 	std::vector<std::pair<std::wstring, Sound*>> mSounds;
+	std::vector<std::pair<std::wstring, DirectX::SoundEffectInstance*>> mSoundEffects;
+
 	std::vector<std::pair<std::wstring, Sprite>> mSprites{};
+	std::vector<std::pair<std::wstring, Button>> mButtons{};
+
+
 	//Singleton pattern
 	//Deleted copy constructor and assignment operator so no copies of the singleton instance can be made
 	ResourceManager(const ResourceManager& pResourceManager) = delete;
@@ -50,8 +56,8 @@ public:
 
 	static std::shared_ptr< ResourceManager > Instance();
 
-	DirectX::AUDIO_ENGINE_FLAGS eflags = DirectX::AUDIO_ENGINE_FLAGS::AudioEngine_Default;
-	std::unique_ptr<DirectX::AudioEngine> mAudEngine = std::make_unique<DirectX::AudioEngine>(eflags);
+	DirectX::AUDIO_ENGINE_FLAGS eflags = DirectX::AUDIO_ENGINE_FLAGS::AudioEngine_EnvironmentalReverb | DirectX::AUDIO_ENGINE_FLAGS::AudioEngine_ReverbUseFilters;;
+	std::unique_ptr<DirectX::AudioEngine> mAudioEngine = std::make_unique<DirectX::AudioEngine>(eflags);
 	Sound* LoadAudio(std::wstring pFileName);
 };
 

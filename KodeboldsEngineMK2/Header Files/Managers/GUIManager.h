@@ -28,7 +28,6 @@ private:
 	std::unique_ptr<DirectX::SpriteBatch> mSpriteBatch;
 	std::unique_ptr<DirectX::CommonStates> mStates;
 	std::vector<std::unique_ptr<DirectX::SpriteFont>> mFonts;
-	std::vector<Text> mTexts;
 
 	//Private constructor for singleton pattern
 	GUIManager();
@@ -56,6 +55,16 @@ public:
 		CENTRE,
 	};
 
+	enum class ButtonOrigin {
+		CENTRE,
+	};
+
+	enum class ButtonPosition {
+		CENTRE_TOP,
+		CENTRE_MIDDLE,
+		CENTRE_BOTTOM
+	};
+
 	//Singleton pattern
 	//Deleted copy constructor and assignment operator so no copies of the singleton instance can be made
 	GUIManager(const GUIManager& pGUIManager) = delete;
@@ -73,12 +82,21 @@ public:
 
 
 	//----------- STANDARD GUI -----------\\ 
+	std::vector<Text> mTexts;
 	void InititialiseGUI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const int pWidth, const int pHeight);
 	void Render();
-	void RenderText();
+	void Update();
+	void Clear();
 
 	// Loads .spritefont files from disk
 	void LoadFont(const wchar_t* pFontName);
+
+
+
+	// Creates and Draws Button
+	void CreateButton(const wchar_t* pFileName, const wchar_t* pFontName, const wchar_t* pText, float pRotation, float pButtonScale, float pTextScale,
+		ButtonOrigin pOrigin, ButtonPosition pPosition, KodeboldsMath::Vector2 pButtonPadding, KodeboldsMath::Vector2 pTextPadding, KodeboldsMath::Vector4 pTextColour,
+		std::function<void()> pOnClickFunction);
 
 	// Draws Sprite to screen
 	void LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale);

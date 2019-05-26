@@ -107,6 +107,9 @@
     <ClCompile Include="Source Files\Systems\CollisionResponseSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="Source Files\Scenes\MenuScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\Scenes\GameScene.h">
@@ -133,9 +136,18 @@
     <ClInclude Include="Header Files\Systems\CollisionResponseSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="Header Files\Scenes\MenuScene.h">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="crosshair.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Spaceship.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="button.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
@@ -144,6 +156,12 @@
       <Filter>Resource Files</Filter>
     </Media>
     <Media Include="engine.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="explosion.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="space.wav">
       <Filter>Resource Files</Filter>
     </Media>
   </ItemGroup>

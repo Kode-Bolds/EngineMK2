@@ -23,7 +23,8 @@ namespace EntitySpawner
 	/// <param name="pIgnoreCollisionMask"></param>
 	/// <returns></returns>
 	static int SpawnLaser(const KodeboldsMath::Vector4& pPosition, const KodeboldsMath::Vector4& pScale, const KodeboldsMath::Vector4& pRotation, const KodeboldsMath::Vector4& pColour,
-		const KodeboldsMath::Vector4& pAcceleration, const float& pMaxSpeed, const float& pRadius, const int pCollisionMask, const int pIgnoreCollisionMask, const float& pLightRange)
+		const KodeboldsMath::Vector4& pAcceleration, const float& pMaxSpeed, const float& pRadius, const int pCollisionMask, const int pIgnoreCollisionMask, const float& pLightRange,
+    Sound* pSound)
 	{
 		int ID = entitySpawnerEcsManager->CreateEntity();
 
@@ -45,13 +46,16 @@ namespace EntitySpawner
 		trans.rotation = pRotation;
 		trans.translation = pPosition;
 		entitySpawnerEcsManager->AddTransformComp(trans, ID);
-    
+
 		// Audio Component
-		//Audio audio{};
-		//audio.mSound = pSound;
-		//audio.active = true;
-		//audio.loop = false;
-		//entitySpawnerEcsManager->AddAudioComp(audio, ID);
+		Audio audio{};
+		audio.mSound = pSound;
+		audio.active = true;
+		audio.loop = false;
+		audio.volume = 0.5f;
+		audio.pitch = 1.0f;
+		audio.pan = 0.0f;
+		entitySpawnerEcsManager->AddAudioComp(audio, ID);
 
 		//Texture component
 		Texture tex{};
