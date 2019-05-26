@@ -21,7 +21,7 @@ void GameScene::Movement()
 		if (mEcsManager->CameraComp(mPlayer)->active)
 		{
 			mEcsManager->VelocityComp(mPlayer)->acceleration += Vector4(0, 0, 1, 0) * mPlayerSpeed;
-			mEcsManager->VelocityComp(mPlayerGun)->acceleration += Vector4(0, 0, 1, 0) * mPlayerSpeed;
+			mEcsManager->VelocityComp(mPlayerGun)->acceleration += Vector4(0, 0, -1, 0) * mPlayerSpeed;
 		}
 		//If free cam is active, move free cam
 		if (mEcsManager->CameraComp(mCamera)->active)
@@ -41,7 +41,7 @@ void GameScene::Movement()
 		if (mEcsManager->CameraComp(mPlayer)->active)
 		{
 			mEcsManager->VelocityComp(mPlayer)->acceleration -= Vector4(0, 0, 1, 0) * mPlayerSpeed;
-			mEcsManager->VelocityComp(mPlayerGun)->acceleration -= Vector4(0, 0, 1, 0) * mPlayerSpeed;
+			mEcsManager->VelocityComp(mPlayerGun)->acceleration -= Vector4(0, 0, -1, 0) * mPlayerSpeed;
 		}
 		//If free cam is active, move free cam
 		if (mEcsManager->CameraComp(mCamera)->active)
@@ -63,7 +63,7 @@ void GameScene::Movement()
 		if (mEcsManager->CameraComp(mPlayer)->active)
 		{
 			mEcsManager->VelocityComp(mPlayer)->acceleration += Vector4(0, 0, 1, 0) * -mPlayerSpeed;
-			mEcsManager->VelocityComp(mPlayerGun)->acceleration += Vector4(0, 0, 1, 0) * -mPlayerSpeed;
+			mEcsManager->VelocityComp(mPlayerGun)->acceleration += Vector4(0, 0, -1, 0) * -mPlayerSpeed;
 		}
 		//If free cam is active, move free cam
 		if (mEcsManager->CameraComp(mCamera)->active)
@@ -83,7 +83,7 @@ void GameScene::Movement()
 		if (mEcsManager->CameraComp(mPlayer)->active)
 		{
 			mEcsManager->VelocityComp(mPlayer)->acceleration -= Vector4(0, 0, 1, 0) * -mPlayerSpeed;
-			mEcsManager->VelocityComp(mPlayerGun)->acceleration -= Vector4(0, 0, 1, 0) * -mPlayerSpeed;
+			mEcsManager->VelocityComp(mPlayerGun)->acceleration -= Vector4(0, 0, -1, 0) * -mPlayerSpeed;
 		}
 		//If free cam is active, move free cam
 		if (mEcsManager->CameraComp(mCamera)->active)
@@ -105,7 +105,7 @@ void GameScene::Movement()
 		if (mEcsManager->CameraComp(mPlayer)->active)
 		{
 			mEcsManager->VelocityComp(mPlayer)->acceleration += Vector4(1, 0, 0, 0) * -mPlayerSpeed;
-			mEcsManager->VelocityComp(mPlayerGun)->acceleration += Vector4(1, 0, 0, 0) * -mPlayerSpeed;
+			mEcsManager->VelocityComp(mPlayerGun)->acceleration += Vector4(-1, 0, 0, 0) * -mPlayerSpeed;
 		}
 		//If free cam is active, move free cam
 		if (mEcsManager->CameraComp(mCamera)->active)
@@ -125,7 +125,7 @@ void GameScene::Movement()
 		if (mEcsManager->CameraComp(mPlayer)->active)
 		{
 			mEcsManager->VelocityComp(mPlayer)->acceleration -= Vector4(1, 0, 0, 0) * -mPlayerSpeed;
-			mEcsManager->VelocityComp(mPlayerGun)->acceleration -= Vector4(1, 0, 0, 0) * -mPlayerSpeed;
+			mEcsManager->VelocityComp(mPlayerGun)->acceleration -= Vector4(-1, 0, 0, 0) * -mPlayerSpeed;
 		}
 		//If free cam is active, move free cam
 		if (mEcsManager->CameraComp(mCamera)->active)
@@ -147,7 +147,7 @@ void GameScene::Movement()
 		if (mEcsManager->CameraComp(mPlayer)->active)
 		{
 			mEcsManager->VelocityComp(mPlayer)->acceleration += Vector4(1, 0, 0, 0) * mPlayerSpeed;
-			mEcsManager->VelocityComp(mPlayerGun)->acceleration += Vector4(1, 0, 0, 0) * mPlayerSpeed;
+			mEcsManager->VelocityComp(mPlayerGun)->acceleration += Vector4(-1, 0, 0, 0) * mPlayerSpeed;
 		}
 		//If free cam is active, move free cam
 		if (mEcsManager->CameraComp(mCamera)->active)
@@ -167,7 +167,7 @@ void GameScene::Movement()
 		if (mEcsManager->CameraComp(mPlayer)->active)
 		{
 			mEcsManager->VelocityComp(mPlayer)->acceleration -= Vector4(1, 0, 0, 0) * mPlayerSpeed;
-			mEcsManager->VelocityComp(mPlayerGun)->acceleration -= Vector4(1, 0, 0, 0) * mPlayerSpeed;
+			mEcsManager->VelocityComp(mPlayerGun)->acceleration -= Vector4(-1, 0, 0, 0) * mPlayerSpeed;
 		}
 		//If free cam is active, move free cam
 		if (mEcsManager->CameraComp(mCamera)->active)
@@ -275,46 +275,43 @@ void GameScene::Movement()
 /// </summary>
 void GameScene::Rotation()
 {
-	//Rotate left
-	if (mInputManager->KeyHeld(KEYS::KEY_Q))
+	float deltaX = mInputManager->MousePos().X;
+	float deltaY = mInputManager->MousePos().Y;
+
+	//If mouse moved
+	if (deltaX != 0 || deltaY != 0)
 	{
+
 		//If ship cam is active, rotate ship
 		if (mEcsManager->CameraComp(mPlayerShipCam)->active)
 		{
-			mEcsManager->TransformComp(mPlayerShip)->transform *= RotationMatrixY(1 * mSceneManager->DeltaTime());
-			mEcsManager->TransformComp(mPlayerShipCam)->transform *= RotationMatrixY(1 * mSceneManager->DeltaTime());
+			//Y rotation
+			mEcsManager->TransformComp(mPlayerShip)->transform *= RotationMatrixAxis(DegreesToRadians(deltaX * mRotationSpeed) * mSceneManager->DeltaTime(), Vector4(0, 1, 0, 1));
+			RotateAroundPoint(mPlayerShipCam, Vector4(0, 1, 0, 0), Vector4(0, 0, 75, 0), deltaX * mRotationSpeed);
+
+			//X rotation
+			mEcsManager->TransformComp(mPlayerShip)->transform *= RotationMatrixAxis(DegreesToRadians(deltaY * mRotationSpeed) * mSceneManager->DeltaTime(), Vector4(1, 0, 0, 1));
+			RotateAroundPoint(mPlayerShipCam, Vector4(1, 0, 0, 0), Vector4(0, 0, 75, 0), deltaY * mRotationSpeed);
 		}
 		//If player cam is active, rotate player
 		if (mEcsManager->CameraComp(mPlayer)->active)
 		{
-			mEcsManager->TransformComp(mPlayer)->transform *= RotationMatrixAxis(-1 * mSceneManager->DeltaTime(), mEcsManager->TransformComp(mPlayer)->up);
-			mEcsManager->TransformComp(mPlayerGun)->transform *= RotationMatrixAxis(1 * mSceneManager->DeltaTime(), mEcsManager->TransformComp(mPlayer)->up);
+			//Y rotation
+			mEcsManager->TransformComp(mPlayer)->transform *= RotationMatrixAxis(DegreesToRadians(deltaX * mRotationSpeed) * mSceneManager->DeltaTime(), Vector4(0, 1, 0, 1));
+			RotateAroundPoint(mPlayerGun, Vector4(0, 1, 0, 0), Vector4(1, -1, 2.0f, 0), deltaX * mRotationSpeed);
+
+			//X rotation
+			mEcsManager->TransformComp(mPlayer)->transform *= RotationMatrixAxis(DegreesToRadians(deltaY * mRotationSpeed) * mSceneManager->DeltaTime(), Vector4(1, 0, 0, 1));
+			RotateAroundPoint(mPlayerGun, Vector4(1, 0, 0, 0), Vector4(1, -1, 2.0f, 0), deltaY * mRotationSpeed);
 		}
 		//If free cam is active, rotate free cam
 		if (mEcsManager->CameraComp(mCamera)->active)
 		{
-			mEcsManager->TransformComp(mCamera)->transform *= RotationMatrixAxis(1 * mSceneManager->DeltaTime(), mEcsManager->TransformComp(mCamera)->up);
-		}
-	}
-	//Rotate right
-	if (mInputManager->KeyHeld(KEYS::KEY_E))
-	{
-		//If ship cam is active, rotate ship
-		if (mEcsManager->CameraComp(mPlayerShipCam)->active)
-		{
-			mEcsManager->TransformComp(mPlayerShip)->transform *= RotationMatrixY(-1 * mSceneManager->DeltaTime());
-			mEcsManager->TransformComp(mPlayerShipCam)->transform *= RotationMatrixY(-1 * mSceneManager->DeltaTime());
-		}
-		//If player cam is active, rotate player
-		if (mEcsManager->CameraComp(mPlayer)->active)
-		{
-			mEcsManager->TransformComp(mPlayer)->transform *= RotationMatrixAxis(1 * mSceneManager->DeltaTime(), mEcsManager->TransformComp(mPlayer)->up);
-			mEcsManager->TransformComp(mPlayerGun)->transform *= RotationMatrixAxis(-1 * mSceneManager->DeltaTime(), mEcsManager->TransformComp(mPlayer)->up);
-		}
-		//If free cam is active, rotate free cam
-		if (mEcsManager->CameraComp(mCamera)->active)
-		{
-			mEcsManager->TransformComp(mCamera)->transform *= RotationMatrixAxis(-1 * mSceneManager->DeltaTime(), mEcsManager->TransformComp(mCamera)->up);
+			//Y rotation
+			mEcsManager->TransformComp(mCamera)->transform *= RotationMatrixAxis(DegreesToRadians(deltaX * mRotationSpeed) * mSceneManager->DeltaTime(), Vector4(0, 1, 0, 1));
+
+			//X rotation
+			mEcsManager->TransformComp(mCamera)->transform *= RotationMatrixAxis(DegreesToRadians(deltaY * mRotationSpeed) * mSceneManager->DeltaTime(), Vector4(1, 0, 0, 1));
 		}
 	}
 }
@@ -347,6 +344,23 @@ void GameScene::Shooting()
 				1, CustomCollisionMask::GUN_LASER, CustomCollisionMask::GUN_LASER | CustomCollisionMask::PLAYER, 50, mLaserSound);
 		}
 	}
+}
+
+/// <summary>
+/// 
+/// </summary>
+/// <param name="pAxis"></param>
+/// <param name="pPoint"></param>
+/// <param name="pAngle"></param>
+void GameScene::RotateAroundPoint(const int pEntity, const KodeboldsMath::Vector4 & pAxis, const KodeboldsMath::Vector4 & pPoint, const float & pAngle)
+{
+	const float angleInRadians = DegreesToRadians(pAngle);
+
+	auto translateTo = TranslationMatrix(pPoint);
+	auto rotation = RotationMatrixAxis(angleInRadians * mSceneManager->DeltaTime(), pAxis);
+	auto translateBack = TranslationMatrix(pPoint * -1);
+
+	mEcsManager->TransformComp(pEntity)->transform *= translateTo * rotation * translateBack;
 }
 
 /// <summary>
@@ -431,35 +445,29 @@ void GameScene::OnLoad()
 	mLaserSound = resourceManager->LoadAudio(L"laser.wav");
 	mEngineSound = resourceManager->LoadAudio(L"engine.wav");
 
-	//// Audio Component
-	//Audio audio{};
-	//audio.mSound = mEngineSound;
-	//audio.active = true;
-	//audio.loop = false;
-	//entitySpawnerEcsManager->AddAudioComp(audio, mPlayer);
-
 	//Spawn player ship and attached camera
 	mPlayerShipStartPos = Vector4(0, 0, -50, 1);
-	mPlayerShip = SpawnShip(mPlayerShipStartPos, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 40, 60, CustomCollisionMask::SHIP,
+	mPlayerShip = SpawnShip(mPlayerShipStartPos, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 40, 50, CustomCollisionMask::SHIP,
 		CustomCollisionMask::SHIP | CustomCollisionMask::SHIP_LASER | CustomCollisionMask::PLAYER, L"stones.dds", L"stones_NM_height.dds");
 	mPlayerShipCam = SpawnCamera(mPlayerShipStartPos + Vector4(0, 40, -75, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 60, 1, 10000, 40);
 	mEcsManager->CameraComp(mPlayerShipCam)->active = true;
 
 	//Spawn player camera and attached laser gun model
 	mPlayerStartPos = Vector4(0, 50, -100, 1);
-	mPlayer = SpawnPlayer(mPlayerStartPos, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 60, 1, 10000, 5, mPlayerStartPos.XYZ() - Vector3(1, 4, 1), mPlayerStartPos.XYZ() + Vector3(1, 2, 1),
+	mPlayer = SpawnPlayer(mPlayerStartPos, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 60, 1, 10000, 10, mPlayerStartPos.XYZ() - Vector3(1, 4, 1), mPlayerStartPos.XYZ() + Vector3(1, 2, 1),
 		CustomCollisionMask::PLAYER, CustomCollisionMask::PLAYER | CustomCollisionMask::GUN_LASER | CustomCollisionMask::SHIP);
-	mPlayerGun = SpawnLaserGun(mPlayerStartPos + Vector4(1, -1, 2.0f, 0), Vector4(1, 1, 1, 1), Vector4(0, 3.14f, 0, 1), L"laser_gun_diffuse.dds", L"laser_gun_normal.dds", 5);
+	mPlayerGun = SpawnLaserGun(mPlayerStartPos + Vector4(1, -1, 2.0f, 0), Vector4(1, 1, 1, 1), Vector4(0, 3.14f, 0, 1), L"laser_gun_diffuse.dds", L"laser_gun_normal.dds", 10);
 
 
 	//Spawn free cam
 	mCamera = SpawnCamera(Vector4(5, 2, -100, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 60, 1, 10000, 50);
 
 	//Set acceleration speeds
-	mPlayerSpeed = 10.0f;
+	mPlayerSpeed = 20.0f;
 	mPlayerJumpSpeed = 20.0f;
 	mShipSpeed = 20.0f;
 	mCameraSpeed = 20.0f;
+	mRotationSpeed = 10.0f;
 
 	//Spawn platform 
 	int entity = mEcsManager->CreateEntity();
@@ -533,7 +541,7 @@ void GameScene::OnLoad()
 		{
 			for (int k = 10; k > 2; k--)
 			{
-				SpawnAsteroid(Vector4(20 * i, 20 * j, 40 * k, 1), Vector4(5, 5, 5, 1), Vector4(0, 0, 0, 1), 5, 0, L"stones.dds", L"stones_NM_height.dds");
+				SpawnAsteroid(Vector4(40 * i, 60 * j, 40 * k, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), 10, 0, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
 			}
 		}
 	}

@@ -15,12 +15,13 @@
 /// </summary>
 /// <param name="pWindow">A handle to the win32 window</param>
 /// <param name="pMaxLights">the maximum number of lights in this renderer</param>
-RenderSystem_GL::RenderSystem_GL(const HWND& pWindow, const int pMaxLights) 
+RenderSystem_GL::RenderSystem_GL(const HWND& pWindow, const int pMaxPointLights, const int pMaxDirLights) 
  : RenderSystem(std::vector<int>{ ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_GEOMETRY | ComponentType::COMPONENT_SHADER,
 	ComponentType::COMPONENT_POINTLIGHT,
 	ComponentType::COMPONENT_DIRECTIONALLIGHT,
 	ComponentType::COMPONENT_CAMERA },
-	pMaxLights),
+	pMaxPointLights,
+	pMaxDirLights),
 mWindow(pWindow), mActiveCamera(nullptr)
 {
 	if (FAILED(Init()))

@@ -50,11 +50,13 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	float height = static_cast<float>(rc.bottom - rc.top);
 	sceneManager->SetWindowWidthHeight(width, height);
 
-	//Render systems
+	//Render system and input manager
 #ifdef DIRECTX
+	std::shared_ptr<InputManager_DX> inputManager = InputManager_DX::Instance();
+	inputManager->SetWindow(hWnd);
 	ecsManager->AddRenderSystem(std::make_shared<RenderSystem_DX>(hWnd, 7));
 #elif OPENGL
-	ecsManager->AddRenderSystem(std::make_shared<RenderSystem_GL>(hWnd, 22));
+	ecsManager->AddRenderSystem(std::make_shared<RenderSystem_GL>(hWnd, 20, 2));
 #endif
 
 	ecsManager->AddUpdateSystem(std::make_shared<TransformSystem>());
