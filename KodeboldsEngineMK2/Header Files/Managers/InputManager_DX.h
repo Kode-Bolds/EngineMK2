@@ -56,6 +56,8 @@ public:
 	void CenterCursor() override;
 	void CursorVisible(const bool pVisible) override;
 
+	void SetWindow(const HWND hWnd);
+
 	//	GAMEPAD
 	void SetVibration(int pPlayer, float pLeftMotor, float pRightMotor);
 	std::pair<float, float> GetLeftThumbStickPosition();

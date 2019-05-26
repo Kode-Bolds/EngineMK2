@@ -32,6 +32,7 @@ private:
 	float mPlayerJumpSpeed;
 	float mShipSpeed;
 	float mCameraSpeed;
+	float mRotationSpeed;
 
 	KodeboldsMath::Vector4 mPlayerShipStartPos;
 	KodeboldsMath::Vector4 mPlayerStartPos;
@@ -42,6 +43,7 @@ private:
 	void Movement();
 	void Rotation();
 	void Shooting();
+	void RotateAroundPoint(const int pEntity, const KodeboldsMath::Vector4& pAxis, const KodeboldsMath::Vector4& pPoint, const float& pAngle);
 
 	Sound* mLaserSound;
 	Sound* mEngineSound;
