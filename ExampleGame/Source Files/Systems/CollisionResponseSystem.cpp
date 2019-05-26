@@ -93,7 +93,7 @@ void CollisionResponseSystem::Process()
 					//Get direction vector between the ship and asteroid
 					KodeboldsMath::Vector4 direction = mEcsManager->TransformComp(entity.ID)->translation - mEcsManager->TransformComp(player)->translation;
 					direction.Normalise();
-					direction.Z = -direction.Z;
+					//direction.Z = -direction.Z;
 
 					//Set the velocity of the asteroid to the velocity of the ship in the direction of the direction vector
 					mEcsManager->VelocityComp(entity.ID)->velocity = (direction * mEcsManager->VelocityComp(player)->velocity.Magnitude()) * 0.9f;
@@ -112,7 +112,7 @@ void CollisionResponseSystem::Process()
 						//Get direction vector between the asteroids
 						KodeboldsMath::Vector4 direction = mEcsManager->TransformComp(entity.ID)->translation - mEcsManager->TransformComp(collidedAsteroid)->translation;
 						direction.Normalise();
-						direction.Z = -direction.Z;
+						//direction.Z = -direction.Z;
 
 						//Set the velocity of the asteroids
 						mEcsManager->VelocityComp(collidedAsteroid)->velocity = (direction * mEcsManager->VelocityComp(entity.ID)->velocity.Magnitude()) * -0.9f;

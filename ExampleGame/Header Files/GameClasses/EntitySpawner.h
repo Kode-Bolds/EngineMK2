@@ -208,7 +208,7 @@ namespace EntitySpawner
 		return ID;
 	}
 
-	static int SpawnCamera(const KodeboldsMath::Vector4& pPosition, const KodeboldsMath::Vector4& pScale, const KodeboldsMath::Vector4& pRotation, const float& pFOV,
+	static int SpawnCamera(const KodeboldsMath::Vector4& pPosition, const KodeboldsMath::Vector4& pScale, const KodeboldsMath::Vector4& pRotation, const int pFOV,
 		const int pNear, const int pFar, const float& pMaxSpeed)
 	{
 		int ID = entitySpawnerEcsManager->CreateEntity();
@@ -232,7 +232,7 @@ namespace EntitySpawner
 		return ID;
 	}
 
-	static int SpawnPlayer(const KodeboldsMath::Vector4& pPosition, const KodeboldsMath::Vector4& pScale, const KodeboldsMath::Vector4& pRotation, const float& pFOV,
+	static int SpawnPlayer(const KodeboldsMath::Vector4& pPosition, const KodeboldsMath::Vector4& pScale, const KodeboldsMath::Vector4& pRotation, const int pFOV,
 		const int pNear, const int pFar, const float& pMaxSpeed, const KodeboldsMath::Vector3& pBoxMin, const KodeboldsMath::Vector3& pBoxMax, const int pCollisionMask, const int pIgnoreCollisionMask)
 	{
 		int ID = entitySpawnerEcsManager->CreateEntity();

@@ -680,7 +680,6 @@ void RenderSystem_DX::Process()
 			LoadShaders(entity);
 
 			//Set world matrix
-			CalculateTransform(entity);
 			mCB.mWorld = XMFLOAT4X4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(entity.ID)->transform)));
 
 			//Set time
@@ -840,8 +839,6 @@ void RenderSystem_DX::LoadTexture(const Entity& pEntity)
 /// </summary>
 void RenderSystem_DX::SetViewProj()
 {
-	CalculateTransform(*mActiveCamera);
-
 	//Calculates the view matrix and sets it in the constant buffer
 	const XMFLOAT4 position(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mActiveCamera->ID)->translation)));
 	mCB.mCameraPosition = position;
@@ -917,24 +914,5 @@ void RenderSystem_DX::SetCamera()
 	{
 		SetViewProj();
 	}
-}
-
-/// <summary>
-/// Calculates the transform of a given entity based on the translation, rotation and scale of the entity
-/// </summary>
-/// <param name="pEntity">Given entity to calculate transform for</param>
-void RenderSystem_DX::CalculateTransform(const Entity& pEntity) const
-{
-	Transform* t = mEcsManager->TransformComp(pEntity.ID);
-	const auto scale = KodeboldsMath::ScaleMatrix(t->scale);
-	const auto translation = KodeboldsMath::TranslationMatrix(t->translation);
-	const auto rotation = KodeboldsMath::RotationMatrixX(t->rotation.X)
-		* KodeboldsMath::RotationMatrixY(t->rotation.Y)
-		* KodeboldsMath::RotationMatrixZ(t->rotation.Z);
-
-	t->transform = translation * rotation * scale;
-	t->forward = KodeboldsMath::Vector4(t->transform._31, t->transform._32, t->transform._33, 1.0f).Normalise();
-	t->up = KodeboldsMath::Vector4(t->transform._21, t->transform._22, t->transform._23, 1.0f).Normalise();
-	t->right = KodeboldsMath::Vector4(t->transform._11, t->transform._12, t->transform._13, 1.0f).Normalise();
 }
 
