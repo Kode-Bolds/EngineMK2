@@ -45,14 +45,22 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> mLightingBuffer = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11SamplerState> mTexSampler = nullptr;
 
+	//Render to Texture
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> mRenderTexture = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> mTextureRenderTargetView = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mRenderTextureSRV = nullptr;
+
+	//Rasteriser
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState> mRastWireframeState = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState> mRastNoCullState = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState> mRastFrontCullState = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState> mRastBackCullState = nullptr;
 
+	//Blending
 	Microsoft::WRL::ComPtr<ID3D11BlendState> mAlphaBlend = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11BlendState> mNoBlend = nullptr;
 
+	//Depth
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState>	mDepthNone = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState>	mDepthLessEqual = nullptr;
 
@@ -66,6 +74,7 @@ private:
 	HRESULT CreateSampler() override;
 	void CreateViewport() const override;
 	HRESULT CreateConstantBuffers();
+	HRESULT CreateRenderTexture();
 	void Cleanup() override;
 
 	void ClearView() const override;
@@ -77,6 +86,9 @@ private:
 	void SetViewProj() override;
 	void SetLights() override;
 	void SetCamera() override;
+
+	void Render();
+	void RenderGUI() const;
 
 public:
 	explicit RenderSystem_DX(const HWND& pWindow, const int pMaxPointLights, const int pMaxDirLights);
