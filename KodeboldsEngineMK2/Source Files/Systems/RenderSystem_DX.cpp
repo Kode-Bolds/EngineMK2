@@ -9,13 +9,14 @@ using namespace DirectX;
 /// </summary>
 /// <param name="pWindow">A handle to the win32 window</param>
 /// <param name="pMaxLights">The maximum number of lights in the render system</param>
-RenderSystem_DX::RenderSystem_DX(const HWND& pWindow, const int pMaxLights)
+RenderSystem_DX::RenderSystem_DX(const HWND& pWindow, const int pMaxPointLights, const int pMaxDirLights)
 	: RenderSystem(std::vector<int>{ ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_GEOMETRY | ComponentType::COMPONENT_SHADER,
 		ComponentType::COMPONENT_POINTLIGHT,
 		ComponentType::COMPONENT_DIRECTIONALLIGHT,
 		ComponentType::COMPONENT_CAMERA },
-		pMaxLights),
-	mWindow(pWindow), mActiveCamera(nullptr), mActiveGeometry(L""), mActiveShader(L"")
+		pMaxPointLights,
+		pMaxDirLights),
+mWindow(pWindow), mActiveCamera(nullptr), mActiveGeometry(L""), mActiveShader(L"")
 {
 	if (FAILED(Init()))
 	{
@@ -93,6 +94,11 @@ HRESULT RenderSystem_DX::Init()
 
 	hr = DebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
 #endif
+	float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	const auto blendSample = 0xffffffff;
+	mContext->OMSetBlendState(mNoBlend.Get(), blendFactor, blendSample);
+	mContext->RSSetState(mRastNoCullState.Get());
+	mContext->OMSetDepthStencilState(mDepthNone.Get(), 1);
 
 	return hr;
 }
@@ -289,8 +295,8 @@ HRESULT RenderSystem_DX::CreateDepth()
 
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
 	ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
-	depthStencilDesc.DepthEnable = false;
-	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc.DepthEnable = true;
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
 	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 	hr = mDevice->CreateDepthStencilState(&depthStencilDesc, mDepthNone.GetAddressOf());
 	if (FAILED(hr))
@@ -873,10 +879,16 @@ void RenderSystem_DX::SetViewProj()
 /// </summary>
 void RenderSystem_DX::SetLights()
 {
-	mLightCB.numDirLights = mDirectionalLights.size();
+	if (mDirectionalLights.size() > mMaxDirLights)
+	{
+		mLightCB.numDirLights = mMaxDirLights;
+	}
+	else
+	{
+		mLightCB.numDirLights = mDirectionalLights.size();
+	}
 
-	int totalLights = 0;
-	for (int i = 0; i < mLightCB.numDirLights && totalLights <= mMaxLights; ++i)
+	for (int i = 0; i < mLightCB.numDirLights; ++i)
 	{
 		const auto dlComp = mEcsManager->DirectionalLightComp(mDirectionalLights[i].ID);
 		const DirectionalLightCB dl{
@@ -885,11 +897,18 @@ void RenderSystem_DX::SetLights()
 			XMFLOAT4(reinterpret_cast<float*>(&dlComp->mColour))
 		};
 		mLightCB.dirLights[i] = dl;
-		++totalLights;
 	}
 
-	mLightCB.numPointLights = mPointLights.size();
-	for (int i = 0; i < mLightCB.numPointLights && totalLights <= mMaxLights; ++i)
+	if (mPointLights.size() > mMaxPointLights)
+	{
+		mLightCB.numPointLights = mMaxPointLights;
+	}
+	else
+	{
+		mLightCB.numPointLights = mPointLights.size();
+	}
+	
+	for (int i = 0; i < mLightCB.numPointLights; ++i)
 	{
 		const auto plComp = mEcsManager->PointLightComp(mPointLights[i].ID);
 		const PointLightCB pl{
@@ -899,7 +918,6 @@ void RenderSystem_DX::SetLights()
 			XMFLOAT3(0,0,0)
 		};
 		mLightCB.pointLights[i] = pl;
-		++totalLights;
 	}
 }
 
