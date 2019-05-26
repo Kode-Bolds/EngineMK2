@@ -1016,6 +1016,7 @@
     <ClInclude Include="Header Files\Systems\CollisionResponseSystem.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="button.png" />
     <Image Include="crosshair.png" />
     <Image Include="Spaceship.png" />
   </ItemGroup>

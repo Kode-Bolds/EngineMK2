@@ -113,6 +113,7 @@
     <ClInclude Include="Header Files\DataStructs\Light.h" />
     <ClInclude Include="Header Files\DataStructs\OctTreeNode.h" />
     <ClInclude Include="Header Files\DataStructs\Vertex.h" />
+    <ClInclude Include="Header Files\HelperClasses\Button.h" />
     <ClInclude Include="Header Files\HelperClasses\ObjLoader.h" />
     <ClInclude Include="Header Files\HelperClasses\ShaderObject_GL.h" />
     <ClInclude Include="Header Files\HelperClasses\Sound.h" />

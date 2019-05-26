@@ -45,9 +45,9 @@ void MenuScene::OnLoad()
 	// GUI
 	mGUIManager->LoadSprite(L"Spaceship.png", GUIManager::SpriteOrigin::CENTRE, GUIManager::SpritePosition::CENTRE_MIDDLE, Vector2(0, 0), 0, 1);
 	mGUIManager->Write(L"PEW PEW!", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::CENTRE_TOP, Vector2(400, 250), L"AlienEncounters.spritefont", 0.0f, 1.5f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-	mGUIManager->Write(L"PLAY", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::CENTRE_MIDDLE, Vector2(400, 0), L"AlienEncounters.spritefont", 0.0f, 0.75f, Vector4(0.75f, 0.75f, 1.0f, 1.0f));
-	mGUIManager->Write(L"EXIT", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::CENTRE_MIDDLE, Vector2(400, 100), L"AlienEncounters.spritefont", 0.0f, 0.75f, Vector4(0.75f, 0.75f, 1.0f, 1.0f));
 
+	mGUIManager->CreateButton(L"button.png", L"AlienEncounters.spritefont", L"PLAY", 0, 0.35f, 0.65f, GUIManager::ButtonOrigin::CENTRE, GUIManager::ButtonPosition::CENTRE_MIDDLE, Vector2(400, 0), Vector2(0, 10), Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+	mGUIManager->CreateButton(L"button.png", L"AlienEncounters.spritefont", L"EXIT", 0, 0.35f, 0.65f, GUIManager::ButtonOrigin::CENTRE, GUIManager::ButtonPosition::CENTRE_MIDDLE, Vector2(400, 100), Vector2(0, 10), Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 }
 
 /// <summary>

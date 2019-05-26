@@ -107,38 +107,34 @@ void GUIManager::InititialiseGUI(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 
 void GUIManager::Render()
 {
-
 	mSpriteBatch->Begin(DirectX::SpriteSortMode_Deferred, mStates->NonPremultiplied(), nullptr, nullptr, nullptr, nullptr);
-
-	//mResourceManager->mSprites.at(0).second.mPosition.x += 1;
-
 	for (int i = 0; i < mResourceManager->mSprites.size(); i++)
 	{
 		auto sprite = mResourceManager->mSprites[i].second;
 		mSpriteBatch->Draw(sprite.mTexture.Get(), sprite.mPosition, nullptr, DirectX::Colors::White, sprite.mRotation, sprite.mOrigin, sprite.mScale);
 	}
-
 	mSpriteBatch->End();
-}
-void GUIManager::RenderText()
-{
+
 	mSpriteBatch->Begin(DirectX::SpriteSortMode_Deferred, mStates->NonPremultiplied(), nullptr, nullptr, nullptr, nullptr);
 	for (int i = 0; i < mTexts.size(); i++)
 	{
-		DirectX::XMVECTOR origin = DirectX::XMVectorSet(mTexts[i].mOrigin.x, mTexts[i].mOrigin.y, 0, 0);// mFonts[0]->MeasureString(pText);
+		DirectX::XMVECTOR origin = DirectX::XMVectorSet(mTexts[i].mOrigin.x, mTexts[i].mOrigin.y, 0, 0);
 		DirectX::XMVECTOR position = DirectX::XMVectorSet(mTexts[i].mPosition.x, mTexts[i].mPosition.y, 0, 0);
 		DirectX::XMVECTOR colour = DirectX::XMVectorSet(mTexts[i].mColour.x, mTexts[i].mColour.y, mTexts[i].mColour.z, mTexts[i].mColour.w);
 
 		mFonts[i]->DrawString(mSpriteBatch.get(), mTexts[i].mText, position, colour, mTexts[i].mRotation, origin, mTexts[i].mScale);
 	}
 	mSpriteBatch->End();
+}
 
+void GUIManager::Update()
+{
 
 }
 
 void GUIManager::Clear()
 {
-	
+
 }
 
 void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale)
@@ -290,6 +286,97 @@ void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, Spri
 void GUIManager::LoadFont(const wchar_t* pFontName)
 {
 	mFonts.push_back(std::make_unique<DirectX::SpriteFont>(mDevice.Get(), pFontName));
+}
+
+void GUIManager::CreateButton(const wchar_t* pFileName, const wchar_t* pFontName, const wchar_t* pText, float pRotation, float pButtonScale, float pTextScale,
+	ButtonOrigin pOrigin, ButtonPosition pPosition, KodeboldsMath::Vector2 pButtonPadding, KodeboldsMath::Vector2 pTextPadding, KodeboldsMath::Vector4 pTextColour)
+{
+	// Create initial button
+	Button button;
+
+	// Create Initial Sprite
+	Sprite sprite;
+	sprite.mRotation = pRotation;
+	sprite.mScale = pButtonScale;
+
+	// load an image from file and initialise sprites texture
+	auto loadImageTest = DirectX::CreateWICTextureFromFile(mDevice.Get(), mContext.Get(), pFileName, nullptr, &sprite.mTexture);
+	if (loadImageTest == 0x80070002) // file not found
+	{
+		int i = 0;
+	}
+
+	// Get resource from texture
+	ID3D11Texture2D* pTextureInterface = 0;
+	ID3D11Resource* res;
+	sprite.mTexture->GetResource(&res);
+	res->QueryInterface<ID3D11Texture2D>(&pTextureInterface);
+	D3D11_TEXTURE2D_DESC desc;
+	pTextureInterface->GetDesc(&desc);
+
+	// calculate width and height from resource
+	sprite.mHeight = desc.Width;
+	sprite.mWidth = desc.Height;
+
+	// calculate origin using enum and from resource
+	KodeboldsMath::Vector2 origin;
+	switch (pOrigin)
+	{
+	case ButtonOrigin::CENTRE:
+		sprite.mOrigin.x = float(desc.Width / 2);
+		sprite.mOrigin.y = float(desc.Height / 2);
+		break;
+	}
+
+	switch (pPosition)
+	{
+	case ButtonPosition::CENTRE_TOP:
+		sprite.mPosition.x = (mDeviceWidth / 2.0f) + pButtonPadding.X;
+		sprite.mPosition.y = 0 + pButtonPadding.Y;
+		break;
+	case ButtonPosition::CENTRE_MIDDLE:
+		sprite.mPosition.x = (mDeviceWidth / 2.0f) + pButtonPadding.X;
+		sprite.mPosition.y = (mDeviceHeight / 2.0f) + pButtonPadding.Y;
+		break;
+	case ButtonPosition::CENTRE_BOTTOM:
+		sprite.mPosition.x = (mDeviceWidth / 2.0f) + pButtonPadding.X;
+		sprite.mPosition.y = mDeviceHeight + pButtonPadding.Y;
+		break;
+	}
+
+	// Add sprite to vector and 
+	mResourceManager->mSprites.emplace_back(std::make_pair(pFileName, sprite));
+
+	// Button Text
+	Text text;
+	text.mRotation = pRotation;
+	text.mScale = pTextScale;
+	text.mText = pText;
+
+	LoadFont(pFontName);
+	text.mColour = DirectX::XMFLOAT4(pTextColour.X, pTextColour.Y, pTextColour.Z, pTextColour.W);
+
+	// origin
+	DirectX::XMFLOAT2 textSize;
+	auto vecTextSize = mFonts[0]->MeasureString(text.mText);
+	DirectX::XMStoreFloat2(&textSize, vecTextSize);
+
+	switch (pOrigin)
+	{
+	case ButtonOrigin::CENTRE:
+		text.mOrigin.x = float(textSize.x / 2);
+		text.mOrigin.y = float(textSize.y / 2);
+		break;
+	}
+
+	text.mPosition = DirectX::XMFLOAT2(sprite.mPosition.x + pTextPadding.X, sprite.mPosition.y + pTextPadding.Y);
+	mTexts.emplace_back(text);
+
+	button.mSprite = sprite;
+	button.mText = text;
+
+	mResourceManager->mButtons.emplace_back(std::make_pair(pFileName, button));
+
 }
 
 void GUIManager::Write(const wchar_t* pText, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, const wchar_t* pFontName, float pRotation, float pScale, KodeboldsMath::Vector4 pColour)

@@ -17,6 +17,7 @@
 #include "Sprite.h"
 #include <Audio.h>
 #include "Sound.h"
+#include "Button.h"
 
 class RenderSystem;
 
@@ -39,6 +40,9 @@ public:
 	std::vector<std::pair<std::wstring, DirectX::SoundEffectInstance*>> mSoundEffects;
 
 	std::vector<std::pair<std::wstring, Sprite>> mSprites{};
+	std::vector<std::pair<std::wstring, Button>> mButtons{};
+
+
 	//Singleton pattern
 	//Deleted copy constructor and assignment operator so no copies of the singleton instance can be made
 	ResourceManager(const ResourceManager& pResourceManager) = delete;
