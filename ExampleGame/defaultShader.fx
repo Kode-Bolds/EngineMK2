@@ -37,7 +37,7 @@ cbuffer LightingBuffer : register (b1)
 
 	float numPointLights; //5 max
 	float3 padding5;
-	Pointlight pointLights[5];
+	Pointlight pointLights[20];
 }
 
 Texture2D txDiffuse : register(t0);

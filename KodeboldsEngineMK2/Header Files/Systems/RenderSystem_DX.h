@@ -81,7 +81,7 @@ private:
 	void CalculateTransform(const Entity& pEntity) const;
 
 public:
-	explicit RenderSystem_DX(const HWND& pWindow, const int pMaxLights);
+	explicit RenderSystem_DX(const HWND& pWindow, const int pMaxPointLights, const int pMaxDirLights);
 	virtual ~RenderSystem_DX();
 
 
