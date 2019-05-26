@@ -528,7 +528,7 @@ void GameScene::OnLoad()
 		int particleEntity = mEcsManager->CreateEntity();
 		Geometry geom{ L"quad100.obj" };
 		mEcsManager->AddGeometryComp(geom, particleEntity);
-		Shader shaderm{ L"thrusterShader.fx" , BlendState::ALPHABLEND, CullState::FRONT, DepthState::NONE };
+		Shader shaderm{ L"thrusterShader.fx" , BlendState::ALPHABLEND, CullState::NONE, DepthState::NONE };
 		mEcsManager->AddShaderComp(shaderm, particleEntity);
 		Texture texturem{};
 		texturem.diffuse = L"";

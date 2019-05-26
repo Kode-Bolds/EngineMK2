@@ -68,6 +68,7 @@ struct PS_INPUT
 	float3 Normal: NORMAL;
 	float4 PosWorld : TEXCOORD0;
 	float2 TexCoord : TEXCOORD1;
+	float4 ParticleColour : TECXOORD2;
 };
 
 
@@ -77,16 +78,59 @@ struct PS_INPUT
 PS_INPUT VS(VS_INPUT input)
 {
 	PS_INPUT output = (PS_INPUT)0;
-	input.Pos.xyz *= 0.5;
-	input.Pos.z *= -10;
-	input.Pos.x += sin(Time + input.Pos.z * 10) * 10;
-	output.Pos = mul(float4(input.Pos, 1.0f), World);
+
+	input.Pos.xyz = input.Pos.zyx;
+	output.PosWorld = mul(float4(input.Pos, 1.0f), World);
+
+	float index = abs(input.Pos.z);
+
+	output.ParticleColour = 1 - index.rrrr;
+	output.ParticleColour.a = 0.75;
+
+	float4x4 ViewT = transpose(View);
+
+	float3 viewLeft = ViewT._m00_m01_m02;
+	float3 viewUp = ViewT._m10_m11_m12;
+	float3 viewFwd = ViewT._m21_m23_m33;
+
+	float4 inPos = float4(input.Pos, 1);
+	float ttl = 1;
+	float lifeTime = ttl - ((Time + index) % ttl);
+
+	inPos.xy = inPos.xy * 4 * (1 - lifeTime);// *input.Scale.xy;
+
+	float pi = 3.14159265359;
+
+	float turn = ((pi * 2) / 100) * (index * 5937);
+
+	float radius = 10.5;
+	float3 animPos;
+
+	animPos.x = sin(turn + Time) * radius * (1 - lifeTime);
+	animPos.y = cos(turn + Time) * radius * (1 - lifeTime);
+	animPos.z = ((1 - lifeTime) * -250); //sin(inPos.z * 1000 + time);
+
+	//animPos = mul(float4(animPos, 1), input.RotationMatrix);
+
+	inPos.z = 0;
+	
+	inPos.xyz = output.PosWorld.xyz + animPos + inPos.x * viewLeft + inPos.y*viewUp + abs(inPos.z) * viewFwd;
+
+	output.Pos = inPos;
+
+	output.Pos = mul(output.Pos, View);
+	output.Pos = mul(output.Pos, Projection);
+
+	/*output.Pos = mul(float4(input.Pos, 1.0f), World);
 	output.Pos = mul(output.Pos, View);
 	output.Pos = mul(output.Pos, Projection);
 	output.Normal = mul(World, float4(input.Normal, 1.0f)).xyz;
-	output.Normal = normalize(output.Normal);
-	output.PosWorld = mul(float4(input.Pos, 1.0f), World);
+	output.Normal = normalize(output.Normal);*/
 	output.TexCoord = input.TexCoord;
+
+	float4x4 worldViewMatrix = mul(World, View);
+	float3 positionVS = input.Pos + float3(worldViewMatrix._41, worldViewMatrix._42, worldViewMatrix._43);
+	output.Pos = mul(float4(positionVS, 1.0f), Projection);
 
 	return output;
 }
@@ -140,6 +184,8 @@ float4 PS(PS_INPUT input) : SV_Target
 	//Load texture pixels
 	//Apply colour modification
 	//return
+
+	return input.ParticleColour;
 
 	float distFromCentre = 1 - saturate(distance(float2(0.5, 0.5), input.TexCoord));
 return float4(distFromCentre.rrrr);// , 1);
