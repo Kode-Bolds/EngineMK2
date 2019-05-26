@@ -79,7 +79,7 @@ private:
 	void SetCamera() override;
 
 public:
-	explicit RenderSystem_DX(const HWND& pWindow, const int pMaxLights);
+	explicit RenderSystem_DX(const HWND& pWindow, const int pMaxPointLights, const int pMaxDirLights);
 	virtual ~RenderSystem_DX();
 
 
