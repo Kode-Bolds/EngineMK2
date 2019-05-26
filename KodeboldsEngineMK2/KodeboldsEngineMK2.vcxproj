@@ -83,6 +83,7 @@
     <ClCompile Include="Source Files\Systems\RenderSystem_DX.cpp" />
     <ClCompile Include="Source Files\Systems\RenderSystem.cpp" />
     <ClCompile Include="Source Files\Systems\RenderSystem_GL.cpp" />
+    <ClCompile Include="Source Files\Systems\TransformSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\Components\AI.h" />
@@ -113,6 +114,7 @@
     <ClInclude Include="Header Files\DataStructs\Light.h" />
     <ClInclude Include="Header Files\DataStructs\OctTreeNode.h" />
     <ClInclude Include="Header Files\DataStructs\Vertex.h" />
+    <ClInclude Include="Header Files\HelperClasses\Button.h" />
     <ClInclude Include="Header Files\HelperClasses\ObjLoader.h" />
     <ClInclude Include="Header Files\HelperClasses\ShaderObject_GL.h" />
     <ClInclude Include="Header Files\HelperClasses\Sound.h" />
@@ -154,6 +156,7 @@
     <ClInclude Include="Header Files\Systems\RenderSystem_DX.h" />
     <ClInclude Include="Header Files\Systems\RenderSystem_GL.h" />
     <ClInclude Include="Header Files\Systems\Systems.h" />
+    <ClInclude Include="Header Files\Systems\TransformSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

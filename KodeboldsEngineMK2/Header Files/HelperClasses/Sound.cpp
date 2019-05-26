@@ -13,7 +13,7 @@ void Sound::SetSound(DirectX::AudioEngine* pAudioEngine, std::wstring pFileName)
 	mSound = std::make_unique<DirectX::SoundEffect>(pAudioEngine, pFileName.c_str());
 }
 
-void Sound::Play()
+void Sound::Play(float pVolume, float pPitch, float pPan)
 {
-	mSound->Play();
+	mSound->Play(pVolume, pPitch, pPan);
 }
