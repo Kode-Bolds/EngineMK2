@@ -118,7 +118,7 @@ void GUIManager::Render()
 	mSpriteBatch->Begin(DirectX::SpriteSortMode_Deferred, mStates->NonPremultiplied(), nullptr, nullptr, nullptr, nullptr);
 	for (int i = 0; i < mTexts.size(); i++)
 	{
-		DirectX::XMVECTOR origin = DirectX::XMVectorSet(mTexts[i].mOrigin.x, mTexts[i].mOrigin.y, 0, 0);
+		DirectX::XMVECTOR origin = DirectX::XMVectorSet(mTexts[i].mOrigin.x, mTexts[i].mOrigin.y, 0, 0);// mFonts[0]->MeasureString(pText);
 		DirectX::XMVECTOR position = DirectX::XMVectorSet(mTexts[i].mPosition.x, mTexts[i].mPosition.y, 0, 0);
 		DirectX::XMVECTOR colour = DirectX::XMVectorSet(mTexts[i].mColour.x, mTexts[i].mColour.y, mTexts[i].mColour.z, mTexts[i].mColour.w);
 
@@ -129,7 +129,16 @@ void GUIManager::Render()
 
 void GUIManager::Update()
 {
+	for (int i = 0; i < mResourceManager->mButtons.size(); i++)
+	{
+		// TODO: check for mouse entering the bounds and clicking
 
+		if (false)
+		{
+			// TODO: if true, trigger on click function
+			mResourceManager->mButtons[i].second.mOnClickFunction();
+		}
+	}
 }
 
 void GUIManager::Clear()
@@ -289,10 +298,12 @@ void GUIManager::LoadFont(const wchar_t* pFontName)
 }
 
 void GUIManager::CreateButton(const wchar_t* pFileName, const wchar_t* pFontName, const wchar_t* pText, float pRotation, float pButtonScale, float pTextScale,
-	ButtonOrigin pOrigin, ButtonPosition pPosition, KodeboldsMath::Vector2 pButtonPadding, KodeboldsMath::Vector2 pTextPadding, KodeboldsMath::Vector4 pTextColour)
+	ButtonOrigin pOrigin, ButtonPosition pPosition, KodeboldsMath::Vector2 pButtonPadding, KodeboldsMath::Vector2 pTextPadding, KodeboldsMath::Vector4 pTextColour,
+	std::function<void()> pOnClickFunction)
 {
 	// Create initial button
 	Button button;
+	button.mOnClickFunction = pOnClickFunction;
 
 	// Create Initial Sprite
 	Sprite sprite;

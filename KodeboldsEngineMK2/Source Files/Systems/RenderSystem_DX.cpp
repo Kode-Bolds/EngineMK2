@@ -14,8 +14,8 @@ RenderSystem_DX::RenderSystem_DX(const HWND& pWindow, const int pMaxLights)
 		ComponentType::COMPONENT_POINTLIGHT,
 		ComponentType::COMPONENT_DIRECTIONALLIGHT,
 		ComponentType::COMPONENT_CAMERA },
-		pMaxLights), 
-mWindow(pWindow), mActiveCamera(nullptr), mActiveGeometry(L""), mActiveShader(L"")
+		pMaxLights),
+	mWindow(pWindow), mActiveCamera(nullptr), mActiveGeometry(L""), mActiveShader(L"")
 {
 	if (FAILED(Init()))
 	{
@@ -657,7 +657,7 @@ void RenderSystem_DX::Process()
 	ClearView();
 
 	mGUIManager->Render();
-	mGUIManager->RenderText();
+	mGUIManager->Update();
 
 	/*mContext->VSSetShader(nullptr, 0, 0);
 	mContext->PSSetShader(nullptr, 0, 0);
@@ -882,7 +882,7 @@ void RenderSystem_DX::SetLights()
 	for (int i = 0; i < mLightCB.numDirLights && totalLights <= mMaxLights; ++i)
 	{
 		const auto dlComp = mEcsManager->DirectionalLightComp(mDirectionalLights[i].ID);
-		const DirectionalLightCB dl{ 
+		const DirectionalLightCB dl{
 			XMFLOAT3(reinterpret_cast<float*>(&dlComp->mDirection)),
 			1.0f,
 			XMFLOAT4(reinterpret_cast<float*>(&dlComp->mColour))

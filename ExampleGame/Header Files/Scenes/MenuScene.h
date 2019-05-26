@@ -35,4 +35,6 @@ public:
 	void Update() override;
 	void OnLoad() override;
 	void OnUnload() override;
+	void OnClick_PlayButton();
+	void OnClick_ExitButton();
 };
