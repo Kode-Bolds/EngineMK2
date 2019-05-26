@@ -60,71 +60,74 @@ void CollisionResponseSystem::Process()
 		{
 			int entityMask = 0;
 			Collision* collision = mEcsManager->CollisionComp(entity.ID);
-			if (!collision->handled)
+			if (collision)
 			{
-				//Retrieve the entity mask from the box collider if it has one
-				if (BoxCollider* b = mEcsManager->BoxColliderComp(entity.ID))
-					entityMask = b->collisionMask;
-
-				//Retrieve the entity mask from the sphere collider if it has one
-				if (SphereCollider* s = mEcsManager->SphereColliderComp(entity.ID))
-					entityMask = s->collisionMask;
-
-				//If the player collides with the floor, remove gravity and set Y velocity to 0
-				if (entityMask == CustomCollisionMask::PLAYER && collision->collidedEntityCollisionMask == CustomCollisionMask::FLOOR)
+				if (!collision->handled)
 				{
-					if (mEcsManager->GravityComp(entity.ID))
+					//Retrieve the entity mask from the box collider if it has one
+					if (BoxCollider* b = mEcsManager->BoxColliderComp(entity.ID))
+						entityMask = b->collisionMask;
+
+					//Retrieve the entity mask from the sphere collider if it has one
+					if (SphereCollider* s = mEcsManager->SphereColliderComp(entity.ID))
+						entityMask = s->collisionMask;
+
+					//If the player collides with the floor, remove gravity and set Y velocity to 0
+					if (entityMask == CustomCollisionMask::PLAYER && collision->collidedEntityCollisionMask == CustomCollisionMask::FLOOR)
 					{
-						mEcsManager->RemoveGravityComp(entity.ID);
-						mEcsManager->VelocityComp(entity.ID)->velocity.Y = 0;
-						mEcsManager->RemoveGravityComp(entity.ID + 1);
-						mEcsManager->VelocityComp(entity.ID + 1)->velocity.Y = 0;
+						if (mEcsManager->GravityComp(entity.ID))
+						{
+							mEcsManager->RemoveGravityComp(entity.ID);
+							mEcsManager->VelocityComp(entity.ID)->velocity.Y = 0;
+							mEcsManager->RemoveGravityComp(entity.ID + 1);
+							mEcsManager->VelocityComp(entity.ID + 1)->velocity.Y = 0;
+						}
+						mEcsManager->CollisionComp(entity.ID)->handled = true;
+						mEcsManager->CollisionComp(mEcsManager->CollisionComp(entity.ID)->collidedEntity)->handled = true;
 					}
-					mEcsManager->CollisionComp(entity.ID)->handled = true;
-					mEcsManager->CollisionComp(mEcsManager->CollisionComp(entity.ID)->collidedEntity)->handled = true;
-				}
 
-				//If asteroid collides with the player, move the asteroid
-				if (entityMask == CustomCollisionMask::ASTEROID && collision->collidedEntityCollisionMask == CustomCollisionMask::SHIP)
-				{
-					int player = mEcsManager->CollisionComp(entity.ID)->collidedEntity;
-
-					//Get direction vector between the ship and asteroid
-					KodeboldsMath::Vector4 direction = mEcsManager->TransformComp(entity.ID)->translation - mEcsManager->TransformComp(player)->translation;
-					direction.Normalise();
-
-					//Set the velocity of the asteroid to the velocity of the ship in the direction of the direction vector
-					mEcsManager->VelocityComp(entity.ID)->velocity = (direction * mEcsManager->VelocityComp(player)->velocity.Magnitude()) * 0.9f;
-
-					mEcsManager->CollisionComp(entity.ID)->handled = true;
-					mEcsManager->CollisionComp(player)->handled = true;
-				}
-
-				//If asteroid collides with another asteroid, move the asteroids
-				if (entityMask == CustomCollisionMask::ASTEROID && collision->collidedEntityCollisionMask == CustomCollisionMask::ASTEROID)
-				{
-					int collidedAsteroid = mEcsManager->CollisionComp(entity.ID)->collidedEntity;
-
-					if (mEcsManager->VelocityComp(entity.ID)->velocity.Magnitude() != 0 && mEcsManager->TransformComp(collidedAsteroid))
+					//If asteroid collides with the player, move the asteroid
+					if (entityMask == CustomCollisionMask::ASTEROID && collision->collidedEntityCollisionMask == CustomCollisionMask::SHIP)
 					{
-						//Get direction vector between the asteroids
-						KodeboldsMath::Vector4 direction = mEcsManager->TransformComp(entity.ID)->translation - mEcsManager->TransformComp(collidedAsteroid)->translation;
+						int player = mEcsManager->CollisionComp(entity.ID)->collidedEntity;
+
+						//Get direction vector between the ship and asteroid
+						KodeboldsMath::Vector4 direction = mEcsManager->TransformComp(entity.ID)->translation - mEcsManager->TransformComp(player)->translation;
 						direction.Normalise();
 
-						//Set the velocity of the asteroids
-						mEcsManager->VelocityComp(collidedAsteroid)->velocity = (direction * mEcsManager->VelocityComp(entity.ID)->velocity.Magnitude()) * -0.9f;
-						mEcsManager->VelocityComp(entity.ID)->velocity = (direction * mEcsManager->VelocityComp(collidedAsteroid)->velocity.Magnitude()) * 0.9f;
+						//Set the velocity of the asteroid to the velocity of the ship in the direction of the direction vector
+						mEcsManager->VelocityComp(entity.ID)->velocity = (direction * mEcsManager->VelocityComp(player)->velocity.Magnitude()) * 0.9f;
 
 						mEcsManager->CollisionComp(entity.ID)->handled = true;
-						mEcsManager->CollisionComp(collidedAsteroid)->handled = true;
+						mEcsManager->CollisionComp(player)->handled = true;
 					}
-				}
-        
-				//If laser collides with asteroid, destroy both
-				if (entityMask == CustomCollisionMask::SHIP_LASER && collision->collidedEntityCollisionMask == CustomCollisionMask::ASTEROID)
-				{
-					mEcsManager->DestroyEntity(mEcsManager->CollisionComp(entity.ID)->collidedEntity);
-					mEcsManager->DestroyEntity(entity.ID);
+
+					//If asteroid collides with another asteroid, move the asteroids
+					if (entityMask == CustomCollisionMask::ASTEROID && collision->collidedEntityCollisionMask == CustomCollisionMask::ASTEROID)
+					{
+						int collidedAsteroid = mEcsManager->CollisionComp(entity.ID)->collidedEntity;
+
+						if (mEcsManager->VelocityComp(entity.ID)->velocity.Magnitude() != 0 && mEcsManager->TransformComp(collidedAsteroid))
+						{
+							//Get direction vector between the asteroids
+							KodeboldsMath::Vector4 direction = mEcsManager->TransformComp(entity.ID)->translation - mEcsManager->TransformComp(collidedAsteroid)->translation;
+							direction.Normalise();
+
+							//Set the velocity of the asteroids
+							mEcsManager->VelocityComp(collidedAsteroid)->velocity = (direction * mEcsManager->VelocityComp(entity.ID)->velocity.Magnitude()) * -0.9f;
+							mEcsManager->VelocityComp(entity.ID)->velocity = (direction * mEcsManager->VelocityComp(collidedAsteroid)->velocity.Magnitude()) * 0.9f;
+
+							mEcsManager->CollisionComp(entity.ID)->handled = true;
+							mEcsManager->CollisionComp(collidedAsteroid)->handled = true;
+						}
+					}
+
+					//If laser collides with asteroid, destroy both
+					if (entityMask == CustomCollisionMask::SHIP_LASER && collision->collidedEntityCollisionMask == CustomCollisionMask::ASTEROID)
+					{
+						mEcsManager->DestroyEntity(mEcsManager->CollisionComp(entity.ID)->collidedEntity);
+						mEcsManager->DestroyEntity(entity.ID);
+					}
 				}
 			}
 		}
