@@ -34,7 +34,7 @@ std::shared_ptr<InputManager_DX> InputManager_DX::Instance()
 /// </summary>
 void InputManager_DX::CenterCursor()
 {
-	//NOT IMPLEMENTED
+
 }
 
 /// <summary>
@@ -44,6 +44,12 @@ void InputManager_DX::CenterCursor()
 void InputManager_DX::CursorVisible(const bool pVisible)
 {
 	mMouse->SetVisible(pVisible);
+}
+
+void InputManager_DX::SetWindow(const HWND hWnd)
+{
+	mMouse->SetWindow(hWnd);
+	mMouse->SetMode(DirectX::Mouse::MODE_RELATIVE);
 }
 
 ////--------------------------------------------------------------------------------------
@@ -122,7 +128,7 @@ void InputManager_DX::MouseInput()
 	mMouseTracker.Update(mMouseState);
 
 	//Mouse position
-	mMousePosition = KodeboldsMath::Vector2(static_cast<float>(mMouse->GetState().x), static_cast<float>(mMouse->GetState().y));
+	mMousePosition = KodeboldsMath::Vector2(static_cast<float>(mMouseState.x), static_cast<float>(mMouseState.y));
 
 	//Scroll wheel
 	mMouseWheelValue = mMouse->GetState().scrollWheelValue;

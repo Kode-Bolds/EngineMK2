@@ -85,7 +85,6 @@
     <ClCompile Include="Source Files\KodeBoldsMath\Vector4.cpp">
       <Filter>Source Files\KodeBoldsMath</Filter>
     </ClCompile>
-    <ClCompile Include="Header Files\HelperClasses\Sound.cpp" />
     <ClCompile Include="Source Files\Systems\AudioSystem_DX.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
@@ -93,6 +92,12 @@
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
     <ClCompile Include="Source Files\Systems\AudioSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Header Files\HelperClasses\Sound.cpp">
+      <Filter>Source Files\HelperClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Systems\TransformSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
   </ItemGroup>
@@ -302,6 +307,12 @@
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\Systems\AudioSystem_DX.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\HelperClasses\Button.h">
+      <Filter>Header Files\HelperClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Systems\TransformSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
   </ItemGroup>

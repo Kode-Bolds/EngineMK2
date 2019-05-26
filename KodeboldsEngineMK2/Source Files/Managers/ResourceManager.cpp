@@ -142,7 +142,7 @@ Sound* ResourceManager::LoadAudio(std::wstring pFileName)
 
 	// if not create new sound
 	Sound* sound = new Sound();
-	sound->SetSound(mAudEngine.get(), pFileName);
+	sound->SetSound(mAudioEngine.get(), pFileName);
 
 	mSounds.emplace_back(make_pair(pFileName, sound));
 	return mSounds.back().second;

@@ -1,4 +1,5 @@
 #include "GameScene.h"
+#include "MenuScene.h"
 #include <windows.h>
 #include "Systems.h"
 #include "CustomComponents.h"
@@ -49,13 +50,16 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	float height = static_cast<float>(rc.bottom - rc.top);
 	sceneManager->SetWindowWidthHeight(width, height);
 
-	//Render systems
+	//Render system and input manager
 #ifdef DIRECTX
+	std::shared_ptr<InputManager_DX> inputManager = InputManager_DX::Instance();
+	inputManager->SetWindow(hWnd);
 	ecsManager->AddRenderSystem(std::make_shared<RenderSystem_DX>(hWnd, 7));
 #elif OPENGL
-	ecsManager->AddRenderSystem(std::make_shared<RenderSystem_GL>(hWnd, 7));
+	ecsManager->AddRenderSystem(std::make_shared<RenderSystem_GL>(hWnd, 20, 2));
 #endif
 
+	ecsManager->AddUpdateSystem(std::make_shared<TransformSystem>());
 	ecsManager->AddUpdateSystem(std::make_shared<MovementSystem>());
 	ecsManager->AddUpdateSystem(std::make_shared<CollisionCheckSystem>(1000, 50));
 	ecsManager->AddUpdateSystem(std::make_shared<CollisionResponseSystem>());
@@ -99,18 +103,18 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	//GUIManager->LoadSprite(L"cat.png", GUIManager::SpriteOrigin::CENTRE, catPosition, 1.5f, 1.0f);
 
 	// Testing both enums for centering sprite origins and positions
-	guiManager->LoadSprite(L"crosshair.png", GUIManager::SpriteOrigin::CENTRE, GUIManager::SpritePosition::CENTRE_MIDDLE, Vector2(0, 0), 0.0f, 0.05f);
+	//guiManager->LoadSprite(L"crosshair.png", GUIManager::SpriteOrigin::CENTRE, GUIManager::SpritePosition::CENTRE_MIDDLE, Vector2(0, 0), 0.0f, 0.05f);
 
 
-	// Testing Fonts
-	guiManager->Write(L"Hello Tony!", Vector2(0, 0), Vector2(300, 100), Vector2(0, 0), L"CourierNew.spritefont", 1.0f, 1.0f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+	//// Testing Fonts
+	//guiManager->Write(L"Hello Tony!", Vector2(0, 0), Vector2(300, 100), Vector2(0, 0), L"CourierNew.spritefont", 1.0f, 1.0f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 
-	guiManager->Write(L"Hello Dean!", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::CENTRE_TOP, Vector2(0, 50), L"CourierNew.spritefont", 0.0f, 1.0f, Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+	//guiManager->Write(L"Hello Dean!", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::CENTRE_TOP, Vector2(0, 50), L"CourierNew.spritefont", 0.0f, 1.0f, Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
-	guiManager->Write(L"Hello Jake!", GUIManager::TextOrigin::CENTRE, Vector2(150, 200), Vector2(0, 0), L"CourierNew.spritefont", 0.0f, 1.0f, Vector4(0.5f, 0.5f, 1.0f, 1.0f));
+	//guiManager->Write(L"Hello Jake!", GUIManager::TextOrigin::CENTRE, Vector2(150, 200), Vector2(0, 0), L"CourierNew.spritefont", 0.0f, 1.0f, Vector4(0.5f, 0.5f, 1.0f, 1.0f));
 
-	guiManager->Write(L"Hello Kris!", Vector2(0, 0), Vector2(100, 400), Vector2(0, 0), L"CourierNew.spritefont", 0.0f, 1.0f, Vector4(0.0f, 1.0f, 1.0f, 1.0f));
-	guiManager->Write(L"Hello Axel!", Vector2(0, 0), Vector2(100, 500), Vector2(0, 0), L"CourierNew.spritefont", 0.0f, 1.0f, Vector4(1.0f, 1.0f, 0.0f, 1.0f));
+	//guiManager->Write(L"Hello Kris!", Vector2(0, 0), Vector2(100, 400), Vector2(0, 0), L"CourierNew.spritefont", 0.0f, 1.0f, Vector4(0.0f, 1.0f, 1.0f, 1.0f));
+	//guiManager->Write(L"Hello Axel!", Vector2(0, 0), Vector2(100, 500), Vector2(0, 0), L"CourierNew.spritefont", 0.0f, 1.0f, Vector4(1.0f, 1.0f, 0.0f, 1.0f));
 
 
 
@@ -147,7 +151,8 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	}
 
 	//Scenes
-	sceneManager->LoadScene<GameScene>();
+	//sceneManager->LoadScene<GameScene>();
+	sceneManager->LoadScene<MenuScene>();
 
 	//Main message loop
 	MSG msg = { 0 };

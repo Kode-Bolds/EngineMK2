@@ -35,6 +35,6 @@ struct LightingBuffer
 
 	float numPointLights;
 	DirectX::XMFLOAT3 padding2;
-	PointLightCB pointLights[5];
+	PointLightCB pointLights[20];
 };
 

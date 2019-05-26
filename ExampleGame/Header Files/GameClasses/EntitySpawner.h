@@ -23,8 +23,8 @@ namespace EntitySpawner
 	/// <param name="pIgnoreCollisionMask"></param>
 	/// <returns></returns>
 	static int SpawnLaser(const KodeboldsMath::Vector4& pPosition, const KodeboldsMath::Vector4& pScale, const KodeboldsMath::Vector4& pRotation, const KodeboldsMath::Vector4& pColour,
-		const KodeboldsMath::Vector4& pAcceleration, const float& pMaxSpeed, const KodeboldsMath::Vector3& pBoxMin, const KodeboldsMath::Vector3& pBoxMax, const int pIgnoreCollisionMask,
-		const float& pLightRange)
+		const KodeboldsMath::Vector4& pAcceleration, const float& pMaxSpeed, const float& pRadius, const int pCollisionMask, const int pIgnoreCollisionMask, const float& pLightRange,
+    Sound* pSound)
 	{
 		int ID = entitySpawnerEcsManager->CreateEntity();
 
@@ -33,7 +33,7 @@ namespace EntitySpawner
 		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
 
 		//Shader component
-		Shader shader{ L"errorShader.fx", BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
+		Shader shader{ L"defaultShader.fx", BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
 		entitySpawnerEcsManager->AddShaderComp(shader, ID);
 
 		//Light component
@@ -46,13 +46,16 @@ namespace EntitySpawner
 		trans.rotation = pRotation;
 		trans.translation = pPosition;
 		entitySpawnerEcsManager->AddTransformComp(trans, ID);
-    
+
 		// Audio Component
-		//Audio audio{};
-		//audio.mSound = pSound;
-		//audio.active = true;
-		//audio.loop = false;
-		//entitySpawnerEcsManager->AddAudioComp(audio, ID);
+		Audio audio{};
+		audio.mSound = pSound;
+		audio.active = true;
+		audio.loop = false;
+		audio.volume = 0.5f;
+		audio.pitch = 1.0f;
+		audio.pan = 0.0f;
+		entitySpawnerEcsManager->AddAudioComp(audio, ID);
 
 		//Texture component
 		Texture tex{};
@@ -68,9 +71,9 @@ namespace EntitySpawner
 		Colour colour{ pColour };
 		entitySpawnerEcsManager->AddColourComp(colour, ID);
 
-		//BoxCollider component
-		BoxCollider box{ pBoxMin, pBoxMax, CustomCollisionMask::LASER, pIgnoreCollisionMask };
-		entitySpawnerEcsManager->AddBoxColliderComp(box, ID);
+		//SphereCollider component
+		SphereCollider sphere{ pRadius, pCollisionMask, pIgnoreCollisionMask };
+		entitySpawnerEcsManager->AddSphereColliderComp(sphere, ID);
 
 		return ID;
 	}
@@ -119,7 +122,7 @@ namespace EntitySpawner
 		vel.maxSpeed = pMaxSpeed;
 		entitySpawnerEcsManager->AddVelocityComp(vel, ID);
 
-		//BoxCollider component
+		//SphereCollider component
 		SphereCollider sphere{ pRadius, pCollisionMask, pIgnoreCollisionMask };
 		entitySpawnerEcsManager->AddSphereColliderComp(sphere, ID);
 
@@ -143,7 +146,7 @@ namespace EntitySpawner
 		int ID = entitySpawnerEcsManager->CreateEntity();
 
 		//Geometry component
-		Geometry geo{ L"sphere.obj" };
+		Geometry geo{ L"asteroid.obj" };
 		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
 
 		//Shader component
@@ -209,7 +212,7 @@ namespace EntitySpawner
 		return ID;
 	}
 
-	static int SpawnCamera(const KodeboldsMath::Vector4& pPosition, const KodeboldsMath::Vector4& pScale, const KodeboldsMath::Vector4& pRotation, const float& pFOV,
+	static int SpawnCamera(const KodeboldsMath::Vector4& pPosition, const KodeboldsMath::Vector4& pScale, const KodeboldsMath::Vector4& pRotation, const int pFOV,
 		const int pNear, const int pFar, const float& pMaxSpeed)
 	{
 		int ID = entitySpawnerEcsManager->CreateEntity();
@@ -233,7 +236,7 @@ namespace EntitySpawner
 		return ID;
 	}
 
-	static int SpawnPlayer(const KodeboldsMath::Vector4& pPosition, const KodeboldsMath::Vector4& pScale, const KodeboldsMath::Vector4& pRotation, const float& pFOV,
+	static int SpawnPlayer(const KodeboldsMath::Vector4& pPosition, const KodeboldsMath::Vector4& pScale, const KodeboldsMath::Vector4& pRotation, const int pFOV,
 		const int pNear, const int pFar, const float& pMaxSpeed, const KodeboldsMath::Vector3& pBoxMin, const KodeboldsMath::Vector3& pBoxMax, const int pCollisionMask, const int pIgnoreCollisionMask)
 	{
 		int ID = entitySpawnerEcsManager->CreateEntity();

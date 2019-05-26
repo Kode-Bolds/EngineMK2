@@ -202,8 +202,11 @@ void CollisionCheckSystem::UpdateTree()
 	while (!mEntitiesToRemove.empty())
 	{
 		//Get the node of the entity to remove from the entity node map, then remove the entity from that nodes entity list
-		std::vector<unsigned short>* nodeEntities = &mEntityNodeMap[mEntitiesToRemove.front()]->entities;
-		nodeEntities->erase(remove(nodeEntities->begin(), nodeEntities->end(), mEntitiesToRemove.front()), nodeEntities->end());
+		if (mEntityNodeMap[mEntitiesToRemove.front()])
+		{
+			std::vector<unsigned short>* nodeEntities = &mEntityNodeMap[mEntitiesToRemove.front()]->entities;
+			nodeEntities->erase(remove(nodeEntities->begin(), nodeEntities->end(), mEntitiesToRemove.front()), nodeEntities->end());
+		}
 
 		//Set entities node to null
 		mEntityNodeMap[mEntitiesToRemove.front()] = nullptr;
@@ -303,13 +306,13 @@ void CollisionCheckSystem::HandleCollisions(OctTreeNode * const pNode, std::vect
 /// <param name="pEntityB">Given entity B</param>
 void CollisionCheckSystem::CollisionBetweenEntities(const unsigned short pEntityA, const unsigned short pEntityB)
 {
-	//If entity i has box collider
+	//If entity A has box collider
 	if (mEcsManager->BoxColliderComp(pEntityA))
 	{
-		//If entity j has box collider
+		//If entity B has box collider
 		if (mEcsManager->BoxColliderComp(pEntityB))
 		{
-			//If i's ignored collision mask contains j's collision mask then return as this collision will be ignored
+			//If A's ignored collision mask contains B's collision mask then return as this collision will be ignored
 			if ((mEcsManager->BoxColliderComp(pEntityA)->ignoreCollisionMask & mEcsManager->BoxColliderComp(pEntityB)->collisionMask)
 				== mEcsManager->BoxColliderComp(pEntityB)->collisionMask)
 			{

@@ -9,12 +9,13 @@ using namespace DirectX;
 /// </summary>
 /// <param name="pWindow">A handle to the win32 window</param>
 /// <param name="pMaxLights">The maximum number of lights in the render system</param>
-RenderSystem_DX::RenderSystem_DX(const HWND& pWindow, const int pMaxLights)
+RenderSystem_DX::RenderSystem_DX(const HWND& pWindow, const int pMaxPointLights, const int pMaxDirLights)
 	: RenderSystem(std::vector<int>{ ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_GEOMETRY | ComponentType::COMPONENT_SHADER,
 		ComponentType::COMPONENT_POINTLIGHT,
 		ComponentType::COMPONENT_DIRECTIONALLIGHT,
 		ComponentType::COMPONENT_CAMERA },
-		pMaxLights), 
+		pMaxPointLights,
+		pMaxDirLights),
 mWindow(pWindow), mActiveCamera(nullptr), mActiveGeometry(L""), mActiveShader(L"")
 {
 	if (FAILED(Init()))
@@ -93,6 +94,11 @@ HRESULT RenderSystem_DX::Init()
 
 	hr = DebugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
 #endif
+	float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	const auto blendSample = 0xffffffff;
+	mContext->OMSetBlendState(mNoBlend.Get(), blendFactor, blendSample);
+	mContext->RSSetState(mRastNoCullState.Get());
+	mContext->OMSetDepthStencilState(mDepthNone.Get(), 1);
 
 	return hr;
 }
@@ -147,7 +153,7 @@ HRESULT RenderSystem_DX::CreateDevice()
 }
 
 /// <summary>
-/// Creates swap chain for directx 
+/// Creates swap chain for directx
 /// </summary>
 /// <returns>HRESULT status code</returns>
 HRESULT RenderSystem_DX::CreateSwapChain()
@@ -671,7 +677,7 @@ void RenderSystem_DX::Process()
 	ClearView();
 
 	//mGUIManager->Render();
-	//mGUIManager->RenderText();
+	//mGUIManager->Update();
 
 	/*mContext->VSSetShader(nullptr, 0, 0);
 	mContext->PSSetShader(nullptr, 0, 0);
@@ -700,7 +706,6 @@ void RenderSystem_DX::Process()
 			LoadShaders(entity);
 
 			//Set world matrix
-			CalculateTransform(entity);
 			mCB.mWorld = XMFLOAT4X4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(entity.ID)->transform)));
 
 			//Set time
@@ -744,7 +749,7 @@ void RenderSystem_DX::SwapBuffers() const
 }
 
 /// <summary>
-/// Loads the geometry for the given entity into a VBO object 
+/// Loads the geometry for the given entity into a VBO object
 /// </summary>
 /// <param name="pEntity">Entity to load geometry for</param>
 void RenderSystem_DX::LoadGeometry(const Entity& pEntity)
@@ -867,8 +872,6 @@ void RenderSystem_DX::LoadTexture(const Entity& pEntity)
 /// </summary>
 void RenderSystem_DX::SetViewProj()
 {
-	CalculateTransform(*mActiveCamera);
-
 	//Calculates the view matrix and sets it in the constant buffer
 	const XMFLOAT4 position(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mActiveCamera->ID)->translation)));
 	mCB.mCameraPosition = position;
@@ -897,23 +900,36 @@ void RenderSystem_DX::SetViewProj()
 /// </summary>
 void RenderSystem_DX::SetLights()
 {
-	mLightCB.numDirLights = mDirectionalLights.size();
+	if (mDirectionalLights.size() > mMaxDirLights)
+	{
+		mLightCB.numDirLights = mMaxDirLights;
+	}
+	else
+	{
+		mLightCB.numDirLights = mDirectionalLights.size();
+	}
 
-	int totalLights = 0;
-	for (int i = 0; i < mLightCB.numDirLights && totalLights <= mMaxLights; ++i)
+	for (int i = 0; i < mLightCB.numDirLights; ++i)
 	{
 		const auto dlComp = mEcsManager->DirectionalLightComp(mDirectionalLights[i].ID);
-		const DirectionalLightCB dl{ 
+		const DirectionalLightCB dl{
 			XMFLOAT3(reinterpret_cast<float*>(&dlComp->mDirection)),
 			1.0f,
 			XMFLOAT4(reinterpret_cast<float*>(&dlComp->mColour))
 		};
 		mLightCB.dirLights[i] = dl;
-		++totalLights;
 	}
 
-	mLightCB.numPointLights = mPointLights.size();
-	for (int i = 0; i < mLightCB.numPointLights && totalLights <= mMaxLights; ++i)
+	if (mPointLights.size() > mMaxPointLights)
+	{
+		mLightCB.numPointLights = mMaxPointLights;
+	}
+	else
+	{
+		mLightCB.numPointLights = mPointLights.size();
+	}
+
+	for (int i = 0; i < mLightCB.numPointLights; ++i)
 	{
 		const auto plComp = mEcsManager->PointLightComp(mPointLights[i].ID);
 		const PointLightCB pl{
@@ -923,7 +939,6 @@ void RenderSystem_DX::SetLights()
 			XMFLOAT3(0,0,0)
 		};
 		mLightCB.pointLights[i] = pl;
-		++totalLights;
 	}
 }
 
@@ -945,23 +960,3 @@ void RenderSystem_DX::SetCamera()
 		SetViewProj();
 	}
 }
-
-/// <summary>
-/// Calculates the transform of a given entity based on the translation, rotation and scale of the entity
-/// </summary>
-/// <param name="pEntity">Given entity to calculate transform for</param>
-void RenderSystem_DX::CalculateTransform(const Entity& pEntity) const
-{
-	Transform* t = mEcsManager->TransformComp(pEntity.ID);
-	const auto scale = KodeboldsMath::ScaleMatrix(t->scale);
-	const auto translation = KodeboldsMath::TranslationMatrix(t->translation);
-	const auto rotation = KodeboldsMath::RotationMatrixX(t->rotation.X)
-		* KodeboldsMath::RotationMatrixY(t->rotation.Y)
-		* KodeboldsMath::RotationMatrixZ(t->rotation.Z);
-
-	t->transform = translation * rotation * scale;
-	t->forward = KodeboldsMath::Vector4(t->transform._31, t->transform._32, t->transform._33, 1.0f).Normalise();
-	t->up = KodeboldsMath::Vector4(t->transform._21, t->transform._22, t->transform._23, 1.0f).Normalise();
-	t->right = KodeboldsMath::Vector4(t->transform._11, t->transform._12, t->transform._13, 1.0f).Normalise();
-}
-
