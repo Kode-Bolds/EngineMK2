@@ -78,8 +78,6 @@ private:
 	void SetLights() override;
 	void SetCamera() override;
 
-	void CalculateTransform(const Entity& pEntity) const;
-
 public:
 	explicit RenderSystem_DX(const HWND& pWindow, const int pMaxLights);
 	virtual ~RenderSystem_DX();

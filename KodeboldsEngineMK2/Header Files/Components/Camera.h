@@ -2,8 +2,8 @@
 
 struct Camera
 {
-	float FOV;
-	float nearPlane;
-	float farPlane;
+	int FOV;
+	int nearPlane;
+	int farPlane;
 	bool active;
 };

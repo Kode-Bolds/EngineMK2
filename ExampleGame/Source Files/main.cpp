@@ -53,9 +53,10 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 #ifdef DIRECTX
 	ecsManager->AddRenderSystem(std::make_shared<RenderSystem_DX>(hWnd, 7));
 #elif OPENGL
-	ecsManager->AddRenderSystem(std::make_shared<RenderSystem_GL>(hWnd, 7));
+	ecsManager->AddRenderSystem(std::make_shared<RenderSystem_GL>(hWnd, 22));
 #endif
 
+	ecsManager->AddUpdateSystem(std::make_shared<TransformSystem>());
 	ecsManager->AddUpdateSystem(std::make_shared<MovementSystem>());
 	ecsManager->AddUpdateSystem(std::make_shared<CollisionCheckSystem>(1000, 50));
 	ecsManager->AddUpdateSystem(std::make_shared<CollisionResponseSystem>());
