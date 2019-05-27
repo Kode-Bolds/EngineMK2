@@ -33,12 +33,12 @@ namespace EntitySpawner
 		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
 
 		//Shader component
-		Shader shader{ L"errorShader.fx", BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
+		Shader shader{ L"defaultShader.fx", BlendState::ALPHABLEND, CullState::BACK, DepthState::LESSEQUAL };
 		entitySpawnerEcsManager->AddShaderComp(shader, ID);
 
 		//Light component
 		PointLight light{ pColour, pLightRange };
-		//entitySpawnerEcsManager->AddPointLightComp(light, ID);
+		entitySpawnerEcsManager->AddPointLightComp(light, ID);
 
 		//Transform component
 		Transform trans{};
@@ -103,7 +103,7 @@ namespace EntitySpawner
 		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
 
 		//Shader component
-		Shader shader{ L"defaultShader.fx" , BlendState::NOBLEND, CullState::BACK, DepthState::NONE };
+		Shader shader{ L"defaultShader.fx" , BlendState::NOBLEND, CullState::BACK, DepthState::LESSEQUAL };
 		entitySpawnerEcsManager->AddShaderComp(shader, ID);
 
 		//Texture component
@@ -146,11 +146,11 @@ namespace EntitySpawner
 		int ID = entitySpawnerEcsManager->CreateEntity();
 
 		//Geometry component
-		Geometry geo{ L"sphere.obj" };
+		Geometry geo{ L"asteroid.obj" };
 		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
 
 		//Shader component
-		Shader shader{ L"defaultShader.fx", BlendState::NOBLEND, CullState::BACK, DepthState::NONE };
+		Shader shader{ L"defaultShader.fx", BlendState::NOBLEND, CullState::BACK, DepthState::LESSEQUAL };
 		entitySpawnerEcsManager->AddShaderComp(shader, ID);
 
 		//Texture component
@@ -186,7 +186,7 @@ namespace EntitySpawner
 		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
 
 		//Shader component
-		Shader shader{ L"defaultShader.fx", BlendState::NOBLEND, CullState::BACK, DepthState::NONE };
+		Shader shader{ L"defaultShader.fx", BlendState::NOBLEND, CullState::BACK, DepthState::LESSEQUAL };
 		entitySpawnerEcsManager->AddShaderComp(shader, ID);
 
 		//Texture component

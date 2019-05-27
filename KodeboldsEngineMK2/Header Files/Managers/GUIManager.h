@@ -9,6 +9,7 @@
 #include <SpriteBatch.h>
 #include <wrl.h>
 #include "ResourceManager.h"
+#include "InputManager_DX.h"
 #include <CommonStates.h>
 #include <SpriteFont.h>
 #include "Text.h"
@@ -17,6 +18,7 @@ class GUIManager
 {
 private:
 	std::shared_ptr<ResourceManager> mResourceManager = ResourceManager::Instance();
+	std::shared_ptr<InputManager_DX> mInputManager = InputManager_DX::Instance();
 
 	std::vector<std::pair<std::string, TwBar*>> mBars;
 
@@ -91,12 +93,10 @@ public:
 	// Loads .spritefont files from disk
 	void LoadFont(const wchar_t* pFontName);
 
-
-
 	// Creates and Draws Button
 	void CreateButton(const wchar_t* pFileName, const wchar_t* pFontName, const wchar_t* pText, float pRotation, float pButtonScale, float pTextScale,
 		ButtonOrigin pOrigin, ButtonPosition pPosition, KodeboldsMath::Vector2 pButtonPadding, KodeboldsMath::Vector2 pTextPadding, KodeboldsMath::Vector4 pTextColour,
-		std::function<void()> pOnClickFunction);
+		KodeboldsMath::Vector4 pTextColourHover, std::function<void()> pOnClickFunction);
 
 	// Draws Sprite to screen
 	void LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale);

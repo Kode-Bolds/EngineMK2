@@ -2,6 +2,7 @@
 
 enum class CullState
 {
+	NOTSET,
 	NONE,
 	BACK,
 	FRONT,
