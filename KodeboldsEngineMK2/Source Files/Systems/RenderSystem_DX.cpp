@@ -82,6 +82,10 @@ HRESULT RenderSystem_DX::Init()
 	if (FAILED(hr))
 		return hr;
 
+	hr = CreateRenderTexture();
+	if (FAILED(hr))
+		return hr;
+
 	CreateViewport();
 
 	//Set primitive topology
@@ -511,7 +515,56 @@ HRESULT RenderSystem_DX::CreateConstantBuffers()
 }
 
 /// <summary>
-/// Cleans up system resources used by directx   IS THIS EVEN NEEDED???
+/// Create the necessary DirectX resources for rendering to texture
+/// </summary>
+/// <returns>HRESULT status code</returns>
+HRESULT RenderSystem_DX::CreateRenderTexture()
+{
+	auto hr{ S_OK };
+
+	D3D11_TEXTURE2D_DESC textureDesc;
+	ZeroMemory(&textureDesc, sizeof(textureDesc));
+	textureDesc.Width = 1920;
+	textureDesc.Height = 1062;
+	textureDesc.MipLevels = 1;
+	textureDesc.ArraySize = 1;
+	textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	textureDesc.SampleDesc.Count = 1;
+	textureDesc.Usage = D3D11_USAGE_DEFAULT;
+	textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	textureDesc.CPUAccessFlags = 0;
+	textureDesc.MiscFlags = 0;
+
+	hr = mDevice->CreateTexture2D(&textureDesc, nullptr, mRenderTexture.GetAddressOf());
+	if (FAILED(hr))
+		return hr;
+
+	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
+	ZeroMemory(&renderTargetViewDesc, sizeof(renderTargetViewDesc));
+	renderTargetViewDesc.Format = textureDesc.Format;
+	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+	renderTargetViewDesc.Texture2D.MipSlice = 0;
+
+	hr = mDevice->CreateRenderTargetView(mRenderTexture.Get(), &renderTargetViewDesc, mTextureRenderTargetView.GetAddressOf());
+	if (FAILED(hr))
+		return hr;
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
+	ZeroMemory(&shaderResourceViewDesc, sizeof(shaderResourceViewDesc));
+	shaderResourceViewDesc.Format = textureDesc.Format;
+	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
+	shaderResourceViewDesc.Texture2D.MipLevels = 1;
+
+	hr = mDevice->CreateShaderResourceView(mRenderTexture.Get(), &shaderResourceViewDesc, mRenderTextureSRV.GetAddressOf());
+	if (FAILED(hr))
+		return hr;
+
+	return hr;
+}
+
+/// <summary>
+/// Cleans up system resources used by directx
 /// </summary>
 void RenderSystem_DX::Cleanup()
 {
@@ -674,84 +727,33 @@ void RenderSystem_DX::ReAssignEntity(const Entity& pEntity)
 /// </summary>
 void RenderSystem_DX::Process()
 {
+	//Clear render targets and depth view
 	ClearView();
 
-	/*float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	const auto blendSample = 0xffffffff;
-	mContext->OMSetBlendState(mAlphaBlend.Get(), blendFactor, blendSample);
-	mContext->RSSetState(mRastNoCullState.Get());
-	mContext->OMSetDepthStencilState(mDepthNone.Get(), 1);
-
-	mContext->IASetInputLayout(nullptr);
-	mContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	mContext->VSSetShader(nullptr, 0, 0);
-	mContext->VSSetConstantBuffers(0, 0, nullptr);
-
-	mContext->PSSetShader(nullptr, 0, 0);
-	mContext->PSSetSamplers(0, 0, mTexSampler.GetAddressOf());
-	mContext->PSSetShaderResources(0, 0, nullptr);*/
-
-	//// Set vertex buffer
-	//UINT stride = sizeof(Vertex);
-	//UINT offset = 0;
-	//mContext->IASetVertexBuffers(0, 1, mVertices.GetAddressOf(), &stride, &offset);
-
-	//// Set index buffer
-	//mContext->IASetIndexBuffer(mIndices.Get(), DXGI_FORMAT_R32_UINT, 0);
-
-
-	SetCamera();
 	SetLights();
 
+	//Render to texture
+	mContext->OMSetRenderTargets(1, mTextureRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
+	Render();
 
-	for (const Entity& entity : mEntities)
-	{
-		if (entity.ID != -1)
-		{
+	//Clear depth between renders
+	mContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-			LoadGeometry(entity);
-			LoadTexture(entity);
-			LoadShaders(entity);
-
-			//Set world matrix
-			mCB.mWorld = XMFLOAT4X4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(entity.ID)->transform)));
-
-			//Set time
-			mCB.time = static_cast<float>(mSceneManager->Time());
-
-			//Set colour if there is a colour component attached
-			if ((entity.componentMask & ComponentType::COMPONENT_COLOUR) == ComponentType::COMPONENT_COLOUR)
-			{
-				mCB.mColour = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->ColourComp(entity.ID)->mColour)));
-			}
-			else
-			{
-				mCB.mColour = XMFLOAT4(0, 0, 0, 0);
-			}
-
-			//Update constant buffer
-			mContext->UpdateSubresource(mConstantBuffer.Get(), 0, nullptr, &mCB, 0, 0);
-			mContext->UpdateSubresource(mLightingBuffer.Get(), 0, nullptr, &mLightCB, 0, 0);
-
-			mGeometry->Draw(this);
-		}
-	}
-
-
-	//RenderGUI();
-	//mGUIManager->Update();
+	//Render to window
+	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
+	Render();
 
 	SwapBuffers();
 }
 
 /// <summary>
-/// Clears screen to cornflower blue background
+/// Clears screen and render texture to black
 /// </summary>
 void RenderSystem_DX::ClearView() const
 {
 	mContext->ClearRenderTargetView(mRenderTargetView.Get(), DirectX::Colors::Black);
-	mContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	mContext->ClearRenderTargetView(mTextureRenderTargetView.Get(), DirectX::Colors::Black);
+	mContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
 /// <summary>
@@ -879,6 +881,7 @@ void RenderSystem_DX::LoadTexture(const Entity& pEntity)
 			texture->Load(this, 2);
 		}
 	}
+	mContext->PSSetShaderResources(3, 1, mRenderTextureSRV.GetAddressOf());
 }
 
 /// <summary>
@@ -975,7 +978,51 @@ void RenderSystem_DX::SetCamera()
 	}
 }
 
-void RenderSystem_DX::RenderGUI()
+/// <summary>
+/// Renders the scene
+/// </summary>
+void RenderSystem_DX::Render()
+{
+	SetCamera();
+	//Load everything necessary and draw each entity
+	for (const Entity& entity : mEntities)
+	{
+		if (entity.ID != -1)
+		{
+
+			LoadGeometry(entity);
+			LoadTexture(entity);
+			LoadShaders(entity);
+			
+			//Set world matrix
+			mCB.mWorld = XMFLOAT4X4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(entity.ID)->transform)));
+
+			//Set time
+			mCB.time = static_cast<float>(mSceneManager->Time());
+
+			//Set colour if there is a colour component attached
+			if ((entity.componentMask & ComponentType::COMPONENT_COLOUR) == ComponentType::COMPONENT_COLOUR)
+			{
+				mCB.mColour = XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->ColourComp(entity.ID)->mColour)));
+			}
+			else
+			{
+				mCB.mColour = XMFLOAT4(0, 0, 0, 0);
+			}
+
+			//Update constant buffer
+			mContext->UpdateSubresource(mConstantBuffer.Get(), 0, nullptr, &mCB, 0, 0);
+			mContext->UpdateSubresource(mLightingBuffer.Get(), 0, nullptr, &mLightCB, 0, 0);
+
+			mGeometry->Draw(this);
+		}
+	}
+}
+
+/// <summary>
+/// Renders the GUI
+/// </summary>
+void RenderSystem_DX::RenderGUI() const
 {
 	//ID3D11DepthStencilState* ppDepthStencilState = nullptr;
 	//mContext->OMGetDepthStencilState(&ppDepthStencilState, );

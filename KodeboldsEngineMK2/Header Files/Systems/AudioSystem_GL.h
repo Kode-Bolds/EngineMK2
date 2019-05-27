@@ -6,13 +6,13 @@
 class AudioSystem_GL : public AudioSystem
 {
 private:
-	HRESULT Init() override;
-	void Cleanup() override;
 public:
-	explicit AudioSystem_GL(const HWND& pWindow);
+	explicit AudioSystem_GL();
 	virtual ~AudioSystem_GL();
 
 	void AssignEntity(const Entity& pEntity) override;
 	void ReAssignEntity(const Entity& pEntity) override;
 	void Process() override;
+
+	const Sound* LoadAudio(const Entity& pEntity) override;
 };

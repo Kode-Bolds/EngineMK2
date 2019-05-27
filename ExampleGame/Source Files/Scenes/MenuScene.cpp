@@ -45,8 +45,9 @@ void MenuScene::OnLoad()
 	mInputManager->CenterCursor(false);
 
 	//Audio Files
-	mMenuMusic = resourceManager->LoadAudio(L"space.wav");
-	//mMenuMusic->Play(1.0f, 1.0f, 0.0f);
+	mMenuMusic = mEcsManager->CreateEntity();
+	Audio audio{L"space.wav", true, false, 0.5f, 1.0f, 0.0f};
+	mEcsManager->AddAudioComp(audio, mMenuMusic);
 
 	// GUI
 	mGUIManager->LoadSprite(L"Spaceship.png", GUIManager::SpriteOrigin::CENTRE, GUIManager::SpritePosition::CENTRE_MIDDLE, Vector2(0, 0), 0, 1);
@@ -69,8 +70,12 @@ void MenuScene::OnUnload()
 	// Clears GUI from previous scene
 	resourceManager->mSprites.clear();
 	resourceManager->mButtons.clear();
+
 	auto test = *mGUIManager->GetTextVector();
 	test.clear();
+
+	//Delete menu music entity
+	mEcsManager->DestroyEntity(mMenuMusic);
 }
 
 void MenuScene::OnClick_PlayButton()

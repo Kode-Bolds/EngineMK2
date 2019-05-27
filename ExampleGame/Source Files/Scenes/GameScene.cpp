@@ -287,11 +287,11 @@ void GameScene::Rotation()
 		{
 			//Y rotation
 			mEcsManager->TransformComp(mPlayerShip)->transform *= RotationMatrixAxis(DegreesToRadians(deltaX * mRotationSpeed) * mSceneManager->DeltaTime(), Vector4(0, 1, 0, 1));
-			RotateAroundPoint(mPlayerShipCam, Vector4(0, 1, 0, 0), Vector4(0, 0, 75, 0), deltaX * mRotationSpeed);
+			RotateAroundPoint(mPlayerShipCam, Vector4(0, 1, 0, 0), Vector4(0, -40, 75, 0), deltaX * mRotationSpeed);
 
 			//X rotation
 			mEcsManager->TransformComp(mPlayerShip)->transform *= RotationMatrixAxis(DegreesToRadians(deltaY * mRotationSpeed) * mSceneManager->DeltaTime(), Vector4(1, 0, 0, 1));
-			RotateAroundPoint(mPlayerShipCam, Vector4(1, 0, 0, 0), Vector4(0, 0, 75, 0), deltaY * mRotationSpeed);
+			RotateAroundPoint(mPlayerShipCam, Vector4(1, 0, 0, 0), Vector4(0, -40, 75, 0), deltaY * mRotationSpeed);
 		}
 		//If player cam is active, rotate player
 		if (mEcsManager->CameraComp(mPlayer)->active)
@@ -329,11 +329,11 @@ void GameScene::Shooting()
 		{
 			Vector4 leftLaser = mEcsManager->TransformComp(mPlayerShip)->translation + ((mEcsManager->TransformComp(mPlayerShip)->right * -23) + (mEcsManager->TransformComp(mPlayerShip)->up * 5));
 			SpawnLaser(leftLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), mEcsManager->TransformComp(mPlayerShip)->forward * 40, 40,
-				1, CustomCollisionMask::SHIP_LASER, CustomCollisionMask::SHIP_LASER | CustomCollisionMask::SHIP, 100, mLaserSound);
+				1, CustomCollisionMask::SHIP_LASER, CustomCollisionMask::SHIP_LASER | CustomCollisionMask::SHIP, 100, L"laser.wav");
 
 			Vector4 rightLaser = mEcsManager->TransformComp(mPlayerShip)->translation + ((mEcsManager->TransformComp(mPlayerShip)->right * 23) + (mEcsManager->TransformComp(mPlayerShip)->up * 5));
 			SpawnLaser(rightLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), mEcsManager->TransformComp(mPlayerShip)->forward * 40, 40,
-				1, CustomCollisionMask::SHIP_LASER, CustomCollisionMask::SHIP_LASER | CustomCollisionMask::SHIP, 100, mLaserSound);
+				1, CustomCollisionMask::SHIP_LASER, CustomCollisionMask::SHIP_LASER | CustomCollisionMask::SHIP, 100, L"laser.wav");
 		}
 
 		//If player cam is active, fire gun
@@ -341,7 +341,7 @@ void GameScene::Shooting()
 		{
 			Vector4 gunBarrel = mEcsManager->TransformComp(mPlayerGun)->translation + (mEcsManager->TransformComp(mPlayerGun)->forward * -2);
 			SpawnLaser(gunBarrel, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), mEcsManager->TransformComp(mPlayerGun)->forward * -30, 40,
-				1, CustomCollisionMask::GUN_LASER, CustomCollisionMask::GUN_LASER | CustomCollisionMask::PLAYER, 50, mLaserSound);
+				1, CustomCollisionMask::GUN_LASER, CustomCollisionMask::GUN_LASER | CustomCollisionMask::PLAYER, 50, L"laser.wav");
 		}
 	}
 }
@@ -449,10 +449,6 @@ void GameScene::OnLoad()
 {
 	mInputManager->CenterCursor(true);
 
-	//Audio Files
-	mLaserSound = resourceManager->LoadAudio(L"laser.wav");
-	mEngineSound = resourceManager->LoadAudio(L"engine.wav");
-
 	mGUIManager->CreateButton(L"button.png", L"AlienEncounters.spritefont", L"EXIT", 0, 0.35f, 0.65f,
 		GUIManager::ButtonOrigin::CENTRE, GUIManager::ButtonPosition::CENTRE_MIDDLE, Vector2(400, 100),
 		Vector2(0, 10), Vector4(0.0f, 0.0f, 0.0f, 1.0f), Vector4(1.0f, 1.0f, 0.0f, 1.0f), nullptr);
@@ -481,7 +477,7 @@ void GameScene::OnLoad()
 	mCameraSpeed = 20.0f;
 	mRotationSpeed = 10.0f;
 
-	/*
+	
 	//Spawn platform
 	int entity = mEcsManager->CreateEntity();
 	Geometry geom{ L"cube.obj" };
@@ -498,8 +494,6 @@ void GameScene::OnLoad()
 	mEcsManager->AddTransformComp(transCm, entity);
 	BoxCollider floorBox{ transCm.translation.XYZ() - Vector3(100, 2, 100), transCm.translation.XYZ() + Vector3(100, 2, 100), CustomCollisionMask::FLOOR, CustomCollisionMask::FLOOR };
 	mEcsManager->AddBoxColliderComp(floorBox, entity);
-	*/
-
 
 	{
 		//Sun
@@ -538,7 +532,7 @@ void GameScene::OnLoad()
 		{
 			for (int k = 10; k > 2; k--)
 			{
-				//SpawnAsteroid(Vector4(40 * i, 60 * j, 40 * k, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), 10, 0, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
+				SpawnAsteroid(Vector4(40 * i, 60 * j, 40 * k, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), 10, 0, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
 			}
 		}
 	}
@@ -559,6 +553,24 @@ void GameScene::OnLoad()
 		transCm.translation = Vector4(0, 0, 0, 1);
 
 		mEcsManager->AddTransformComp(transCm, particleEntity);
+	}
+
+	{
+		int screenspaceQuad = mEcsManager->CreateEntity();
+		Geometry geom{ L"cube.obj" };
+		mEcsManager->AddGeometryComp(geom, screenspaceQuad);
+		Shader shaderm{ L"distortionShader.fx" , BlendState::ALPHABLEND, CullState::NONE, DepthState::NONE };
+		//mEcsManager->AddShaderComp(shaderm, screenspaceQuad);
+		Texture texturem{};
+		texturem.diffuse = L"stones.DDS";
+		texturem.normal = L"distortionTest.dds";
+		mEcsManager->AddTextureComp(texturem, screenspaceQuad);
+
+		Transform transCm{};
+		transCm.scale = Vector4(10, 10, 10, 10);
+		transCm.translation = Vector4(0, 0, 0, 1);
+
+		mEcsManager->AddTransformComp(transCm, screenspaceQuad);
 	}
 
 	const int dLight = mEcsManager->CreateEntity();

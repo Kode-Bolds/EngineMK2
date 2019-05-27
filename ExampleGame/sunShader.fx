@@ -49,6 +49,8 @@ SamplerState txDiffSampler : register(s0);
 Texture2D txBump : register(t1);
 SamplerState txBumpSampler : register(s1);
 
+Texture2D txRenderTexture : register(t3);
+
 
 //--------------------------------------------------------------------------------------
 // Shader Inputs

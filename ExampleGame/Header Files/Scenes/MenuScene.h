@@ -25,7 +25,7 @@ private:
 	std::shared_ptr<ResourceManager> resourceManager = ResourceManager::Instance();
 
 
-	Sound* mMenuMusic;
+	int mMenuMusic;
 
 public:
 	//Structors
