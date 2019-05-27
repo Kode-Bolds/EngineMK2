@@ -471,7 +471,7 @@ void GameScene::OnLoad()
 	mCameraSpeed = 20.0f;
 	mRotationSpeed = 10.0f;
 
-	/*
+	
 	//Spawn platform
 	int entity = mEcsManager->CreateEntity();
 	Geometry geom{ L"cube.obj" };
@@ -488,8 +488,6 @@ void GameScene::OnLoad()
 	mEcsManager->AddTransformComp(transCm, entity);
 	BoxCollider floorBox{ transCm.translation.XYZ() - Vector3(100, 2, 100), transCm.translation.XYZ() + Vector3(100, 2, 100), CustomCollisionMask::FLOOR, CustomCollisionMask::FLOOR };
 	mEcsManager->AddBoxColliderComp(floorBox, entity);
-	*/
-	
 
 	{
 		//Sun
@@ -528,7 +526,7 @@ void GameScene::OnLoad()
 		{
 			for (int k = 10; k > 2; k--)
 			{
-				//SpawnAsteroid(Vector4(40 * i, 60 * j, 40 * k, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), 10, 0, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
+				SpawnAsteroid(Vector4(40 * i, 60 * j, 40 * k, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), 10, 0, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
 			}
 		}
 	}
