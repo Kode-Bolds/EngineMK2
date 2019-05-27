@@ -67,7 +67,8 @@ void MenuScene::OnUnload()
 	// Clears GUI from previous scene
 	resourceManager->mSprites.clear();
 	resourceManager->mButtons.clear();
-	mGUIManager->mTexts.clear();
+	auto test = *mGUIManager->GetTextVector();
+	test.clear();
 }
 
 void MenuScene::OnClick_PlayButton()

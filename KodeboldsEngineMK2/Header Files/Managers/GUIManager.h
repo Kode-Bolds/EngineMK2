@@ -27,9 +27,10 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Device> mDevice;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> mContext;
 
-	std::unique_ptr<DirectX::SpriteBatch> mSpriteBatch;
-	std::unique_ptr<DirectX::CommonStates> mStates;
-	std::vector<std::unique_ptr<DirectX::SpriteFont>> mFonts;
+	std::shared_ptr<DirectX::SpriteBatch> mSpriteBatch;
+	std::shared_ptr<DirectX::CommonStates> mStates;
+	std::vector<std::shared_ptr<DirectX::SpriteFont>> mFonts;
+	std::vector<Text> mTexts;
 
 	//Private constructor for singleton pattern
 	GUIManager();
@@ -84,9 +85,12 @@ public:
 
 
 	//----------- STANDARD GUI -----------\\ 
-	std::vector<Text> mTexts;
+	std::shared_ptr<DirectX::SpriteBatch> GetSpriteBatch() { return mSpriteBatch; }
+	std::vector<Text>* GetTextVector() { return &mTexts; }
+	std::vector<std::shared_ptr<DirectX::SpriteFont>>* GetFontsVector() { return &mFonts; }
+	std::shared_ptr<DirectX::CommonStates> GetCommonStates() { return mStates; }
+
 	void InititialiseGUI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const int pWidth, const int pHeight);
-	void Render();
 	void Update();
 	void Clear();
 
