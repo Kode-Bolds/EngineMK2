@@ -16,7 +16,7 @@ RenderSystem_DX::RenderSystem_DX(const HWND& pWindow, const int pMaxPointLights,
 		ComponentType::COMPONENT_CAMERA },
 		pMaxPointLights,
 		pMaxDirLights),
-mWindow(pWindow), mActiveCamera(nullptr), mActiveGeometry(L""), mActiveShader(L"")
+	mWindow(pWindow), mActiveCamera(nullptr), mActiveGeometry(L""), mActiveShader(L"")
 {
 	if (FAILED(Init()))
 	{
@@ -676,19 +676,39 @@ void RenderSystem_DX::Process()
 {
 	ClearView();
 
-	RenderGUI();
-	mGUIManager->Update();
+	float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	const auto blendSample = 0xffffffff;
+	mContext->OMSetBlendState(mAlphaBlend.Get(), blendFactor, blendSample);
+	mContext->RSSetState(mRastNoCullState.Get());
+	mContext->OMSetDepthStencilState(mDepthNone.Get(), 1);
 
-	/*mContext->VSSetShader(nullptr, 0, 0);
+	mContext->IASetInputLayout(nullptr);
+	mContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	mContext->VSSetShader(nullptr, 0, 0);
+	mContext->VSSetConstantBuffers(0, 0, nullptr);
+
 	mContext->PSSetShader(nullptr, 0, 0);
-	mContext->HSSetShader(nullptr, 0, 0);
+	mContext->PSSetSamplers(0, 0, mTexSampler.GetAddressOf());
+	mContext->PSSetShaderResources(0, 0, nullptr);
+
+	//// Set vertex buffer
+	//UINT stride = sizeof(Vertex);
+	//UINT offset = 0;
+	//mContext->IASetVertexBuffers(0, 1, mVertices.GetAddressOf(), &stride, &offset);
+
+	//// Set index buffer
+	//mContext->IASetIndexBuffer(mIndices.Get(), DXGI_FORMAT_R32_UINT, 0);
+
+
+
+	/*mContext->HSSetShader(nullptr, 0, 0);
 	mContext->CSSetShader(nullptr, 0, 0);
 	mContext->GSSetShader(nullptr, 0, 0);
 
-	mContext->RSSetState(nullptr);
 	mContext->OMSetBlendState(nullptr, nullptr, 0);
-	mContext->OMSetDepthStencilState(nullptr, 0);
-*/
+	mContext->OMSetDepthStencilState(nullptr, 0);*/
+
 //mContext->OMSetRenderTargets(0, nullptr, nullptr);
 //mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
 
@@ -728,6 +748,11 @@ void RenderSystem_DX::Process()
 			mGeometry->Draw(this);
 		}
 	}
+
+
+	RenderGUI();
+	mGUIManager->Update();
+
 	SwapBuffers();
 }
 
@@ -737,7 +762,7 @@ void RenderSystem_DX::Process()
 void RenderSystem_DX::ClearView() const
 {
 	mContext->ClearRenderTargetView(mRenderTargetView.Get(), DirectX::Colors::Black);
-	mContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
+	mContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
 /// <summary>
@@ -964,7 +989,7 @@ void RenderSystem_DX::SetCamera()
 void RenderSystem_DX::RenderGUI()
 {
 	// standard sprites
-	mGUIManager->GetSpriteBatch()->Begin(DirectX::SpriteSortMode_Deferred, mGUIManager->GetCommonStates()->NonPremultiplied(), nullptr, nullptr, nullptr, nullptr);
+	mGUIManager->GetSpriteBatch()->Begin(DirectX::SpriteSortMode_Deferred, mGUIManager->GetCommonStates()->NonPremultiplied()/*, nullptr, nullptr, nullptr, nullptr*/);
 	for (int i = 0; i < mResourceManager->mSprites.size(); i++)
 	{
 		auto sprite = mResourceManager->mSprites[i].second;
@@ -973,7 +998,7 @@ void RenderSystem_DX::RenderGUI()
 	mGUIManager->GetSpriteBatch()->End();
 
 	// standard text
-	mGUIManager->GetSpriteBatch()->Begin(DirectX::SpriteSortMode_Deferred, mGUIManager->GetCommonStates()->NonPremultiplied(), nullptr, nullptr, nullptr, nullptr);
+	mGUIManager->GetSpriteBatch()->Begin(DirectX::SpriteSortMode_Deferred, mGUIManager->GetCommonStates()->NonPremultiplied()/*, nullptr, nullptr, nullptr, nullptr*/);
 
 	auto test = *mGUIManager->GetTextVector();
 	auto test2 = *mGUIManager->GetFontsVector();
@@ -988,7 +1013,7 @@ void RenderSystem_DX::RenderGUI()
 	mGUIManager->GetSpriteBatch()->End();
 
 	// buttons
-	mGUIManager->GetSpriteBatch()->Begin(DirectX::SpriteSortMode_Deferred, mGUIManager->GetCommonStates()->NonPremultiplied(), nullptr, nullptr, nullptr, nullptr);
+	mGUIManager->GetSpriteBatch()->Begin(DirectX::SpriteSortMode_Deferred, mGUIManager->GetCommonStates()->NonPremultiplied()/*, nullptr, nullptr, nullptr, nullptr*/);
 	for (int i = 0; i < mResourceManager->mButtons.size(); i++)
 	{
 		// sprites

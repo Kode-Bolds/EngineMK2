@@ -105,7 +105,6 @@ void GUIManager::InititialiseGUI(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	mStates = std::make_unique<DirectX::CommonStates>(pDevice);
 }
 
-
 void GUIManager::Update()
 {
 	auto mousePos = mInputManager->MousePos();
@@ -146,11 +145,6 @@ void GUIManager::Update()
 			mResourceManager->mButtons[i].second.mText.mColour = buttonTextOriginalColour;
 		}
 	}
-}
-
-void GUIManager::Clear()
-{
-
 }
 
 void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale)
