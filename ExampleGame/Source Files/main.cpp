@@ -78,47 +78,6 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	transL.translation = Vector4(0, -20, -10, 1);
 	ecsManager->AddTransformComp(transL, entityID);
 
-
-
-	////test->Play();
-
-
-
-
-
-
-	// Testing Sprite Loading (GUI)
-	//Vector2 catPosition = Vector2(100,100);
-	//Vector2 catOrigin = Vector2(0,0);
-	//GUIManager->LoadSprite(L"cat.png", catOrigin, catPosition, 1.5f, 3.0f);
-
-	// Testing new enum for centering sprite positions
-	//Vector2 catOrigin = Vector2(0, 0);
-	//GUIManager->LoadSprite(L"cat.png", catOrigin, GUIManager::SpritePosition::CENTRE_TOP, 1.5f, 1.0f);
-	//GUIManager->LoadSprite(L"cat.png", catOrigin, GUIManager::SpritePosition::CENTRE_MIDDLE, 1.5f, 1.0f);
-	//GUIManager->LoadSprite(L"cat.png", catOrigin, GUIManager::SpritePosition::CENTRE_BOTTOM, 1.5f, 1.0f);
-
-	// Testing new enum for centering sprite origins
-	//Vector2 catPosition = Vector2(0,0);
-	//GUIManager->LoadSprite(L"cat.png", GUIManager::SpriteOrigin::CENTRE, catPosition, 1.5f, 1.0f);
-
-	// Testing both enums for centering sprite origins and positions
-	//guiManager->LoadSprite(L"crosshair.png", GUIManager::SpriteOrigin::CENTRE, GUIManager::SpritePosition::CENTRE_MIDDLE, Vector2(0, 0), 0.0f, 0.05f);
-
-
-	//// Testing Fonts
-	//guiManager->Write(L"Hello Tony!", Vector2(0, 0), Vector2(300, 100), Vector2(0, 0), L"CourierNew.spritefont", 1.0f, 1.0f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-
-	//guiManager->Write(L"Hello Dean!", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::CENTRE_TOP, Vector2(0, 50), L"CourierNew.spritefont", 0.0f, 1.0f, Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-
-	//guiManager->Write(L"Hello Jake!", GUIManager::TextOrigin::CENTRE, Vector2(150, 200), Vector2(0, 0), L"CourierNew.spritefont", 0.0f, 1.0f, Vector4(0.5f, 0.5f, 1.0f, 1.0f));
-
-	//guiManager->Write(L"Hello Kris!", Vector2(0, 0), Vector2(100, 400), Vector2(0, 0), L"CourierNew.spritefont", 0.0f, 1.0f, Vector4(0.0f, 1.0f, 1.0f, 1.0f));
-	//guiManager->Write(L"Hello Axel!", Vector2(0, 0), Vector2(100, 500), Vector2(0, 0), L"CourierNew.spritefont", 0.0f, 1.0f, Vector4(1.0f, 1.0f, 0.0f, 1.0f));
-
-
-
-
 	//Testing custom components
 	ecsManager->CreateCustomComponent<CustomComp1>(CustomComponentType::CUSTOM_COMPONENT_1);
 	ecsManager->CreateCustomComponent<CustomComp2>(CustomComponentType::CUSTOM_COMPONENT_2);
@@ -151,7 +110,6 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	}
 
 	//Scenes
-	//sceneManager->LoadScene<GameScene>();
 	sceneManager->LoadScene<MenuScene>();
 
 	//Main message loop

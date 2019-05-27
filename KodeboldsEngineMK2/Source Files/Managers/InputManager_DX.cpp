@@ -32,9 +32,16 @@ std::shared_ptr<InputManager_DX> InputManager_DX::Instance()
 /// <summary>
 /// Centers the cursor the the middle of the screen
 /// </summary>
-void InputManager_DX::CenterCursor()
+void InputManager_DX::CenterCursor(bool pCentered)
 {
-
+	if (pCentered)
+	{
+		mMouse->SetMode(DirectX::Mouse::MODE_RELATIVE);
+	}
+	else
+	{
+		mMouse->SetMode(DirectX::Mouse::MODE_ABSOLUTE);
+	}
 }
 
 /// <summary>
@@ -49,7 +56,6 @@ void InputManager_DX::CursorVisible(const bool pVisible)
 void InputManager_DX::SetWindow(const HWND hWnd)
 {
 	mMouse->SetWindow(hWnd);
-	mMouse->SetMode(DirectX::Mouse::MODE_RELATIVE);
 }
 
 ////--------------------------------------------------------------------------------------

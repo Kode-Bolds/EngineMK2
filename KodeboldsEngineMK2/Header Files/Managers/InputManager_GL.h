@@ -28,6 +28,6 @@ public:
 	InputManager_GL& operator=(InputManager_GL const&) = delete;
 	static std::shared_ptr<InputManager_GL> Instance();
 
-	void CenterCursor() override;
+	void CenterCursor(bool pCentered) override;
 	void CursorVisible(const bool pVisible) override;
 };

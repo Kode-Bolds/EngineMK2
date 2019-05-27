@@ -29,7 +29,7 @@ std::shared_ptr<InputManager_GL> InputManager_GL::Instance()
 /// <summary>
 /// Centers the cursor the the middle of the screen
 /// </summary>
-void InputManager_GL::CenterCursor()
+void InputManager_GL::CenterCursor(bool pCentered)
 {
 	//NOT IMPLEMENTED
 }

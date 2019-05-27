@@ -105,48 +105,6 @@ void GUIManager::InititialiseGUI(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	mStates = std::make_unique<DirectX::CommonStates>(pDevice);
 }
 
-void GUIManager::Render()
-{
-	// standard sprites
-	mSpriteBatch->Begin(DirectX::SpriteSortMode_Deferred, mStates->NonPremultiplied(), nullptr, nullptr, nullptr, nullptr);
-	for (int i = 0; i < mResourceManager->mSprites.size(); i++)
-	{
-		auto sprite = mResourceManager->mSprites[i].second;
-		mSpriteBatch->Draw(sprite.mTexture.Get(), sprite.mPosition, nullptr, DirectX::Colors::White, sprite.mRotation, sprite.mOrigin, sprite.mScale);
-	}
-	mSpriteBatch->End();
-
-	// standard text
-	mSpriteBatch->Begin(DirectX::SpriteSortMode_Deferred, mStates->NonPremultiplied(), nullptr, nullptr, nullptr, nullptr);
-	for (int i = 0; i < mTexts.size(); i++)
-	{
-		DirectX::XMVECTOR origin = DirectX::XMVectorSet(mTexts[i].mOrigin.x, mTexts[i].mOrigin.y, 0, 0);
-		DirectX::XMVECTOR position = DirectX::XMVectorSet(mTexts[i].mPosition.x, mTexts[i].mPosition.y, 0, 0);
-		DirectX::XMVECTOR colour = DirectX::XMVectorSet(mTexts[i].mColour.x, mTexts[i].mColour.y, mTexts[i].mColour.z, mTexts[i].mColour.w);
-
-		mFonts[i]->DrawString(mSpriteBatch.get(), mTexts[i].mText, position, colour, mTexts[i].mRotation, origin, mTexts[i].mScale);
-	}
-	mSpriteBatch->End();
-
-	// buttons
-	mSpriteBatch->Begin(DirectX::SpriteSortMode_Deferred, mStates->NonPremultiplied(), nullptr, nullptr, nullptr, nullptr);
-	for (int i = 0; i < mResourceManager->mButtons.size(); i++)
-	{
-		// sprites
-		auto sprite = mResourceManager->mButtons[i].second.mSprite;
-		mSpriteBatch->Draw(sprite.mTexture.Get(), sprite.mPosition, nullptr, DirectX::Colors::White, sprite.mRotation, sprite.mOrigin, sprite.mScale);
-
-		// text
-		auto text = mResourceManager->mButtons[i].second.mText;
-		DirectX::XMVECTOR origin = DirectX::XMVectorSet(text.mOrigin.x, text.mOrigin.y, 0, 0);
-		DirectX::XMVECTOR position = DirectX::XMVectorSet(text.mPosition.x, text.mPosition.y, 0, 0);
-		DirectX::XMVECTOR colour = DirectX::XMVectorSet(text.mColour.x, text.mColour.y, text.mColour.z, text.mColour.w);
-
-		mFonts[i]->DrawString(mSpriteBatch.get(), text.mText, position, colour, text.mRotation, origin, text.mScale);
-	}
-	mSpriteBatch->End();
-}
-
 void GUIManager::Update()
 {
 	auto mousePos = mInputManager->MousePos();
@@ -187,11 +145,6 @@ void GUIManager::Update()
 			mResourceManager->mButtons[i].second.mText.mColour = buttonTextOriginalColour;
 		}
 	}
-}
-
-void GUIManager::Clear()
-{
-
 }
 
 void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale)

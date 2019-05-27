@@ -16,7 +16,7 @@ RenderSystem_DX::RenderSystem_DX(const HWND& pWindow, const int pMaxPointLights,
 		ComponentType::COMPONENT_CAMERA },
 		pMaxPointLights,
 		pMaxDirLights),
-mWindow(pWindow), mActiveCamera(nullptr), mActiveGeometry(L""), mActiveShader(L"")
+	mWindow(pWindow), mActiveCamera(nullptr), mActiveGeometry(L""), mActiveShader(L"")
 {
 	if (FAILED(Init()))
 	{
@@ -1024,19 +1024,49 @@ void RenderSystem_DX::Render()
 /// </summary>
 void RenderSystem_DX::RenderGUI() const
 {
-	mGUIManager->Render();
-	mGUIManager->Update();
+	//ID3D11DepthStencilState* ppDepthStencilState = nullptr;
+	//mContext->OMGetDepthStencilState(&ppDepthStencilState, );
 
-	/*mContext->VSSetShader(nullptr, 0, 0);
-	mContext->PSSetShader(nullptr, 0, 0);
-	mContext->HSSetShader(nullptr, 0, 0);
-	mContext->CSSetShader(nullptr, 0, 0);
-	mContext->GSSetShader(nullptr, 0, 0);
+	// standard sprites
+	mGUIManager->GetSpriteBatch()->Begin(DirectX::SpriteSortMode_Deferred, mGUIManager->GetCommonStates()->NonPremultiplied()/*, nullptr, nullptr, nullptr, nullptr*/);
+	//mGUIManager->GetSpriteBatch()->Begin(DirectX::SpriteSortMode_Deferred, mGUIManager->GetCommonStates()->NonPremultiplied(), mTexSampler.Get(), mDepthLessEqual.Get(), mRastNoCullState.Get(), nullptr, XMMatrixIdentity() /*, nullptr, nullptr, nullptr, nullptr*/);
+	for (int i = 0; i < mResourceManager->mSprites.size(); i++)
+	{
+		auto sprite = mResourceManager->mSprites[i].second;
+		mGUIManager->GetSpriteBatch()->Draw(sprite.mTexture.Get(), sprite.mPosition, nullptr, DirectX::Colors::White, sprite.mRotation, sprite.mOrigin, sprite.mScale);
+	}
+	//mGUIManager->GetSpriteBatch()->End();
 
-	mContext->RSSetState(nullptr);
-	mContext->OMSetBlendState(nullptr, nullptr, 0);
-	mContext->OMSetDepthStencilState(nullptr, 0);
-	*/
-	//mContext->OMSetRenderTargets(0, nullptr, nullptr);
-	//mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
+	// standard text
+	//mGUIManager->GetSpriteBatch()->Begin(DirectX::SpriteSortMode_Deferred, mGUIManager->GetCommonStates()->NonPremultiplied()/*, nullptr, nullptr, nullptr, nullptr*/);
+
+	auto test = *mGUIManager->GetTextVector();
+	auto test2 = *mGUIManager->GetFontsVector();
+	for (int i = 0; i < test.size(); i++)
+	{
+		DirectX::XMVECTOR origin = DirectX::XMVectorSet(test[i].mOrigin.x, test[i].mOrigin.y, 0, 0);
+		DirectX::XMVECTOR position = DirectX::XMVectorSet(test[i].mPosition.x, test[i].mPosition.y, 0, 0);
+		DirectX::XMVECTOR colour = DirectX::XMVectorSet(test[i].mColour.x, test[i].mColour.y, test[i].mColour.z, test[i].mColour.w);
+
+		test2[i]->DrawString(mGUIManager->GetSpriteBatch().get(), test[i].mText, position, colour, test[i].mRotation, origin, test[i].mScale);
+	}
+	//mGUIManager->GetSpriteBatch()->End();
+
+	// buttons
+	//mGUIManager->GetSpriteBatch()->Begin(DirectX::SpriteSortMode_Deferred, mGUIManager->GetCommonStates()->NonPremultiplied()/*, nullptr, nullptr, nullptr, nullptr*/);
+	for (int i = 0; i < mResourceManager->mButtons.size(); i++)
+	{
+		// sprites
+		auto sprite = mResourceManager->mButtons[i].second.mSprite;
+		mGUIManager->GetSpriteBatch()->Draw(sprite.mTexture.Get(), sprite.mPosition, nullptr, DirectX::Colors::White, sprite.mRotation, sprite.mOrigin, sprite.mScale);
+
+		// text
+		auto text = mResourceManager->mButtons[i].second.mText;
+		DirectX::XMVECTOR origin = DirectX::XMVectorSet(text.mOrigin.x, text.mOrigin.y, 0, 0);
+		DirectX::XMVECTOR position = DirectX::XMVectorSet(text.mPosition.x, text.mPosition.y, 0, 0);
+		DirectX::XMVECTOR colour = DirectX::XMVectorSet(text.mColour.x, text.mColour.y, text.mColour.z, text.mColour.w);
+
+		test2[i]->DrawString(mGUIManager->GetSpriteBatch().get(), text.mText, position, colour, text.mRotation, origin, text.mScale);
+	}
+	mGUIManager->GetSpriteBatch()->End();
 }

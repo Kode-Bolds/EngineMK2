@@ -42,6 +42,8 @@ void MenuScene::Update()
 /// </summary>
 void MenuScene::OnLoad()
 {
+	mInputManager->CenterCursor(false);
+
 	//Audio Files
 	mMenuMusic = mEcsManager->CreateEntity();
 	Audio audio{L"space.wav", true, false, 0.5f, 1.0f, 0.0f};
@@ -68,7 +70,9 @@ void MenuScene::OnUnload()
 	// Clears GUI from previous scene
 	resourceManager->mSprites.clear();
 	resourceManager->mButtons.clear();
-	mGUIManager->mTexts.clear();
+
+	auto test = *mGUIManager->GetTextVector();
+	test.clear();
 
 	//Delete menu music entity
 	mEcsManager->DestroyEntity(mMenuMusic);
