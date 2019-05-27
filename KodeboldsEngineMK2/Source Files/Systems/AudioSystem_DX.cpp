@@ -1,14 +1,5 @@
 #include "AudioSystem_DX.h"
 
-HRESULT AudioSystem_DX::Init()
-{
-	return E_NOTIMPL;
-}
-
-void AudioSystem_DX::Cleanup()
-{
-}
-
 AudioSystem_DX::AudioSystem_DX() : AudioSystem(std::vector<int>{ComponentType::COMPONENT_AUDIO})
 {
 }
@@ -29,9 +20,8 @@ void AudioSystem_DX::AssignEntity(const Entity& pEntity)
 
 void AudioSystem_DX::ReAssignEntity(const Entity& pEntity)
 {
-	auto test = pEntity.componentMask & mMasks[0];
-	//Checks if entity mask matches the renderable mask
-	if ((test) == mMasks[0])
+	//Checks if entity mask matches the audio mask
+	if ((pEntity.componentMask & mMasks[0]) == mMasks[0])
 	{
 		//If the entity matches audio mask then update entry in systems entity list
 		mEntities[pEntity.ID] = pEntity;
@@ -52,7 +42,7 @@ void AudioSystem_DX::Process()
 			if (mEcsManager->AudioComp(entity.ID)->active)
 			{
 				// play the sound
-				mEcsManager->AudioComp(entity.ID)->mSound->Play(
+				LoadAudio(entity)->Play(
 					mEcsManager->AudioComp(entity.ID)->volume,
 					mEcsManager->AudioComp(entity.ID)->pitch,
 					mEcsManager->AudioComp(entity.ID)->pan);
@@ -71,8 +61,13 @@ void AudioSystem_DX::Process()
 	}
 }
 
-Sound* AudioSystem_DX::LoadAudio(const Entity& pEntity)
+const Sound* AudioSystem_DX::LoadAudio(const Entity& pEntity)
 {
-	Sound* audio = nullptr;// = mResourceManager->LoadAudio(mEcsManager->AudioComp(pEntity.ID)->filename);
+	const Sound* audio = mResourceManager->LoadAudio(this, mEcsManager->AudioComp(pEntity.ID)->filename);
 	return audio;
+}
+
+std::shared_ptr<DirectX::AudioEngine> AudioSystem_DX::AudioEngine() const
+{
+	return mAudioEngine;
 }

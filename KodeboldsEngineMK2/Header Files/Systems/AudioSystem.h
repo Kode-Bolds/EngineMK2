@@ -17,8 +17,5 @@ protected:
 public:
 	virtual ~AudioSystem() {};
 
-	virtual HRESULT Init() = 0;
-	virtual void Cleanup() = 0;
-
-	virtual Sound* LoadAudio(const Entity& pEntity) = 0;
+	virtual const Sound* LoadAudio(const Entity& pEntity) = 0;
 };

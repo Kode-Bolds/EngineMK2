@@ -130,21 +130,35 @@ const ShaderObject* const ResourceManager::LoadShader(const RenderSystem* const 
 	return mShaders.back().second;
 }
 
-Sound* ResourceManager::LoadAudio(std::wstring pFileName)
+/// <summary>
+/// If sound is not already loaded, loads and stores sound file into sound object
+/// If sound is already loaded, retrieves the already created sound object
+/// </summary>
+/// <param name="pAudioSystem">The audio system used for the creation of the sound object</param>
+/// <param name="pFileName">Filename of the sound</param>
+/// <returns>Handle to the sound object associated with the file name</returns>
+const Sound* const ResourceManager::LoadAudio(const AudioSystem* const pAudioSystem, std::wstring& pFileName)
 {
-	// check if the sound already exists,
-	for (int i = 0; i < mSounds.size(); i++)
+	//Find and return from map
+	for (const auto& pair : mSounds)
 	{
-		if (mSounds[i].first == pFileName) {
-			return mSounds[i].second;
+		if (pair.first == pFileName) 
+		{
+			return pair.second;
 		}
 	}
+	//Else create a new sound
+#ifdef DIRECTX
+	Sound* newSound = new Sound_DX();
+#elif
+	Sound* newSound = new Sound_GL();
+#endif
+	newSound->Create(pAudioSystem, pFileName);
 
-	// if not create new sound
-	Sound* sound = new Sound();
-	sound->SetSound(mAudioEngine.get(), pFileName);
+	//Add it to map
+	mSounds.emplace_back(make_pair(pFileName, newSound));
 
-	mSounds.emplace_back(make_pair(pFileName, sound));
+	//Return the newly added sound at the back of the map
 	return mSounds.back().second;
 }
 

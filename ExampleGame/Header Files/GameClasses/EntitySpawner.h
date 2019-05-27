@@ -24,7 +24,7 @@ namespace EntitySpawner
 	/// <returns></returns>
 	static int SpawnLaser(const KodeboldsMath::Vector4& pPosition, const KodeboldsMath::Vector4& pScale, const KodeboldsMath::Vector4& pRotation, const KodeboldsMath::Vector4& pColour,
 		const KodeboldsMath::Vector4& pAcceleration, const float& pMaxSpeed, const float& pRadius, const int pCollisionMask, const int pIgnoreCollisionMask, const float& pLightRange,
-    Sound* pSound)
+    const std::wstring& pSound)
 	{
 		int ID = entitySpawnerEcsManager->CreateEntity();
 
@@ -49,7 +49,7 @@ namespace EntitySpawner
 
 		// Audio Component
 		Audio audio{};
-		audio.mSound = pSound;
+		audio.filename = pSound;
 		audio.active = true;
 		audio.loop = false;
 		audio.volume = 0.5f;
