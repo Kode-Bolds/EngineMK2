@@ -87,7 +87,7 @@ public:
 	InputManager(InputManager const&) = delete;
 	InputManager& operator=(InputManager const&) = delete;
 
-	virtual void CenterCursor() = 0;
+	virtual void CenterCursor(bool pCentered) = 0;
 	virtual void CursorVisible(bool pVisible) = 0;
 
 	//Get key presses this frame

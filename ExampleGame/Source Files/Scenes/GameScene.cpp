@@ -447,6 +447,8 @@ void GameScene::Update()
 /// </summary>
 void GameScene::OnLoad()
 {
+	mInputManager->CenterCursor(true);
+
 	//Audio Files
 	mLaserSound = resourceManager->LoadAudio(L"laser.wav");
 	mEngineSound = resourceManager->LoadAudio(L"engine.wav");
@@ -497,7 +499,7 @@ void GameScene::OnLoad()
 	BoxCollider floorBox{ transCm.translation.XYZ() - Vector3(100, 2, 100), transCm.translation.XYZ() + Vector3(100, 2, 100), CustomCollisionMask::FLOOR, CustomCollisionMask::FLOOR };
 	mEcsManager->AddBoxColliderComp(floorBox, entity);
 	*/
-	
+
 
 	{
 		//Sun

@@ -53,7 +53,7 @@ public:
 	InputManager_DX& operator=(InputManager_DX const&) = delete;
 	static std::shared_ptr<InputManager_DX> Instance();
 
-	void CenterCursor() override;
+	void CenterCursor(bool pCentered) override;
 	void CursorVisible(const bool pVisible) override;
 
 	void SetWindow(const HWND hWnd);

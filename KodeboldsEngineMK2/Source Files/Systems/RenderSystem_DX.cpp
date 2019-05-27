@@ -739,8 +739,8 @@ void RenderSystem_DX::Process()
 	}
 
 
-	RenderGUI();
-	mGUIManager->Update();
+	//RenderGUI();
+	//mGUIManager->Update();
 
 	SwapBuffers();
 }

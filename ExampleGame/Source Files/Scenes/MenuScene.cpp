@@ -42,6 +42,8 @@ void MenuScene::Update()
 /// </summary>
 void MenuScene::OnLoad()
 {
+	mInputManager->CenterCursor(false);
+
 	//Audio Files
 	mMenuMusic = resourceManager->LoadAudio(L"space.wav");
 	//mMenuMusic->Play(1.0f, 1.0f, 0.0f);
