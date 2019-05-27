@@ -10,10 +10,10 @@
 class AudioSystem_DX : public AudioSystem
 {
 private:
-	std::wstring mActiveAudio;
+	DirectX::AUDIO_ENGINE_FLAGS eflags = DirectX::AUDIO_ENGINE_FLAGS::AudioEngine_EnvironmentalReverb | DirectX::AUDIO_ENGINE_FLAGS::AudioEngine_ReverbUseFilters;
+	std::shared_ptr<DirectX::AudioEngine> mAudioEngine = std::make_shared<DirectX::AudioEngine>(eflags);
 
-	HRESULT Init() override;
-	void Cleanup() override;
+	std::wstring mActiveAudio;
 public:
 	explicit AudioSystem_DX();
 	virtual ~AudioSystem_DX();
@@ -22,5 +22,7 @@ public:
 	void ReAssignEntity(const Entity& pEntity) override;
 	void Process() override;
 
-	Sound* LoadAudio(const Entity& pEntity) override;
+	const Sound* LoadAudio(const Entity& pEntity) override;
+
+	std::shared_ptr<DirectX::AudioEngine> AudioEngine() const;
 };

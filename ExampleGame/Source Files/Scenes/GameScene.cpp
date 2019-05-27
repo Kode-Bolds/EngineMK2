@@ -329,11 +329,11 @@ void GameScene::Shooting()
 		{
 			Vector4 leftLaser = mEcsManager->TransformComp(mPlayerShip)->translation + ((mEcsManager->TransformComp(mPlayerShip)->right * -23) + (mEcsManager->TransformComp(mPlayerShip)->up * 5));
 			SpawnLaser(leftLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), mEcsManager->TransformComp(mPlayerShip)->forward * 40, 40,
-				1, CustomCollisionMask::SHIP_LASER, CustomCollisionMask::SHIP_LASER | CustomCollisionMask::SHIP, 100, mLaserSound);
+				1, CustomCollisionMask::SHIP_LASER, CustomCollisionMask::SHIP_LASER | CustomCollisionMask::SHIP, 100, L"space.wav");
 
 			Vector4 rightLaser = mEcsManager->TransformComp(mPlayerShip)->translation + ((mEcsManager->TransformComp(mPlayerShip)->right * 23) + (mEcsManager->TransformComp(mPlayerShip)->up * 5));
 			SpawnLaser(rightLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), mEcsManager->TransformComp(mPlayerShip)->forward * 40, 40,
-				1, CustomCollisionMask::SHIP_LASER, CustomCollisionMask::SHIP_LASER | CustomCollisionMask::SHIP, 100, mLaserSound);
+				1, CustomCollisionMask::SHIP_LASER, CustomCollisionMask::SHIP_LASER | CustomCollisionMask::SHIP, 100, L"space.wav");
 		}
 
 		//If player cam is active, fire gun
@@ -341,7 +341,7 @@ void GameScene::Shooting()
 		{
 			Vector4 gunBarrel = mEcsManager->TransformComp(mPlayerGun)->translation + (mEcsManager->TransformComp(mPlayerGun)->forward * -2);
 			SpawnLaser(gunBarrel, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), mEcsManager->TransformComp(mPlayerGun)->forward * -30, 40,
-				1, CustomCollisionMask::GUN_LASER, CustomCollisionMask::GUN_LASER | CustomCollisionMask::PLAYER, 50, mLaserSound);
+				1, CustomCollisionMask::GUN_LASER, CustomCollisionMask::GUN_LASER | CustomCollisionMask::PLAYER, 50, L"space.wav");
 		}
 	}
 }
@@ -447,10 +447,6 @@ void GameScene::Update()
 /// </summary>
 void GameScene::OnLoad()
 {
-	//Audio Files
-	mLaserSound = resourceManager->LoadAudio(L"laser.wav");
-	mEngineSound = resourceManager->LoadAudio(L"engine.wav");
-
 	//Spawn player ship and attached camera
 	mPlayerShipStartPos = Vector4(0, 0, -50, 1);
 	mPlayerShip = SpawnShip(mPlayerShipStartPos, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 40, 50, CustomCollisionMask::SHIP,
@@ -475,7 +471,7 @@ void GameScene::OnLoad()
 	mCameraSpeed = 20.0f;
 	mRotationSpeed = 10.0f;
 
-	/*
+	
 	//Spawn platform
 	int entity = mEcsManager->CreateEntity();
 	Geometry geom{ L"cube.obj" };
@@ -492,8 +488,6 @@ void GameScene::OnLoad()
 	mEcsManager->AddTransformComp(transCm, entity);
 	BoxCollider floorBox{ transCm.translation.XYZ() - Vector3(100, 2, 100), transCm.translation.XYZ() + Vector3(100, 2, 100), CustomCollisionMask::FLOOR, CustomCollisionMask::FLOOR };
 	mEcsManager->AddBoxColliderComp(floorBox, entity);
-	*/
-	
 
 	{
 		//Sun
@@ -532,7 +526,7 @@ void GameScene::OnLoad()
 		{
 			for (int k = 10; k > 2; k--)
 			{
-				//SpawnAsteroid(Vector4(40 * i, 60 * j, 40 * k, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), 10, 0, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
+				SpawnAsteroid(Vector4(40 * i, 60 * j, 40 * k, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), 10, 0, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
 			}
 		}
 	}
@@ -553,6 +547,24 @@ void GameScene::OnLoad()
 		transCm.translation = Vector4(0, 0, 0, 1);
 
 		mEcsManager->AddTransformComp(transCm, particleEntity);
+	}
+
+	{
+		int screenspaceQuad = mEcsManager->CreateEntity();
+		Geometry geom{ L"cube.obj" };
+		mEcsManager->AddGeometryComp(geom, screenspaceQuad);
+		Shader shaderm{ L"distortionShader.fx" , BlendState::ALPHABLEND, CullState::NONE, DepthState::NONE };
+		//mEcsManager->AddShaderComp(shaderm, screenspaceQuad);
+		Texture texturem{};
+		texturem.diffuse = L"stones.DDS";
+		texturem.normal = L"distortionTest.dds";
+		mEcsManager->AddTextureComp(texturem, screenspaceQuad);
+
+		Transform transCm{};
+		transCm.scale = Vector4(10, 10, 10, 10);
+		transCm.translation = Vector4(0, 0, 0, 1);
+
+		mEcsManager->AddTransformComp(transCm, screenspaceQuad);
 	}
 
 	const int dLight = mEcsManager->CreateEntity();

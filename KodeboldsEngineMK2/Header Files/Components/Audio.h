@@ -1,9 +1,10 @@
 #include "Sound.h"
+#include <string>
 
 struct Audio
 {
-	Sound* mSound;
-	bool active = true;
+	std::wstring filename;
+	bool active = false;
 	bool loop = false;
 	float volume;
 	float pitch;
