@@ -555,6 +555,24 @@ void GameScene::OnLoad()
 		mEcsManager->AddTransformComp(transCm, particleEntity);
 	}
 
+	{
+		int screenspaceQuad = mEcsManager->CreateEntity();
+		Geometry geom{ L"cube.obj" };
+		mEcsManager->AddGeometryComp(geom, screenspaceQuad);
+		Shader shaderm{ L"distortionShader.fx" , BlendState::ALPHABLEND, CullState::NONE, DepthState::NONE };
+		//mEcsManager->AddShaderComp(shaderm, screenspaceQuad);
+		Texture texturem{};
+		texturem.diffuse = L"stones.DDS";
+		texturem.normal = L"distortionTest.dds";
+		mEcsManager->AddTextureComp(texturem, screenspaceQuad);
+
+		Transform transCm{};
+		transCm.scale = Vector4(10, 10, 10, 10);
+		transCm.translation = Vector4(0, 0, 0, 1);
+
+		mEcsManager->AddTransformComp(transCm, screenspaceQuad);
+	}
+
 	const int dLight = mEcsManager->CreateEntity();
 	DirectionalLight dl{ Vector4(0, 0, 1, 1), Vector4(1.0f, 0.8f, 0.7f, 1) };
 	mEcsManager->AddDirectionalLightComp(dl, dLight);
