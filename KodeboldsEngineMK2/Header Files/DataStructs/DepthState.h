@@ -2,6 +2,7 @@
 
 enum class DepthState
 {
+	NOTSET,
 	NONE,
 	LESSEQUAL
 };
