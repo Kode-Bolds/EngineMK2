@@ -38,7 +38,7 @@ private:
 	void SetLights() override;
 
 public:
-	explicit RenderSystem_GL(const HWND& pWindow, const int pMaxLights);
+	explicit RenderSystem_GL(const HWND& pWindow, const int pMaxPointLights, const int pDirLights);
 	virtual ~RenderSystem_GL();
 
 
