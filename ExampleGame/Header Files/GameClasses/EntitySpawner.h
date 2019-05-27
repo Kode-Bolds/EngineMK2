@@ -103,7 +103,7 @@ namespace EntitySpawner
 		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
 
 		//Shader component
-		Shader shader{ L"defaultShader.fx" , BlendState::NOBLEND, CullState::BACK, DepthState::NONE };
+		Shader shader{ L"defaultShader.fx" , BlendState::NOBLEND, CullState::BACK, DepthState::LESSEQUAL };
 		entitySpawnerEcsManager->AddShaderComp(shader, ID);
 
 		//Texture component
@@ -150,7 +150,7 @@ namespace EntitySpawner
 		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
 
 		//Shader component
-		Shader shader{ L"defaultShader.fx", BlendState::NOBLEND, CullState::BACK, DepthState::NONE };
+		Shader shader{ L"defaultShader.fx", BlendState::NOBLEND, CullState::BACK, DepthState::LESSEQUAL };
 		entitySpawnerEcsManager->AddShaderComp(shader, ID);
 
 		//Texture component
@@ -186,7 +186,7 @@ namespace EntitySpawner
 		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
 
 		//Shader component
-		Shader shader{ L"defaultShader.fx", BlendState::NOBLEND, CullState::BACK, DepthState::NONE };
+		Shader shader{ L"defaultShader.fx", BlendState::NOBLEND, CullState::BACK, DepthState::LESSEQUAL };
 		entitySpawnerEcsManager->AddShaderComp(shader, ID);
 
 		//Texture component

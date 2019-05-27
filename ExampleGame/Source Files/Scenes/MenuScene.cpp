@@ -21,9 +21,13 @@ MenuScene::~MenuScene()
 /// </summary>
 void MenuScene::Update()
 {
+	// Exit the game
+	if (mInputManager->KeyDown(KEYS::KEY_ESC))
+	{
+		exit(0);
+	}
 
-	//Switch between cameras
-	//Ship
+	// play game
 #ifdef  DIRECTX
 	if (mInputManager->KeyDown(KEYS::KEY_ENTER))
 	{
@@ -49,11 +53,11 @@ void MenuScene::OnLoad()
 
 	mGUIManager->CreateButton(L"button.png", L"AlienEncounters.spritefont", L"PLAY", 0, 0.35f, 0.65f,
 		GUIManager::ButtonOrigin::CENTRE, GUIManager::ButtonPosition::CENTRE_MIDDLE, Vector2(400, 0),
-		Vector2(0, 10), Vector4(1.0f, 0.0f, 0.0f, 1.0f), std::bind(&MenuScene::OnClick_PlayButton, this));
+		Vector2(0, 10), Vector4(0.0f, 0.0f, 0.0f, 1.0f), Vector4(1.0f, 0.0f, 0.0f, 1.0f), std::bind(&MenuScene::OnClick_PlayButton, this));
 
 	mGUIManager->CreateButton(L"button.png", L"AlienEncounters.spritefont", L"EXIT", 0, 0.35f, 0.65f,
 		GUIManager::ButtonOrigin::CENTRE, GUIManager::ButtonPosition::CENTRE_MIDDLE, Vector2(400, 100),
-		Vector2(0, 10), Vector4(1.0f, 0.0f, 0.0f, 1.0f), std::bind(&MenuScene::OnClick_ExitButton, this));
+		Vector2(0, 10), Vector4(0.0f, 0.0f, 0.0f, 1.0f), Vector4(1.0f, 1.0f, 0.0f, 1.0f), std::bind(&MenuScene::OnClick_ExitButton, this));
 }
 
 /// <summary>
@@ -63,6 +67,7 @@ void MenuScene::OnUnload()
 {
 	// Clears GUI from previous scene
 	resourceManager->mSprites.clear();
+	resourceManager->mButtons.clear();
 	mGUIManager->mTexts.clear();
 
 	//Delete menu music entity
@@ -71,7 +76,7 @@ void MenuScene::OnUnload()
 
 void MenuScene::OnClick_PlayButton()
 {
-
+	mSceneManager->LoadScene<GameScene>();
 }
 
 void MenuScene::OnClick_ExitButton()

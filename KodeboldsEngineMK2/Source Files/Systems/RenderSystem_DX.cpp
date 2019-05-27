@@ -153,7 +153,7 @@ HRESULT RenderSystem_DX::CreateDevice()
 }
 
 /// <summary>
-/// Creates swap chain for directx 
+/// Creates swap chain for directx
 /// </summary>
 /// <returns>HRESULT status code</returns>
 HRESULT RenderSystem_DX::CreateSwapChain()
@@ -293,20 +293,34 @@ HRESULT RenderSystem_DX::CreateDepth()
 
 	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
 
+	//Depth state none
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
 	ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
 	depthStencilDesc.DepthEnable = true;
-	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
-	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+
+	depthStencilDesc.StencilEnable = false;
+	depthStencilDesc.StencilReadMask = 0xFF;
+	depthStencilDesc.StencilWriteMask = 0xFF;
+
+
 	hr = mDevice->CreateDepthStencilState(&depthStencilDesc, mDepthNone.GetAddressOf());
 	if (FAILED(hr))
 		return hr;
+
+
+	//Depth state equal
 
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc2;
 	ZeroMemory(&depthStencilDesc2, sizeof(D3D11_DEPTH_STENCIL_DESC));
 	depthStencilDesc2.DepthEnable = true;
 	depthStencilDesc2.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	depthStencilDesc2.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+
+	depthStencilDesc2.StencilEnable = false;
+	depthStencilDesc2.StencilReadMask = 0xFF;
+	depthStencilDesc2.StencilWriteMask = 0xFF;
 	mDevice->CreateDepthStencilState(&depthStencilDesc2, mDepthLessEqual.GetAddressOf());
 	if (FAILED(hr))
 		return hr;
@@ -662,8 +676,8 @@ void RenderSystem_DX::Process()
 {
 	ClearView();
 
-	//mGUIManager->Render();
-	//mGUIManager->Update();
+	mGUIManager->Render();
+	mGUIManager->Update();
 
 	/*mContext->VSSetShader(nullptr, 0, 0);
 	mContext->PSSetShader(nullptr, 0, 0);
@@ -735,7 +749,7 @@ void RenderSystem_DX::SwapBuffers() const
 }
 
 /// <summary>
-/// Loads the geometry for the given entity into a VBO object 
+/// Loads the geometry for the given entity into a VBO object
 /// </summary>
 /// <param name="pEntity">Entity to load geometry for</param>
 void RenderSystem_DX::LoadGeometry(const Entity& pEntity)
@@ -771,11 +785,14 @@ void RenderSystem_DX::LoadShaders(const Entity& pEntity)
 			const auto blendSample = 0xffffffff;
 			if (blend == BlendState::NOBLEND)
 			{
-				mContext->OMSetBlendState(mNoBlend.Get(), blendFactor, blendSample);
+				mContext->OMSetBlendState(mNoBlend.Get(), nullptr, blendSample);
+
 			}
 			else if (blend == BlendState::ALPHABLEND)
 			{
-				mContext->OMSetBlendState(mAlphaBlend.Get(), blendFactor, blendSample);
+				mContext->OMSetBlendState(mAlphaBlend.Get(), nullptr, blendSample);
+				//OutputDebugString(L"ALPHA BLEND");
+
 			}
 		}
 
@@ -806,10 +823,14 @@ void RenderSystem_DX::LoadShaders(const Entity& pEntity)
 			if (depth == DepthState::NONE)
 			{
 				mContext->OMSetDepthStencilState(mDepthNone.Get(), 1);
+				//OutputDebugString(L"NO DEPTH");
+
 			}
 			else if (depth == DepthState::LESSEQUAL)
 			{
 				mContext->OMSetDepthStencilState(mDepthLessEqual.Get(), 1);
+				//OutputDebugString(L"NO DEPTH");
+
 			}
 		}
 	}
@@ -907,7 +928,7 @@ void RenderSystem_DX::SetLights()
 	{
 		mLightCB.numPointLights = mPointLights.size();
 	}
-	
+
 	for (int i = 0; i < mLightCB.numPointLights; ++i)
 	{
 		const auto plComp = mEcsManager->PointLightComp(mPointLights[i].ID);

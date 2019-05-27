@@ -53,8 +53,8 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	//Render system and input manager
 #ifdef DIRECTX
 	std::shared_ptr<InputManager_DX> inputManager = InputManager_DX::Instance();
-	inputManager->SetWindow(hWnd);
-	ecsManager->AddRenderSystem(std::make_shared<RenderSystem_DX>(hWnd, 7));
+	//inputManager->SetWindow(hWnd);
+	ecsManager->AddRenderSystem(std::make_shared<RenderSystem_DX>(hWnd, 7, 2)); // 20
 #elif OPENGL
 	ecsManager->AddRenderSystem(std::make_shared<RenderSystem_GL>(hWnd, 20, 2));
 #endif
@@ -152,7 +152,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 
 	//Scenes
 	//sceneManager->LoadScene<GameScene>();
-	sceneManager->LoadScene<MenuScene>();
+	sceneManager->LoadScene<GameScene>();
 
 	//Main message loop
 	MSG msg = { 0 };

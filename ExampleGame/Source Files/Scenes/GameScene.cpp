@@ -347,12 +347,12 @@ void GameScene::Shooting()
 }
 
 /// <summary>
-/// 
+///
 /// </summary>
 /// <param name="pAxis"></param>
 /// <param name="pPoint"></param>
 /// <param name="pAngle"></param>
-void GameScene::RotateAroundPoint(const int pEntity, const KodeboldsMath::Vector4 & pAxis, const KodeboldsMath::Vector4 & pPoint, const float & pAngle)
+void GameScene::RotateAroundPoint(const int pEntity, const KodeboldsMath::Vector4 & pAxis, const KodeboldsMath::Vector4 & pPoint, const float& pAngle)
 {
 	const float angleInRadians = DegreesToRadians(pAngle);
 
@@ -388,6 +388,12 @@ void GameScene::Update()
 
 	//Switch between cameras
 	//Ship
+
+	// Exit
+	if (mInputManager->KeyDown(KEYS::KEY_ESC))
+	{
+		exit(0);
+	}
 	if (mInputManager->KeyDown(KEYS::KEY_F1))
 	{
 		mEcsManager->CameraComp(mPlayerShipCam)->active = true;
@@ -465,11 +471,12 @@ void GameScene::OnLoad()
 	mCameraSpeed = 20.0f;
 	mRotationSpeed = 10.0f;
 
-	//Spawn platform 
+	/*
+	//Spawn platform
 	int entity = mEcsManager->CreateEntity();
 	Geometry geom{ L"cube.obj" };
 	mEcsManager->AddGeometryComp(geom, entity);
-	Shader shaderm{ L"defaultShader.fx" , BlendState::NOBLEND, CullState::BACK, DepthState::NONE };
+	Shader shaderm{ L"defaultShader.fx" , BlendState::NOBLEND, CullState::BACK, DepthState::LESSEQUAL };
 	mEcsManager->AddShaderComp(shaderm, entity);
 	Texture texturem{};
 	texturem.diffuse = L"stones.dds";
@@ -481,24 +488,8 @@ void GameScene::OnLoad()
 	mEcsManager->AddTransformComp(transCm, entity);
 	BoxCollider floorBox{ transCm.translation.XYZ() - Vector3(100, 2, 100), transCm.translation.XYZ() + Vector3(100, 2, 100), CustomCollisionMask::FLOOR, CustomCollisionMask::FLOOR };
 	mEcsManager->AddBoxColliderComp(floorBox, entity);
-
-	{
-		int particleEntity = mEcsManager->CreateEntity();
-		Geometry geom{ L"quad100.obj" };
-		mEcsManager->AddGeometryComp(geom, particleEntity);
-		Shader shaderm{ L"thrusterShader.fx" , BlendState::ALPHABLEND, CullState::FRONT, DepthState::NONE };
-		mEcsManager->AddShaderComp(shaderm, particleEntity);
-		Texture texturem{};
-		texturem.diffuse = L"";
-		texturem.normal = L"";
-		mEcsManager->AddTextureComp(texturem, particleEntity);
-
-		Transform transCm{};
-		transCm.scale = Vector4(10, 10, 10, 10);
-		transCm.translation = Vector4(0, 0, 0, 1);
-
-		mEcsManager->AddTransformComp(transCm, particleEntity);
-	}
+	*/
+	
 
 	{
 		//Sun
@@ -537,9 +528,45 @@ void GameScene::OnLoad()
 		{
 			for (int k = 10; k > 2; k--)
 			{
-				SpawnAsteroid(Vector4(40 * i, 60 * j, 40 * k, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), 10, 0, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
+				//SpawnAsteroid(Vector4(40 * i, 60 * j, 40 * k, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), 10, 0, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
 			}
 		}
+	}
+
+	{
+		int particleEntity = mEcsManager->CreateEntity();
+		Geometry geom{ L"quad100.obj" };
+		mEcsManager->AddGeometryComp(geom, particleEntity);
+		Shader shaderm{ L"thrusterShader.fx" , BlendState::ALPHABLEND, CullState::NONE, DepthState::NONE };
+		mEcsManager->AddShaderComp(shaderm, particleEntity);
+		Texture texturem{};
+		texturem.diffuse = L"";
+		texturem.normal = L"";
+		mEcsManager->AddTextureComp(texturem, particleEntity);
+
+		Transform transCm{};
+		transCm.scale = Vector4(10, 10, 10, 10);
+		transCm.translation = Vector4(0, 0, 0, 1);
+
+		mEcsManager->AddTransformComp(transCm, particleEntity);
+	}
+
+	{
+		int screenspaceQuad = mEcsManager->CreateEntity();
+		Geometry geom{ L"cube.obj" };
+		mEcsManager->AddGeometryComp(geom, screenspaceQuad);
+		Shader shaderm{ L"distortionShader.fx" , BlendState::ALPHABLEND, CullState::NONE, DepthState::NONE };
+		//mEcsManager->AddShaderComp(shaderm, screenspaceQuad);
+		Texture texturem{};
+		texturem.diffuse = L"stones.DDS";
+		texturem.normal = L"distortionTest.dds";
+		mEcsManager->AddTextureComp(texturem, screenspaceQuad);
+
+		Transform transCm{};
+		transCm.scale = Vector4(10, 10, 10, 10);
+		transCm.translation = Vector4(0, 0, 0, 1);
+
+		mEcsManager->AddTransformComp(transCm, screenspaceQuad);
 	}
 
 	const int dLight = mEcsManager->CreateEntity();
