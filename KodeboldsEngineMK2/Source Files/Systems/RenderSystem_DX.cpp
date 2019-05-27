@@ -676,8 +676,8 @@ void RenderSystem_DX::Process()
 {
 	ClearView();
 
-	//mGUIManager->Render();
-	//mGUIManager->Update();
+	mGUIManager->Render();
+	mGUIManager->Update();
 
 	/*mContext->VSSetShader(nullptr, 0, 0);
 	mContext->PSSetShader(nullptr, 0, 0);

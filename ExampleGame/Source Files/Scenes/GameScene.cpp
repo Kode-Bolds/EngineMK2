@@ -352,7 +352,7 @@ void GameScene::Shooting()
 /// <param name="pAxis"></param>
 /// <param name="pPoint"></param>
 /// <param name="pAngle"></param>
-void GameScene::RotateAroundPoint(const int pEntity, const KodeboldsMath::Vector4 & pAxis, const KodeboldsMath::Vector4 & pPoint, const float & pAngle)
+void GameScene::RotateAroundPoint(const int pEntity, const KodeboldsMath::Vector4 & pAxis, const KodeboldsMath::Vector4 & pPoint, const float& pAngle)
 {
 	const float angleInRadians = DegreesToRadians(pAngle);
 
@@ -388,6 +388,12 @@ void GameScene::Update()
 
 	//Switch between cameras
 	//Ship
+
+	// Exit
+	if (mInputManager->KeyDown(KEYS::KEY_ESC))
+	{
+		exit(0);
+	}
 	if (mInputManager->KeyDown(KEYS::KEY_F1))
 	{
 		mEcsManager->CameraComp(mPlayerShipCam)->active = true;

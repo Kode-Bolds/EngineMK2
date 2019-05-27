@@ -107,6 +107,7 @@ void GUIManager::InititialiseGUI(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 
 void GUIManager::Render()
 {
+	// standard sprites
 	mSpriteBatch->Begin(DirectX::SpriteSortMode_Deferred, mStates->NonPremultiplied(), nullptr, nullptr, nullptr, nullptr);
 	for (int i = 0; i < mResourceManager->mSprites.size(); i++)
 	{
@@ -115,28 +116,75 @@ void GUIManager::Render()
 	}
 	mSpriteBatch->End();
 
+	// standard text
 	mSpriteBatch->Begin(DirectX::SpriteSortMode_Deferred, mStates->NonPremultiplied(), nullptr, nullptr, nullptr, nullptr);
 	for (int i = 0; i < mTexts.size(); i++)
 	{
-		DirectX::XMVECTOR origin = DirectX::XMVectorSet(mTexts[i].mOrigin.x, mTexts[i].mOrigin.y, 0, 0);// mFonts[0]->MeasureString(pText);
+		DirectX::XMVECTOR origin = DirectX::XMVectorSet(mTexts[i].mOrigin.x, mTexts[i].mOrigin.y, 0, 0);
 		DirectX::XMVECTOR position = DirectX::XMVectorSet(mTexts[i].mPosition.x, mTexts[i].mPosition.y, 0, 0);
 		DirectX::XMVECTOR colour = DirectX::XMVectorSet(mTexts[i].mColour.x, mTexts[i].mColour.y, mTexts[i].mColour.z, mTexts[i].mColour.w);
 
 		mFonts[i]->DrawString(mSpriteBatch.get(), mTexts[i].mText, position, colour, mTexts[i].mRotation, origin, mTexts[i].mScale);
 	}
 	mSpriteBatch->End();
+
+	// buttons
+	mSpriteBatch->Begin(DirectX::SpriteSortMode_Deferred, mStates->NonPremultiplied(), nullptr, nullptr, nullptr, nullptr);
+	for (int i = 0; i < mResourceManager->mButtons.size(); i++)
+	{
+		// sprites
+		auto sprite = mResourceManager->mButtons[i].second.mSprite;
+		mSpriteBatch->Draw(sprite.mTexture.Get(), sprite.mPosition, nullptr, DirectX::Colors::White, sprite.mRotation, sprite.mOrigin, sprite.mScale);
+
+		// text
+		auto text = mResourceManager->mButtons[i].second.mText;
+		DirectX::XMVECTOR origin = DirectX::XMVectorSet(text.mOrigin.x, text.mOrigin.y, 0, 0);
+		DirectX::XMVECTOR position = DirectX::XMVectorSet(text.mPosition.x, text.mPosition.y, 0, 0);
+		DirectX::XMVECTOR colour = DirectX::XMVectorSet(text.mColour.x, text.mColour.y, text.mColour.z, text.mColour.w);
+
+		mFonts[i]->DrawString(mSpriteBatch.get(), text.mText, position, colour, text.mRotation, origin, text.mScale);
+	}
+	mSpriteBatch->End();
 }
 
 void GUIManager::Update()
 {
+	auto mousePos = mInputManager->MousePos();
+
 	for (int i = 0; i < mResourceManager->mButtons.size(); i++)
 	{
-		// TODO: check for mouse entering the bounds and clicking
+		auto buttonBounds = mResourceManager->mButtons[i].second.mSprite.mPosition;
+		auto buttonWidth = mResourceManager->mButtons[i].second.mSprite.mWidth;
+		auto buttonHeight = mResourceManager->mButtons[i].second.mSprite.mHeight;
 
-		if (false)
+		// check if mouse is in bounds
+		if (mousePos.X > (buttonBounds.x - (buttonWidth / 3)) && mousePos.X < (buttonBounds.x + (buttonWidth / 3)) &&
+			mousePos.Y >(buttonBounds.y - (buttonHeight / 25)) && mousePos.Y < (buttonBounds.y + (buttonHeight / 25)))
 		{
-			// TODO: if true, trigger on click function
-			mResourceManager->mButtons[i].second.mOnClickFunction();
+			// if mouse clicked, trigger onclick function
+			if (mInputManager->KeyDown(KEYS::MOUSE_BUTTON_LEFT))
+			{
+				mResourceManager->mButtons[i].second.mOnClickFunction();
+			}
+
+			// trigger on hover - colour change
+			auto buttonTextHoverColour = DirectX::XMFLOAT4(
+				mResourceManager->mButtons[i].second.mTextColourHover.X,
+				mResourceManager->mButtons[i].second.mTextColourHover.Y,
+				mResourceManager->mButtons[i].second.mTextColourHover.Z,
+				mResourceManager->mButtons[i].second.mTextColourHover.W);
+			mResourceManager->mButtons[i].second.mText.mColour = buttonTextHoverColour;
+
+		}
+		else
+		{
+			// return to original text colour
+			auto buttonTextOriginalColour = DirectX::XMFLOAT4(
+				mResourceManager->mButtons[i].second.mTextColourOriginal.X,
+				mResourceManager->mButtons[i].second.mTextColourOriginal.Y,
+				mResourceManager->mButtons[i].second.mTextColourOriginal.Z,
+				mResourceManager->mButtons[i].second.mTextColourOriginal.W);
+			mResourceManager->mButtons[i].second.mText.mColour = buttonTextOriginalColour;
 		}
 	}
 }
@@ -299,11 +347,13 @@ void GUIManager::LoadFont(const wchar_t* pFontName)
 
 void GUIManager::CreateButton(const wchar_t* pFileName, const wchar_t* pFontName, const wchar_t* pText, float pRotation, float pButtonScale, float pTextScale,
 	ButtonOrigin pOrigin, ButtonPosition pPosition, KodeboldsMath::Vector2 pButtonPadding, KodeboldsMath::Vector2 pTextPadding, KodeboldsMath::Vector4 pTextColour,
-	std::function<void()> pOnClickFunction)
+	KodeboldsMath::Vector4 pTextColourHover, std::function<void()> pOnClickFunction)
 {
 	// Create initial button
 	Button button;
 	button.mOnClickFunction = pOnClickFunction;
+	button.mTextColourHover = pTextColourHover;
+	button.mTextColourOriginal = pTextColour;
 
 	// Create Initial Sprite
 	Sprite sprite;
@@ -356,7 +406,7 @@ void GUIManager::CreateButton(const wchar_t* pFileName, const wchar_t* pFontName
 	}
 
 	// Add sprite to vector and 
-	mResourceManager->mSprites.emplace_back(std::make_pair(pFileName, sprite));
+	//mResourceManager->mSprites.emplace_back(std::make_pair(pFileName, sprite));
 
 	// Button Text
 	Text text;
@@ -381,7 +431,7 @@ void GUIManager::CreateButton(const wchar_t* pFileName, const wchar_t* pFontName
 	}
 
 	text.mPosition = DirectX::XMFLOAT2(sprite.mPosition.x + pTextPadding.X, sprite.mPosition.y + pTextPadding.Y);
-	mTexts.emplace_back(text);
+	//mTexts.emplace_back(text);
 
 	button.mSprite = sprite;
 	button.mText = text;
