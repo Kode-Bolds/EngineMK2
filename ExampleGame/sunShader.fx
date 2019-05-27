@@ -190,8 +190,6 @@ float noise2(in float2 st)
 //--------------------------------------------------------------------------------------
 float4 PS(PS_INPUT input) : SV_Target
 {
-	return txRenderTexture.Sample(txDiffSampler, input.TexCoord);
-
 	float fill = 0;
 
 	float2 uv = input.TexCoord * 5 + noise((input.TexCoord) * 2) + Time * 0.01; //+ (noise(input.TexCoord * 20));// *time;

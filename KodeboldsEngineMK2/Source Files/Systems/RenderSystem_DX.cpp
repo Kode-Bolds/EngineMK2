@@ -511,7 +511,7 @@ HRESULT RenderSystem_DX::CreateRenderTexture()
 	D3D11_TEXTURE2D_DESC textureDesc;
 	ZeroMemory(&textureDesc, sizeof(textureDesc));
 	textureDesc.Width = 1920;
-	textureDesc.Height = 1080;
+	textureDesc.Height = 1062;
 	textureDesc.MipLevels = 1;
 	textureDesc.ArraySize = 1;
 	textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
