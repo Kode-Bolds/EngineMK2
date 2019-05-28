@@ -732,6 +732,7 @@ void RenderSystem_DX::Process()
 
 	SetLights();
 
+
 	//Render to texture
 	mContext->OMSetRenderTargets(1, mTextureRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
 	Render();
@@ -742,6 +743,8 @@ void RenderSystem_DX::Process()
 	//Render to window
 	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
 	Render();
+
+	RenderGUI();
 
 	SwapBuffers();
 }
@@ -993,7 +996,7 @@ void RenderSystem_DX::Render()
 			LoadGeometry(entity);
 			LoadTexture(entity);
 			LoadShaders(entity);
-			
+
 			//Set world matrix
 			mCB.mWorld = XMFLOAT4X4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(entity.ID)->transform)));
 
@@ -1024,6 +1027,29 @@ void RenderSystem_DX::Render()
 /// </summary>
 void RenderSystem_DX::RenderGUI() const
 {
+
+#pragma region PRIMITIVE SHAPES
+	//mContext->OMSetBlendState(mGUIManager->GetCommonStates()->Opaque(), nullptr, 0xFFFFFFFF);
+	//mContext->OMSetDepthStencilState(mGUIManager->GetCommonStates()->DepthNone(), 0);
+	//mContext->RSSetState(mGUIManager->GetCommonStates()->CullNone());
+	mGUIManager->GetBasicEffect()->Apply(mContext.Get());
+	//mContext->IASetInputLayout(mGUIManager->GetInputLayout().Get());
+
+	mGUIManager->GetPrimitiveBatch()->Begin();
+
+	// QUADS
+	auto quads = *mGUIManager->GetQuads();
+	for (int i = 0; i < quads.size(); i++)
+	{
+		if (quads[i].mIsVisible)
+		{
+			mGUIManager->GetPrimitiveBatch()->DrawQuad(quads[i].mTopLeftPoint, quads[i].mTopRightPoint, quads[i].mBottomRightPoint, quads[i].mBottomLeftPoint);
+		}
+	}
+	mGUIManager->GetPrimitiveBatch()->End();
+#pragma endregion
+
+
 	//ID3D11DepthStencilState* ppDepthStencilState = nullptr;
 	//mContext->OMGetDepthStencilState(&ppDepthStencilState, );
 
@@ -1033,7 +1059,11 @@ void RenderSystem_DX::RenderGUI() const
 	for (int i = 0; i < mResourceManager->mSprites.size(); i++)
 	{
 		auto sprite = mResourceManager->mSprites[i].second;
-		mGUIManager->GetSpriteBatch()->Draw(sprite.mTexture.Get(), sprite.mPosition, nullptr, DirectX::Colors::White, sprite.mRotation, sprite.mOrigin, sprite.mScale);
+
+		if (sprite.mIsVisible)
+		{
+			mGUIManager->GetSpriteBatch()->Draw(sprite.mTexture.Get(), sprite.mPosition, nullptr, DirectX::Colors::White, sprite.mRotation, sprite.mOrigin, sprite.mScale);
+		}
 	}
 	//mGUIManager->GetSpriteBatch()->End();
 
@@ -1044,11 +1074,14 @@ void RenderSystem_DX::RenderGUI() const
 	auto test2 = *mGUIManager->GetFontsVector();
 	for (int i = 0; i < test.size(); i++)
 	{
-		DirectX::XMVECTOR origin = DirectX::XMVectorSet(test[i].mOrigin.x, test[i].mOrigin.y, 0, 0);
-		DirectX::XMVECTOR position = DirectX::XMVectorSet(test[i].mPosition.x, test[i].mPosition.y, 0, 0);
-		DirectX::XMVECTOR colour = DirectX::XMVectorSet(test[i].mColour.x, test[i].mColour.y, test[i].mColour.z, test[i].mColour.w);
+		if (test[i].mIsVisible)
+		{
+			DirectX::XMVECTOR origin = DirectX::XMVectorSet(test[i].mOrigin.x, test[i].mOrigin.y, 0, 0);
+			DirectX::XMVECTOR position = DirectX::XMVectorSet(test[i].mPosition.x, test[i].mPosition.y, 0, 0);
+			DirectX::XMVECTOR colour = DirectX::XMVectorSet(test[i].mColour.x, test[i].mColour.y, test[i].mColour.z, test[i].mColour.w);
 
-		test2[i]->DrawString(mGUIManager->GetSpriteBatch().get(), test[i].mText, position, colour, test[i].mRotation, origin, test[i].mScale);
+			test2[i]->DrawString(mGUIManager->GetSpriteBatch().get(), test[i].mText, position, colour, test[i].mRotation, origin, test[i].mScale);
+		}
 	}
 	//mGUIManager->GetSpriteBatch()->End();
 
@@ -1058,15 +1091,23 @@ void RenderSystem_DX::RenderGUI() const
 	{
 		// sprites
 		auto sprite = mResourceManager->mButtons[i].second.mSprite;
-		mGUIManager->GetSpriteBatch()->Draw(sprite.mTexture.Get(), sprite.mPosition, nullptr, DirectX::Colors::White, sprite.mRotation, sprite.mOrigin, sprite.mScale);
+
+		if (sprite.mIsVisible)
+		{
+			mGUIManager->GetSpriteBatch()->Draw(sprite.mTexture.Get(), sprite.mPosition, nullptr, DirectX::Colors::White, sprite.mRotation, sprite.mOrigin, sprite.mScale);
+		}
 
 		// text
 		auto text = mResourceManager->mButtons[i].second.mText;
-		DirectX::XMVECTOR origin = DirectX::XMVectorSet(text.mOrigin.x, text.mOrigin.y, 0, 0);
-		DirectX::XMVECTOR position = DirectX::XMVectorSet(text.mPosition.x, text.mPosition.y, 0, 0);
-		DirectX::XMVECTOR colour = DirectX::XMVectorSet(text.mColour.x, text.mColour.y, text.mColour.z, text.mColour.w);
 
-		test2[i]->DrawString(mGUIManager->GetSpriteBatch().get(), text.mText, position, colour, text.mRotation, origin, text.mScale);
+		if (text.mIsVisible)
+		{
+			DirectX::XMVECTOR origin = DirectX::XMVectorSet(text.mOrigin.x, text.mOrigin.y, 0, 0);
+			DirectX::XMVECTOR position = DirectX::XMVectorSet(text.mPosition.x, text.mPosition.y, 0, 0);
+			DirectX::XMVECTOR colour = DirectX::XMVectorSet(text.mColour.x, text.mColour.y, text.mColour.z, text.mColour.w);
+
+			test2[i]->DrawString(mGUIManager->GetSpriteBatch().get(), text.mText, position, colour, text.mRotation, origin, text.mScale);
+		}
 	}
 	mGUIManager->GetSpriteBatch()->End();
 }

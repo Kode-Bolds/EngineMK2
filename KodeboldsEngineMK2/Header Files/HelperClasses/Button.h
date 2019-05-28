@@ -14,6 +14,8 @@ public:
 	KodeboldsMath::Vector4 mTextColourOriginal;
 	KodeboldsMath::Vector4 mTextColourHover;
 
+	bool mIsVisible;
+
 	std::function<void()> mOnClickFunction = nullptr;
 	//std::function<void()> mOnHoverFunction = nullptr;
 };

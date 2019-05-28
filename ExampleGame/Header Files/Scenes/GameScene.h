@@ -23,6 +23,13 @@ private:
 	std::shared_ptr<GUIManager> mGUIManager = GUIManager::Instance();
 	std::shared_ptr<ResourceManager> resourceManager = ResourceManager::Instance();
 
+	enum GAME_STATE {
+		PLAYING,
+		PAUSED,
+		LOADING
+	};
+	GAME_STATE mGameState = GAME_STATE::LOADING;
+
 	int mPlayer;
 	int mPlayerGun;
 	int mPlayerShip;
@@ -45,6 +52,20 @@ private:
 	void Shooting();
 	void RotateAroundPoint(const int pEntity, const KodeboldsMath::Vector4& pAxis, const KodeboldsMath::Vector4& pPoint, const float& pAngle);
 
+
+	// PAUSED ASSETS
+	Quad* mPausedOverlay = nullptr;
+	Text* mPausedText = nullptr;
+	Button* mPausedExitButton = nullptr;
+
+
+
+
+
+
+
+
+
 public:
 	//Structors
 	GameScene();
@@ -53,4 +74,5 @@ public:
 	void Update() override;
 	void OnLoad() override;
 	void OnUnload() override;
+	void Pause();
 };

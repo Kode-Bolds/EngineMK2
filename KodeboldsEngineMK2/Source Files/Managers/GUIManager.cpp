@@ -102,7 +102,23 @@ void GUIManager::InititialiseGUI(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	mContext = pContext;
 
 	mSpriteBatch = std::make_unique<DirectX::SpriteBatch>(pContext);
+	mPrimitiveBatch = std::make_unique<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>>(pContext);
 	mStates = std::make_unique<DirectX::CommonStates>(pDevice);
+
+	basicEffect = std::make_unique<DirectX::BasicEffect>(pDevice);
+
+	basicEffect->SetProjection(DirectX::XMMatrixOrthographicOffCenterRH(0, pWidth, pHeight, 0, 0, 1));
+	basicEffect->SetVertexColorEnabled(true);
+
+	void const* shaderByteCode;
+	size_t byteCodeLength;
+
+	basicEffect->GetVertexShaderBytecode(&shaderByteCode, &byteCodeLength);
+
+	pDevice->CreateInputLayout(DirectX::VertexPositionColor::InputElements,
+		DirectX::VertexPositionColor::InputElementCount,
+		shaderByteCode, byteCodeLength,
+		inputLayout.GetAddressOf());
 }
 
 void GUIManager::Update()
@@ -147,13 +163,14 @@ void GUIManager::Update()
 	}
 }
 
-void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale)
+void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale, bool pIsVisible)
 {
 	Sprite sprite;
 	sprite.mOrigin = DirectX::XMFLOAT2(pOrigin.X, pOrigin.Y);
 	sprite.mPosition = DirectX::XMFLOAT2(pPosition.X + pPadding.X, pPosition.Y + pPadding.Y);
 	sprite.mRotation = pRotation;
 	sprite.mScale = pScale;
+	sprite.mIsVisible = pIsVisible;
 
 	mResourceManager->mSprites.emplace_back(std::make_pair(pFileName, sprite));
 
@@ -174,7 +191,7 @@ void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOr
 	mResourceManager->mSprites.back().second.mWidth = desc.Width;
 	mResourceManager->mSprites.back().second.mHeight = desc.Height;
 }
-void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, SpritePosition pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale)
+void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, SpritePosition pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale, bool pIsVisible)
 {
 	KodeboldsMath::Vector2 position;
 
@@ -194,15 +211,16 @@ void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOr
 		break;
 	}
 
-	LoadSprite(pFileName, pOrigin, position, pPadding, pRotation, pScale);
+	LoadSprite(pFileName, pOrigin, position, pPadding, pRotation, pScale, pIsVisible);
 }
-void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale)
+void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale, bool pIsVisible)
 {
 	Sprite sprite;
 	sprite.mOrigin = DirectX::XMFLOAT2(0, 0);
 	sprite.mPosition = DirectX::XMFLOAT2(pPosition.X + pPadding.X, pPosition.Y + pPadding.Y);
 	sprite.mRotation = pRotation;
 	sprite.mScale = pScale;
+	sprite.mIsVisible = pIsVisible;
 
 	mResourceManager->mSprites.emplace_back(std::make_pair(pFileName, sprite));
 
@@ -235,11 +253,12 @@ void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, Kode
 
 	mResourceManager->mSprites.back().second.mOrigin = DirectX::XMFLOAT2(origin.X, origin.Y);
 }
-void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, SpritePosition pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale)
+void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, SpritePosition pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale, bool pIsVisible)
 {
 	Sprite sprite;
 	sprite.mRotation = pRotation;
 	sprite.mScale = pScale;
+	sprite.mIsVisible = pIsVisible;
 
 	mResourceManager->mSprites.emplace_back(std::make_pair(pFileName, sprite));
 
@@ -293,25 +312,40 @@ void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, Spri
 	mResourceManager->mSprites.back().second.mPosition = DirectX::XMFLOAT2(position.X, position.Y);
 }
 
+Quad * GUIManager::CreateQuad(KodeboldsMath::Vector2 pTopLeftPoint, KodeboldsMath::Vector2 pTopRightPoint, KodeboldsMath::Vector2 pBottomRightPoint, KodeboldsMath::Vector2 pBottomLeftPoint,
+	KodeboldsMath::Vector4 pTopLeftPointColour, KodeboldsMath::Vector4 pTopRightPointColour, KodeboldsMath::Vector4 pBottomRightPointColour, KodeboldsMath::Vector4 pBottomLeftPointColour, bool pIsVisible)
+{
+	Quad quad;
+	quad.mTopLeftPoint = DirectX::VertexPositionColor(DirectX::XMFLOAT3(pTopLeftPoint.X, pTopLeftPoint.Y, 0), DirectX::XMFLOAT4(pTopLeftPointColour.X, pTopLeftPointColour.Y, pTopLeftPointColour.Z, pTopLeftPointColour.W));
+	quad.mTopRightPoint = DirectX::VertexPositionColor(DirectX::XMFLOAT3(pTopRightPoint.X, pTopRightPoint.Y, 0), DirectX::XMFLOAT4(pTopRightPointColour.X, pTopRightPointColour.Y, pTopRightPointColour.Z, pTopRightPointColour.W));
+	quad.mBottomRightPoint = DirectX::VertexPositionColor(DirectX::XMFLOAT3(pBottomRightPoint.X, pBottomRightPoint.Y, 0), DirectX::XMFLOAT4(pBottomRightPointColour.X, pBottomRightPointColour.Y, pBottomRightPointColour.Z, pBottomRightPointColour.W));
+	quad.mBottomLeftPoint = DirectX::VertexPositionColor(DirectX::XMFLOAT3(pBottomLeftPoint.X, pBottomLeftPoint.Y, 0), DirectX::XMFLOAT4(pBottomLeftPointColour.X, pBottomLeftPointColour.Y, pBottomLeftPointColour.Z, pBottomLeftPointColour.W));
+	quad.mIsVisible = pIsVisible;
+	mQuads.emplace_back(quad);
+	return &mQuads.back();
+}
+
 void GUIManager::LoadFont(const wchar_t* pFontName)
 {
 	mFonts.push_back(std::make_unique<DirectX::SpriteFont>(mDevice.Get(), pFontName));
 }
 
-void GUIManager::CreateButton(const wchar_t* pFileName, const wchar_t* pFontName, const wchar_t* pText, float pRotation, float pButtonScale, float pTextScale,
+Button* GUIManager::CreateButton(const wchar_t* pFileName, const wchar_t* pFontName, const wchar_t* pText, float pRotation, float pButtonScale, float pTextScale,
 	ButtonOrigin pOrigin, ButtonPosition pPosition, KodeboldsMath::Vector2 pButtonPadding, KodeboldsMath::Vector2 pTextPadding, KodeboldsMath::Vector4 pTextColour,
-	KodeboldsMath::Vector4 pTextColourHover, std::function<void()> pOnClickFunction)
+	KodeboldsMath::Vector4 pTextColourHover, std::function<void()> pOnClickFunction, bool pIsVisible)
 {
 	// Create initial button
 	Button button;
 	button.mOnClickFunction = pOnClickFunction;
 	button.mTextColourHover = pTextColourHover;
 	button.mTextColourOriginal = pTextColour;
+	button.mIsVisible = pIsVisible;
 
 	// Create Initial Sprite
 	Sprite sprite;
 	sprite.mRotation = pRotation;
 	sprite.mScale = pButtonScale;
+	sprite.mIsVisible = pIsVisible;
 
 	// load an image from file and initialise sprites texture
 	auto loadImageTest = DirectX::CreateWICTextureFromFile(mDevice.Get(), mContext.Get(), pFileName, nullptr, &sprite.mTexture);
@@ -366,6 +400,7 @@ void GUIManager::CreateButton(const wchar_t* pFileName, const wchar_t* pFontName
 	text.mRotation = pRotation;
 	text.mScale = pTextScale;
 	text.mText = pText;
+	text.mIsVisible = pIsVisible;
 
 	LoadFont(pFontName);
 	text.mColour = DirectX::XMFLOAT4(pTextColour.X, pTextColour.Y, pTextColour.Z, pTextColour.W);
@@ -390,10 +425,11 @@ void GUIManager::CreateButton(const wchar_t* pFileName, const wchar_t* pFontName
 	button.mText = text;
 
 	mResourceManager->mButtons.emplace_back(std::make_pair(pFileName, button));
+	return &mResourceManager->mButtons.back().second;
 
 }
 
-void GUIManager::Write(const wchar_t* pText, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, const wchar_t* pFontName, float pRotation, float pScale, KodeboldsMath::Vector4 pColour)
+Text * GUIManager::Write(const wchar_t* pText, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, const wchar_t* pFontName, float pRotation, float pScale, KodeboldsMath::Vector4 pColour, bool pIsVisible)
 {
 	// TODO:
 	// check if font has already been loaded
@@ -409,10 +445,12 @@ void GUIManager::Write(const wchar_t* pText, KodeboldsMath::Vector2 pOrigin, Kod
 	text.mScale = pScale;
 	text.mRotation = pRotation;
 	text.mColour = DirectX::XMFLOAT4(pColour.X, pColour.Y, pColour.Z, pColour.W);
+	text.mIsVisible = pIsVisible;
 
 	mTexts.emplace_back(text);
+	return &mTexts.back();
 }
-void GUIManager::Write(const wchar_t* pText, KodeboldsMath::Vector2 pOrigin, TextPosition pPosition, KodeboldsMath::Vector2 pPadding, const wchar_t* pFontName, float pRotation, float pScale, KodeboldsMath::Vector4 pColour)
+Text * GUIManager::Write(const wchar_t* pText, KodeboldsMath::Vector2 pOrigin, TextPosition pPosition, KodeboldsMath::Vector2 pPadding, const wchar_t* pFontName, float pRotation, float pScale, KodeboldsMath::Vector4 pColour, bool pIsVisible)
 {
 	KodeboldsMath::Vector2 position;
 
@@ -432,9 +470,9 @@ void GUIManager::Write(const wchar_t* pText, KodeboldsMath::Vector2 pOrigin, Tex
 		break;
 	}
 
-	Write(pText, pOrigin, position, pPadding, pFontName, pRotation, pScale, pColour);
+	Write(pText, pOrigin, position, pPadding, pFontName, pRotation, pScale, pColour, pIsVisible);
 }
-void GUIManager::Write(const wchar_t* pText, TextOrigin pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, const wchar_t* pFontName, float pRotation, float pScale, KodeboldsMath::Vector4 pColour)
+Text * GUIManager::Write(const wchar_t* pText, TextOrigin pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, const wchar_t* pFontName, float pRotation, float pScale, KodeboldsMath::Vector4 pColour, bool pIsVisible)
 {
 	// TODO:
 	// check if font has already been loaded
@@ -449,6 +487,7 @@ void GUIManager::Write(const wchar_t* pText, TextOrigin pOrigin, KodeboldsMath::
 	text.mScale = pScale;
 	text.mRotation = pRotation;
 	text.mColour = DirectX::XMFLOAT4(pColour.X, pColour.Y, pColour.Z, pColour.W);
+	text.mIsVisible = pIsVisible;
 
 	DirectX::XMFLOAT2 textSize;
 	auto vecTextSize = mFonts[0]->MeasureString(pText);
@@ -463,8 +502,9 @@ void GUIManager::Write(const wchar_t* pText, TextOrigin pOrigin, KodeboldsMath::
 	}
 
 	mTexts.emplace_back(text);
+	return &mTexts.back();
 }
-void GUIManager::Write(const wchar_t* pText, TextOrigin pOrigin, TextPosition pPosition, KodeboldsMath::Vector2 pPadding, const wchar_t* pFontName, float pRotation, float pScale, KodeboldsMath::Vector4 pColour)
+Text * GUIManager::Write(const wchar_t* pText, TextOrigin pOrigin, TextPosition pPosition, KodeboldsMath::Vector2 pPadding, const wchar_t* pFontName, float pRotation, float pScale, KodeboldsMath::Vector4 pColour, bool pIsVisible)
 {
 	// TODO:
 	// check if font has already been loaded
@@ -478,6 +518,7 @@ void GUIManager::Write(const wchar_t* pText, TextOrigin pOrigin, TextPosition pP
 	text.mScale = pScale;
 	text.mRotation = pRotation;
 	text.mColour = DirectX::XMFLOAT4(pColour.X, pColour.Y, pColour.Z, pColour.W);
+	text.mIsVisible = pIsVisible;
 
 	switch (pPosition)
 	{
@@ -509,5 +550,6 @@ void GUIManager::Write(const wchar_t* pText, TextOrigin pOrigin, TextPosition pP
 	}
 
 	mTexts.emplace_back(text);
+	return &mTexts.back();
 }
 

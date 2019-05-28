@@ -382,62 +382,93 @@ GameScene::~GameScene()
 /// </summary>
 void GameScene::Update()
 {
-	Movement();
-	Rotation();
-	Shooting();
+	if (mGameState == GAME_STATE::PLAYING)
+	{
+		Movement();
+		Rotation();
+		Shooting();
 
-	//Switch between cameras
-	//Ship
+		//Switch between cameras
+		//Ship
 
-	// Exit
-	if (mInputManager->KeyDown(KEYS::KEY_ESC))
-	{
-		exit(0);
-	}
-	if (mInputManager->KeyDown(KEYS::KEY_F1))
-	{
-		mEcsManager->CameraComp(mPlayerShipCam)->active = true;
-		mEcsManager->CameraComp(mPlayer)->active = false;
-		mEcsManager->CameraComp(mCamera)->active = false;
-	}
-	//Player
-	if (mInputManager->KeyDown(KEYS::KEY_F2))
-	{
-		mEcsManager->CameraComp(mPlayerShipCam)->active = false;
-		mEcsManager->CameraComp(mPlayer)->active = true;
-		mEcsManager->CameraComp(mCamera)->active = false;
-	}
-	//Free cam
-	if (mInputManager->KeyDown(KEYS::KEY_F3))
-	{
-		mEcsManager->CameraComp(mPlayerShipCam)->active = false;
-		mEcsManager->CameraComp(mPlayer)->active = false;
-		mEcsManager->CameraComp(mCamera)->active = true;
-	}
-
-	//If the player doesn't have a gravity component
-	if (!mEcsManager->GravityComp(mPlayer))
-	{
-		//Check if the player is colliding with something, else add gravity
-		if (mEcsManager->CollisionComp(mPlayer))
+		if (mInputManager->KeyDown(KEYS::KEY_F1))
 		{
-			//If it's not the floor, player is not grounded, add gravity
-			if (!(mEcsManager->CollisionComp(mPlayer)->collidedEntityCollisionMask == CustomCollisionMask::FLOOR))
+			mEcsManager->CameraComp(mPlayerShipCam)->active = true;
+			mEcsManager->CameraComp(mPlayer)->active = false;
+			mEcsManager->CameraComp(mCamera)->active = false;
+		}
+		//Player
+		if (mInputManager->KeyDown(KEYS::KEY_F2))
+		{
+			mEcsManager->CameraComp(mPlayerShipCam)->active = false;
+			mEcsManager->CameraComp(mPlayer)->active = true;
+			mEcsManager->CameraComp(mCamera)->active = false;
+		}
+		//Free cam
+		if (mInputManager->KeyDown(KEYS::KEY_F3))
+		{
+			mEcsManager->CameraComp(mPlayerShipCam)->active = false;
+			mEcsManager->CameraComp(mPlayer)->active = false;
+			mEcsManager->CameraComp(mCamera)->active = true;
+		}
+
+		//If the player doesn't have a gravity component
+		if (!mEcsManager->GravityComp(mPlayer))
+		{
+			//Check if the player is colliding with something, else add gravity
+			if (mEcsManager->CollisionComp(mPlayer))
+			{
+				//If it's not the floor, player is not grounded, add gravity
+				if (!(mEcsManager->CollisionComp(mPlayer)->collidedEntityCollisionMask == CustomCollisionMask::FLOOR))
+				{
+					mEcsManager->AddGravityComp(Gravity{}, mPlayer);
+					mEcsManager->AddGravityComp(Gravity{}, mPlayerGun);
+					mPlayerIsGrounded = false;
+				}
+				else
+				{
+					mPlayerIsGrounded = true;
+				}
+			}
+			else
 			{
 				mEcsManager->AddGravityComp(Gravity{}, mPlayer);
 				mEcsManager->AddGravityComp(Gravity{}, mPlayerGun);
 				mPlayerIsGrounded = false;
 			}
-			else
-			{
-				mPlayerIsGrounded = true;
-			}
 		}
-		else
+
+		// Trigger Pause Menu
+		if (mInputManager->KeyDown(KEYS::KEY_ESC))
 		{
-			mEcsManager->AddGravityComp(Gravity{}, mPlayer);
-			mEcsManager->AddGravityComp(Gravity{}, mPlayerGun);
-			mPlayerIsGrounded = false;
+			mGameState = GAME_STATE::PAUSED;
+			//exit(0);
+
+
+			// allows the user to use the mouse again as normal
+			mInputManager->CenterCursor(false);
+
+			// TODO: STOP EVERYTHING IN THE GAME
+			// TODO: FIX EXCEPTION THAT IS CAUSED WHEN GAME PAUSES?
+
+			// make all of the pause menu attributes (GUI) visible
+			mPausedOverlay->mIsVisible = true;
+			mPausedText->mIsVisible = true;
+			mPausedExitButton->mIsVisible = true;
+		}
+	}
+	else {
+
+		Pause();
+
+		// Trigger Pause Menu
+		if (mInputManager->KeyDown(KEYS::KEY_ESC))
+		{
+			mGameState = GAME_STATE::PLAYING;
+			//exit(0);
+			mPausedOverlay->mIsVisible = false;
+			mPausedText->mIsVisible = false;
+			mPausedExitButton->mIsVisible = false;
 		}
 	}
 }
@@ -447,12 +478,6 @@ void GameScene::Update()
 /// </summary>
 void GameScene::OnLoad()
 {
-	mInputManager->CenterCursor(true);
-
-	mGUIManager->CreateButton(L"button.png", L"AlienEncounters.spritefont", L"EXIT", 0, 0.35f, 0.65f,
-		GUIManager::ButtonOrigin::CENTRE, GUIManager::ButtonPosition::CENTRE_MIDDLE, Vector2(400, 100),
-		Vector2(0, 10), Vector4(0.0f, 0.0f, 0.0f, 1.0f), Vector4(1.0f, 1.0f, 0.0f, 1.0f), nullptr);
-
 	//Spawn player ship and attached camera
 	mPlayerShipStartPos = Vector4(0, 0, -50, 1);
 	mPlayerShip = SpawnShip(mPlayerShipStartPos, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 40, 50, CustomCollisionMask::SHIP,
@@ -477,7 +502,7 @@ void GameScene::OnLoad()
 	mCameraSpeed = 20.0f;
 	mRotationSpeed = 10.0f;
 
-	
+
 	//Spawn platform
 	int entity = mEcsManager->CreateEntity();
 	Geometry geom{ L"cube.obj" };
@@ -592,11 +617,32 @@ void GameScene::OnLoad()
 	mGUIManager->AddVariable("Testing", "Acceleration", TW_TYPE_DIR3F, &mEcsManager->VelocityComp(mPlayer)->acceleration, "");
 	mGUIManager->AddVariable("Testing", "Max Speed", TW_TYPE_FLOAT, &mEcsManager->VelocityComp(mPlayer)->maxSpeed, "");
 
+
+	// Loading of Pause Menu (initallity hidden)
+
+	// creates a panel that covers the screen when game is paused
+	mPausedOverlay = mGUIManager->CreateQuad(
+		Vector2(0, 0), Vector2(100, 0), Vector2(100, 1200), Vector2(0, 1200),
+		Vector4(0.5f, 0.5f, 0.5f, 1.0f), Vector4(0.5f, 0.5f, 0.5f, 1.0f), Vector4(0.5f, 0.5f, 0.5f, 1.0f), Vector4(0.5f, 0.5f, 0.5f, 1.0f), false);
+
+	mPausedText = mGUIManager->Write(L"PAUSED", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::CENTRE_TOP, Vector2(0, 250), L"AlienEncounters.spritefont", 0.0f, 1.5f, Vector4(1.0f, 0.0f, 0.0f, 1.0f), false);
+
+	// Creates a button that allows the user to exit back to the main menu
+	mPausedExitButton = mGUIManager->CreateButton(L"button.png", L"AlienEncounters.spritefont", L"MAIN MENU", 0, 0.35f, 0.65f,
+		GUIManager::ButtonOrigin::CENTRE, GUIManager::ButtonPosition::CENTRE_MIDDLE, Vector2(0, 100),
+		Vector2(0, 10), Vector4(0.0f, 0.0f, 0.0f, 1.0f), Vector4(1.0f, 1.0f, 0.0f, 1.0f), nullptr, true);
+
+
+	mGameState = GAME_STATE::PLAYING;
 }
 
 /// <summary>
 /// Clear up scene resources
 /// </summary>
 void GameScene::OnUnload()
+{
+}
+
+void GameScene::Pause()
 {
 }

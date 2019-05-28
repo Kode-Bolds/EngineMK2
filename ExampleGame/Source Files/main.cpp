@@ -66,7 +66,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 
 	// Audio systems
 #ifdef DIRECTX
-	ecsManager->AddUpdateSystem(std::make_shared<AudioSystem_DX>());
+	//ecsManager->AddUpdateSystem(std::make_shared<AudioSystem_DX>());
 #elif OPENGL
 	ecsManager->AddUpdateSystem(std::make_shared<AudioSystem_GL>());
 #endif
@@ -110,7 +110,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	}
 
 	//Scenes
-	sceneManager->LoadScene<MenuScene>();
+	sceneManager->LoadScene<GameScene>();
 
 	//Main message loop
 	MSG msg = { 0 };
