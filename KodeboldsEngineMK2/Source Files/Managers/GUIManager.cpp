@@ -94,7 +94,7 @@ void GUIManager::Cleanup() const
 	TwTerminate();
 }
 
-void GUIManager::InititialiseGUI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const int pWidth, const int pHeight)
+void GUIManager::InitialiseGUI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const int pWidth, const int pHeight)
 {
 	mDevice = pDevice;
 	mDeviceWidth = pWidth;
@@ -105,15 +105,15 @@ void GUIManager::InititialiseGUI(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	mStates = std::make_unique<DirectX::CommonStates>(pDevice);
 }
 
-void GUIManager::Update()
+void GUIManager::Update() const
 {
 	auto mousePos = mInputManager->MousePos();
 
-	for (int i = 0; i < mResourceManager->mButtons.size(); i++)
+	for (auto& mButton : mResourceManager->mButtons)
 	{
-		auto buttonBounds = mResourceManager->mButtons[i].second.mSprite.mPosition;
-		auto buttonWidth = mResourceManager->mButtons[i].second.mSprite.mWidth;
-		auto buttonHeight = mResourceManager->mButtons[i].second.mSprite.mHeight;
+		auto buttonBounds = mButton.second.mSprite.mPosition;
+		auto buttonWidth = mButton.second.mSprite.mWidth;
+		auto buttonHeight = mButton.second.mSprite.mHeight;
 
 		// check if mouse is in bounds
 		if (mousePos.X > (buttonBounds.x - (buttonWidth / 3)) && mousePos.X < (buttonBounds.x + (buttonWidth / 3)) &&
@@ -122,32 +122,33 @@ void GUIManager::Update()
 			// if mouse clicked, trigger onclick function
 			if (mInputManager->KeyDown(KEYS::MOUSE_BUTTON_LEFT))
 			{
-				mResourceManager->mButtons[i].second.mOnClickFunction();
+				mButton.second.mOnClickFunction();
+				return;
 			}
 
 			// trigger on hover - colour change
 			auto buttonTextHoverColour = DirectX::XMFLOAT4(
-				mResourceManager->mButtons[i].second.mTextColourHover.X,
-				mResourceManager->mButtons[i].second.mTextColourHover.Y,
-				mResourceManager->mButtons[i].second.mTextColourHover.Z,
-				mResourceManager->mButtons[i].second.mTextColourHover.W);
-			mResourceManager->mButtons[i].second.mText.mColour = buttonTextHoverColour;
+				mButton.second.mTextColourHover.X,
+				mButton.second.mTextColourHover.Y,
+				mButton.second.mTextColourHover.Z,
+				mButton.second.mTextColourHover.W);
+			mButton.second.mText.mColour = buttonTextHoverColour;
 
 		}
 		else
 		{
 			// return to original text colour
 			auto buttonTextOriginalColour = DirectX::XMFLOAT4(
-				mResourceManager->mButtons[i].second.mTextColourOriginal.X,
-				mResourceManager->mButtons[i].second.mTextColourOriginal.Y,
-				mResourceManager->mButtons[i].second.mTextColourOriginal.Z,
-				mResourceManager->mButtons[i].second.mTextColourOriginal.W);
-			mResourceManager->mButtons[i].second.mText.mColour = buttonTextOriginalColour;
+				mButton.second.mTextColourOriginal.X,
+				mButton.second.mTextColourOriginal.Y,
+				mButton.second.mTextColourOriginal.Z,
+				mButton.second.mTextColourOriginal.W);
+			mButton.second.mText.mColour = buttonTextOriginalColour;
 		}
 	}
 }
 
-void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale)
+void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale) const
 {
 	Sprite sprite;
 	sprite.mOrigin = DirectX::XMFLOAT2(pOrigin.X, pOrigin.Y);
@@ -174,7 +175,7 @@ void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOr
 	mResourceManager->mSprites.back().second.mWidth = desc.Width;
 	mResourceManager->mSprites.back().second.mHeight = desc.Height;
 }
-void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, SpritePosition pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale)
+void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, SpritePosition pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale) const
 {
 	KodeboldsMath::Vector2 position;
 
@@ -196,7 +197,7 @@ void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOr
 
 	LoadSprite(pFileName, pOrigin, position, pPadding, pRotation, pScale);
 }
-void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale)
+void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale) const
 {
 	Sprite sprite;
 	sprite.mOrigin = DirectX::XMFLOAT2(0, 0);
@@ -235,7 +236,7 @@ void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, Kode
 
 	mResourceManager->mSprites.back().second.mOrigin = DirectX::XMFLOAT2(origin.X, origin.Y);
 }
-void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, SpritePosition pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale)
+void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, SpritePosition pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale) const
 {
 	Sprite sprite;
 	sprite.mRotation = pRotation;

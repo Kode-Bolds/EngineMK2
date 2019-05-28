@@ -449,10 +449,6 @@ void GameScene::OnLoad()
 {
 	mInputManager->CenterCursor(true);
 
-	mGUIManager->CreateButton(L"button.png", L"AlienEncounters.spritefont", L"EXIT", 0, 0.35f, 0.65f,
-		GUIManager::ButtonOrigin::CENTRE, GUIManager::ButtonPosition::CENTRE_MIDDLE, Vector2(400, 100),
-		Vector2(0, 10), Vector4(0.0f, 0.0f, 0.0f, 1.0f), Vector4(1.0f, 1.0f, 0.0f, 1.0f), nullptr);
-
 	//Spawn player ship and attached camera
 	mPlayerShipStartPos = Vector4(0, 0, -50, 1);
 	mPlayerShip = SpawnShip(mPlayerShipStartPos, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 40, 50, CustomCollisionMask::SHIP,
@@ -560,7 +556,7 @@ void GameScene::OnLoad()
 		Geometry geom{ L"cube.obj" };
 		mEcsManager->AddGeometryComp(geom, screenspaceQuad);
 		Shader shaderm{ L"distortionShader.fx" , BlendState::ALPHABLEND, CullState::NONE, DepthState::NONE };
-		//mEcsManager->AddShaderComp(shaderm, screenspaceQuad);
+		mEcsManager->AddShaderComp(shaderm, screenspaceQuad);
 		Texture texturem{};
 		texturem.diffuse = L"stones.DDS";
 		texturem.normal = L"distortionTest.dds";

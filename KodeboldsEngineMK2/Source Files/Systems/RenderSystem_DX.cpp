@@ -51,7 +51,7 @@ HRESULT RenderSystem_DX::Init()
 
 
 	//mGUIManager->Init(TW_DIRECT3D11, mDevice.Get(), mWidth, height);
-	mGUIManager->InititialiseGUI(mDevice.Get(), mContext.Get(), mWidth, mHeight);
+	mGUIManager->InitialiseGUI(mDevice.Get(), mContext.Get(), mWidth, mHeight);
 
 
 	hr = CreateSwapChain();
@@ -743,6 +743,8 @@ void RenderSystem_DX::Process()
 	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
 	Render();
 
+	//RenderGUI();
+
 	SwapBuffers();
 }
 
@@ -801,12 +803,12 @@ void RenderSystem_DX::LoadShaders(const Entity& pEntity)
 			const auto blendSample = 0xffffffff;
 			if (blend == BlendState::NOBLEND)
 			{
-				mContext->OMSetBlendState(mNoBlend.Get(), nullptr, blendSample);
+				mContext->OMSetBlendState(mNoBlend.Get(), blendFactor, blendSample);
 
 			}
 			else if (blend == BlendState::ALPHABLEND)
 			{
-				mContext->OMSetBlendState(mAlphaBlend.Get(), nullptr, blendSample);
+				mContext->OMSetBlendState(mAlphaBlend.Get(), blendFactor, blendSample);
 				//OutputDebugString(L"ALPHA BLEND");
 
 			}
@@ -1024,6 +1026,8 @@ void RenderSystem_DX::Render()
 /// </summary>
 void RenderSystem_DX::RenderGUI() const
 {
+	mGUIManager->Update();
+
 	//ID3D11DepthStencilState* ppDepthStencilState = nullptr;
 	//mContext->OMGetDepthStencilState(&ppDepthStencilState, );
 
