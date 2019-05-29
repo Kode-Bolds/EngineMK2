@@ -3,7 +3,6 @@
 #include "ISystem.h"
 #include "CustomCollisionMask.h"
 #include "Vector4.h"
-
 class CollisionResponseSystem : public ISystem
 {
 private:

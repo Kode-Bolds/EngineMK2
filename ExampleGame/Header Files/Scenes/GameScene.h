@@ -53,11 +53,14 @@ private:
 	void Shooting();
 	void RotateAroundPoint(const int pEntity, const KodeboldsMath::Vector4& pAxis, const KodeboldsMath::Vector4& pPoint, const float& pAngle);
 
+	// Game Assets
 	int mLives = 3;
 	std::vector<Sprite*> mLivesVector;
 
 	int mBullets = 10;
 	std::vector<Sprite*> mBulletVector;
+
+	Sprite* mCrosshair;
 
 	// PAUSED ASSETS
 	Quad* mPausedOverlay = nullptr;
@@ -65,6 +68,10 @@ private:
 	Button* mPausedExitButton = nullptr;
 	Button* mResumeGameButton = nullptr;
 
+	Text* mLivesText;
+	Text* mScoreLabelText;
+	Text* mScoreText;
+	Text* mBulletText;
 
 	void OnClick_MainMenuButton();
 	void OnClick_ResumeGameButton();

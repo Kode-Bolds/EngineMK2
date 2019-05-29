@@ -618,35 +618,35 @@ void GameScene::OnLoad()
 	mGUIManager->AddVariable("Testing", "Max Speed", TW_TYPE_FLOAT, &mEcsManager->VelocityComp(mPlayer)->maxSpeed, "");
 
 
-	// GUI
-
-
+	//------------ GUI ------------\\
 	// Crosshair
-	auto crosshair = mGUIManager->LoadSprite(L"crosshair.png", GUIManager::SpriteOrigin::CENTRE, GUIManager::SpritePosition::CENTRE_MIDDLE, Vector2(0, 0), 0, 0.045f, true);
-
-
+	mCrosshair = mGUIManager->LoadSprite(L"crosshair.png", GUIManager::SpriteOrigin::CENTRE, GUIManager::SpritePosition::CENTRE_MIDDLE, Vector2(0, 0), 0, 0.045f, true);
 
 	// Lives
-	auto LivesText = mGUIManager->Write(L"LIVES: ", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::LEFT_BOTTOM, Vector2(120, -150), L"AlienEncounters.spritefont",
+	mLivesText = mGUIManager->Write(L"LIVES: ", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::LEFT_BOTTOM, Vector2(120, -150), L"AlienEncounters.spritefont",
 		0.0f, 0.75f, Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);
 
 	for (int i = 0; i < mLives; i++)
 	{
-		auto life = mGUIManager->LoadSprite(L"heart.png", GUIManager::SpriteOrigin::CENTRE, Vector2(LivesText->mPosition.x, LivesText->mPosition.y), Vector2(150 + (i * 75), -10), 0, 0.25f, true);
+		Sprite* life = mGUIManager->LoadSprite(L"heart.png", GUIManager::SpriteOrigin::CENTRE, Vector2(mLivesText->mPosition.x, mLivesText->mPosition.y), Vector2(150 + (i * 75), -10), 0, 0.25f, true);
 		mLivesVector.emplace_back(life);
 	}
 
 	// Bullets
-	auto BulletText = mGUIManager->Write(L"BULLETS: ", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::LEFT_BOTTOM, Vector2(170, -50), L"AlienEncounters.spritefont",
+	mBulletText = mGUIManager->Write(L"BULLETS: ", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::LEFT_BOTTOM, Vector2(170, -50), L"AlienEncounters.spritefont",
 		0.0f, 0.75f, Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);
 
 	for (int i = 0; i < mBullets; i++)
 	{
-		auto bullet = mGUIManager->LoadSprite(L"bullet.png", GUIManager::SpriteOrigin::CENTRE, Vector2(BulletText->mPosition.x, BulletText->mPosition.y), Vector2(190 + (i * 75), -10), 0, 0.1f, true);
+		Sprite* bullet = mGUIManager->LoadSprite(L"bullet.png", GUIManager::SpriteOrigin::CENTRE, Vector2(mBulletText->mPosition.x, mBulletText->mPosition.y), Vector2(190 + (i * 75), -10), 0, 0.1f, true);
 		mBulletVector.emplace_back(bullet);
 	}
 
-
+	// SCORE
+	mScoreLabelText = mGUIManager->Write(L"SCORE: ", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::LEFT_BOTTOM, Vector2(130, -250), L"AlienEncounters.spritefont",
+		0.0f, 0.75f, Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);
+	mScoreText = mGUIManager->Write(L"0", GUIManager::TextOrigin::CENTRE, Vector2(mScoreLabelText->mPosition.x, mScoreLabelText->mPosition.y), Vector2(150, 0), L"AlienEncounters.spritefont",
+		0.0f, 0.75f, Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);
 
 
 
