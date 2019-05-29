@@ -213,7 +213,7 @@ void GUIManager::LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOr
 
 	LoadSprite(pFileName, pOrigin, position, pPadding, pRotation, pScale, pIsVisible);
 }
-void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale, bool pIsVisible)
+Sprite * GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale, bool pIsVisible)
 {
 	Sprite sprite;
 	sprite.mOrigin = DirectX::XMFLOAT2(0, 0);
@@ -252,8 +252,9 @@ void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, Kode
 	}
 
 	mResourceManager->mSprites.back().second.mOrigin = DirectX::XMFLOAT2(origin.X, origin.Y);
+	return &mResourceManager->mSprites.back().second;
 }
-void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, SpritePosition pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale, bool pIsVisible)
+Sprite * GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, SpritePosition pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale, bool pIsVisible)
 {
 	Sprite sprite;
 	sprite.mRotation = pRotation;
@@ -310,6 +311,7 @@ void GUIManager::LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, Spri
 	}
 
 	mResourceManager->mSprites.back().second.mPosition = DirectX::XMFLOAT2(position.X, position.Y);
+	return &mResourceManager->mSprites.back().second;
 }
 
 Quad * GUIManager::CreateQuad(KodeboldsMath::Vector2 pTopLeftPoint, KodeboldsMath::Vector2 pTopRightPoint, KodeboldsMath::Vector2 pBottomRightPoint, KodeboldsMath::Vector2 pBottomLeftPoint,
@@ -480,6 +482,32 @@ Text * GUIManager::Write(const wchar_t* pText, KodeboldsMath::Vector2 pOrigin, T
 		position.X = (mDeviceWidth / 2.0f) + pPadding.X;
 		position.Y = mDeviceHeight + pPadding.Y;
 		break;
+
+		//case TextPosition::LEFT_TOP:
+		//	position.X = (mDeviceWidth / 2.0f) + pPadding.X;
+		//	position.Y = mDeviceHeight + pPadding.Y;
+		//	break;
+		//case TextPosition::LEFT_MIDDLE:
+		//	position.X = (mDeviceWidth / 2.0f) + pPadding.X;
+		//	position.Y = mDeviceHeight + pPadding.Y;
+		//	break;
+	case TextPosition::LEFT_BOTTOM:
+		position.X = 0 + pPadding.X;
+		position.Y = mDeviceHeight + pPadding.Y;
+		break;
+
+		//case TextPosition::RIGHT_TOP:
+		//	position.X = (mDeviceWidth / 2.0f) + pPadding.X;
+		//	position.Y = mDeviceHeight + pPadding.Y;
+		//	break;
+		//case TextPosition::RIGHT_MIDDLE:
+		//	position.X = (mDeviceWidth / 2.0f) + pPadding.X;
+		//	position.Y = mDeviceHeight + pPadding.Y;
+		//	break;
+		//case TextPosition::RIGHT_BOTTOM:
+		//	position.X = (mDeviceWidth / 2.0f) + pPadding.X;
+		//	position.Y = mDeviceHeight + pPadding.Y;
+		//	break;
 	}
 
 	Write(pText, pOrigin, position, pPadding, pFontName, pRotation, pScale, pColour, pIsVisible);
@@ -547,6 +575,32 @@ Text * GUIManager::Write(const wchar_t* pText, TextOrigin pOrigin, TextPosition 
 		text.mPosition.x = (mDeviceWidth / 2.0f) + pPadding.X;
 		text.mPosition.y = mDeviceHeight + pPadding.Y;
 		break;
+
+		//case TextPosition::LEFT_TOP:
+//	position.X = (mDeviceWidth / 2.0f) + pPadding.X;
+//	position.Y = mDeviceHeight + pPadding.Y;
+//	break;
+//case TextPosition::LEFT_MIDDLE:
+//	position.X = (mDeviceWidth / 2.0f) + pPadding.X;
+//	position.Y = mDeviceHeight + pPadding.Y;
+//	break;
+	case TextPosition::LEFT_BOTTOM:
+		text.mPosition.x = 0 + pPadding.X;
+		text.mPosition.y = mDeviceHeight + pPadding.Y;
+		break;
+
+		//case TextPosition::RIGHT_TOP:
+		//	position.X = (mDeviceWidth / 2.0f) + pPadding.X;
+		//	position.Y = mDeviceHeight + pPadding.Y;
+		//	break;
+		//case TextPosition::RIGHT_MIDDLE:
+		//	position.X = (mDeviceWidth / 2.0f) + pPadding.X;
+		//	position.Y = mDeviceHeight + pPadding.Y;
+		//	break;
+		//case TextPosition::RIGHT_BOTTOM:
+		//	position.X = (mDeviceWidth / 2.0f) + pPadding.X;
+		//	position.Y = mDeviceHeight + pPadding.Y;
+		//	break;
 	}
 
 	// origin

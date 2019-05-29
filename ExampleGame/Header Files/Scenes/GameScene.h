@@ -53,6 +53,11 @@ private:
 	void Shooting();
 	void RotateAroundPoint(const int pEntity, const KodeboldsMath::Vector4& pAxis, const KodeboldsMath::Vector4& pPoint, const float& pAngle);
 
+	int mLives = 3;
+	std::vector<Sprite*> mLivesVector;
+
+	int mBullets = 10;
+	std::vector<Sprite*> mBulletVector;
 
 	// PAUSED ASSETS
 	Quad* mPausedOverlay = nullptr;

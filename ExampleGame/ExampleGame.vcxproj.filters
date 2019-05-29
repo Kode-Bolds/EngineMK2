@@ -165,6 +165,12 @@
     <Image Include="button.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="heart.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="bullet.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Media Include="laser.wav">

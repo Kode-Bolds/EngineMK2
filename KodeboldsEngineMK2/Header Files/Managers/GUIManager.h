@@ -60,7 +60,15 @@ public:
 	enum class TextPosition {
 		CENTRE_TOP,
 		CENTRE_MIDDLE,
-		CENTRE_BOTTOM
+		CENTRE_BOTTOM,
+
+		LEFT_TOP,
+		LEFT_MIDDLE,
+		LEFT_BOTTOM,
+
+		RIGHT_TOP,
+		RIGHT_MIDDLE,
+		RIGHT_BOTTOM,
 	};
 	enum class TextOrigin {
 		CENTRE,
@@ -122,8 +130,8 @@ public:
 	// Draws Sprite to screen
 	void LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale, bool pIsVisible);
 	void LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, SpritePosition pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale, bool pIsVisible);
-	void LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale, bool pIsVisible);
-	void LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, SpritePosition pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale, bool pIsVisible);
+	Sprite* LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale, bool pIsVisible);
+	Sprite* LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, SpritePosition pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale, bool pIsVisible);
 
 	// Draws Text to screen
 	Text* Write(const wchar_t* pText, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, const wchar_t* pFontName, float pRotation, float pScale, KodeboldsMath::Vector4 pColour, bool pIsVisible);
