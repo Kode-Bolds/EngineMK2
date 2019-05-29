@@ -17,5 +17,11 @@ public:
 	bool mIsVisible;
 
 	std::function<void()> mOnClickFunction = nullptr;
+
+	void SetVisibility(bool pIsVisible) {
+		mIsVisible = pIsVisible;
+		mSprite.mIsVisible = pIsVisible;
+		mText.mIsVisible = pIsVisible;
+	}
 	//std::function<void()> mOnHoverFunction = nullptr;
 };

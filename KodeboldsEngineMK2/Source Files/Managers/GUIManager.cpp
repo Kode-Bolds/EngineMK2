@@ -325,6 +325,18 @@ Quad * GUIManager::CreateQuad(KodeboldsMath::Vector2 pTopLeftPoint, KodeboldsMat
 	return &mQuads.back();
 }
 
+Quad* GUIManager::CreateQuadOverlay(KodeboldsMath::Vector4 pColour, bool pIsVisible)
+{
+	Quad quad;
+	quad.mTopLeftPoint = DirectX::VertexPositionColor(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT4(pColour.X, pColour.Y, pColour.Z, pColour.W));
+	quad.mTopRightPoint = DirectX::VertexPositionColor(DirectX::XMFLOAT3(mDeviceWidth, 0, 0), DirectX::XMFLOAT4(pColour.X, pColour.Y, pColour.Z, pColour.W));
+	quad.mBottomRightPoint = DirectX::VertexPositionColor(DirectX::XMFLOAT3(mDeviceWidth, mDeviceHeight, 0), DirectX::XMFLOAT4(pColour.X, pColour.Y, pColour.Z, pColour.W));
+	quad.mBottomLeftPoint = DirectX::VertexPositionColor(DirectX::XMFLOAT3(0, mDeviceHeight, 0), DirectX::XMFLOAT4(pColour.X, pColour.Y, pColour.Z, pColour.W));
+	quad.mIsVisible = pIsVisible;
+	mQuads.emplace_back(quad);
+	return &mQuads.back();
+}
+
 void GUIManager::LoadFont(const wchar_t* pFontName)
 {
 	mFonts.push_back(std::make_unique<DirectX::SpriteFont>(mDevice.Get(), pFontName));

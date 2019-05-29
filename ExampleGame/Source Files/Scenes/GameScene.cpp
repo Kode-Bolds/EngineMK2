@@ -363,6 +363,11 @@ void GameScene::RotateAroundPoint(const int pEntity, const KodeboldsMath::Vector
 	mEcsManager->TransformComp(pEntity)->transform *= translateTo * rotation * translateBack;
 }
 
+void GameScene::OnClick_MainMenuButton()
+{
+	mSceneManager->LoadScene<MenuScene>();
+}
+
 /// <summary>
 /// Default constructor
 /// </summary>
@@ -438,7 +443,7 @@ void GameScene::Update()
 			}
 		}
 
-		// Trigger Pause Menu
+		// Turn On Pause Menu
 		if (mInputManager->KeyDown(KEYS::KEY_ESC))
 		{
 			mGameState = GAME_STATE::PAUSED;
@@ -454,21 +459,24 @@ void GameScene::Update()
 			// make all of the pause menu attributes (GUI) visible
 			mPausedOverlay->mIsVisible = true;
 			mPausedText->mIsVisible = true;
-			mPausedExitButton->mIsVisible = true;
+			mPausedExitButton->SetVisibility(true);
 		}
 	}
 	else {
 
 		Pause();
 
-		// Trigger Pause Menu
+		// Turn off Pause Menu
 		if (mInputManager->KeyDown(KEYS::KEY_ESC))
 		{
 			mGameState = GAME_STATE::PLAYING;
 			//exit(0);
 			mPausedOverlay->mIsVisible = false;
 			mPausedText->mIsVisible = false;
-			mPausedExitButton->mIsVisible = false;
+			mPausedExitButton->SetVisibility(false);
+
+			// allows the user to use the centered mouse
+			mInputManager->CenterCursor(true);
 		}
 	}
 }
@@ -478,6 +486,9 @@ void GameScene::Update()
 /// </summary>
 void GameScene::OnLoad()
 {
+	// allows the user to use the mouse again as normal
+	mInputManager->CenterCursor(true);
+
 	//Spawn player ship and attached camera
 	mPlayerShipStartPos = Vector4(0, 0, -50, 1);
 	mPlayerShip = SpawnShip(mPlayerShipStartPos, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 40, 50, CustomCollisionMask::SHIP,
@@ -621,16 +632,18 @@ void GameScene::OnLoad()
 	// Loading of Pause Menu (initallity hidden)
 
 	// creates a panel that covers the screen when game is paused
-	mPausedOverlay = mGUIManager->CreateQuad(
-		Vector2(0, 0), Vector2(100, 0), Vector2(100, 1200), Vector2(0, 1200),
-		Vector4(0.5f, 0.5f, 0.5f, 1.0f), Vector4(0.5f, 0.5f, 0.5f, 1.0f), Vector4(0.5f, 0.5f, 0.5f, 1.0f), Vector4(0.5f, 0.5f, 0.5f, 1.0f), false);
+	mPausedOverlay = mGUIManager->CreateQuadOverlay(Vector4(0.1f, 0.1f, 0.1f, 1.0f), false);
+
+	//mPausedOverlay = mGUIManager->CreateQuad(
+	//	Vector2(0, 0), Vector2(100, 0), Vector2(100, 1200), Vector2(0, 1200),
+	//	Vector4(0.5f, 0.5f, 0.5f, 1.0f), Vector4(0.5f, 0.5f, 0.5f, 1.0f), Vector4(0.5f, 0.5f, 0.5f, 1.0f), Vector4(0.5f, 0.5f, 0.5f, 1.0f), false);
 
 	mPausedText = mGUIManager->Write(L"PAUSED", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::CENTRE_TOP, Vector2(0, 250), L"AlienEncounters.spritefont", 0.0f, 1.5f, Vector4(1.0f, 0.0f, 0.0f, 1.0f), false);
 
 	// Creates a button that allows the user to exit back to the main menu
 	mPausedExitButton = mGUIManager->CreateButton(L"button.png", L"AlienEncounters.spritefont", L"MAIN MENU", 0, 0.35f, 0.65f,
 		GUIManager::ButtonOrigin::CENTRE, GUIManager::ButtonPosition::CENTRE_MIDDLE, Vector2(0, 100),
-		Vector2(0, 10), Vector4(0.0f, 0.0f, 0.0f, 1.0f), Vector4(1.0f, 1.0f, 0.0f, 1.0f), nullptr, true);
+		Vector2(0, 10), Vector4(0.0f, 0.0f, 0.0f, 1.0f), Vector4(1.0f, 1.0f, 0.0f, 1.0f), std::bind(&GameScene::OnClick_MainMenuButton, this), false);
 
 
 	mGameState = GAME_STATE::PLAYING;
@@ -641,6 +654,11 @@ void GameScene::OnLoad()
 /// </summary>
 void GameScene::OnUnload()
 {
+	// Clears GUI from previous scene
+	resourceManager->mSprites.clear();
+	resourceManager->mButtons.clear();
+	mGUIManager->GetQuads()->clear();
+	mGUIManager->GetTextVector()->clear();
 }
 
 void GameScene::Pause()

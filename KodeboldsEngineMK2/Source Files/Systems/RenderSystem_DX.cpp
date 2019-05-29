@@ -745,6 +745,7 @@ void RenderSystem_DX::Process()
 	Render();
 
 	RenderGUI();
+	mGUIManager->Update();
 
 	SwapBuffers();
 }

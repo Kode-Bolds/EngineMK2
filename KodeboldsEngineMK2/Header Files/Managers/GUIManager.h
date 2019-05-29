@@ -107,6 +107,8 @@ public:
 	Quad* CreateQuad(KodeboldsMath::Vector2 pTopLeftPoint, KodeboldsMath::Vector2 pTopRightPoint, KodeboldsMath::Vector2 pBottomRightPoint, KodeboldsMath::Vector2 pBottomLeftPoint,
 		KodeboldsMath::Vector4 pTopLeftPointColour, KodeboldsMath::Vector4 pTopLRightPointColour, KodeboldsMath::Vector4 pBottomRightPointColour, KodeboldsMath::Vector4 pBottomLeftPointColour, bool pIsVisible);
 
+	Quad* CreateQuadOverlay(KodeboldsMath::Vector4 pColour, bool pIsVisible);
+
 
 
 	// Loads .spritefont files from disk

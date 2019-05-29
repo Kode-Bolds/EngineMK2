@@ -7,6 +7,7 @@
 #include "SceneManager.h"
 #include "EntitySpawner.h"
 #include "GUIManager.h"
+#include "MenuScene.h"
 
 class GameScene : public Scene
 {
@@ -59,11 +60,7 @@ private:
 	Button* mPausedExitButton = nullptr;
 
 
-
-
-
-
-
+	void OnClick_MainMenuButton();
 
 
 public:
