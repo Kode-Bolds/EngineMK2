@@ -483,6 +483,7 @@ Text * GUIManager::Write(const wchar_t* pText, KodeboldsMath::Vector2 pOrigin, T
 	}
 
 	Write(pText, pOrigin, position, pPadding, pFontName, pRotation, pScale, pColour, pIsVisible);
+	return 0;
 }
 Text * GUIManager::Write(const wchar_t* pText, TextOrigin pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, const wchar_t* pFontName, float pRotation, float pScale, KodeboldsMath::Vector4 pColour, bool pIsVisible)
 {

@@ -70,7 +70,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 #elif OPENGL
 	ecsManager->AddUpdateSystem(std::make_shared<AudioSystem_GL>());
 #endif
-	
+
 
 	//Create camera
 	int entityID = ecsManager->CreateEntity();
@@ -110,7 +110,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	}
 
 	//Scenes
-	sceneManager->LoadScene<GameScene>();
+	sceneManager->LoadScene<MenuScene>();
 
 	//Main message loop
 	MSG msg = { 0 };

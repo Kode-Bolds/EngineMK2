@@ -732,6 +732,8 @@ void RenderSystem_DX::Process()
 
 	SetLights();
 
+	// Need to reinitialise the constant buffers after SpriteBatch changes them
+	CreateConstantBuffers();
 
 	//Render to texture
 	mContext->OMSetRenderTargets(1, mTextureRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
@@ -744,10 +746,13 @@ void RenderSystem_DX::Process()
 	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
 	Render();
 
+
 	RenderGUI();
 	mGUIManager->Update();
 
+
 	SwapBuffers();
+
 }
 
 /// <summary>
@@ -805,12 +810,12 @@ void RenderSystem_DX::LoadShaders(const Entity& pEntity)
 			const auto blendSample = 0xffffffff;
 			if (blend == BlendState::NOBLEND)
 			{
-				mContext->OMSetBlendState(mNoBlend.Get(), nullptr, blendSample);
+				mContext->OMSetBlendState(mNoBlend.Get(), blendFactor, blendSample);
 
 			}
 			else if (blend == BlendState::ALPHABLEND)
 			{
-				mContext->OMSetBlendState(mAlphaBlend.Get(), nullptr, blendSample);
+				mContext->OMSetBlendState(mAlphaBlend.Get(), blendFactor, blendSample);
 				//OutputDebugString(L"ALPHA BLEND");
 
 			}

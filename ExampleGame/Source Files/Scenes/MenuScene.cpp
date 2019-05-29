@@ -50,6 +50,9 @@ void MenuScene::OnLoad()
 	mEcsManager->AddAudioComp(audio, mMenuMusic);
 
 	// GUI
+	// creates a panel that covers the screen when game is paused
+	mBackgroundOverlay = mGUIManager->CreateQuadOverlay(Vector4(0.0f, 0.0f, 0.0f, 1.0f), true);
+
 	mGUIManager->LoadSprite(L"Spaceship.png", GUIManager::SpriteOrigin::CENTRE, GUIManager::SpritePosition::CENTRE_MIDDLE, Vector2(0, 0), 0, 1, true);
 	mGUIManager->Write(L"PEW PEW!", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::CENTRE_TOP, Vector2(400, 250), L"AlienEncounters.spritefont",
 		0.0f, 1.5f, Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);

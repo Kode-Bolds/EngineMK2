@@ -26,6 +26,7 @@ private:
 
 
 	int mMenuMusic;
+	Quad* mBackgroundOverlay = nullptr;
 
 public:
 	//Structors
