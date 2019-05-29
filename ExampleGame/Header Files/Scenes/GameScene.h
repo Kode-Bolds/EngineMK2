@@ -58,9 +58,11 @@ private:
 	Quad* mPausedOverlay = nullptr;
 	Text* mPausedText = nullptr;
 	Button* mPausedExitButton = nullptr;
+	Button* mResumeGameButton = nullptr;
 
 
 	void OnClick_MainMenuButton();
+	void OnClick_ResumeGameButton();
 
 
 public:
@@ -71,5 +73,6 @@ public:
 	void Update() override;
 	void OnLoad() override;
 	void OnUnload() override;
-	void Pause();
+	void OnPause();
+	void OnUnPause();
 };

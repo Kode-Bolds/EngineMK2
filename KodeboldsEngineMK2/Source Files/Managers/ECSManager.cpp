@@ -7,11 +7,11 @@ using namespace std;
 /// Assigns given entity to all appropriate systems upon addition of new component
 /// </summary>
 /// <param name="pEntity">The given entity to assign to systems</param>
-void ECSManager::AssignEntity(const Entity & pEntity)
+void ECSManager::AssignEntity(const Entity& pEntity)
 {
 	mRenderSystem->AssignEntity(pEntity);
 
-	for (auto & system : mUpdateSystems)
+	for (auto& system : mUpdateSystems)
 	{
 		system->AssignEntity(pEntity);
 	}
@@ -21,11 +21,11 @@ void ECSManager::AssignEntity(const Entity & pEntity)
 /// Re-assigns given entity to all appropriate systems upon removal of component
 /// </summary>
 /// <param name="pEntity">Entity to re-assign</param>
-void ECSManager::ReAssignEntity(const Entity & pEntity)
+void ECSManager::ReAssignEntity(const Entity& pEntity)
 {
 	mRenderSystem->ReAssignEntity(pEntity);
 
-	for (auto & system : mUpdateSystems)
+	for (auto& system : mUpdateSystems)
 	{
 		system->ReAssignEntity(pEntity);
 	}
@@ -246,6 +246,14 @@ void ECSManager::DestroyEntity(const int pEntityID)
 	mFreeEntityIDs.push_back(pEntityID);
 }
 
+void ECSManager::DestroyEntities()
+{
+	for (int i = 0; i < mEntities.size(); i++)
+	{
+		DestroyEntity(mEntities[i].ID);
+	}
+}
+
 /// <summary>
 /// Adds the given system to the update system vector
 /// </summary>
@@ -273,7 +281,7 @@ void ECSManager::AddRenderSystem(shared_ptr<ISystem> pSystem)
 void ECSManager::ProcessSystems()
 {
 	//Run update systems
-	for (auto & system : mUpdateSystems)
+	for (auto& system : mUpdateSystems)
 	{
 		system->Process();
 	}
@@ -313,7 +321,7 @@ void ECSManager::ProcessSystems()
 /// </summary>
 /// <param name="pAI">AI component to add</param>
 /// <param name="pEntityID">Given ID of the entity</param>
-void ECSManager::AddAIComp(const AI & pAI, const int pEntityID)
+void ECSManager::AddAIComp(const AI& pAI, const int pEntityID)
 {
 	Entity* entity = &mEntities[pEntityID];
 
@@ -1082,7 +1090,7 @@ void ECSManager::RemoveVelocityComp(const int pEntityID)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to AI component</returns>
-AI * const ECSManager::AIComp(const int pEntityID)
+AI* const ECSManager::AIComp(const int pEntityID)
 {
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_AI) == ComponentType::COMPONENT_AI)
@@ -1097,7 +1105,7 @@ AI * const ECSManager::AIComp(const int pEntityID)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to Audio component</returns>
-Audio * const ECSManager::AudioComp(const int pEntityID)
+Audio* const ECSManager::AudioComp(const int pEntityID)
 {
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_AUDIO) == ComponentType::COMPONENT_AUDIO)
@@ -1112,7 +1120,7 @@ Audio * const ECSManager::AudioComp(const int pEntityID)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to BoxCollider component</returns>
-BoxCollider * const ECSManager::BoxColliderComp(const int pEntityID)
+BoxCollider* const ECSManager::BoxColliderComp(const int pEntityID)
 {
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_BOXCOLLIDER) == ComponentType::COMPONENT_BOXCOLLIDER)
@@ -1127,7 +1135,7 @@ BoxCollider * const ECSManager::BoxColliderComp(const int pEntityID)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to Camera component</returns>
-Camera * const ECSManager::CameraComp(const int pEntityID)
+Camera* const ECSManager::CameraComp(const int pEntityID)
 {
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_CAMERA) == ComponentType::COMPONENT_CAMERA)
@@ -1142,7 +1150,7 @@ Camera * const ECSManager::CameraComp(const int pEntityID)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to Collision component</returns>
-Collision * const ECSManager::CollisionComp(const int pEntityID)
+Collision* const ECSManager::CollisionComp(const int pEntityID)
 {
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_COLLISION) == ComponentType::COMPONENT_COLLISION)
@@ -1157,7 +1165,7 @@ Collision * const ECSManager::CollisionComp(const int pEntityID)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to Colour component</returns>
-Colour * const ECSManager::ColourComp(const int pEntityID)
+Colour* const ECSManager::ColourComp(const int pEntityID)
 {
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_COLOUR) == ComponentType::COMPONENT_COLOUR)
@@ -1172,7 +1180,7 @@ Colour * const ECSManager::ColourComp(const int pEntityID)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to Geometry component</returns>
-Geometry * const ECSManager::GeometryComp(const int pEntityID)
+Geometry* const ECSManager::GeometryComp(const int pEntityID)
 {
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_GEOMETRY) == ComponentType::COMPONENT_GEOMETRY)
@@ -1187,7 +1195,7 @@ Geometry * const ECSManager::GeometryComp(const int pEntityID)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to Geometry component</returns>
-Gravity * const ECSManager::GravityComp(const int pEntityID)
+Gravity* const ECSManager::GravityComp(const int pEntityID)
 {
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_GRAVITY) == ComponentType::COMPONENT_GRAVITY)
@@ -1202,7 +1210,7 @@ Gravity * const ECSManager::GravityComp(const int pEntityID)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to AI component</returns>
-PointLight * const ECSManager::PointLightComp(const int pEntityID)
+PointLight* const ECSManager::PointLightComp(const int pEntityID)
 {
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_POINTLIGHT) == ComponentType::COMPONENT_POINTLIGHT)
@@ -1212,7 +1220,7 @@ PointLight * const ECSManager::PointLightComp(const int pEntityID)
 	return nullptr;
 }
 
-DirectionalLight * const ECSManager::DirectionalLightComp(const int pEntityID)
+DirectionalLight* const ECSManager::DirectionalLightComp(const int pEntityID)
 {
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_DIRECTIONALLIGHT) == ComponentType::COMPONENT_DIRECTIONALLIGHT)
@@ -1227,7 +1235,7 @@ DirectionalLight * const ECSManager::DirectionalLightComp(const int pEntityID)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to Ray component</returns>
-Ray * const ECSManager::RayComp(const int pEntityID)
+Ray* const ECSManager::RayComp(const int pEntityID)
 {
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_RAY) == ComponentType::COMPONENT_RAY)
@@ -1242,7 +1250,7 @@ Ray * const ECSManager::RayComp(const int pEntityID)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to Shader component</returns>
-Shader * const ECSManager::ShaderComp(const int pEntityID)
+Shader* const ECSManager::ShaderComp(const int pEntityID)
 {
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_SHADER) == ComponentType::COMPONENT_SHADER)
@@ -1257,7 +1265,7 @@ Shader * const ECSManager::ShaderComp(const int pEntityID)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to Sphere Collider component</returns>
-SphereCollider * const ECSManager::SphereColliderComp(const int pEntityID)
+SphereCollider* const ECSManager::SphereColliderComp(const int pEntityID)
 {
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_SPHERECOLLIDER) == ComponentType::COMPONENT_SPHERECOLLIDER)
@@ -1272,7 +1280,7 @@ SphereCollider * const ECSManager::SphereColliderComp(const int pEntityID)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to Texture component</returns>
-Texture * const ECSManager::TextureComp(const int pEntityID)
+Texture* const ECSManager::TextureComp(const int pEntityID)
 {
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_TEXTURE) == ComponentType::COMPONENT_TEXTURE)
@@ -1287,7 +1295,7 @@ Texture * const ECSManager::TextureComp(const int pEntityID)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to Transform component</returns>
-Transform * const ECSManager::TransformComp(const int pEntityID)
+Transform* const ECSManager::TransformComp(const int pEntityID)
 {
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_TRANSFORM) == ComponentType::COMPONENT_TRANSFORM)
@@ -1302,7 +1310,7 @@ Transform * const ECSManager::TransformComp(const int pEntityID)
 /// </summary>
 /// <param name="pEntityID">Given entity ID</param>
 /// <returns>Modifiable handle to Velocity component</returns>
-Velocity * const ECSManager::VelocityComp(const int pEntityID)
+Velocity* const ECSManager::VelocityComp(const int pEntityID)
 {
 	//Checks if entity actually owns a component of this type
 	if ((mEntities[pEntityID].componentMask & ComponentType::COMPONENT_VELOCITY) == ComponentType::COMPONENT_VELOCITY)

@@ -368,6 +368,10 @@ void GameScene::OnClick_MainMenuButton()
 	mSceneManager->LoadScene<MenuScene>();
 }
 
+void GameScene::OnClick_ResumeGameButton()
+{
+}
+
 /// <summary>
 /// Default constructor
 /// </summary>
@@ -446,37 +450,16 @@ void GameScene::Update()
 		// Turn On Pause Menu
 		if (mInputManager->KeyDown(KEYS::KEY_ESC))
 		{
-			mGameState = GAME_STATE::PAUSED;
-			//exit(0);
-
-
-			// allows the user to use the mouse again as normal
-			mInputManager->CenterCursor(false);
-
-			// TODO: STOP EVERYTHING IN THE GAME
-			// TODO: FIX EXCEPTION THAT IS CAUSED WHEN GAME PAUSES?
-
-			// make all of the pause menu attributes (GUI) visible
-			mPausedOverlay->mIsVisible = true;
-			mPausedText->mIsVisible = true;
-			mPausedExitButton->SetVisibility(true);
+			OnPause();
 		}
 	}
-	else {
+	else { // the game is now paused
 
-		Pause();
 
 		// Turn off Pause Menu
 		if (mInputManager->KeyDown(KEYS::KEY_ESC))
 		{
-			mGameState = GAME_STATE::PLAYING;
-			//exit(0);
-			mPausedOverlay->mIsVisible = false;
-			mPausedText->mIsVisible = false;
-			mPausedExitButton->SetVisibility(false);
-
-			// allows the user to use the centered mouse
-			mInputManager->CenterCursor(true);
+			OnUnPause();
 		}
 	}
 }
@@ -486,6 +469,12 @@ void GameScene::Update()
 /// </summary>
 void GameScene::OnLoad()
 {
+	// Clears GUI from previous scene
+	resourceManager->mSprites.clear();
+	resourceManager->mButtons.clear();
+	mGUIManager->GetQuads()->clear();
+	mGUIManager->GetTextVector()->clear();
+
 	// allows the user to use the mouse again as normal
 	mInputManager->CenterCursor(true);
 
@@ -640,6 +629,11 @@ void GameScene::OnLoad()
 
 	mPausedText = mGUIManager->Write(L"PAUSED", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::CENTRE_TOP, Vector2(0, 250), L"AlienEncounters.spritefont", 0.0f, 1.5f, Vector4(1.0f, 0.0f, 0.0f, 1.0f), false);
 
+	// Creates a button that allows the user to resume the game
+	mResumeGameButton = mGUIManager->CreateButton(L"button.png", L"AlienEncounters.spritefont", L"RESUME", 0, 0.35f, 0.65f,
+		GUIManager::ButtonOrigin::CENTRE, GUIManager::ButtonPosition::CENTRE_MIDDLE, Vector2(0, 0),
+		Vector2(0, 10), Vector4(0.0f, 0.0f, 0.0f, 1.0f), Vector4(1.0f, 1.0f, 0.0f, 1.0f), std::bind(&GameScene::OnClick_ResumeGameButton, this), false);
+
 	// Creates a button that allows the user to exit back to the main menu
 	mPausedExitButton = mGUIManager->CreateButton(L"button.png", L"AlienEncounters.spritefont", L"MAIN MENU", 0, 0.35f, 0.65f,
 		GUIManager::ButtonOrigin::CENTRE, GUIManager::ButtonPosition::CENTRE_MIDDLE, Vector2(0, 100),
@@ -659,8 +653,42 @@ void GameScene::OnUnload()
 	resourceManager->mButtons.clear();
 	mGUIManager->GetQuads()->clear();
 	mGUIManager->GetTextVector()->clear();
+
+	mEcsManager->DestroyEntities();
 }
 
-void GameScene::Pause()
+void GameScene::OnPause()
 {
+	mGameState = GAME_STATE::PAUSED;
+	//exit(0);
+
+	// allows the user to use the mouse again as normal
+	mInputManager->CenterCursor(false);
+
+	// TODO: STOP EVERYTHING IN THE GAME
+	//mSceneManager->Pause(true);
+
+	// make all of the pause menu attributes (GUI) visible
+	//mPausedOverlay->mIsVisible = true;
+	mPausedText->mIsVisible = true;
+	mPausedExitButton->SetVisibility(true);
+	mResumeGameButton->SetVisibility(true);
+
+}
+
+void GameScene::OnUnPause()
+{
+	mGameState = GAME_STATE::PLAYING;
+
+	// TODO: START EVERYTHING AGAIN
+	//mSceneManager->Pause(false);
+
+	//exit(0);
+	mPausedOverlay->mIsVisible = false;
+	mPausedText->mIsVisible = false;
+	mPausedExitButton->SetVisibility(false);
+	mResumeGameButton->SetVisibility(false);
+
+	// allows the user to use the centered mouse
+	mInputManager->CenterCursor(true);
 }

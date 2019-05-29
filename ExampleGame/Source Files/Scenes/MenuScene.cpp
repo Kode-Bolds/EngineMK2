@@ -31,7 +31,7 @@ void MenuScene::Update()
 #ifdef  DIRECTX
 	if (mInputManager->KeyDown(KEYS::KEY_ENTER))
 	{
-		mSceneManager->LoadScene<GameScene>();
+		mSceneManager->LoadScene<LoadingScene>();
 	}
 #elif OPENGL
 #endif
@@ -83,7 +83,7 @@ void MenuScene::OnUnload()
 
 void MenuScene::OnClick_PlayButton()
 {
-	mSceneManager->LoadScene<GameScene>();
+	mSceneManager->LoadScene<LoadingScene>();
 }
 
 void MenuScene::OnClick_ExitButton()
