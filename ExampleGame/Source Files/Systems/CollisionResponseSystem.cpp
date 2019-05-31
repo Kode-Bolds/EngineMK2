@@ -127,6 +127,8 @@ void CollisionResponseSystem::Process()
 					{
 						mEcsManager->DestroyEntity(mEcsManager->CollisionComp(entity.ID)->collidedEntity);
 						mEcsManager->DestroyEntity(entity.ID);
+
+						// TODO: INCREASE SCORE
 					}
 				}
 			}

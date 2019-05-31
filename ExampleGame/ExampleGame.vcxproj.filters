@@ -119,6 +119,9 @@
     <ClCompile Include="Source Files\Scenes\MenuScene.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Source Files\Scenes\LoadingScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\Scenes\GameScene.h">
@@ -148,6 +151,9 @@
     <ClInclude Include="Header Files\Scenes\MenuScene.h">
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="Header Files\Scenes\LoadingScene.h">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="crosshair.png">
@@ -157,6 +163,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="button.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="heart.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="bullet.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
@@ -171,6 +183,9 @@
       <Filter>Resource Files</Filter>
     </Media>
     <Media Include="space.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="Test-AnthonyBeacock-SpaceMenu.wav">
       <Filter>Resource Files</Filter>
     </Media>
   </ItemGroup>

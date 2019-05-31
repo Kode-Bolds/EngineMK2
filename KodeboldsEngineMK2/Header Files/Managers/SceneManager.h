@@ -26,9 +26,9 @@ private:
 
 	//Timing variables
 	std::chrono::nanoseconds mDeltaTime;
-	std::chrono::high_resolution_clock::time_point mStartTime;
 	std::chrono::high_resolution_clock::time_point mCurrentTime;
 	std::chrono::high_resolution_clock::time_point mPreviousTime;
+	std::chrono::high_resolution_clock::time_point mStartTime;
 	int mFps = 0;
 	double mAverageDeltaTime = 0;
 	std::array<double, 50> mLast50Frames;
@@ -57,6 +57,8 @@ public:
 	void SetWindowWidthHeight(const float& pWidth, const float& pHeight);
 	const float& WindowWidth() const;
 	const float& WindowHeight() const;
+
+	const void Pause(bool mIsPaused);
 
 	/// <summary>
 	/// Loads scene of given type T

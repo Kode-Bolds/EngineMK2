@@ -11,4 +11,5 @@ public:
 	float mScale;
 	float mRotation;
 	DirectX::XMFLOAT4 mColour;
+	bool mIsVisible;
 };
