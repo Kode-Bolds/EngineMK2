@@ -33,7 +33,6 @@ void LoadingScene::OnLoad()
 
 	mLoadingText = mGUIManager->Write(L"LOADING", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::CENTRE_MIDDLE, Vector2(0, 0), L"AlienEncounters.spritefont", 0.0f, 1.5f, Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);
 
-	Sleep(100);
 	mSceneManager->LoadScene<GameScene>();
 }
 

@@ -42,6 +42,14 @@ private:
 	float mCameraSpeed;
 	float mRotationSpeed;
 
+	int mGravityAsteroid1;
+	int mGravityAsteroid2;
+
+	int mSunLight;
+	int mSun;
+
+	int mActiveCam;
+
 	KodeboldsMath::Vector4 mPlayerShipStartPos;
 	KodeboldsMath::Vector4 mPlayerStartPos;
 	KodeboldsMath::Vector4 mFreeCamStartPos;
