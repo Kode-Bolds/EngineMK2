@@ -576,7 +576,7 @@ void GameScene::OnLoad()
 
 	//Spawn sun light
 	mSunLight = mEcsManager->CreateEntity();
-	DirectionalLight dl{ (mEcsManager->TransformComp(mSun)->translation - Vector4(0, 0, -100, 1)).Normalise(), Vector4(1.0f, 0.8f, 0.7f, 1) };
+	DirectionalLight dl{ Vector4(0, 0, 1, 1), Vector4(1.0f, 0.8f, 0.7f, 1) };
 	mEcsManager->AddDirectionalLightComp(dl, mSunLight);
 
 	//Spawn skybox
