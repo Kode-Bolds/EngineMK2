@@ -39,7 +39,7 @@ public:
 	virtual void ClearView() const = 0;
 	virtual void SwapBuffers() const = 0;
 	virtual void LoadGeometry(const Entity& pEntity) = 0;
-	virtual void LoadShaders(const Entity& pEntity) = 0;
+	virtual bool LoadShaders(const Entity& pEntity) = 0;
 	virtual void LoadTexture(const Entity& pEntity) = 0;
 	virtual void SetViewProj() = 0;
 	virtual void SetLights() = 0;

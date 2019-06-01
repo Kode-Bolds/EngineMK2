@@ -29,6 +29,7 @@ private:
 	DepthState mActiveDepth;
 
 	int mRenderTextureCount;
+	int mActiveRenderTarget;
 
 	/// <summary>
 	/// DirectX pointers
@@ -82,7 +83,7 @@ private:
 	void ClearView() const override;
 	void SwapBuffers() const override;
 	void LoadGeometry(const Entity& pEntity) override;
-	void LoadShaders(const Entity& pEntity) override;
+	bool LoadShaders(const Entity& pEntity) override;
 	void LoadTexture(const Entity& pEntity) override;
 
 	void SetViewProj() override;

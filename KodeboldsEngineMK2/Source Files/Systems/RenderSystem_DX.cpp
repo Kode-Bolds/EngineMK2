@@ -16,7 +16,7 @@ RenderSystem_DX::RenderSystem_DX(const HWND& pWindow, const int pMaxPointLights,
 		ComponentType::COMPONENT_CAMERA },
 		pMaxPointLights,
 		pMaxDirLights),
-	mWindow(pWindow), mRenderTextureCount(pRenderTextures), mActiveCamera(nullptr), mActiveGeometry(L""), mActiveShader(L"")
+	mWindow(pWindow), mActiveCamera(nullptr), mActiveGeometry(L""), mActiveShader(L""), mRenderTextureCount(pRenderTextures), mActiveRenderTarget(-1)
 {
 	if (FAILED(Init()))
 	{
@@ -738,11 +738,15 @@ void RenderSystem_DX::Process()
 
 	SetLights();
 
-	// Need to reinitialise the constant buffers after SpriteBatch changes them
-	CreateConstantBuffers();
+	// Need to set the constant buffers after SpriteBatch changes them
+	mContext->VSSetConstantBuffers(0, 1, mConstantBuffer.GetAddressOf());
+	mContext->PSSetConstantBuffers(0, 1, mConstantBuffer.GetAddressOf());
+	mContext->VSSetConstantBuffers(1, 1, mLightingBuffer.GetAddressOf());
+	mContext->PSSetConstantBuffers(1, 1, mLightingBuffer.GetAddressOf());
 
 	for (int i = 0; i < mRenderTextureCount; ++i)
 	{
+		mActiveRenderTarget = i;
 		mContext->ClearRenderTargetView(mTextureRenderTargetViews[i].Get(), DirectX::Colors::Black);
 		//Render to texture
 		mContext->OMSetRenderTargets(1, mTextureRenderTargetViews[i].GetAddressOf(), mDepthStencilView.Get());
@@ -751,12 +755,13 @@ void RenderSystem_DX::Process()
 		mContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 	}
 
+	mActiveRenderTarget = -1;
 	//Render to window
 	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
 	Render();
 
-	RenderGUI();
-	mGUIManager->Update();
+	//RenderGUI();
+	//mGUIManager->Update();
 
 	SwapBuffers();
 
@@ -798,73 +803,85 @@ void RenderSystem_DX::LoadGeometry(const Entity& pEntity)
 /// Loads the shader for the given entity into a shader object
 /// </summary>
 /// <param name="pEntity">Entity to load shader for</param>
-void RenderSystem_DX::LoadShaders(const Entity& pEntity)
+bool RenderSystem_DX::LoadShaders(const Entity& pEntity)
 {
 	const Shader* s = mEcsManager->ShaderComp(pEntity.ID);
+	if (mActiveRenderTarget == -1)
+	{
+		if (!s->renderToScreen)
+			return false;
+	}
+	else
+	{
+		const auto it = std::find(s->renderTargets.begin(), s->renderTargets.end(), mActiveRenderTarget);
+		if (it == s->renderTargets.end())
+			return false;
+	}
+
 	//If shader of entity is not already in the buffers, load entities shader
 	if (s->filename != mActiveShader)
 	{
 		const auto shader = mResourceManager->LoadShader(this, s->filename);
 		shader->Load(this);
 		mActiveShader = s->filename;
-
-		//if the render states have changed, load the appropriate ones for this shader
-		const BlendState blend = s->blendState;
-		if (blend != mActiveBlend)
+	}
+	//if the render states have changed, load the appropriate ones for this shader
+	const BlendState blend = s->blendState;
+	if (blend != mActiveBlend)
+	{
+		float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+		const auto blendSample = 0xffffffff;
+		if (blend == BlendState::NOBLEND)
 		{
-			float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-			const auto blendSample = 0xffffffff;
-			if (blend == BlendState::NOBLEND)
-			{
-				mContext->OMSetBlendState(mNoBlend.Get(), blendFactor, blendSample);
+			mContext->OMSetBlendState(mNoBlend.Get(), blendFactor, blendSample);
 
-			}
-			else if (blend == BlendState::ALPHABLEND)
-			{
-				mContext->OMSetBlendState(mAlphaBlend.Get(), blendFactor, blendSample);
-				//OutputDebugString(L"ALPHA BLEND");
-
-			}
 		}
-
-		const CullState cull = s->cullState;
-		if (cull != mActiveCull)
+		else if (blend == BlendState::ALPHABLEND)
 		{
-			if (cull == CullState::NONE)
-			{
-				mContext->RSSetState(mRastNoCullState.Get());
-			}
-			else if (cull == CullState::FRONT)
-			{
-				mContext->RSSetState(mRastFrontCullState.Get());
-			}
-			else if (cull == CullState::BACK)
-			{
-				mContext->RSSetState(mRastBackCullState.Get());
-			}
-			else if (cull == CullState::WIREFRAME)
-			{
-				mContext->RSSetState(mRastWireframeState.Get());
-			}
-		}
+			mContext->OMSetBlendState(mAlphaBlend.Get(), blendFactor, blendSample);
+			//OutputDebugString(L"ALPHA BLEND");
 
-		const DepthState depth = s->depthState;
-		if (depth != mActiveDepth)
-		{
-			if (depth == DepthState::NONE)
-			{
-				mContext->OMSetDepthStencilState(mDepthNone.Get(), 1);
-				//OutputDebugString(L"NO DEPTH");
-
-			}
-			else if (depth == DepthState::LESSEQUAL)
-			{
-				mContext->OMSetDepthStencilState(mDepthLessEqual.Get(), 1);
-				//OutputDebugString(L"NO DEPTH");
-
-			}
 		}
 	}
+
+	const CullState cull = s->cullState;
+	if (cull != mActiveCull)
+	{
+		if (cull == CullState::NONE)
+		{
+			mContext->RSSetState(mRastNoCullState.Get());
+		}
+		else if (cull == CullState::FRONT)
+		{
+			mContext->RSSetState(mRastFrontCullState.Get());
+		}
+		else if (cull == CullState::BACK)
+		{
+			mContext->RSSetState(mRastBackCullState.Get());
+		}
+		else if (cull == CullState::WIREFRAME)
+		{
+			mContext->RSSetState(mRastWireframeState.Get());
+		}
+	}
+
+	const DepthState depth = s->depthState;
+	if (depth != mActiveDepth)
+	{
+		if (depth == DepthState::NONE)
+		{
+			mContext->OMSetDepthStencilState(mDepthNone.Get(), 1);
+			//OutputDebugString(L"NO DEPTH");
+
+		}
+		else if (depth == DepthState::LESSEQUAL)
+		{
+			mContext->OMSetDepthStencilState(mDepthLessEqual.Get(), 1);
+			//OutputDebugString(L"NO DEPTH");
+
+		}
+	}
+	return true;
 }
 
 /// <summary>
@@ -898,7 +915,7 @@ void RenderSystem_DX::LoadTexture(const Entity& pEntity)
 	}
 	for (int i = 0; i < mRenderTextureCount; ++i)
 	{
-		mContext->PSSetShaderResources(3+i, 1, mRenderTextureSRVs[i].GetAddressOf());
+		mContext->PSSetShaderResources(3 + i, 1, mRenderTextureSRVs[i].GetAddressOf());
 	}
 }
 
@@ -985,9 +1002,17 @@ void RenderSystem_DX::SetCamera()
 	for (const auto& camera : mCameras)
 	{
 		const auto cameraComp = mEcsManager->CameraComp(camera.ID);
-		if (cameraComp->active)
+		if (mActiveRenderTarget == -1 && cameraComp->active)
 		{
 			mActiveCamera = &camera;
+		}
+		else
+		{
+			auto it = std::find(cameraComp->activeTargets.begin(), cameraComp->activeTargets.end(), mActiveRenderTarget);
+			if (it != cameraComp->activeTargets.end())
+			{
+				mActiveCamera = &camera;
+			}
 		}
 	}
 	if (mActiveCamera)
@@ -1007,10 +1032,10 @@ void RenderSystem_DX::Render()
 	{
 		if (entity.ID != -1)
 		{
-
+			if (!LoadShaders(entity))
+				continue;
 			LoadGeometry(entity);
 			LoadTexture(entity);
-			LoadShaders(entity);
 
 			//Set world matrix
 			mCB.mWorld = XMFLOAT4X4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(entity.ID)->transform)));

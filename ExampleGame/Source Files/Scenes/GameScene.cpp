@@ -620,8 +620,8 @@ void GameScene::OnLoad()
 		int screenspaceQuad = mEcsManager->CreateEntity();
 		Geometry geom{ L"cube.obj" };
 		mEcsManager->AddGeometryComp(geom, screenspaceQuad);
-		Shader shaderm{ L"distortionShader.fx" , BlendState::ALPHABLEND, CullState::NONE, DepthState::NONE };
-		//mEcsManager->AddShaderComp(shaderm, screenspaceQuad);
+		Shader shaderm{ L"distortionShader.fx" , BlendState::ALPHABLEND, CullState::NONE, DepthState::NONE, std::vector<int>(), false };
+		mEcsManager->AddShaderComp(shaderm, screenspaceQuad);
 		Texture texturem{};
 		texturem.diffuse = L"stones.DDS";
 		texturem.normal = L"distortionTest.dds";
