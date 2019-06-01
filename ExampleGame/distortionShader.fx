@@ -52,6 +52,8 @@ SamplerState txDiffSampler : register(s0);
 Texture2D txDistortion : register(t1);
 SamplerState txBumpSampler : register(s1);
 
+Texture2D txRenderTarget : register(t3);
+
 
 //--------------------------------------------------------------------------------------
 // Shader Inputs
@@ -108,7 +110,7 @@ float4 PS(PS_INPUT input) : SV_Target
 	float distStr = 0.155;
 	pos -= amnt * distStr * distDir;
 
-	float4 backgroundSample = txDiffuse.Sample(txDiffSampler, pos);
+	float4 backgroundSample = txRenderTarget.Sample(txDiffSampler, pos);
 	backgroundSample.a = 1;
 
 	//outputColor = distMap;

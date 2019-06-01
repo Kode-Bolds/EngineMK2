@@ -608,6 +608,15 @@ void GameScene::OnLoad()
 	DirectionalLight dl{ Vector4(0, 0, 1, 1), Vector4(1.0f, 0.8f, 0.7f, 1) };
 	mEcsManager->AddDirectionalLightComp(dl, mSunLight);
 
+	Transform trans{};
+	trans.translation = Vector4(0, 0, 2000, 1);
+	trans.scale = Vector4(1, 1, 1, 1);
+	trans.rotation = Vector4(0, 0, 0, 1);
+	entitySpawnerEcsManager->AddTransformComp(trans, mSunLight);
+
+	Camera cam{ 60, 1, 10000, std::vector<int>(0), false };
+	entitySpawnerEcsManager->AddCameraComp(cam, mSunLight);
+
 	//Spawn skybox
 	SpawnSkyBox();
 
@@ -649,7 +658,7 @@ void GameScene::OnLoad()
 		int screenspaceQuad = mEcsManager->CreateEntity();
 		Geometry geom{ L"cube.obj" };
 		mEcsManager->AddGeometryComp(geom, screenspaceQuad);
-		Shader shaderm{ L"distortionShader.fx" , BlendState::ALPHABLEND, CullState::NONE, DepthState::NONE };
+		Shader shaderm{ L"distortionShader.fx" , BlendState::ALPHABLEND, CullState::NONE, DepthState::NONE, std::vector<int>(), false };
 		//mEcsManager->AddShaderComp(shaderm, screenspaceQuad);
 		Texture texturem{};
 		texturem.diffuse = L"stones.DDS";

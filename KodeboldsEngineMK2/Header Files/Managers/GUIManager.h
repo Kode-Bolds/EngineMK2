@@ -99,8 +99,8 @@ public:
 
 
 	//----------- STANDARD GUI -----------\\ 
-	void InititialiseGUI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const int pWidth, const int pHeight);
-	void Update();
+	void InitialiseGUI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const int pWidth, const int pHeight);
+	void Update() const;
 	std::shared_ptr<DirectX::SpriteBatch> GetSpriteBatch() { return mSpriteBatch; }
 	std::vector<Text>* GetTextVector() { return &mTexts; }
 	std::vector<std::shared_ptr<DirectX::SpriteFont>>* GetFontsVector() { return &mFonts; }
@@ -128,10 +128,10 @@ public:
 		KodeboldsMath::Vector4 pTextColourHover, std::function<void()> pOnClickFunction, bool pIsVisible);
 
 	// Draws Sprite to screen
-	void LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale, bool pIsVisible);
-	void LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, SpritePosition pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale, bool pIsVisible);
-	Sprite* LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale, bool pIsVisible);
-	Sprite* LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, SpritePosition pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale, bool pIsVisible);
+	void LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale, bool pIsVisible) const;
+	void LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, SpritePosition pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale, bool pIsVisible) const;
+	Sprite* LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale, bool pIsVisible) const;
+	Sprite* LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, SpritePosition pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale, bool pIsVisible) const;
 
 	// Draws Text to screen
 	Text* Write(const wchar_t* pText, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, const wchar_t* pFontName, float pRotation, float pScale, KodeboldsMath::Vector4 pColour, bool pIsVisible);
