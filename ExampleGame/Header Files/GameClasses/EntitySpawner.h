@@ -242,7 +242,7 @@ namespace EntitySpawner
 		int ID = entitySpawnerEcsManager->CreateEntity();
 
 		//Camera component
-		Camera cam{ pFOV, pNear, pFar, std::vector<int>(), false };
+		Camera cam{ pFOV, pNear, pFar, std::vector<int>(0), false };
 		entitySpawnerEcsManager->AddCameraComp(cam, ID);
 
 		//Transform component
@@ -278,11 +278,7 @@ namespace EntitySpawner
 		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
 
 		//Shader component
-<<<<<<< HEAD
-		Shader shader{ L"thrusterShader.fx" , BlendState::ALPHABLEND, CullState::NONE, DepthState::NONE, std::vector<int>(0), true };
-=======
-		Shader shader{ L"thrusterShader.fx" , BlendState::ALPHABLEND, CullState::NONE, DepthState::LESSEQUAL };
->>>>>>> upstream/master
+		Shader shader{ L"thrusterShader.fx" , BlendState::ALPHABLEND, CullState::NONE, DepthState::LESSEQUAL, std::vector<int>(0), true };
 		entitySpawnerEcsManager->AddShaderComp(shader, ID);
 
 		//Texture component
@@ -338,11 +334,8 @@ namespace EntitySpawner
 		Geometry geo{ L"sun.obj" };
 		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
 
-		Camera cam{ 60, 1, 10000, std::vector<int>(0), false };
-		entitySpawnerEcsManager->AddCameraComp(cam, ID);
-
 		//Shader component
-		Shader shader{ L"sunShader.fx" , BlendState::NOBLEND, CullState::BACK, DepthState::LESSEQUAL, std::vector<int>(0), true };
+		Shader shader{ L"sunShader.fx" , BlendState::NOBLEND, CullState::BACK, DepthState::LESSEQUAL, std::vector<int>(), true };
 		entitySpawnerEcsManager->AddShaderComp(shader, ID);
 
 		/*Texture texture{ L"stones.dds", L"stones_NM_height", L"" };
@@ -367,7 +360,7 @@ namespace EntitySpawner
 		entitySpawnerEcsManager->AddGeometryComp(geom, ID);
 
 		//Shader component
-		Shader shaderm{ L"skyboxShader.fx" , BlendState::NOBLEND, CullState::FRONT, DepthState::LESSEQUAL, std::vector<int>(0), true };
+		Shader shaderm{ L"skyboxShader.fx" , BlendState::NOBLEND, CullState::FRONT, DepthState::LESSEQUAL, std::vector<int>(), true };
 		entitySpawnerEcsManager->AddShaderComp(shaderm, ID);
 
 		//Transform component

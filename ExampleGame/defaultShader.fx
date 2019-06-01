@@ -4,8 +4,8 @@ struct DirectionalLight
 	float padding;
 	float4 colour;
 
-	//float4x4 view;
-	//float4x4 projection;
+	float4x4 view;
+	float4x4 projection;
 };
 
 struct Pointlight
@@ -49,10 +49,10 @@ SamplerState txDiffSampler : register(s0);
 Texture2D txBump : register(t1);
 SamplerState txBumpSampler : register(s1);
 
-Texture2D txRenderTarget : register(t3);
+//Texture2D txRenderTarget : register(t3);
 
 
-Texture2D txShadowTexture[2] : register(t4);
+Texture2D txShadowTexture : register(t3);
 
 //--------------------------------------------------------------------------------------
 // Shader Inputs
@@ -83,14 +83,14 @@ PS_INPUT VS(VS_INPUT input)
 	PS_INPUT output = (PS_INPUT)0;
 	output.Pos = mul(float4(input.Pos, 1.0f), World);
 
-	/*
+	
 	//Shadow Positioning
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < numDirLights; i++)
 	{
 		output.ShadowPos[i] = mul(output.Pos, dirLights[i].view);
 		output.ShadowPos[i] = mul(output.Pos, dirLights[i].projection);
 	}
-	*/
+	
 	output.Pos = mul(output.Pos, View);
 	output.Pos = mul(output.Pos, Projection);
 	output.Normal = mul(World, float4(input.Normal, 1.0f)).xyz;
@@ -163,7 +163,7 @@ float4 PS(PS_INPUT input) : SV_Target
 		//Shadow mapping
 		
 		float shadow = 1;
-		/*
+		
 		float2 projectedTexCoords;
 		projectedTexCoords.x = input.ShadowPos[i].x / input.ShadowPos[i].w / 2 + 0.5f;
 		projectedTexCoords.y = -input.ShadowPos[i].y / input.ShadowPos[i].w / 2 + 0.5f;
@@ -171,7 +171,7 @@ float4 PS(PS_INPUT input) : SV_Target
 		//Check in texture bounds
 		if (saturate(projectedTexCoords.x) == projectedTexCoords.x && saturate(projectedTexCoords.y) == projectedTexCoords.y)
 		{
-			float shadowDepth = txShadowTexture[i].Sample(txDiffSampler, projectedTexCoords).r;
+			float shadowDepth = txShadowTexture.Sample(txDiffSampler, projectedTexCoords).r;
 			float depth = (input.ShadowPos[i].z / input.ShadowPos[i].w);
 			if (depth > 0)
 			{
@@ -182,7 +182,7 @@ float4 PS(PS_INPUT input) : SV_Target
 			}
 		}
 
-		*/
+		
 		float4 lightColour = CalcLightColour(matDiffuse, matSpec, viewDirection, dirLights[i].direction, dirLights[i].colour, input) * shadow;
 		outputCol = saturate(lightColour + outputCol);
 	}

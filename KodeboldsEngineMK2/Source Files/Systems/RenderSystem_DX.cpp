@@ -964,10 +964,36 @@ void RenderSystem_DX::SetLights()
 	for (int i = 0; i < mLightCB.numDirLights; ++i)
 	{
 		const auto dlComp = mEcsManager->DirectionalLightComp(mDirectionalLights[i].ID);
+
+		//Calculates the view matrix and sets it in the constant buffer
+		const XMFLOAT4 position(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mDirectionalLights[i].ID)->translation)));
+
+		KodeboldsMath::Vector4 lookAtV = mEcsManager->TransformComp(mDirectionalLights[i].ID)->translation - dlComp->mDirection;
+		const XMFLOAT4 lookAt(reinterpret_cast<float*>(&(lookAtV)));
+		const XMFLOAT4 up(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mDirectionalLights[i].ID)->up)));
+
+		const XMVECTOR posVec = XMLoadFloat4(&position);
+		const XMVECTOR lookAtVec = XMLoadFloat4(&lookAt);
+		const XMVECTOR upVec = XMLoadFloat4(&up);
+
+		XMFLOAT4X4 view;
+		XMStoreFloat4x4(&view, XMMatrixTranspose(XMMatrixLookAtLH(posVec, lookAtVec, upVec)));
+
+		//Calculates the projection matrix and sets it in the constant buffer
+		const float fov = XMConvertToRadians(mEcsManager->CameraComp(mDirectionalLights[i].ID)->FOV);
+		const float aspectRatio = static_cast<float>(mWidth) / static_cast<float>(mHeight);
+		const float nearClip = mEcsManager->CameraComp(mDirectionalLights[i].ID)->nearPlane;
+		const float farClip = mEcsManager->CameraComp(mDirectionalLights[i].ID)->farPlane;
+
+		XMFLOAT4X4 proj;
+		XMStoreFloat4x4(&proj, XMMatrixTranspose(XMMatrixPerspectiveFovLH(fov, aspectRatio, nearClip, farClip)));
+
 		const DirectionalLightCB dl{
 			XMFLOAT3(reinterpret_cast<float*>(&dlComp->mDirection)),
 			1.0f,
-			XMFLOAT4(reinterpret_cast<float*>(&dlComp->mColour))
+			XMFLOAT4(reinterpret_cast<float*>(&dlComp->mColour)),
+			view,
+			proj
 		};
 		mLightCB.dirLights[i] = dl;
 	}
@@ -983,14 +1009,16 @@ void RenderSystem_DX::SetLights()
 
 	for (int i = 0; i < mLightCB.numPointLights; ++i)
 	{
-		const auto plComp = mEcsManager->PointLightComp(mPointLights[i].ID);
-		const PointLightCB pl{
-			XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mPointLights[i].ID)->translation))),
-			XMFLOAT4(reinterpret_cast<float*>(&plComp->mColour)),
-			plComp->mRange,
-			XMFLOAT3(0,0,0)
-		};
-		mLightCB.pointLights[i] = pl;
+		if (const auto plComp = mEcsManager->PointLightComp(mPointLights[i].ID))
+		{
+			const PointLightCB pl{
+	XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mPointLights[i].ID)->translation))),
+	XMFLOAT4(reinterpret_cast<float*>(&plComp->mColour)),
+	plComp->mRange,
+	XMFLOAT3(0,0,0)
+			};
+			mLightCB.pointLights[i] = pl;
+		}
 	}
 }
 
