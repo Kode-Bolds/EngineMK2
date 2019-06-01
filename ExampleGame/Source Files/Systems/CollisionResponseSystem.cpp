@@ -81,6 +81,8 @@ void CollisionResponseSystem::Process()
 							mEcsManager->VelocityComp(entity.ID)->velocity.Y = 0;
 							mEcsManager->RemoveGravityComp(entity.ID + 1);
 							mEcsManager->VelocityComp(entity.ID + 1)->velocity.Y = 0;
+							mEcsManager->RemoveGravityComp(entity.ID + 2);
+							mEcsManager->VelocityComp(entity.ID + 2)->velocity.Y = 0;
 						}
 						mEcsManager->CollisionComp(entity.ID)->handled = true;
 						mEcsManager->CollisionComp(mEcsManager->CollisionComp(entity.ID)->collidedEntity)->handled = true;
