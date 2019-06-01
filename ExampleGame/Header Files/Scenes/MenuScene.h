@@ -7,7 +7,7 @@
 #include "SceneManager.h"
 #include "EntitySpawner.h"
 #include "GUIManager.h"
-#include "GameScene.h"
+#include "LoadingScene.h"
 
 class MenuScene : public Scene
 {
@@ -26,6 +26,7 @@ private:
 
 
 	int mMenuMusic;
+	Quad* mBackgroundOverlay = nullptr;
 
 public:
 	//Structors

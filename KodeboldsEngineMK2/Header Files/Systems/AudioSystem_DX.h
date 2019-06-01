@@ -10,8 +10,8 @@
 class AudioSystem_DX : public AudioSystem
 {
 private:
-	DirectX::AUDIO_ENGINE_FLAGS eflags = DirectX::AUDIO_ENGINE_FLAGS::AudioEngine_EnvironmentalReverb | DirectX::AUDIO_ENGINE_FLAGS::AudioEngine_ReverbUseFilters;
-	std::shared_ptr<DirectX::AudioEngine> mAudioEngine = std::make_shared<DirectX::AudioEngine>(eflags);
+	DirectX::AUDIO_ENGINE_FLAGS eflags;
+	std::unique_ptr<DirectX::AudioEngine> mAudioEngine;
 
 	std::wstring mActiveAudio;
 public:
@@ -24,5 +24,5 @@ public:
 
 	const Sound* LoadAudio(const Entity& pEntity) override;
 
-	std::shared_ptr<DirectX::AudioEngine> AudioEngine() const;
+	DirectX::AudioEngine* AudioEngine() const;
 };

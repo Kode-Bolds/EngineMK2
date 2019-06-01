@@ -22,8 +22,8 @@ Sound_DX::~Sound_DX()
 /// <param name="pFilename"></param>
 void Sound_DX::Create(const AudioSystem * pAudioSystem, const std::wstring & pFilename)
 {
-	std::shared_ptr<DirectX::AudioEngine> engine = reinterpret_cast<const AudioSystem_DX*>(pAudioSystem)->AudioEngine();
-	mSound = std::make_unique<DirectX::SoundEffect>(engine.get(), pFilename.c_str());
+	DirectX::AudioEngine* engine = reinterpret_cast<const AudioSystem_DX*>(pAudioSystem)->AudioEngine();
+	mSound = std::make_unique<DirectX::SoundEffect>(engine, pFilename.c_str());
 }
 
 /// <summary>

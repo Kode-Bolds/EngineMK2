@@ -118,6 +118,7 @@ public:
 	int MaxEntities() const;
 	int CreateEntity();
 	void DestroyEntity(const int pEntityID);
+	void DestroyEntities();
 
 	//System management
 	void AddUpdateSystem(std::shared_ptr<ISystem> pSystem);

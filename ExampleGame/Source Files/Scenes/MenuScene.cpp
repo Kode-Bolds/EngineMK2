@@ -31,7 +31,7 @@ void MenuScene::Update()
 #ifdef  DIRECTX
 	if (mInputManager->KeyDown(KEYS::KEY_ENTER))
 	{
-		mSceneManager->LoadScene<GameScene>();
+		mSceneManager->LoadScene<LoadingScene>();
 	}
 #elif OPENGL
 #endif
@@ -44,22 +44,26 @@ void MenuScene::OnLoad()
 {
 	mInputManager->CenterCursor(false);
 
-	//Audio Files
+	//Audio
 	mMenuMusic = mEcsManager->CreateEntity();
-	Audio audio{L"space.wav", true, false, 0.5f, 1.0f, 0.0f};
+	Audio audio{ L"space.wav", true, false, 0.5f, 1.0f, 0.1f };
 	mEcsManager->AddAudioComp(audio, mMenuMusic);
 
 	// GUI
-	mGUIManager->LoadSprite(L"Spaceship.png", GUIManager::SpriteOrigin::CENTRE, GUIManager::SpritePosition::CENTRE_MIDDLE, Vector2(0, 0), 0, 1);
-	mGUIManager->Write(L"PEW PEW!", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::CENTRE_TOP, Vector2(400, 250), L"AlienEncounters.spritefont", 0.0f, 1.5f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+	// creates a panel that covers the screen when game is paused
+	mBackgroundOverlay = mGUIManager->CreateQuadOverlay(Vector4(0.0f, 0.0f, 0.0f, 1.0f), true);
+
+	mGUIManager->LoadSprite(L"Spaceship.png", GUIManager::SpriteOrigin::CENTRE, GUIManager::SpritePosition::CENTRE_MIDDLE, Vector2(0, 0), 0, 1, true);
+	mGUIManager->Write(L"Space Demo!", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::CENTRE_TOP, Vector2(400, 250), L"AlienEncounters.spritefont",
+		0.0f, 1.5f, Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);
 
 	mGUIManager->CreateButton(L"button.png", L"AlienEncounters.spritefont", L"PLAY", 0, 0.35f, 0.65f,
 		GUIManager::ButtonOrigin::CENTRE, GUIManager::ButtonPosition::CENTRE_MIDDLE, Vector2(400, 0),
-		Vector2(0, 10), Vector4(0.0f, 0.0f, 0.0f, 1.0f), Vector4(1.0f, 0.0f, 0.0f, 1.0f), std::bind(&MenuScene::OnClick_PlayButton, this));
+		Vector2(0, 10), Vector4(0.0f, 0.0f, 0.0f, 1.0f), Vector4(1.0f, 0.0f, 0.0f, 1.0f), std::bind(&MenuScene::OnClick_PlayButton, this), true);
 
 	mGUIManager->CreateButton(L"button.png", L"AlienEncounters.spritefont", L"EXIT", 0, 0.35f, 0.65f,
 		GUIManager::ButtonOrigin::CENTRE, GUIManager::ButtonPosition::CENTRE_MIDDLE, Vector2(400, 100),
-		Vector2(0, 10), Vector4(0.0f, 0.0f, 0.0f, 1.0f), Vector4(1.0f, 1.0f, 0.0f, 1.0f), std::bind(&MenuScene::OnClick_ExitButton, this));
+		Vector2(0, 10), Vector4(0.0f, 0.0f, 0.0f, 1.0f), Vector4(1.0f, 1.0f, 0.0f, 1.0f), std::bind(&MenuScene::OnClick_ExitButton, this), true);
 }
 
 /// <summary>
@@ -70,17 +74,13 @@ void MenuScene::OnUnload()
 	// Clears GUI from previous scene
 	resourceManager->mSprites.clear();
 	resourceManager->mButtons.clear();
-
-	auto test = *mGUIManager->GetTextVector();
-	test.clear();
-
-	//Delete menu music entity
-	mEcsManager->DestroyEntity(mMenuMusic);
+	mGUIManager->GetQuads()->clear();
+	mGUIManager->GetTextVector()->clear();
 }
 
 void MenuScene::OnClick_PlayButton()
 {
-	mSceneManager->LoadScene<GameScene>();
+	mSceneManager->LoadScene<LoadingScene>();
 }
 
 void MenuScene::OnClick_ExitButton()
