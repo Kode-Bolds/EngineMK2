@@ -83,13 +83,14 @@ PS_INPUT VS(VS_INPUT input)
 	PS_INPUT output = (PS_INPUT)0;
 	output.Pos = mul(float4(input.Pos, 1.0f), World);
 
+	/*
 	//Shadow Positioning
 	for (int i = 0; i < 2; i++)
 	{
 		output.ShadowPos[i] = mul(output.Pos, dirLights[i].view);
 		output.ShadowPos[i] = mul(output.Pos, dirLights[i].projection);
 	}
-
+	*/
 	output.Pos = mul(output.Pos, View);
 	output.Pos = mul(output.Pos, Projection);
 	output.Normal = mul(World, float4(input.Normal, 1.0f)).xyz;
