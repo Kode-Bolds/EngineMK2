@@ -292,6 +292,11 @@ namespace EntitySpawner
 		trans.translation = pPosition;
 		entitySpawnerEcsManager->AddTransformComp(trans, ID);
 
+		//Velocity component
+		Velocity vel{};
+		vel.maxSpeed = pMaxSpeed;
+		entitySpawnerEcsManager->AddVelocityComp(vel, ID);
+
 		return ID;
 	}
 

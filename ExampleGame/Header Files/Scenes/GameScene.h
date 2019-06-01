@@ -8,6 +8,7 @@
 #include "EntitySpawner.h"
 #include "GUIManager.h"
 #include "MenuScene.h"
+#include "GameNetworking.h"
 
 class GameScene : public Scene
 {
@@ -24,6 +25,8 @@ private:
 	std::shared_ptr<GUIManager> mGUIManager = GUIManager::Instance();
 	std::shared_ptr<ResourceManager> resourceManager = ResourceManager::Instance();
 
+	GameNetworking mGameNetworking;
+
 	enum GAME_STATE {
 		PLAYING,
 		PAUSED,
@@ -35,6 +38,7 @@ private:
 	int mPlayerGun;
 	int mPlayerShip;
 	int mPlayerShipCam;
+	int mPlayerShipEngine;
 	int mCamera;
 	float mPlayerSpeed;
 	float mPlayerJumpSpeed;
