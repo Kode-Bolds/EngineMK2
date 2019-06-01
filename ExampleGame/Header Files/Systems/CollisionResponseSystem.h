@@ -2,7 +2,8 @@
 #include "ECSManager.h"
 #include "ISystem.h"
 #include "CustomCollisionMask.h"
-#include "Vector4.h"
+#include "KodeboldsMath.h"
+
 class CollisionResponseSystem : public ISystem
 {
 private:
