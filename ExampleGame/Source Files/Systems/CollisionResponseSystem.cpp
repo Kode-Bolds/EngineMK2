@@ -127,8 +127,33 @@ void CollisionResponseSystem::Process()
 					//If laser collides with asteroid, destroy both
 					if (entityMask == CustomCollisionMask::SHIP_LASER && collision->collidedEntityCollisionMask == CustomCollisionMask::ASTEROID)
 					{
-						mEcsManager->DestroyEntity(mEcsManager->CollisionComp(entity.ID)->collidedEntity);
-						mEcsManager->DestroyEntity(entity.ID);
+						if (mEcsManager->CollisionComp(entity.ID))
+						{
+							const KodeboldsMath::Vector4 pos = mEcsManager->TransformComp(mEcsManager->CollisionComp(entity.ID)->collidedEntity)->translation;
+							const float radius = mEcsManager->SphereColliderComp(mEcsManager->CollisionComp(entity.ID)->collidedEntity)->radius / 4;
+							const KodeboldsMath::Vector4 scale = mEcsManager->TransformComp(mEcsManager->CollisionComp(entity.ID)->collidedEntity)->scale / 4;
+
+							//Split asteroid into 4 smaller asteroids with an acceleration outwards of the translation of the destroyed asteroid
+							int asteroid = EntitySpawner::SpawnAsteroid(pos + KodeboldsMath::Vector4(0, 0, 10, 0), scale, KodeboldsMath::Vector4(0, 0, 0, 1), radius, 0,
+								CustomCollisionMask::ASTEROID, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
+							mEcsManager->VelocityComp(asteroid)->velocity = KodeboldsMath::Vector4(15, 0, 15, 1);
+
+							asteroid = EntitySpawner::SpawnAsteroid(pos + KodeboldsMath::Vector4(0, 0, -10, 0), scale, KodeboldsMath::Vector4(0, 0, 0, 1), radius, 0,
+								CustomCollisionMask::ASTEROID, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
+							mEcsManager->VelocityComp(asteroid)->velocity = KodeboldsMath::Vector4(0, 15, -15, 1);
+
+							asteroid = EntitySpawner::SpawnAsteroid(pos + KodeboldsMath::Vector4(0, 10, 0, 0), scale, KodeboldsMath::Vector4(0, 0, 0, 1), radius, 0,
+								CustomCollisionMask::ASTEROID, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
+							mEcsManager->VelocityComp(asteroid)->velocity = KodeboldsMath::Vector4(-15, 0, 15, 1);
+
+							asteroid = EntitySpawner::SpawnAsteroid(pos + KodeboldsMath::Vector4(0, -10, 0, 0), scale, KodeboldsMath::Vector4(0, 0, 0, 1), radius, 0,
+								CustomCollisionMask::ASTEROID, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
+							mEcsManager->VelocityComp(asteroid)->velocity = KodeboldsMath::Vector4(15, -15, 0, 1);
+
+							//Destroy laser and asteroid
+							mEcsManager->DestroyEntity(mEcsManager->CollisionComp(entity.ID)->collidedEntity);
+							mEcsManager->DestroyEntity(entity.ID);
+						}
 
 						// TODO: INCREASE SCORE
 					}
