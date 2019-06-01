@@ -54,6 +54,10 @@ private:
 	KodeboldsMath::Vector4 mPlayerStartPos;
 	KodeboldsMath::Vector4 mFreeCamStartPos;
 
+	std::vector<std::pair<int, float>> mBulletLifeTimers;
+	float mRateOfFire;
+	float mTimeSinceLastFire;
+
 	bool mPlayerIsGrounded;
 
 	void Movement();

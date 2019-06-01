@@ -299,10 +299,6 @@ void GameScene::Rotation()
 			//Y rotation
 			mEcsManager->TransformComp(mPlayer)->transform *= RotationMatrixAxis(DegreesToRadians(deltaX * mRotationSpeed) * mSceneManager->DeltaTime(), Vector4(0, 1, 0, 1));
 			RotateAroundPoint(mPlayerGun, Vector4(0, 1, 0, 0), Vector4(1, -1, 2.0f, 0), deltaX * mRotationSpeed);
-
-			//X rotation
-			mEcsManager->TransformComp(mPlayer)->transform *= RotationMatrixAxis(DegreesToRadians(deltaY * mRotationSpeed) * mSceneManager->DeltaTime(), Vector4(1, 0, 0, 1));
-			RotateAroundPoint(mPlayerGun, Vector4(1, 0, 0, 0), Vector4(1, -1, 2.0f, 0), deltaY * mRotationSpeed);
 		}
 		//If free cam is active, rotate free cam
 		if (mEcsManager->CameraComp(mCamera)->active)
@@ -353,27 +349,63 @@ void GameScene::Rotation()
 /// </summary>
 void GameScene::Shooting()
 {
+	mTimeSinceLastFire += mSceneManager->DeltaTime();
+
 	//Fire on left click
-	if (mInputManager->KeyDown(KEYS::MOUSE_BUTTON_LEFT))
+	if (mInputManager->KeyDown(KEYS::MOUSE_BUTTON_LEFT) && mTimeSinceLastFire > mRateOfFire)
 	{
 		//If ship cam is active, fire ship lasers
 		if (mEcsManager->CameraComp(mPlayerShipCam)->active)
 		{
+			//Set spawn location and calculate firing direction
 			Vector4 leftLaser = mEcsManager->TransformComp(mPlayerShip)->translation + ((mEcsManager->TransformComp(mPlayerShip)->right * -23) + (mEcsManager->TransformComp(mPlayerShip)->up * 5));
-			SpawnLaser(leftLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), mEcsManager->TransformComp(mPlayerShip)->forward * 40, 40,
-				1, CustomCollisionMask::SHIP_LASER, CustomCollisionMask::SHIP_LASER | CustomCollisionMask::SHIP, 100, L"laser.wav");
+			Vector4 directionLeft = leftLaser - Vector4(mEcsManager->TransformComp(mPlayerShipCam)->translation + mEcsManager->TransformComp(mPlayerShipCam)->forward * 300);
 
+			int laser = SpawnLaser(leftLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), directionLeft * -40, 120,
+				2, CustomCollisionMask::SHIP_LASER, CustomCollisionMask::SHIP_LASER | CustomCollisionMask::SHIP, 50, L"laser.wav");
+
+			//Add laser to life timer list
+			mBulletLifeTimers.push_back(std::make_pair(laser, 0.0f));
+
+			//Set spawn location and calculate firing direction
 			Vector4 rightLaser = mEcsManager->TransformComp(mPlayerShip)->translation + ((mEcsManager->TransformComp(mPlayerShip)->right * 23) + (mEcsManager->TransformComp(mPlayerShip)->up * 5));
-			SpawnLaser(rightLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), mEcsManager->TransformComp(mPlayerShip)->forward * 40, 40,
-				1, CustomCollisionMask::SHIP_LASER, CustomCollisionMask::SHIP_LASER | CustomCollisionMask::SHIP, 100, L"laser.wav");
+			Vector4 directionRight = rightLaser - Vector4(mEcsManager->TransformComp(mPlayerShipCam)->translation + mEcsManager->TransformComp(mPlayerShipCam)->forward * 300);
+
+			laser = SpawnLaser(rightLaser, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), directionRight * -40, 120,
+				2, CustomCollisionMask::SHIP_LASER, CustomCollisionMask::SHIP_LASER | CustomCollisionMask::SHIP, 50, L"laser.wav");
+
+			//Add laser to life timer list
+			mBulletLifeTimers.push_back(std::make_pair(laser, 0.0f));
+			mTimeSinceLastFire = 0;
 		}
 
 		//If player cam is active, fire gun
 		if (mEcsManager->CameraComp(mPlayer)->active)
 		{
+
+			//Set spawn location and calculate firing direction
 			Vector4 gunBarrel = mEcsManager->TransformComp(mPlayerGun)->translation + (mEcsManager->TransformComp(mPlayerGun)->forward * -2);
-			SpawnLaser(gunBarrel, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), mEcsManager->TransformComp(mPlayerGun)->forward * -30, 40,
-				1, CustomCollisionMask::GUN_LASER, CustomCollisionMask::GUN_LASER | CustomCollisionMask::PLAYER, 50, L"laser.wav");
+			Vector4 direction = gunBarrel - Vector4(mEcsManager->TransformComp(mPlayer)->translation + mEcsManager->TransformComp(mPlayer)->forward * 25);
+
+			int laser = SpawnLaser(gunBarrel, Vector4(0.1f, 0.1f, 0.1f, 1), Vector4(0, 0, 0, 1), Vector4(1, 0, 0, 1), direction * -40, 120,
+				2, CustomCollisionMask::GUN_LASER, CustomCollisionMask::GUN_LASER | CustomCollisionMask::PLAYER, 50, L"laser.wav");
+
+			//Add laser to life timer list
+			mBulletLifeTimers.push_back(std::make_pair(laser, 0.0f));
+			mTimeSinceLastFire = 0;
+		}
+	}
+
+	//Update timer for each bullet
+	for (auto& bullet : mBulletLifeTimers)
+	{
+		bullet.second += mSceneManager->DeltaTime();
+
+		//Destroy bullet if it's lifetime is greater than the limit
+		if (bullet.second >= 2)
+		{
+			mEcsManager->DestroyEntity(bullet.first);
+			mBulletLifeTimers.erase(std::remove_if(mBulletLifeTimers.begin(), mBulletLifeTimers.end(), [&](const auto& pBullet) {return pBullet.first == bullet.first; }), mBulletLifeTimers.end());
 		}
 	}
 }
@@ -550,12 +582,9 @@ void GameScene::OnLoad()
 	mPlayer = SpawnPlayer(mPlayerStartPos, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 60, 1, 10000, 10, mPlayerStartPos.XYZ() - Vector3(1, 4, 1), mPlayerStartPos.XYZ() + Vector3(1, 2, 1),
 		CustomCollisionMask::PLAYER, CustomCollisionMask::PLAYER | CustomCollisionMask::GUN_LASER | CustomCollisionMask::SHIP);
 
-	//Spawn player cam
-
-
 	//Spawn player gun model
 	mPlayerGun = SpawnLaserGun(mPlayerStartPos + Vector4(1, -1, 2.0f, 0), Vector4(1, 1, 1, 1), Vector4(0, 3.14f, 0, 1), L"laser_gun_diffuse.dds", L"laser_gun_normal.dds", 10);
-
+	mRateOfFire = 0.5f;
 
 	//Spawn free cam
 	mCamera = SpawnCamera(Vector4(5, 2, -100, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 60, 1, 10000, 50);
