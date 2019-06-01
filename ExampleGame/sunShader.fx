@@ -83,7 +83,7 @@ PS_INPUT VS(VS_INPUT input)
 	output.Pos = mul(float4(input.Pos, 1.0f), World);
 	output.Pos = mul(output.Pos, View);
 	output.Pos = mul(output.Pos, Projection);
-	output.Normal = mul(World, float4(input.Normal, 1.0f)).xyz;
+	output.Normal = mul(float4(input.Normal, 0.0f), World).xyz;
 	output.Normal = normalize(output.Normal);
 	output.PosWorld = mul(float4(input.Pos, 1.0f), World);
 	output.TexCoord = input.TexCoord;
@@ -218,11 +218,13 @@ float4 PS(PS_INPUT input) : SV_Target
 	float3 colour = sunColour + sunBrightSpot ;
 
 
-	float3 viewDirection = normalize(CameraPosition - input.PosWorld);
+	float3 viewDirection = normalize(CameraPosition.xyz - input.PosWorld.xyz);
 
 	float rim = 1 - saturate(dot(viewDirection, input.Normal));
 
 	colour += pow(rim.rrr, 3);
+	//input.TexCoord = abs(frac(input.TexCoord));
+	//return float4(input.TexCoord, 0,1);
 
 	//colour = noise(input.TexCoord * 25);
 	return float4(colour,1);

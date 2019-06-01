@@ -3,6 +3,9 @@ struct DirectionalLight
 	float3 direction;
 	float padding;
 	float4 colour;
+
+	//float4x4 view;
+	//float4x4 projection;
 };
 
 struct Pointlight
@@ -49,6 +52,8 @@ SamplerState txBumpSampler : register(s1);
 Texture2D txRenderTarget : register(t3);
 
 
+Texture2D txShadowTexture[2] : register(t4);
+
 //--------------------------------------------------------------------------------------
 // Shader Inputs
 //--------------------------------------------------------------------------------------
@@ -56,8 +61,6 @@ struct VS_INPUT
 {
 	float3 Pos : POSITION;
 	float3 Normal : NORMAL;
-	//float3 Tangent : TANGENT;
-	//float3 Binormal : BINORMAL;
 	float2 TexCoord : TEXCOORD0;
 	//float3 InstancePos : INSTANCEPOS;
 };
@@ -68,6 +71,7 @@ struct PS_INPUT
 	float3 Normal: NORMAL;
 	float4 PosWorld : TEXCOORD0;
 	float2 TexCoord : TEXCOORD1;
+	float4 ShadowPos[2] : TEXCOORD2;
 };
 
 
@@ -78,6 +82,15 @@ PS_INPUT VS(VS_INPUT input)
 {
 	PS_INPUT output = (PS_INPUT)0;
 	output.Pos = mul(float4(input.Pos, 1.0f), World);
+
+	/*
+	//Shadow Positioning
+	for (int i = 0; i < 2; i++)
+	{
+		output.ShadowPos[i] = mul(output.Pos, dirLights[i].view);
+		output.ShadowPos[i] = mul(output.Pos, dirLights[i].projection);
+	}
+	*/
 	output.Pos = mul(output.Pos, View);
 	output.Pos = mul(output.Pos, Projection);
 	output.Normal = mul(World, float4(input.Normal, 1.0f)).xyz;
@@ -147,17 +160,34 @@ float4 PS(PS_INPUT input) : SV_Target
 	//Calc directional lights
 	for (int i = 0; i < numDirLights; ++i)
 	{
-		float4 lightColour = CalcLightColour(matDiffuse, matSpec, viewDirection, dirLights[i].direction, dirLights[i].colour, input);
+		//Shadow mapping
+		
+		float shadow = 1;
+		/*
+		float2 projectedTexCoords;
+		projectedTexCoords.x = input.ShadowPos[i].x / input.ShadowPos[i].w / 2 + 0.5f;
+		projectedTexCoords.y = -input.ShadowPos[i].y / input.ShadowPos[i].w / 2 + 0.5f;
+
+		//Check in texture bounds
+		if (saturate(projectedTexCoords.x) == projectedTexCoords.x && saturate(projectedTexCoords.y) == projectedTexCoords.y)
+		{
+			float shadowDepth = txShadowTexture[i].Sample(txDiffSampler, projectedTexCoords).r;
+			float depth = (input.ShadowPos[i].z / input.ShadowPos[i].w);
+			if (depth > 0)
+			{
+				if (saturate(depth) > shadowDepth + 0.0001f)
+				{
+					shadow = 0.f;
+				}
+			}
+		}
+
+		*/
+		float4 lightColour = CalcLightColour(matDiffuse, matSpec, viewDirection, dirLights[i].direction, dirLights[i].colour, input) * shadow;
 		outputCol = saturate(lightColour + outputCol);
 	}
 
-	//Test directional light - Remove when buffers in & uncomment above
-	//DirectionalLight testDir;
-	//testDir.direction = normalize(float3(0.5, 1, -0.5));
-	//testDir.colour = float4(0.15, 0.15, 0.15, 1);
-	//outputCol += CalcLightColour(matDiffuse, matSpec, viewDirection, testDir.direction, testDir.colour, input);
-
-
+	
 	//Calc spotlights
 
 	for (int i = 0; i < numPointLights; ++i)
@@ -168,20 +198,6 @@ float4 PS(PS_INPUT input) : SV_Target
 		float4 lightColour = CalcLightColour(matDiffuse, matSpec, viewDirection, lightDir, pointLights[i].colour, input) * intensity;
 		outputCol = saturate(lightColour + outputCol);
 	}
-
-
-	//Test spotlight - Remove when buffers in & uncomment above
-	/*Pointlight testPoint;
-	testPoint.position = float4(0, 0, -96, 1);
-	testPoint.colour = float4(1, 0, 0, 1);
-	testPoint.range = 10;
-	float3 lightDir = normalize(testPoint.position - input.PosWorld);
-
-	float intensity =  1 - min(distance(testPoint.position.xyz, input.PosWorld.xyz) / testPoint.range, 1);
-	float4 lightColour = CalcLightColour(matDiffuse, matSpec, viewDirection, lightDir, testPoint.colour, input) * intensity;
-	outputCol += saturate(lightColour + outputCol);
-*/
-
 
 //TODO: Spotlights
 

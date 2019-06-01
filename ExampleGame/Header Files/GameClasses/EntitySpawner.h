@@ -278,7 +278,7 @@ namespace EntitySpawner
 		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
 
 		//Shader component
-		Shader shader{ L"thrusterShader.fx" , BlendState::ALPHABLEND, CullState::NONE, DepthState::NONE };
+		Shader shader{ L"thrusterShader.fx" , BlendState::ALPHABLEND, CullState::NONE, DepthState::LESSEQUAL };
 		entitySpawnerEcsManager->AddShaderComp(shader, ID);
 
 		//Texture component
@@ -331,13 +331,16 @@ namespace EntitySpawner
 		int ID = entitySpawnerEcsManager->CreateEntity();
 
 		//Geometry component
-		Geometry geo{ L"sphere.obj" };
+		Geometry geo{ L"sun.obj" };
 		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
 
 		//Shader component
 		Shader shader{ L"sunShader.fx" , BlendState::NOBLEND, CullState::BACK, DepthState::LESSEQUAL };
 		entitySpawnerEcsManager->AddShaderComp(shader, ID);
 
+		/*Texture texture{ L"stones.dds", L"stones_NM_height", L"" };
+		entitySpawnerEcsManager->AddTextureComp(texture, ID);
+		*/
 		//Transform component
 		Transform trans{};
 		trans.translation = pPosition;
