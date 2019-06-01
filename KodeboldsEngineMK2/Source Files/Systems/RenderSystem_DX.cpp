@@ -817,14 +817,23 @@ bool RenderSystem_DX::LoadShaders(const Entity& pEntity)
 		if (it == s->renderTargets.end())
 			return false;
 	}
-
-	//If shader of entity is not already in the buffers, load entities shader
-	if (s->filename != mActiveShader)
+	if (mActiveRenderTarget == 0)
 	{
-		const auto shader = mResourceManager->LoadShader(this, s->filename);
+		const auto shader = mResourceManager->LoadShader(this, L"depthShader.fx");
 		shader->Load(this);
-		mActiveShader = s->filename;
+		mActiveShader = L"depthShader.fx";
 	}
+	else
+	{
+		//If shader of entity is not already in the buffers, load entities shader
+		if (s->filename != mActiveShader)
+		{
+			const auto shader = mResourceManager->LoadShader(this, s->filename);
+			shader->Load(this);
+			mActiveShader = s->filename;
+		}
+	}
+
 	//if the render states have changed, load the appropriate ones for this shader
 	const BlendState blend = s->blendState;
 	if (blend != mActiveBlend)
@@ -915,7 +924,10 @@ void RenderSystem_DX::LoadTexture(const Entity& pEntity)
 	}
 	for (int i = 0; i < mRenderTextureCount; ++i)
 	{
-		mContext->PSSetShaderResources(3 + i, 1, mRenderTextureSRVs[i].GetAddressOf());
+		if (mActiveRenderTarget != i)
+		{
+			mContext->PSSetShaderResources(3 + i, 1, mRenderTextureSRVs[i].GetAddressOf());
+		}
 	}
 }
 
