@@ -616,7 +616,7 @@ void GameScene::OnLoad()
 	trans.rotation = Vector4(0, 0, 0, 1);
 	entitySpawnerEcsManager->AddTransformComp(trans, mSunLight);
 
-	Camera cam{ 60, 1, 10000, std::vector<int>(0), false };
+	Camera cam{ 60, 1, 10000, std::vector<int>{0}, false };
 	entitySpawnerEcsManager->AddCameraComp(cam, mSunLight);
 
 	//Spawn skybox
