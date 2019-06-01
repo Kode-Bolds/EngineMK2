@@ -9,14 +9,14 @@ using namespace DirectX;
 /// </summary>
 /// <param name="pWindow">A handle to the win32 window</param>
 /// <param name="pMaxLights">The maximum number of lights in the render system</param>
-RenderSystem_DX::RenderSystem_DX(const HWND& pWindow, const int pMaxPointLights, const int pMaxDirLights)
+RenderSystem_DX::RenderSystem_DX(const HWND& pWindow, const int pMaxPointLights, const int pMaxDirLights, const int pRenderTextures)
 	: RenderSystem(std::vector<int>{ ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_GEOMETRY | ComponentType::COMPONENT_SHADER,
 		ComponentType::COMPONENT_POINTLIGHT,
 		ComponentType::COMPONENT_DIRECTIONALLIGHT,
 		ComponentType::COMPONENT_CAMERA },
 		pMaxPointLights,
 		pMaxDirLights),
-	mWindow(pWindow), mActiveCamera(nullptr), mActiveGeometry(L""), mActiveShader(L"")
+	mWindow(pWindow), mActiveCamera(nullptr), mActiveGeometry(L""), mActiveShader(L""), mRenderTextureCount(pRenderTextures), mActiveRenderTarget(-1)
 {
 	if (FAILED(Init()))
 	{
@@ -51,7 +51,7 @@ HRESULT RenderSystem_DX::Init()
 
 
 	//mGUIManager->Init(TW_DIRECT3D11, mDevice.Get(), mWidth, height);
-	mGUIManager->InititialiseGUI(mDevice.Get(), mContext.Get(), mWidth, mHeight);
+	mGUIManager->InitialiseGUI(mDevice.Get(), mContext.Get(), mWidth, mHeight);
 
 
 	hr = CreateSwapChain();
@@ -82,7 +82,7 @@ HRESULT RenderSystem_DX::Init()
 	if (FAILED(hr))
 		return hr;
 
-	hr = CreateRenderTexture();
+	hr = CreateRenderTextures();
 	if (FAILED(hr))
 		return hr;
 
@@ -518,48 +518,54 @@ HRESULT RenderSystem_DX::CreateConstantBuffers()
 /// Create the necessary DirectX resources for rendering to texture
 /// </summary>
 /// <returns>HRESULT status code</returns>
-HRESULT RenderSystem_DX::CreateRenderTexture()
+HRESULT RenderSystem_DX::CreateRenderTextures()
 {
 	auto hr{ S_OK };
 
-	D3D11_TEXTURE2D_DESC textureDesc;
-	ZeroMemory(&textureDesc, sizeof(textureDesc));
-	textureDesc.Width = 1920;
-	textureDesc.Height = 1062;
-	textureDesc.MipLevels = 1;
-	textureDesc.ArraySize = 1;
-	textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	textureDesc.SampleDesc.Count = 1;
-	textureDesc.Usage = D3D11_USAGE_DEFAULT;
-	textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-	textureDesc.CPUAccessFlags = 0;
-	textureDesc.MiscFlags = 0;
+	mRenderTextures.resize(mRenderTextureCount, nullptr);
+	mTextureRenderTargetViews.resize(mRenderTextureCount, nullptr);
+	mRenderTextureSRVs.resize(mRenderTextureCount, nullptr);
 
-	hr = mDevice->CreateTexture2D(&textureDesc, nullptr, mRenderTexture.GetAddressOf());
-	if (FAILED(hr))
-		return hr;
+	for (int i = 0; i < mRenderTextureCount; ++i)
+	{
+		D3D11_TEXTURE2D_DESC textureDesc;
+		ZeroMemory(&textureDesc, sizeof(textureDesc));
+		textureDesc.Width = 1920;
+		textureDesc.Height = 1062;
+		textureDesc.MipLevels = 1;
+		textureDesc.ArraySize = 1;
+		textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		textureDesc.SampleDesc.Count = 1;
+		textureDesc.Usage = D3D11_USAGE_DEFAULT;
+		textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+		textureDesc.CPUAccessFlags = 0;
+		textureDesc.MiscFlags = 0;
 
-	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
-	ZeroMemory(&renderTargetViewDesc, sizeof(renderTargetViewDesc));
-	renderTargetViewDesc.Format = textureDesc.Format;
-	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-	renderTargetViewDesc.Texture2D.MipSlice = 0;
+		hr = mDevice->CreateTexture2D(&textureDesc, nullptr, mRenderTextures[i].GetAddressOf());
+		if (FAILED(hr))
+			return hr;
 
-	hr = mDevice->CreateRenderTargetView(mRenderTexture.Get(), &renderTargetViewDesc, mTextureRenderTargetView.GetAddressOf());
-	if (FAILED(hr))
-		return hr;
+		D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
+		ZeroMemory(&renderTargetViewDesc, sizeof(renderTargetViewDesc));
+		renderTargetViewDesc.Format = textureDesc.Format;
+		renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+		renderTargetViewDesc.Texture2D.MipSlice = 0;
 
-	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
-	ZeroMemory(&shaderResourceViewDesc, sizeof(shaderResourceViewDesc));
-	shaderResourceViewDesc.Format = textureDesc.Format;
-	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
-	shaderResourceViewDesc.Texture2D.MipLevels = 1;
+		hr = mDevice->CreateRenderTargetView(mRenderTextures[i].Get(), &renderTargetViewDesc, mTextureRenderTargetViews[i].GetAddressOf());
+		if (FAILED(hr))
+			return hr;
 
-	hr = mDevice->CreateShaderResourceView(mRenderTexture.Get(), &shaderResourceViewDesc, mRenderTextureSRV.GetAddressOf());
-	if (FAILED(hr))
-		return hr;
+		D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
+		ZeroMemory(&shaderResourceViewDesc, sizeof(shaderResourceViewDesc));
+		shaderResourceViewDesc.Format = textureDesc.Format;
+		shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
+		shaderResourceViewDesc.Texture2D.MipLevels = 1;
 
+		hr = mDevice->CreateShaderResourceView(mRenderTextures[i].Get(), &shaderResourceViewDesc, mRenderTextureSRVs[i].GetAddressOf());
+		if (FAILED(hr))
+			return hr;
+	}
 	return hr;
 }
 
@@ -732,36 +738,41 @@ void RenderSystem_DX::Process()
 
 	SetLights();
 
-	// Need to reinitialise the constant buffers after SpriteBatch changes them
-	CreateConstantBuffers();
+	// Need to set the constant buffers after SpriteBatch changes them
+	mContext->VSSetConstantBuffers(0, 1, mConstantBuffer.GetAddressOf());
+	mContext->PSSetConstantBuffers(0, 1, mConstantBuffer.GetAddressOf());
+	mContext->VSSetConstantBuffers(1, 1, mLightingBuffer.GetAddressOf());
+	mContext->PSSetConstantBuffers(1, 1, mLightingBuffer.GetAddressOf());
 
-	//Render to texture
-	mContext->OMSetRenderTargets(1, mTextureRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
-	Render();
+	for (int i = 0; i < mRenderTextureCount; ++i)
+	{
+		mActiveRenderTarget = i;
+		mContext->ClearRenderTargetView(mTextureRenderTargetViews[i].Get(), DirectX::Colors::Black);
+		//Render to texture
+		mContext->OMSetRenderTargets(1, mTextureRenderTargetViews[i].GetAddressOf(), mDepthStencilView.Get());
+		Render();
+		//Clear depth between renders
+		mContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
+	}
 
-	//Clear depth between renders
-	mContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
-
+	mActiveRenderTarget = -1;
 	//Render to window
 	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
 	Render();
 
-
-	RenderGUI();
-	mGUIManager->Update();
-
+	//RenderGUI();
+	//mGUIManager->Update();
 
 	SwapBuffers();
 
 }
 
 /// <summary>
-/// Clears screen and render texture to black
+/// Clears render target to black
 /// </summary>
 void RenderSystem_DX::ClearView() const
 {
 	mContext->ClearRenderTargetView(mRenderTargetView.Get(), DirectX::Colors::Black);
-	mContext->ClearRenderTargetView(mTextureRenderTargetView.Get(), DirectX::Colors::Black);
 	mContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
@@ -792,73 +803,94 @@ void RenderSystem_DX::LoadGeometry(const Entity& pEntity)
 /// Loads the shader for the given entity into a shader object
 /// </summary>
 /// <param name="pEntity">Entity to load shader for</param>
-void RenderSystem_DX::LoadShaders(const Entity& pEntity)
+bool RenderSystem_DX::LoadShaders(const Entity& pEntity)
 {
 	const Shader* s = mEcsManager->ShaderComp(pEntity.ID);
-	//If shader of entity is not already in the buffers, load entities shader
-	if (s->filename != mActiveShader)
+	if (mActiveRenderTarget == -1)
 	{
-		const auto shader = mResourceManager->LoadShader(this, s->filename);
+		if (!s->renderToScreen)
+			return false;
+	}
+	else
+	{
+		const auto it = std::find(s->renderTargets.begin(), s->renderTargets.end(), mActiveRenderTarget);
+		if (it == s->renderTargets.end())
+			return false;
+	}
+	if (mActiveRenderTarget == 0)
+	{
+		const auto shader = mResourceManager->LoadShader(this, L"depthShader.fx");
 		shader->Load(this);
-		mActiveShader = s->filename;
-
-		//if the render states have changed, load the appropriate ones for this shader
-		const BlendState blend = s->blendState;
-		if (blend != mActiveBlend)
+		mActiveShader = L"depthShader.fx";
+	}
+	else
+	{
+		//If shader of entity is not already in the buffers, load entities shader
+		if (s->filename != mActiveShader)
 		{
-			float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-			const auto blendSample = 0xffffffff;
-			if (blend == BlendState::NOBLEND)
-			{
-				mContext->OMSetBlendState(mNoBlend.Get(), blendFactor, blendSample);
-
-			}
-			else if (blend == BlendState::ALPHABLEND)
-			{
-				mContext->OMSetBlendState(mAlphaBlend.Get(), blendFactor, blendSample);
-				//OutputDebugString(L"ALPHA BLEND");
-
-			}
-		}
-
-		const CullState cull = s->cullState;
-		if (cull != mActiveCull)
-		{
-			if (cull == CullState::NONE)
-			{
-				mContext->RSSetState(mRastNoCullState.Get());
-			}
-			else if (cull == CullState::FRONT)
-			{
-				mContext->RSSetState(mRastFrontCullState.Get());
-			}
-			else if (cull == CullState::BACK)
-			{
-				mContext->RSSetState(mRastBackCullState.Get());
-			}
-			else if (cull == CullState::WIREFRAME)
-			{
-				mContext->RSSetState(mRastWireframeState.Get());
-			}
-		}
-
-		const DepthState depth = s->depthState;
-		if (depth != mActiveDepth)
-		{
-			if (depth == DepthState::NONE)
-			{
-				mContext->OMSetDepthStencilState(mDepthNone.Get(), 1);
-				//OutputDebugString(L"NO DEPTH");
-
-			}
-			else if (depth == DepthState::LESSEQUAL)
-			{
-				mContext->OMSetDepthStencilState(mDepthLessEqual.Get(), 1);
-				//OutputDebugString(L"NO DEPTH");
-
-			}
+			const auto shader = mResourceManager->LoadShader(this, s->filename);
+			shader->Load(this);
+			mActiveShader = s->filename;
 		}
 	}
+
+	//if the render states have changed, load the appropriate ones for this shader
+	const BlendState blend = s->blendState;
+	if (blend != mActiveBlend)
+	{
+		float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+		const auto blendSample = 0xffffffff;
+		if (blend == BlendState::NOBLEND)
+		{
+			mContext->OMSetBlendState(mNoBlend.Get(), blendFactor, blendSample);
+
+		}
+		else if (blend == BlendState::ALPHABLEND)
+		{
+			mContext->OMSetBlendState(mAlphaBlend.Get(), blendFactor, blendSample);
+			//OutputDebugString(L"ALPHA BLEND");
+
+		}
+	}
+
+	const CullState cull = s->cullState;
+	if (cull != mActiveCull)
+	{
+		if (cull == CullState::NONE)
+		{
+			mContext->RSSetState(mRastNoCullState.Get());
+		}
+		else if (cull == CullState::FRONT)
+		{
+			mContext->RSSetState(mRastFrontCullState.Get());
+		}
+		else if (cull == CullState::BACK)
+		{
+			mContext->RSSetState(mRastBackCullState.Get());
+		}
+		else if (cull == CullState::WIREFRAME)
+		{
+			mContext->RSSetState(mRastWireframeState.Get());
+		}
+	}
+
+	const DepthState depth = s->depthState;
+	if (depth != mActiveDepth)
+	{
+		if (depth == DepthState::NONE)
+		{
+			mContext->OMSetDepthStencilState(mDepthNone.Get(), 1);
+			//OutputDebugString(L"NO DEPTH");
+
+		}
+		else if (depth == DepthState::LESSEQUAL)
+		{
+			mContext->OMSetDepthStencilState(mDepthLessEqual.Get(), 1);
+			//OutputDebugString(L"NO DEPTH");
+
+		}
+	}
+	return true;
 }
 
 /// <summary>
@@ -890,7 +922,13 @@ void RenderSystem_DX::LoadTexture(const Entity& pEntity)
 			texture->Load(this, 2);
 		}
 	}
-	mContext->PSSetShaderResources(3, 1, mRenderTextureSRV.GetAddressOf());
+	for (int i = 0; i < mRenderTextureCount; ++i)
+	{
+		if (mActiveRenderTarget != i)
+		{
+			mContext->PSSetShaderResources(3 + i, 1, mRenderTextureSRVs[i].GetAddressOf());
+		}
+	}
 }
 
 /// <summary>
@@ -938,10 +976,36 @@ void RenderSystem_DX::SetLights()
 	for (int i = 0; i < mLightCB.numDirLights; ++i)
 	{
 		const auto dlComp = mEcsManager->DirectionalLightComp(mDirectionalLights[i].ID);
+
+		//Calculates the view matrix and sets it in the constant buffer
+		const XMFLOAT4 position(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mDirectionalLights[i].ID)->translation)));
+
+		KodeboldsMath::Vector4 lookAtV = mEcsManager->TransformComp(mDirectionalLights[i].ID)->translation - dlComp->mDirection;
+		const XMFLOAT4 lookAt(reinterpret_cast<float*>(&(lookAtV)));
+		const XMFLOAT4 up(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mDirectionalLights[i].ID)->up)));
+
+		const XMVECTOR posVec = XMLoadFloat4(&position);
+		const XMVECTOR lookAtVec = XMLoadFloat4(&lookAt);
+		const XMVECTOR upVec = XMLoadFloat4(&up);
+
+		XMFLOAT4X4 view;
+		XMStoreFloat4x4(&view, XMMatrixTranspose(XMMatrixLookAtLH(posVec, lookAtVec, upVec)));
+
+		//Calculates the projection matrix and sets it in the constant buffer
+		const float fov = XMConvertToRadians(mEcsManager->CameraComp(mDirectionalLights[i].ID)->FOV);
+		const float aspectRatio = static_cast<float>(mWidth) / static_cast<float>(mHeight);
+		const float nearClip = mEcsManager->CameraComp(mDirectionalLights[i].ID)->nearPlane;
+		const float farClip = mEcsManager->CameraComp(mDirectionalLights[i].ID)->farPlane;
+
+		XMFLOAT4X4 proj;
+		XMStoreFloat4x4(&proj, XMMatrixTranspose(XMMatrixPerspectiveFovLH(fov, aspectRatio, nearClip, farClip)));
+
 		const DirectionalLightCB dl{
 			XMFLOAT3(reinterpret_cast<float*>(&dlComp->mDirection)),
 			1.0f,
-			XMFLOAT4(reinterpret_cast<float*>(&dlComp->mColour))
+			XMFLOAT4(reinterpret_cast<float*>(&dlComp->mColour)),
+			view,
+			proj
 		};
 		mLightCB.dirLights[i] = dl;
 	}
@@ -957,14 +1021,16 @@ void RenderSystem_DX::SetLights()
 
 	for (int i = 0; i < mLightCB.numPointLights; ++i)
 	{
-		const auto plComp = mEcsManager->PointLightComp(mPointLights[i].ID);
-		const PointLightCB pl{
-			XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mPointLights[i].ID)->translation))),
-			XMFLOAT4(reinterpret_cast<float*>(&plComp->mColour)),
-			plComp->mRange,
-			XMFLOAT3(0,0,0)
-		};
-		mLightCB.pointLights[i] = pl;
+		if (const auto plComp = mEcsManager->PointLightComp(mPointLights[i].ID))
+		{
+			const PointLightCB pl{
+	XMFLOAT4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mPointLights[i].ID)->translation))),
+	XMFLOAT4(reinterpret_cast<float*>(&plComp->mColour)),
+	plComp->mRange,
+	XMFLOAT3(0,0,0)
+			};
+			mLightCB.pointLights[i] = pl;
+		}
 	}
 }
 
@@ -976,9 +1042,17 @@ void RenderSystem_DX::SetCamera()
 	for (const auto& camera : mCameras)
 	{
 		const auto cameraComp = mEcsManager->CameraComp(camera.ID);
-		if (cameraComp->active)
+		if (mActiveRenderTarget == -1 && cameraComp->active)
 		{
 			mActiveCamera = &camera;
+		}
+		else
+		{
+			auto it = std::find(cameraComp->activeTargets.begin(), cameraComp->activeTargets.end(), mActiveRenderTarget);
+			if (it != cameraComp->activeTargets.end())
+			{
+				mActiveCamera = &camera;
+			}
 		}
 	}
 	if (mActiveCamera)
@@ -998,10 +1072,10 @@ void RenderSystem_DX::Render()
 	{
 		if (entity.ID != -1)
 		{
-
+			if (!LoadShaders(entity))
+				continue;
 			LoadGeometry(entity);
 			LoadTexture(entity);
-			LoadShaders(entity);
 
 			//Set world matrix
 			mCB.mWorld = XMFLOAT4X4(reinterpret_cast<float*>(&(mEcsManager->TransformComp(entity.ID)->transform)));
@@ -1033,7 +1107,6 @@ void RenderSystem_DX::Render()
 /// </summary>
 void RenderSystem_DX::RenderGUI() const
 {
-
 #pragma region PRIMITIVE SHAPES
 	//mContext->OMSetBlendState(mGUIManager->GetCommonStates()->Opaque(), nullptr, 0xFFFFFFFF);
 	//mContext->OMSetDepthStencilState(mGUIManager->GetCommonStates()->DepthNone(), 0);
@@ -1054,8 +1127,6 @@ void RenderSystem_DX::RenderGUI() const
 	}
 	mGUIManager->GetPrimitiveBatch()->End();
 #pragma endregion
-
-
 	//ID3D11DepthStencilState* ppDepthStencilState = nullptr;
 	//mContext->OMGetDepthStencilState(&ppDepthStencilState, );
 

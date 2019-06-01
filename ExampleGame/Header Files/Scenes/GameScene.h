@@ -8,6 +8,7 @@
 #include "EntitySpawner.h"
 #include "GUIManager.h"
 #include "MenuScene.h"
+#include "GameNetworking.h"
 
 class GameScene : public Scene
 {
@@ -24,6 +25,8 @@ private:
 	std::shared_ptr<GUIManager> mGUIManager = GUIManager::Instance();
 	std::shared_ptr<ResourceManager> resourceManager = ResourceManager::Instance();
 
+	GameNetworking mGameNetworking;
+
 	enum GAME_STATE {
 		PLAYING,
 		PAUSED,
@@ -35,6 +38,7 @@ private:
 	int mPlayerGun;
 	int mPlayerShip;
 	int mPlayerShipCam;
+	int mPlayerShipEngine;
 	int mCamera;
 	float mPlayerSpeed;
 	float mPlayerJumpSpeed;
@@ -42,9 +46,21 @@ private:
 	float mCameraSpeed;
 	float mRotationSpeed;
 
+	int mGravityAsteroid1;
+	int mGravityAsteroid2;
+
+	int mSunLight;
+	int mSun;
+
+	int mActiveCam;
+
 	KodeboldsMath::Vector4 mPlayerShipStartPos;
 	KodeboldsMath::Vector4 mPlayerStartPos;
 	KodeboldsMath::Vector4 mFreeCamStartPos;
+
+	std::vector<std::pair<int, float>> mBulletLifeTimers;
+	float mRateOfFire;
+	float mTimeSinceLastFire;
 
 	bool mPlayerIsGrounded;
 

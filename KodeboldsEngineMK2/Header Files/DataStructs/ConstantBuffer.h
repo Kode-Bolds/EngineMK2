@@ -17,6 +17,8 @@ struct DirectionalLightCB
 	DirectX::XMFLOAT3 direction;
 	float padding;
 	DirectX::XMFLOAT4 colour;
+	DirectX::XMFLOAT4X4 view;
+	DirectX::XMFLOAT4X4 projection;
 };
 
 struct PointLightCB

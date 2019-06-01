@@ -2,12 +2,18 @@
 
 AudioSystem_DX::AudioSystem_DX() : AudioSystem(std::vector<int>{ComponentType::COMPONENT_AUDIO})
 {
+	eflags = DirectX::AUDIO_ENGINE_FLAGS::AudioEngine_Default;
+	mAudioEngine = std::make_unique<DirectX::AudioEngine>(eflags);
 }
 
 AudioSystem_DX::~AudioSystem_DX()
 {
 }
 
+/// <summary>
+/// Assigns entity to system if the entities mask matches the system mask
+/// </summary>
+/// <param name="pEntity">Entity to be assigned</param>
 void AudioSystem_DX::AssignEntity(const Entity& pEntity)
 {
 	//Checks if entity mask matches the audio mask
@@ -18,6 +24,14 @@ void AudioSystem_DX::AssignEntity(const Entity& pEntity)
 	}
 }
 
+/// <summary>
+/// Re-assigns entity to system when component is removed from entity
+/// </summary>
+/// <param name="pEntity">Entity to re-assign</param>
+/// <summary>
+/// 
+/// </summary>
+/// <param name="pEntity"></param>
 void AudioSystem_DX::ReAssignEntity(const Entity& pEntity)
 {
 	//Checks if entity mask matches the audio mask
@@ -33,10 +47,15 @@ void AudioSystem_DX::ReAssignEntity(const Entity& pEntity)
 	}
 }
 
+/// <summary>
+/// Systems process function, core logic of system
+/// Plays all the audio clips in the world
+/// </summary>
 void AudioSystem_DX::Process()
 {
-	for (const Entity& entity : mEntities) {
-		if (entity.ID != -1)
+	for (const Entity& entity : mEntities) 
+	{
+		if (entity.ID != -1 && mEcsManager->AudioComp(entity.ID))
 		{
 			// if the sound is active
 			if (mEcsManager->AudioComp(entity.ID)->active)
@@ -61,13 +80,22 @@ void AudioSystem_DX::Process()
 	}
 }
 
+/// <summary>
+/// Loads an audio file into the resource manager or retrieves an already loaded copy of the audio file
+/// </summary>
+/// <param name="pEntity">Entity that owns the audio component</param>
+/// <returns>Handle to the Sound object containing the audio</returns>
 const Sound* AudioSystem_DX::LoadAudio(const Entity& pEntity)
 {
 	const Sound* audio = mResourceManager->LoadAudio(this, mEcsManager->AudioComp(pEntity.ID)->filename);
 	return audio;
 }
 
-std::shared_ptr<DirectX::AudioEngine> AudioSystem_DX::AudioEngine() const
+/// <summary>
+/// Returns a handle to the audio systems directX audio engine
+/// </summary>
+/// <returns>Handle to the DirectX audio engine</returns>
+DirectX::AudioEngine* AudioSystem_DX::AudioEngine() const
 {
-	return mAudioEngine;
+	return mAudioEngine.get();
 }

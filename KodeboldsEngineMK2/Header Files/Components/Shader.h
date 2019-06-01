@@ -9,4 +9,6 @@ struct Shader
 	BlendState blendState;
 	CullState cullState;
 	DepthState  depthState;
+	std::vector<int> renderTargets;
+	bool renderToScreen;
 };

@@ -28,6 +28,9 @@ private:
 	CullState mActiveCull;
 	DepthState mActiveDepth;
 
+	int mRenderTextureCount;
+	int mActiveRenderTarget;
+
 	/// <summary>
 	/// DirectX pointers
 	/// </summary>
@@ -46,9 +49,9 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11SamplerState> mTexSampler = nullptr;
 
 	//Render to Texture
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> mRenderTexture = nullptr;
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> mTextureRenderTargetView = nullptr;
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mRenderTextureSRV = nullptr;
+	std::vector<Microsoft::WRL::ComPtr<ID3D11Texture2D>> mRenderTextures;
+	std::vector<Microsoft::WRL::ComPtr<ID3D11RenderTargetView>> mTextureRenderTargetViews;
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> mRenderTextureSRVs;
 
 	//Rasteriser
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState> mRastWireframeState = nullptr;
@@ -74,13 +77,13 @@ private:
 	HRESULT CreateSampler() override;
 	void CreateViewport() const override;
 	HRESULT CreateConstantBuffers();
-	HRESULT CreateRenderTexture();
+	HRESULT CreateRenderTextures();
 	void Cleanup() override;
 
 	void ClearView() const override;
 	void SwapBuffers() const override;
 	void LoadGeometry(const Entity& pEntity) override;
-	void LoadShaders(const Entity& pEntity) override;
+	bool LoadShaders(const Entity& pEntity) override;
 	void LoadTexture(const Entity& pEntity) override;
 
 	void SetViewProj() override;
@@ -91,7 +94,7 @@ private:
 	void RenderGUI() const;
 
 public:
-	explicit RenderSystem_DX(const HWND& pWindow, const int pMaxPointLights, const int pMaxDirLights);
+	explicit RenderSystem_DX(const HWND& pWindow, const int pMaxPointLights, const int pMaxDirLights, const int pRenderTextures);
 	virtual ~RenderSystem_DX();
 
 

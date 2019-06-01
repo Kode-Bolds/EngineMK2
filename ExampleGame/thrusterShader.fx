@@ -141,7 +141,7 @@ PS_INPUT VS(VS_INPUT input)
 	//animPos.x = sin(turn) * radius * (lifeTime);
 	//animPos.y = cos(turn) * radius * (lifeTime);
 	animPos.z = ((1 - lifeTime) * -50); //sin(inPos.z * 1000 + time);
-	animPos = mul(float4(animPos, 1), View).xyz;
+	//animPos = mul(float4(animPos, 1), View).xyz;
 
 
 	//Colouring
@@ -150,11 +150,12 @@ PS_INPUT VS(VS_INPUT input)
 	output.ParticleColour = float4(1 - blueness - 0.25 * noise(float2(index * 10, index * 43)), 0, blueness, 1);
 	output.ParticleColour.a = 0.75;
 
+	float4x4 newWorld = World;
+	newWorld._m32 += animPos.z;
 
-
-	float4x4 worldViewMatrix = mul(World, View);
-	float3 positionVS = input.Pos  + float3(worldViewMatrix._41, worldViewMatrix._42, worldViewMatrix._43);
-	output.Pos = mul(float4(positionVS + animPos, 1.0f), Projection);
+	float4x4 worldViewMatrix = mul(newWorld, View);
+	float3 positionVS = (input.Pos) + float3(worldViewMatrix._41, worldViewMatrix._42, worldViewMatrix._43);
+	output.Pos = mul(float4(positionVS, 1.0f), Projection);
 
 	output.TexCoord = input.TexCoord;
 
