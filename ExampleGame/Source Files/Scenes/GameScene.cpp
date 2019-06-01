@@ -463,6 +463,8 @@ void GameScene::Update()
 {
 	if (mGameState == GAME_STATE::PLAYING)
 	{
+		mGameNetworking.ProcessMessages();
+
 		Movement();
 		Rotation();
 		Shooting();
@@ -574,8 +576,8 @@ void GameScene::OnLoad()
 	mActiveCam = mPlayerShipCam;
 
 	//Spawn ship engine
-	Vector4 engineStartPos = mPlayerShipStartPos - Vector4(0, -20, 80, 1);
-	SpawnEngine(engineStartPos, Vector4(10, 10, 10, 1), Vector4(0, 0, 0, 1), 40, L"", L"");
+	//Vector4 engineStartPos = mPlayerShipStartPos - Vector4(0, -10, 15, 1);
+	//mPlayerShipEngine = SpawnEngine(engineStartPos, Vector4(10, 10, 10, 1), Vector4(0, 0, 0, 1), 4, L"", L"");
 
 	//Spawn player
 	mPlayerStartPos = Vector4(0, 50, -100, 1);
@@ -627,14 +629,14 @@ void GameScene::OnLoad()
 		{
 			for (int k = -400; k > -800; k -= 40)
 			{
-				SpawnAsteroid(Vector4(i, 50 * j, k, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), 5, 0, CustomCollisionMask::ASTEROID, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
+				SpawnAsteroid(Vector4(i, 40 * j, k, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), 10, 0, CustomCollisionMask::ASTEROID, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
 			}
 		}
 	}
 
 	//Spawn gravity asteroids
-	mGravityAsteroid1 = SpawnAsteroid(Vector4(100, 350, -600, 1), Vector4(4, 4, 4, 1), Vector4(0, 0, 0, 1), 40, 0, CustomCollisionMask::SHIP, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
-	mGravityAsteroid2 = SpawnAsteroid(Vector4(-100, 350, -600, 1), Vector4(4, 4, 4, 1), Vector4(0, 0, 0, 1), 40, 0, CustomCollisionMask::SHIP, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
+	mGravityAsteroid1 = SpawnAsteroid(Vector4(100, 350, -600, 1), Vector4(5, 5, 5, 1), Vector4(0, 0, 0, 1), 50, 0, CustomCollisionMask::SHIP, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
+	mGravityAsteroid2 = SpawnAsteroid(Vector4(-100, 350, -600, 1), Vector4(5, 5, 5, 1), Vector4(0, 0, 0, 1), 50, 0, CustomCollisionMask::SHIP, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
 
 	//Spawn environment asteroid field
 	for (int j = -2; j < 2; j++)
@@ -643,7 +645,8 @@ void GameScene::OnLoad()
 		{
 			int randScale = rand() % 6 + 2;
 			int randRotation = rand() % 2 - 2;
-			int asteroid = SpawnAsteroid(Vector4(0, 100 * j, -100, 1), Vector4(1, 1, 1, 1) * randScale, Vector4(0, DegreesToRadians(i + randRotation), 0, 1), 5 * randScale, 0, CustomCollisionMask::ASTEROID, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
+			int asteroid = SpawnAsteroid(Vector4(0, 100 * j, -100, 1), Vector4(1, 1, 1, 1) * randScale, Vector4(0, DegreesToRadians(i + randRotation), 0, 1), 10 * randScale, 0,
+				CustomCollisionMask::ASTEROID, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
 			mEcsManager->TransformComp(asteroid)->transform *= TranslationMatrix(Vector4(0, 0, 300, 1));
 		}
 	}

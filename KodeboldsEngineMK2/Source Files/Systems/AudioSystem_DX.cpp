@@ -55,7 +55,7 @@ void AudioSystem_DX::Process()
 {
 	for (const Entity& entity : mEntities) 
 	{
-		if (entity.ID != -1)
+		if (entity.ID != -1 && mEcsManager->AudioComp(entity.ID))
 		{
 			// if the sound is active
 			if (mEcsManager->AudioComp(entity.ID)->active)

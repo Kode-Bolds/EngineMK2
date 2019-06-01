@@ -122,6 +122,9 @@
     <ClCompile Include="Source Files\Scenes\LoadingScene.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Source Files\GameClasses\GameNetworking.cpp">
+      <Filter>Source Files\GameClasses</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\Scenes\GameScene.h">
@@ -153,6 +156,9 @@
     </ClInclude>
     <ClInclude Include="Header Files\Scenes\LoadingScene.h">
       <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\GameClasses\GameNetworking.h">
+      <Filter>Header Files\GameClasses</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

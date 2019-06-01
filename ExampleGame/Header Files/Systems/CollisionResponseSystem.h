@@ -3,6 +3,7 @@
 #include "ISystem.h"
 #include "CustomCollisionMask.h"
 #include "KodeboldsMath.h"
+#include "EntitySpawner.h"
 
 class CollisionResponseSystem : public ISystem
 {

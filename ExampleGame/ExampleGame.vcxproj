@@ -1089,6 +1089,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source Files\GameClasses\GameNetworking.cpp" />
     <ClCompile Include="Source Files\main.cpp" />
     <ClCompile Include="Source Files\Scenes\GameScene.cpp" />
     <ClCompile Include="Source Files\Scenes\LoadingScene.cpp" />
@@ -1102,6 +1103,7 @@
     <ClInclude Include="Header Files\Components\CustomComponentType.h" />
     <ClInclude Include="Header Files\CustomCollisionMask.h" />
     <ClInclude Include="Header Files\GameClasses\EntitySpawner.h" />
+    <ClInclude Include="Header Files\GameClasses\GameNetworking.h" />
     <ClInclude Include="Header Files\Scenes\GameScene.h" />
     <ClInclude Include="Header Files\Scenes\LoadingScene.h" />
     <ClInclude Include="Header Files\Scenes\MenuScene.h" />
