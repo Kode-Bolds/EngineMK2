@@ -141,7 +141,7 @@ namespace EntitySpawner
 	/// <param name="pNormal"></param>
 	/// <returns></returns>
 	static int SpawnAsteroid(const KodeboldsMath::Vector4& pPosition, const KodeboldsMath::Vector4& pScale, const KodeboldsMath::Vector4& pRotation, const float& pRadius,
-		const int pIgnoreCollisionMask, const std::wstring& pDiffuse, const std::wstring& pNormal)
+		const int pIgnoreCollisionMask, const int pCollisionMask, const std::wstring& pDiffuse, const std::wstring& pNormal)
 	{
 		int ID = entitySpawnerEcsManager->CreateEntity();
 
@@ -165,7 +165,7 @@ namespace EntitySpawner
 		entitySpawnerEcsManager->AddTransformComp(trans, ID);
 
 		//SphereCollider component
-		SphereCollider sphere{ pRadius, CustomCollisionMask::ASTEROID, pIgnoreCollisionMask };
+		SphereCollider sphere{ pRadius, pCollisionMask, pIgnoreCollisionMask };
 		entitySpawnerEcsManager->AddSphereColliderComp(sphere, ID);
 
 		//Velocity component
@@ -264,6 +264,107 @@ namespace EntitySpawner
 		//Gravity component
 		Gravity grav{};
 		entitySpawnerEcsManager->AddGravityComp(grav, ID);
+
+		return ID;
+	}
+
+	static int SpawnEngine(const KodeboldsMath::Vector4& pPosition, const KodeboldsMath::Vector4& pScale, const KodeboldsMath::Vector4& pRotation, const float& pMaxSpeed,
+		const std::wstring& pDiffuse, const std::wstring& pNormal)
+	{
+		int ID = entitySpawnerEcsManager->CreateEntity();
+
+		//Geometry component
+		Geometry geo{ L"quad100.obj" };
+		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
+
+		//Shader component
+		Shader shader{ L"thrusterShader.fx" , BlendState::ALPHABLEND, CullState::NONE, DepthState::NONE };
+		entitySpawnerEcsManager->AddShaderComp(shader, ID);
+
+		//Texture component
+		Texture texture{ pDiffuse, pNormal, L"" };
+		entitySpawnerEcsManager->AddTextureComp(texture, ID);
+
+		//Transform component
+		Transform trans{};
+		trans.scale = pScale;
+		trans.rotation = pRotation;
+		trans.translation = pPosition;
+		entitySpawnerEcsManager->AddTransformComp(trans, ID);
+
+		return ID;
+	}
+
+	static int SpawnPlanetSurface(const KodeboldsMath::Vector4& pPosition, const KodeboldsMath::Vector4& pScale, const KodeboldsMath::Vector4& pRotation, const std::wstring& pDiffuse, 
+		const std::wstring& pNormal)
+	{
+		int ID = entitySpawnerEcsManager->CreateEntity();
+
+		//Geometry component
+		Geometry geo{ L"planet.obj" };
+		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
+
+		//Shader component
+		Shader shader{ L"defaultShader.fx" , BlendState::NOBLEND, CullState::BACK, DepthState::LESSEQUAL };
+		entitySpawnerEcsManager->AddShaderComp(shader, ID);
+
+		//Texture component
+		Texture texture{ pDiffuse, pNormal, L"" };
+		entitySpawnerEcsManager->AddTextureComp(texture, ID);
+
+		//Transform component
+		Transform trans{};
+		trans.scale = pScale;
+		trans.rotation = pRotation;
+		trans.translation = pPosition;
+		entitySpawnerEcsManager->AddTransformComp(trans, ID);
+
+		//Box collider component
+		BoxCollider box{ trans.translation.XYZ() - KodeboldsMath::Vector3(190, 2, 190), trans.translation.XYZ() + KodeboldsMath::Vector3(190, 2, 190), CustomCollisionMask::FLOOR, CustomCollisionMask::FLOOR };
+		entitySpawnerEcsManager->AddBoxColliderComp(box, ID);
+
+		return ID;
+	}
+
+	static int SpawnSun(const KodeboldsMath::Vector4& pPosition, const KodeboldsMath::Vector4& pScale, const KodeboldsMath::Vector4& pRotation)
+	{
+		int ID = entitySpawnerEcsManager->CreateEntity();
+
+		//Geometry component
+		Geometry geo{ L"sphere.obj" };
+		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
+
+		//Shader component
+		Shader shader{ L"sunShader.fx" , BlendState::NOBLEND, CullState::BACK, DepthState::LESSEQUAL };
+		entitySpawnerEcsManager->AddShaderComp(shader, ID);
+
+		//Transform component
+		Transform trans{};
+		trans.translation = pPosition;
+		trans.scale = pScale;
+		trans.rotation = pRotation;
+		entitySpawnerEcsManager->AddTransformComp(trans, ID);
+
+		return ID;
+	}
+
+	static int SpawnSkyBox()
+	{
+		int ID = entitySpawnerEcsManager->CreateEntity();
+
+		//Geometry component
+		Geometry geom{ L"cube.obj" };
+		entitySpawnerEcsManager->AddGeometryComp(geom, ID);
+
+		//Shader component
+		Shader shaderm{ L"skyboxShader.fx" , BlendState::NOBLEND, CullState::FRONT, DepthState::LESSEQUAL };
+		entitySpawnerEcsManager->AddShaderComp(shaderm, ID);
+
+		//Transform component
+		Transform transCm{};
+		transCm.scale = KodeboldsMath::Vector4(1, 1, 1, 1);
+		transCm.translation = KodeboldsMath::Vector4(0, 0, 0, 1);
+		entitySpawnerEcsManager->AddTransformComp(transCm, ID);
 
 		return ID;
 	}

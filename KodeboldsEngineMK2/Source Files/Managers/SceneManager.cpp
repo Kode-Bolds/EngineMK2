@@ -15,8 +15,10 @@ void SceneManager::Update()
 	{
 		mEcsManager->ProcessSystems();
 		mThreadManager->ProcessTasks();
+
 		mInputManager->Update();
 		mScene->Update();
+
 	}
 
 	// Average the fps over n frames.
@@ -73,7 +75,7 @@ const int& SceneManager::Fps() const
 /// </summary>
 /// <param name="pWidth">Width of the window</param>
 /// <param name="pHeight">Height of the window</param>
-void SceneManager::SetWindowWidthHeight(const float & pWidth, const float & pHeight)
+void SceneManager::SetWindowWidthHeight(const float& pWidth, const float& pHeight)
 {
 	mWindowWidth = pWidth;
 	mWindowHeight = pHeight;
@@ -83,7 +85,7 @@ void SceneManager::SetWindowWidthHeight(const float & pWidth, const float & pHei
 /// Get method for window width
 /// </summary>
 /// <returns>Width of the window</returns>
-const float & SceneManager::WindowWidth() const
+const float& SceneManager::WindowWidth() const
 {
 	return mWindowWidth;
 }
@@ -92,7 +94,7 @@ const float & SceneManager::WindowWidth() const
 /// Get method for window height
 /// </summary>
 /// <returns>Height of the window</returns>
-const float & SceneManager::WindowHeight() const
+const float& SceneManager::WindowHeight() const
 {
 	return mWindowHeight;
 }
@@ -119,4 +121,9 @@ std::shared_ptr<SceneManager> SceneManager::Instance()
 {
 	static std::shared_ptr<SceneManager> instance{ new SceneManager };
 	return instance;
+}
+
+const void SceneManager::Pause(bool mIsPaused)
+{
+
 }

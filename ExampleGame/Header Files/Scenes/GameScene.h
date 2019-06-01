@@ -7,6 +7,7 @@
 #include "SceneManager.h"
 #include "EntitySpawner.h"
 #include "GUIManager.h"
+#include "MenuScene.h"
 
 class GameScene : public Scene
 {
@@ -23,6 +24,13 @@ private:
 	std::shared_ptr<GUIManager> mGUIManager = GUIManager::Instance();
 	std::shared_ptr<ResourceManager> resourceManager = ResourceManager::Instance();
 
+	enum GAME_STATE {
+		PLAYING,
+		PAUSED,
+		LOADING
+	};
+	GAME_STATE mGameState = GAME_STATE::LOADING;
+
 	int mPlayer;
 	int mPlayerGun;
 	int mPlayerShip;
@@ -33,6 +41,14 @@ private:
 	float mShipSpeed;
 	float mCameraSpeed;
 	float mRotationSpeed;
+
+	int mGravityAsteroid1;
+	int mGravityAsteroid2;
+
+	int mSunLight;
+	int mSun;
+
+	int mActiveCam;
 
 	KodeboldsMath::Vector4 mPlayerShipStartPos;
 	KodeboldsMath::Vector4 mPlayerStartPos;
@@ -45,6 +61,30 @@ private:
 	void Shooting();
 	void RotateAroundPoint(const int pEntity, const KodeboldsMath::Vector4& pAxis, const KodeboldsMath::Vector4& pPoint, const float& pAngle);
 
+	// Game Assets
+	int mLives = 3;
+	std::vector<Sprite*> mLivesVector;
+
+	int mBullets = 10;
+	std::vector<Sprite*> mBulletVector;
+
+	Sprite* mCrosshair;
+
+	// PAUSED ASSETS
+	Quad* mPausedOverlay = nullptr;
+	Text* mPausedText = nullptr;
+	Button* mPausedExitButton = nullptr;
+	Button* mResumeGameButton = nullptr;
+
+	Text* mLivesText;
+	Text* mScoreLabelText;
+	Text* mScoreText;
+	Text* mBulletText;
+
+	void OnClick_MainMenuButton();
+	void OnClick_ResumeGameButton();
+
+
 public:
 	//Structors
 	GameScene();
@@ -53,4 +93,6 @@ public:
 	void Update() override;
 	void OnLoad() override;
 	void OnUnload() override;
+	void OnPause();
+	void OnUnPause();
 };

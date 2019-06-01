@@ -12,4 +12,5 @@ public:
 	float mScale;
 	float mWidth;
 	float mHeight;
+	bool mIsVisible;
 };

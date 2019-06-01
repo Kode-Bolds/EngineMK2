@@ -148,5 +148,7 @@ void ShaderObject_DX::Load(const RenderSystem * pRenderer) const
 	reinterpret_cast<const RenderSystem_DX*>(pRenderer)->Context()->VSSetShader(mVertex.Get(), nullptr, 0);
 	reinterpret_cast<const RenderSystem_DX*>(pRenderer)->Context()->IASetInputLayout(mLayout.Get());
 	reinterpret_cast<const RenderSystem_DX*>(pRenderer)->Context()->PSSetShader(mPixel.Get(), nullptr, 0);
+
+	//reinterpret_cast<const RenderSystem_DX*>(pRenderer)->Context()->VSSetConstantBuffers(0,1, )
 }
 

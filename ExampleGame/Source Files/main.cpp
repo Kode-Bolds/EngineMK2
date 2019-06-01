@@ -1,8 +1,6 @@
-#include "GameScene.h"
 #include "MenuScene.h"
 #include <windows.h>
 #include "Systems.h"
-#include "CustomComponents.h"
 #include "CollisionResponseSystem.h"
 
 #pragma comment(lib, "KodeboldsEngineMK2.lib")
@@ -59,55 +57,18 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 	ecsManager->AddRenderSystem(std::make_shared<RenderSystem_GL>(hWnd, 20, 2));
 #endif
 
+	//Update systems
 	ecsManager->AddUpdateSystem(std::make_shared<TransformSystem>());
 	ecsManager->AddUpdateSystem(std::make_shared<MovementSystem>());
 	ecsManager->AddUpdateSystem(std::make_shared<CollisionCheckSystem>(1000, 50));
 	ecsManager->AddUpdateSystem(std::make_shared<CollisionResponseSystem>());
 
-	// Audio systems
+	// Audio system
 #ifdef DIRECTX
 	ecsManager->AddUpdateSystem(std::make_shared<AudioSystem_DX>());
 #elif OPENGL
 	ecsManager->AddUpdateSystem(std::make_shared<AudioSystem_GL>());
 #endif
-	
-
-	//Create camera
-	int entityID = ecsManager->CreateEntity();
-	Transform transL{};
-	transL.translation = Vector4(0, -20, -10, 1);
-	ecsManager->AddTransformComp(transL, entityID);
-
-	//Testing custom components
-	ecsManager->CreateCustomComponent<CustomComp1>(CustomComponentType::CUSTOM_COMPONENT_1);
-	ecsManager->CreateCustomComponent<CustomComp2>(CustomComponentType::CUSTOM_COMPONENT_2);
-
-	CustomComp1 CC1{};
-	if (!ecsManager->AddCustomComponent<CustomComp1>(CC1, entityID))
-	{
-		OutputDebugString(L"REEEEEE");
-	}
-
-	CustomComp2 CC2{};
-	if (!ecsManager->AddCustomComponent<CustomComp2>(CC2, entityID))
-	{
-		OutputDebugString(L"REEEEEE");
-	}
-
-	CustomComp1* CC1Ptr = ecsManager->GetCustomComponent<CustomComp1>(entityID);
-	CustomComp2* CC2Ptr = ecsManager->GetCustomComponent<CustomComp2>(entityID);
-
-	ecsManager->DestroyEntity(entityID);
-
-	if (!ecsManager->RemoveCustomComponent<CustomComp1>(entityID))
-	{
-		OutputDebugString(L"REEEEEE");
-	}
-
-	if (!ecsManager->RemoveCustomComponent<CustomComp2>(entityID))
-	{
-		OutputDebugString(L"REEEEEE");
-	}
 
 	//Scenes
 	sceneManager->LoadScene<MenuScene>();

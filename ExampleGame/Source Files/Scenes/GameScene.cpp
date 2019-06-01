@@ -4,7 +4,7 @@ using namespace KodeboldsMath;
 using namespace EntitySpawner;
 
 /// <summary>
-///
+/// Movement logic in the game
 /// </summary>
 void GameScene::Movement()
 {
@@ -271,7 +271,7 @@ void GameScene::Movement()
 }
 
 /// <summary>
-///
+/// Rotation logic in the game
 /// </summary>
 void GameScene::Rotation()
 {
@@ -314,10 +314,42 @@ void GameScene::Rotation()
 			mEcsManager->TransformComp(mCamera)->transform *= RotationMatrixAxis(DegreesToRadians(deltaY * mRotationSpeed) * mSceneManager->DeltaTime(), Vector4(1, 0, 0, 1));
 		}
 	}
+
+	//Roll rotation
+	//If ship cam is active, rotate ship
+	if (mEcsManager->CameraComp(mPlayerShipCam)->active)
+	{
+		//Right roll
+		if (mInputManager->KeyHeld(KEYS::KEY_Q))
+		{
+			mEcsManager->TransformComp(mPlayerShip)->transform *= RotationMatrixAxis(DegreesToRadians(2 * mRotationSpeed) * mSceneManager->DeltaTime(), Vector4(0, 0, 1, 1));
+			RotateAroundPoint(mPlayerShipCam, Vector4(0, 0, 1, 0), Vector4(0, -40, 75, 0), 2 * mRotationSpeed);
+		}
+		//Left roll
+		if (mInputManager->KeyHeld(KEYS::KEY_E))
+		{
+			mEcsManager->TransformComp(mPlayerShip)->transform *= RotationMatrixAxis(DegreesToRadians(2 * -mRotationSpeed) * mSceneManager->DeltaTime(), Vector4(0, 0, 1, 1));
+			RotateAroundPoint(mPlayerShipCam, Vector4(0, 0, 1, 0), Vector4(0, -40, 75, 0), 2 * -mRotationSpeed);
+		}
+	}
+	//If free cam is active, rotate free cam
+	if (mEcsManager->CameraComp(mCamera)->active)
+	{
+		//Right roll
+		if (mInputManager->KeyHeld(KEYS::KEY_Q))
+		{
+			mEcsManager->TransformComp(mCamera)->transform *= RotationMatrixAxis(DegreesToRadians(2 * mRotationSpeed) * mSceneManager->DeltaTime(), Vector4(0, 0, 1, 1));
+		}
+		//Left roll
+		if (mInputManager->KeyHeld(KEYS::KEY_E))
+		{
+			mEcsManager->TransformComp(mCamera)->transform *= RotationMatrixAxis(DegreesToRadians(2 * -mRotationSpeed) * mSceneManager->DeltaTime(), Vector4(0, 0, 1, 1));
+		}
+	}
 }
 
 /// <summary>
-///
+/// Shooting logic in the game
 /// </summary>
 void GameScene::Shooting()
 {
@@ -347,11 +379,11 @@ void GameScene::Shooting()
 }
 
 /// <summary>
-///
+/// Rotates an object around a point in space
 /// </summary>
-/// <param name="pAxis"></param>
-/// <param name="pPoint"></param>
-/// <param name="pAngle"></param>
+/// <param name="pAxis">Axis of rotation</param>
+/// <param name="pPoint">Point to rotate around</param>
+/// <param name="pAngle">Angle of rotation</param>
 void GameScene::RotateAroundPoint(const int pEntity, const KodeboldsMath::Vector4 & pAxis, const KodeboldsMath::Vector4 & pPoint, const float& pAngle)
 {
 	const float angleInRadians = DegreesToRadians(pAngle);
@@ -361,6 +393,21 @@ void GameScene::RotateAroundPoint(const int pEntity, const KodeboldsMath::Vector
 	auto translateBack = TranslationMatrix(pPoint * -1);
 
 	mEcsManager->TransformComp(pEntity)->transform *= translateTo * rotation * translateBack;
+}
+
+/// <summary>
+/// On click logic for main menu button
+/// </summary>
+void GameScene::OnClick_MainMenuButton()
+{
+	mSceneManager->LoadScene<MenuScene>();
+}
+
+/// <summary>
+/// On click logic for resume button
+/// </summary>
+void GameScene::OnClick_ResumeGameButton()
+{
 }
 
 /// <summary>
@@ -382,62 +429,90 @@ GameScene::~GameScene()
 /// </summary>
 void GameScene::Update()
 {
-	Movement();
-	Rotation();
-	Shooting();
+	if (mGameState == GAME_STATE::PLAYING)
+	{
+		Movement();
+		Rotation();
+		Shooting();
 
-	//Switch between cameras
-	//Ship
+		//Rotate sun
+		mEcsManager->TransformComp(mSun)->transform *= RotationMatrixY(DegreesToRadians(5) * mSceneManager->DeltaTime());
 
-	// Exit
-	if (mInputManager->KeyDown(KEYS::KEY_ESC))
-	{
-		exit(0);
-	}
-	if (mInputManager->KeyDown(KEYS::KEY_F1))
-	{
-		mEcsManager->CameraComp(mPlayerShipCam)->active = true;
-		mEcsManager->CameraComp(mPlayer)->active = false;
-		mEcsManager->CameraComp(mCamera)->active = false;
-	}
-	//Player
-	if (mInputManager->KeyDown(KEYS::KEY_F2))
-	{
-		mEcsManager->CameraComp(mPlayerShipCam)->active = false;
-		mEcsManager->CameraComp(mPlayer)->active = true;
-		mEcsManager->CameraComp(mCamera)->active = false;
-	}
-	//Free cam
-	if (mInputManager->KeyDown(KEYS::KEY_F3))
-	{
-		mEcsManager->CameraComp(mPlayerShipCam)->active = false;
-		mEcsManager->CameraComp(mPlayer)->active = false;
-		mEcsManager->CameraComp(mCamera)->active = true;
-	}
-
-	//If the player doesn't have a gravity component
-	if (!mEcsManager->GravityComp(mPlayer))
-	{
-		//Check if the player is colliding with something, else add gravity
-		if (mEcsManager->CollisionComp(mPlayer))
+		//Switch between cameras
+		//Ship
+		if (mInputManager->KeyDown(KEYS::KEY_F1))
 		{
-			//If it's not the floor, player is not grounded, add gravity
-			if (!(mEcsManager->CollisionComp(mPlayer)->collidedEntityCollisionMask == CustomCollisionMask::FLOOR))
+			mEcsManager->CameraComp(mPlayerShipCam)->active = true;
+			mEcsManager->CameraComp(mPlayer)->active = false;
+			mEcsManager->CameraComp(mCamera)->active = false;
+
+			mActiveCam = mPlayerShipCam;
+		}
+		//Player
+		if (mInputManager->KeyDown(KEYS::KEY_F2))
+		{
+			mEcsManager->CameraComp(mPlayerShipCam)->active = false;
+			mEcsManager->CameraComp(mPlayer)->active = true;
+			mEcsManager->CameraComp(mCamera)->active = false;
+
+			mActiveCam = mPlayer;
+		}
+		//Free cam
+		if (mInputManager->KeyDown(KEYS::KEY_F3))
+		{
+			mEcsManager->CameraComp(mPlayerShipCam)->active = false;
+			mEcsManager->CameraComp(mPlayer)->active = false;
+			mEcsManager->CameraComp(mCamera)->active = true;
+
+			mActiveCam = mCamera;
+		}
+
+		//If the player doesn't have a gravity component
+		if (!mEcsManager->GravityComp(mPlayer))
+		{
+			//Check if the player is colliding with something, else add gravity
+			if (mEcsManager->CollisionComp(mPlayer))
+			{
+				//If it's not the floor, player is not grounded, add gravity
+				if (!(mEcsManager->CollisionComp(mPlayer)->collidedEntityCollisionMask == CustomCollisionMask::FLOOR))
+				{
+					mEcsManager->AddGravityComp(Gravity{}, mPlayer);
+					mEcsManager->AddGravityComp(Gravity{}, mPlayerGun);
+					mPlayerIsGrounded = false;
+				}
+				else
+				{
+					mPlayerIsGrounded = true;
+				}
+			}
+			else
 			{
 				mEcsManager->AddGravityComp(Gravity{}, mPlayer);
 				mEcsManager->AddGravityComp(Gravity{}, mPlayerGun);
 				mPlayerIsGrounded = false;
 			}
-			else
-			{
-				mPlayerIsGrounded = true;
-			}
 		}
-		else
+
+		//Add gravity to gravity asteroids
+		if (mInputManager->KeyDown(KEYS::KEY_G))
 		{
-			mEcsManager->AddGravityComp(Gravity{}, mPlayer);
-			mEcsManager->AddGravityComp(Gravity{}, mPlayerGun);
-			mPlayerIsGrounded = false;
+			mEcsManager->AddGravityComp(Gravity{}, mGravityAsteroid1);
+			mEcsManager->AddGravityComp(Gravity{}, mGravityAsteroid2);
+		}
+
+		// Turn On Pause Menu
+		if (mInputManager->KeyDown(KEYS::KEY_ESC))
+		{
+			OnPause();
+		}
+	}
+	else { // the game is now paused
+
+
+		// Turn off Pause Menu
+		if (mInputManager->KeyDown(KEYS::KEY_ESC))
+		{
+			OnUnPause();
 		}
 	}
 }
@@ -447,23 +522,38 @@ void GameScene::Update()
 /// </summary>
 void GameScene::OnLoad()
 {
+	//Clears GUI from previous scene
+	resourceManager->mSprites.clear();
+	resourceManager->mButtons.clear();
+	mGUIManager->GetQuads()->clear();
+	mGUIManager->GetTextVector()->clear();
+
+	//Allows the user to use the mouse again as normal
 	mInputManager->CenterCursor(true);
 
-	mGUIManager->CreateButton(L"button.png", L"AlienEncounters.spritefont", L"EXIT", 0, 0.35f, 0.65f,
-		GUIManager::ButtonOrigin::CENTRE, GUIManager::ButtonPosition::CENTRE_MIDDLE, Vector2(400, 100),
-		Vector2(0, 10), Vector4(0.0f, 0.0f, 0.0f, 1.0f), Vector4(1.0f, 1.0f, 0.0f, 1.0f), nullptr);
-
-	//Spawn player ship and attached camera
-	mPlayerShipStartPos = Vector4(0, 0, -50, 1);
+	//Spawn player ship
+	mPlayerShipStartPos = Vector4(0, 30, -50, 1);
 	mPlayerShip = SpawnShip(mPlayerShipStartPos, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 40, 50, CustomCollisionMask::SHIP,
-		CustomCollisionMask::SHIP | CustomCollisionMask::SHIP_LASER | CustomCollisionMask::PLAYER, L"stones.dds", L"stones_NM_height.dds");
+		CustomCollisionMask::SHIP | CustomCollisionMask::SHIP_LASER | CustomCollisionMask::PLAYER, L"ship_diffuse.dds", L"ship_normal.dds");
+
+	//Spawn player ship cam
 	mPlayerShipCam = SpawnCamera(mPlayerShipStartPos + Vector4(0, 40, -75, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 60, 1, 10000, 40);
 	mEcsManager->CameraComp(mPlayerShipCam)->active = true;
+	mActiveCam = mPlayerShipCam;
 
-	//Spawn player camera and attached laser gun model
+	//Spawn ship engine
+	Vector4 engineStartPos = mPlayerShipStartPos - Vector4(0, -20, 80, 1);
+	SpawnEngine(engineStartPos, Vector4(10, 10, 10, 1), Vector4(0, 0, 0, 1), 40, L"", L"");
+
+	//Spawn player
 	mPlayerStartPos = Vector4(0, 50, -100, 1);
 	mPlayer = SpawnPlayer(mPlayerStartPos, Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 0), 60, 1, 10000, 10, mPlayerStartPos.XYZ() - Vector3(1, 4, 1), mPlayerStartPos.XYZ() + Vector3(1, 2, 1),
 		CustomCollisionMask::PLAYER, CustomCollisionMask::PLAYER | CustomCollisionMask::GUN_LASER | CustomCollisionMask::SHIP);
+
+	//Spawn player cam
+
+
+	//Spawn player gun model
 	mPlayerGun = SpawnLaserGun(mPlayerStartPos + Vector4(1, -1, 2.0f, 0), Vector4(1, 1, 1, 1), Vector4(0, 3.14f, 0, 1), L"laser_gun_diffuse.dds", L"laser_gun_normal.dds", 10);
 
 
@@ -477,83 +567,54 @@ void GameScene::OnLoad()
 	mCameraSpeed = 20.0f;
 	mRotationSpeed = 10.0f;
 
-	
-	//Spawn platform
-	int entity = mEcsManager->CreateEntity();
-	Geometry geom{ L"cube.obj" };
-	mEcsManager->AddGeometryComp(geom, entity);
-	Shader shaderm{ L"defaultShader.fx" , BlendState::NOBLEND, CullState::BACK, DepthState::LESSEQUAL };
-	mEcsManager->AddShaderComp(shaderm, entity);
-	Texture texturem{};
-	texturem.diffuse = L"stones.dds";
-	texturem.normal = L"stones_NM_height.dds";
-	mEcsManager->AddTextureComp(texturem, entity);
-	Transform transCm{};
-	transCm.scale = Vector4(100, 2, 100, 1);
-	transCm.translation = Vector4(0, -2, -100, 1);
-	mEcsManager->AddTransformComp(transCm, entity);
-	BoxCollider floorBox{ transCm.translation.XYZ() - Vector3(100, 2, 100), transCm.translation.XYZ() + Vector3(100, 2, 100), CustomCollisionMask::FLOOR, CustomCollisionMask::FLOOR };
-	mEcsManager->AddBoxColliderComp(floorBox, entity);
 
-	{
-		//Sun
-		int entity = mEcsManager->CreateEntity();
+	//Spawn planet surface
+	SpawnPlanetSurface(Vector4(0, 0, -100, 1), Vector4(0.02f, 0.01f, 0.02f, 1), Vector4(0, 0, 0, 1), L"planet_diffuse.dds", L"planet_normal.dds");
 
-		Geometry geom{ L"sphere.obj" };
-		mEcsManager->AddGeometryComp(geom, entity);
-		Shader shaderm{ L"sunShader.fx" , BlendState::NOBLEND, CullState::BACK, DepthState::LESSEQUAL };
+	//Spawn sun
+	mSun = SpawnSun(Vector4(0, 0, 2000, 1), Vector4(500, 500, 500, 1), Vector4(0, 0, 0, 1));
 
-		mEcsManager->AddShaderComp(shaderm, entity);
-		Transform transCm{};
-		transCm.translation = Vector4(0, 0, 1250, 1);
+	//Spawn sun light
+	mSunLight = mEcsManager->CreateEntity();
+	DirectionalLight dl{ Vector4(0, 0, 1, 1), Vector4(1.0f, 0.8f, 0.7f, 1) };
+	mEcsManager->AddDirectionalLightComp(dl, mSunLight);
 
-		transCm.scale = Vector4(500, 500, 500, 1);
-		mEcsManager->AddTransformComp(transCm, entity);
-	}
+	//Spawn skybox
+	SpawnSkyBox();
 
-	{
-		//Skybox
-		int entity = mEcsManager->CreateEntity();
-
-		Geometry geom{ L"cube.obj" };
-		mEcsManager->AddGeometryComp(geom, entity);
-		Shader shaderm{ L"skyboxShader.fx" , BlendState::NOBLEND, CullState::FRONT, DepthState::LESSEQUAL };
-		mEcsManager->AddShaderComp(shaderm, entity);
-		Transform transCm{};
-		transCm.scale = Vector4(1, 1, 1, 1);
-		transCm.translation = Vector4(0, 0, 0, 1);
-		mEcsManager->AddTransformComp(transCm, entity);
-	}
-
-	//Spawn some asteroids
-	for (int i = -20; i < 20; i++)
+	//Spawn testing asteroid field
+	for (int i = -200; i < 200; i += 40)
 	{
 		for (int j = -5; j < 5; j++)
 		{
-			for (int k = 10; k > 2; k--)
+			for (int k = -400; k > -800; k -= 40)
 			{
-				SpawnAsteroid(Vector4(40 * i, 60 * j, 40 * k, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), 10, 0, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
+				SpawnAsteroid(Vector4(i, 50 * j, k, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1), 5, 0, CustomCollisionMask::ASTEROID, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
 			}
 		}
 	}
 
+	//Spawn gravity asteroids
+	mGravityAsteroid1 = SpawnAsteroid(Vector4(100, 350, -600, 1), Vector4(4, 4, 4, 1), Vector4(0, 0, 0, 1), 40, 0, CustomCollisionMask::SHIP, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
+	mGravityAsteroid2 = SpawnAsteroid(Vector4(-100, 350, -600, 1), Vector4(4, 4, 4, 1), Vector4(0, 0, 0, 1), 40, 0, CustomCollisionMask::SHIP, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
+
+	//Spawn environment asteroid field
+	for (int j = -2; j < 2; j++)
 	{
-		int particleEntity = mEcsManager->CreateEntity();
-		Geometry geom{ L"quad100.obj" };
-		mEcsManager->AddGeometryComp(geom, particleEntity);
-		Shader shaderm{ L"thrusterShader.fx" , BlendState::ALPHABLEND, CullState::NONE, DepthState::NONE };
-		mEcsManager->AddShaderComp(shaderm, particleEntity);
-		Texture texturem{};
-		texturem.diffuse = L"";
-		texturem.normal = L"";
-		mEcsManager->AddTextureComp(texturem, particleEntity);
-
-		Transform transCm{};
-		transCm.scale = Vector4(10, 10, 10, 10);
-		transCm.translation = Vector4(0, 0, 0, 1);
-
-		mEcsManager->AddTransformComp(transCm, particleEntity);
+		for (int i = 0; i < 360; i += 10)
+		{
+			int randScale = rand() % 6 + 2;
+			int randRotation = rand() % 2 - 2;
+			int asteroid = SpawnAsteroid(Vector4(0, 100 * j, -100, 1), Vector4(1, 1, 1, 1) * randScale, Vector4(0, DegreesToRadians(i + randRotation), 0, 1), 5 * randScale, 0, CustomCollisionMask::ASTEROID, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
+			mEcsManager->TransformComp(asteroid)->transform *= TranslationMatrix(Vector4(0, 0, 300, 1));
+		}
 	}
+
+
+
+	//----------------------------------------------------------------------\\
+	//EVERYTHING BELOW THIS POINT NEEDS TO BE TIDIED UP AND PUT IN FUNCTIONS\\
+	//----------------------------------------------------------------------\\
 
 	{
 		int screenspaceQuad = mEcsManager->CreateEntity();
@@ -573,25 +634,62 @@ void GameScene::OnLoad()
 		mEcsManager->AddTransformComp(transCm, screenspaceQuad);
 	}
 
-	const int dLight = mEcsManager->CreateEntity();
-	DirectionalLight dl{ Vector4(0, 0, 1, 1), Vector4(1.0f, 0.8f, 0.7f, 1) };
-	mEcsManager->AddDirectionalLightComp(dl, dLight);
 
-	const int pLight = mEcsManager->CreateEntity();
-	PointLight pl{ Vector4(1.0f,1.0f,1.0f,1), 50 };
-	mEcsManager->AddPointLightComp(pl, pLight);
-	Transform t;
-	t.translation = Vector4(5, 20, -100, 1);
-	t.scale = Vector4(1, 1, 1, 1);
-	mEcsManager->AddTransformComp(t, pLight);
+	//------------ GUI ------------\\
+	// Crosshair
+	mCrosshair = mGUIManager->LoadSprite(L"crosshair.png", GUIManager::SpriteOrigin::CENTRE, GUIManager::SpritePosition::CENTRE_MIDDLE, Vector2(0, 0), 0, 0.045f, true);
 
-	//AntTweak
-	mGUIManager->AddBar("Testing");
-	TwDefine(" Testing size='300 320' valueswidth=200 ");
-	mGUIManager->AddVariable("Testing", "Velocity", TW_TYPE_DIR3F, &mEcsManager->VelocityComp(mPlayer)->velocity, "");
-	mGUIManager->AddVariable("Testing", "Acceleration", TW_TYPE_DIR3F, &mEcsManager->VelocityComp(mPlayer)->acceleration, "");
-	mGUIManager->AddVariable("Testing", "Max Speed", TW_TYPE_FLOAT, &mEcsManager->VelocityComp(mPlayer)->maxSpeed, "");
+	// Lives
+	mLivesText = mGUIManager->Write(L"LIVES: ", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::LEFT_BOTTOM, Vector2(120, -150), L"AlienEncounters.spritefont",
+		0.0f, 0.75f, Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);
 
+	for (int i = 0; i < mLives; i++)
+	{
+		Sprite* life = mGUIManager->LoadSprite(L"heart.png", GUIManager::SpriteOrigin::CENTRE, Vector2(mLivesText->mPosition.x, mLivesText->mPosition.y), Vector2(150 + (i * 75), -10), 0, 0.25f, true);
+		mLivesVector.emplace_back(life);
+	}
+
+	// Bullets
+	mBulletText = mGUIManager->Write(L"BULLETS: ", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::LEFT_BOTTOM, Vector2(170, -50), L"AlienEncounters.spritefont",
+		0.0f, 0.75f, Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);
+
+	for (int i = 0; i < mBullets; i++)
+	{
+		Sprite* bullet = mGUIManager->LoadSprite(L"bullet.png", GUIManager::SpriteOrigin::CENTRE, Vector2(mBulletText->mPosition.x, mBulletText->mPosition.y), Vector2(190 + (i * 75), -10), 0, 0.1f, true);
+		mBulletVector.emplace_back(bullet);
+	}
+
+	// SCORE
+	mScoreLabelText = mGUIManager->Write(L"SCORE: ", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::LEFT_BOTTOM, Vector2(130, -250), L"AlienEncounters.spritefont",
+		0.0f, 0.75f, Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);
+	mScoreText = mGUIManager->Write(L"0", GUIManager::TextOrigin::CENTRE, Vector2(mScoreLabelText->mPosition.x, mScoreLabelText->mPosition.y), Vector2(150, 0), L"AlienEncounters.spritefont",
+		0.0f, 0.75f, Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);
+
+
+
+	// Loading of Pause Menu (initallity hidden)
+
+	// creates a panel that covers the screen when game is paused
+	mPausedOverlay = mGUIManager->CreateQuadOverlay(Vector4(0.1f, 0.1f, 0.1f, 1.0f), false);
+
+	//mPausedOverlay = mGUIManager->CreateQuad(
+	//	Vector2(0, 0), Vector2(100, 0), Vector2(100, 1200), Vector2(0, 1200),
+	//	Vector4(0.5f, 0.5f, 0.5f, 1.0f), Vector4(0.5f, 0.5f, 0.5f, 1.0f), Vector4(0.5f, 0.5f, 0.5f, 1.0f), Vector4(0.5f, 0.5f, 0.5f, 1.0f), false);
+
+	mPausedText = mGUIManager->Write(L"PAUSED", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::CENTRE_TOP, Vector2(0, 250), L"AlienEncounters.spritefont", 0.0f, 1.5f, Vector4(1.0f, 0.0f, 0.0f, 1.0f), false);
+
+	// Creates a button that allows the user to resume the game
+	mResumeGameButton = mGUIManager->CreateButton(L"button.png", L"AlienEncounters.spritefont", L"RESUME", 0, 0.35f, 0.65f,
+		GUIManager::ButtonOrigin::CENTRE, GUIManager::ButtonPosition::CENTRE_MIDDLE, Vector2(0, 0),
+		Vector2(0, 10), Vector4(0.0f, 0.0f, 0.0f, 1.0f), Vector4(1.0f, 1.0f, 0.0f, 1.0f), std::bind(&GameScene::OnClick_ResumeGameButton, this), false);
+
+	// Creates a button that allows the user to exit back to the main menu
+	mPausedExitButton = mGUIManager->CreateButton(L"button.png", L"AlienEncounters.spritefont", L"MAIN MENU", 0, 0.35f, 0.65f,
+		GUIManager::ButtonOrigin::CENTRE, GUIManager::ButtonPosition::CENTRE_MIDDLE, Vector2(0, 100),
+		Vector2(0, 10), Vector4(0.0f, 0.0f, 0.0f, 1.0f), Vector4(1.0f, 1.0f, 0.0f, 1.0f), std::bind(&GameScene::OnClick_MainMenuButton, this), false);
+
+
+	mGameState = GAME_STATE::PLAYING;
 }
 
 /// <summary>
@@ -599,4 +697,55 @@ void GameScene::OnLoad()
 /// </summary>
 void GameScene::OnUnload()
 {
+	// Clears GUI from previous scene
+	resourceManager->mSprites.clear();
+	resourceManager->mButtons.clear();
+	mGUIManager->GetQuads()->clear();
+	mGUIManager->GetTextVector()->clear();
+
+	mEcsManager->DestroyEntities();
+}
+
+/// <summary>
+/// On pause logic
+/// </summary>
+void GameScene::OnPause()
+{
+	mGameState = GAME_STATE::PAUSED;
+	//exit(0);
+
+	// allows the user to use the mouse again as normal
+	mInputManager->CenterCursor(false);
+	mInputManager->CursorVisible(true);
+
+	// TODO: STOP EVERYTHING IN THE GAME
+	//mSceneManager->Pause(true);
+
+	// make all of the pause menu attributes (GUI) visible
+	//mPausedOverlay->mIsVisible = true;
+	mPausedText->mIsVisible = true;
+	mPausedExitButton->SetVisibility(true);
+	mResumeGameButton->SetVisibility(true);
+
+}
+
+/// <summary>
+/// On unpause logic
+/// </summary>
+void GameScene::OnUnPause()
+{
+	mGameState = GAME_STATE::PLAYING;
+
+	// TODO: START EVERYTHING AGAIN
+	//mSceneManager->Pause(false);
+
+	//exit(0);
+	mPausedOverlay->mIsVisible = false;
+	mPausedText->mIsVisible = false;
+	mPausedExitButton->SetVisibility(false);
+	mResumeGameButton->SetVisibility(false);
+
+	// allows the user to use the centered mouse
+	mInputManager->CenterCursor(true);
+	mInputManager->CursorVisible(false);
 }

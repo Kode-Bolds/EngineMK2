@@ -7,12 +7,16 @@
 #include <algorithm>
 #include <WICTextureLoader.h>
 #include <SpriteBatch.h>
+#include <PrimitiveBatch.h>
+#include <VertexTypes.h>
+#include <Effects.h>
 #include <wrl.h>
 #include "ResourceManager.h"
 #include "InputManager_DX.h"
 #include <CommonStates.h>
 #include <SpriteFont.h>
 #include "Text.h"
+#include "Quad.h"
 
 class GUIManager
 {
@@ -28,9 +32,15 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> mContext;
 
 	std::shared_ptr<DirectX::SpriteBatch> mSpriteBatch;
+	std::shared_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> mPrimitiveBatch;
+	std::shared_ptr<DirectX::BasicEffect> basicEffect;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> inputLayout;
+
 	std::shared_ptr<DirectX::CommonStates> mStates;
 	std::vector<std::shared_ptr<DirectX::SpriteFont>> mFonts;
 	std::vector<Text> mTexts;
+
+	std::vector<Quad> mQuads;
 
 	//Private constructor for singleton pattern
 	GUIManager();
@@ -50,7 +60,15 @@ public:
 	enum class TextPosition {
 		CENTRE_TOP,
 		CENTRE_MIDDLE,
-		CENTRE_BOTTOM
+		CENTRE_BOTTOM,
+
+		LEFT_TOP,
+		LEFT_MIDDLE,
+		LEFT_BOTTOM,
+
+		RIGHT_TOP,
+		RIGHT_MIDDLE,
+		RIGHT_BOTTOM,
 	};
 	enum class TextOrigin {
 		CENTRE,
@@ -88,24 +106,36 @@ public:
 	std::vector<std::shared_ptr<DirectX::SpriteFont>>* GetFontsVector() { return &mFonts; }
 	std::shared_ptr<DirectX::CommonStates> GetCommonStates() { return mStates; }
 
+	// Primitive Shapes
+	std::shared_ptr<DirectX::BasicEffect>& GetBasicEffect() { return basicEffect; };
+	Microsoft::WRL::ComPtr<ID3D11InputLayout>& GetInputLayout() { return inputLayout; };
+	std::shared_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>>& GetPrimitiveBatch() { return mPrimitiveBatch; }
+	std::vector<Quad>* GetQuads() { return &mQuads; }
+
+	Quad* CreateQuad(KodeboldsMath::Vector2 pTopLeftPoint, KodeboldsMath::Vector2 pTopRightPoint, KodeboldsMath::Vector2 pBottomRightPoint, KodeboldsMath::Vector2 pBottomLeftPoint,
+		KodeboldsMath::Vector4 pTopLeftPointColour, KodeboldsMath::Vector4 pTopLRightPointColour, KodeboldsMath::Vector4 pBottomRightPointColour, KodeboldsMath::Vector4 pBottomLeftPointColour, bool pIsVisible);
+
+	Quad* CreateQuadOverlay(KodeboldsMath::Vector4 pColour, bool pIsVisible);
+
+
 
 	// Loads .spritefont files from disk
 	void LoadFont(const wchar_t* pFontName);
 
 	// Creates and Draws Button
-	void CreateButton(const wchar_t* pFileName, const wchar_t* pFontName, const wchar_t* pText, float pRotation, float pButtonScale, float pTextScale,
+	Button* CreateButton(const wchar_t* pFileName, const wchar_t* pFontName, const wchar_t* pText, float pRotation, float pButtonScale, float pTextScale,
 		ButtonOrigin pOrigin, ButtonPosition pPosition, KodeboldsMath::Vector2 pButtonPadding, KodeboldsMath::Vector2 pTextPadding, KodeboldsMath::Vector4 pTextColour,
-		KodeboldsMath::Vector4 pTextColourHover, std::function<void()> pOnClickFunction);
+		KodeboldsMath::Vector4 pTextColourHover, std::function<void()> pOnClickFunction, bool pIsVisible);
 
 	// Draws Sprite to screen
-	void LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale);
-	void LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, SpritePosition pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale);
-	void LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale);
-	void LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, SpritePosition pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale);
+	void LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale, bool pIsVisible);
+	void LoadSprite(const wchar_t* pFileName, KodeboldsMath::Vector2 pOrigin, SpritePosition pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale, bool pIsVisible);
+	Sprite* LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale, bool pIsVisible);
+	Sprite* LoadSprite(const wchar_t* pFileName, SpriteOrigin pOrigin, SpritePosition pPosition, KodeboldsMath::Vector2 pPadding, float pRotation, float pScale, bool pIsVisible);
 
 	// Draws Text to screen
-	void Write(const wchar_t* pText, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, const wchar_t* pFontName, float pRotation, float pScale, KodeboldsMath::Vector4 pColour);
-	void Write(const wchar_t* pText, KodeboldsMath::Vector2 pOrigin, TextPosition pPosition, KodeboldsMath::Vector2 pPadding, const wchar_t* pFontName, float pRotation, float pScale, KodeboldsMath::Vector4 pColour);
-	void Write(const wchar_t* pText, TextOrigin pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, const wchar_t* pFontName, float pRotation, float pScale, KodeboldsMath::Vector4 pColour);
-	void Write(const wchar_t* pText, TextOrigin pOrigin, TextPosition pPosition, KodeboldsMath::Vector2 pPadding, const wchar_t* pFontName, float pRotation, float pScale, KodeboldsMath::Vector4 pColour);
+	Text* Write(const wchar_t* pText, KodeboldsMath::Vector2 pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, const wchar_t* pFontName, float pRotation, float pScale, KodeboldsMath::Vector4 pColour, bool pIsVisible);
+	Text* Write(const wchar_t* pText, KodeboldsMath::Vector2 pOrigin, TextPosition pPosition, KodeboldsMath::Vector2 pPadding, const wchar_t* pFontName, float pRotation, float pScale, KodeboldsMath::Vector4 pColour, bool pIsVisible);
+	Text* Write(const wchar_t* pText, TextOrigin pOrigin, KodeboldsMath::Vector2 pPosition, KodeboldsMath::Vector2 pPadding, const wchar_t* pFontName, float pRotation, float pScale, KodeboldsMath::Vector4 pColour, bool pIsVisible);
+	Text* Write(const wchar_t* pText, TextOrigin pOrigin, TextPosition pPosition, KodeboldsMath::Vector2 pPadding, const wchar_t* pFontName, float pRotation, float pScale, KodeboldsMath::Vector4 pColour, bool pIsVisible);
 };
