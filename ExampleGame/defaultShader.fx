@@ -88,7 +88,7 @@ PS_INPUT VS(VS_INPUT input)
 	for (int i = 0; i < numDirLights; i++)
 	{
 		output.ShadowPos[i] = mul(output.Pos, dirLights[i].view);
-		output.ShadowPos[i] = mul(output.Pos, dirLights[i].projection);
+		output.ShadowPos[i] = mul(output.ShadowPos[i], dirLights[i].projection);
 	}
 	
 	output.Pos = mul(output.Pos, View);
@@ -173,7 +173,7 @@ float4 PS(PS_INPUT input) : SV_Target
 		{
 			float shadowDepth = txShadowTexture.Sample(txDiffSampler, projectedTexCoords).r;
 			float depth = (input.ShadowPos[i].z / input.ShadowPos[i].w);
-			if (depth > 0)
+			if (depth > 0 && depth < 1)
 			{
 				if (saturate(depth) > shadowDepth + 0.0001f)
 				{
