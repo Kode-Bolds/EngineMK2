@@ -556,7 +556,7 @@ void GameScene::OnLoad()
 		Geometry geom{ L"cube.obj" };
 		mEcsManager->AddGeometryComp(geom, screenspaceQuad);
 		Shader shaderm{ L"distortionShader.fx" , BlendState::ALPHABLEND, CullState::NONE, DepthState::NONE };
-		mEcsManager->AddShaderComp(shaderm, screenspaceQuad);
+		//mEcsManager->AddShaderComp(shaderm, screenspaceQuad);
 		Texture texturem{};
 		texturem.diffuse = L"stones.DDS";
 		texturem.normal = L"distortionTest.dds";

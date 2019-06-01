@@ -9,14 +9,14 @@ using namespace DirectX;
 /// </summary>
 /// <param name="pWindow">A handle to the win32 window</param>
 /// <param name="pMaxLights">The maximum number of lights in the render system</param>
-RenderSystem_DX::RenderSystem_DX(const HWND& pWindow, const int pMaxPointLights, const int pMaxDirLights)
+RenderSystem_DX::RenderSystem_DX(const HWND& pWindow, const int pMaxPointLights, const int pMaxDirLights, const int pRenderTextures)
 	: RenderSystem(std::vector<int>{ ComponentType::COMPONENT_TRANSFORM | ComponentType::COMPONENT_GEOMETRY | ComponentType::COMPONENT_SHADER,
 		ComponentType::COMPONENT_POINTLIGHT,
 		ComponentType::COMPONENT_DIRECTIONALLIGHT,
 		ComponentType::COMPONENT_CAMERA },
 		pMaxPointLights,
 		pMaxDirLights),
-	mWindow(pWindow), mActiveCamera(nullptr), mActiveGeometry(L""), mActiveShader(L"")
+	mWindow(pWindow), mRenderTextureCount(pRenderTextures), mActiveCamera(nullptr), mActiveGeometry(L""), mActiveShader(L"")
 {
 	if (FAILED(Init()))
 	{
@@ -82,7 +82,7 @@ HRESULT RenderSystem_DX::Init()
 	if (FAILED(hr))
 		return hr;
 
-	hr = CreateRenderTexture();
+	hr = CreateRenderTextures();
 	if (FAILED(hr))
 		return hr;
 
@@ -518,48 +518,54 @@ HRESULT RenderSystem_DX::CreateConstantBuffers()
 /// Create the necessary DirectX resources for rendering to texture
 /// </summary>
 /// <returns>HRESULT status code</returns>
-HRESULT RenderSystem_DX::CreateRenderTexture()
+HRESULT RenderSystem_DX::CreateRenderTextures()
 {
 	auto hr{ S_OK };
 
-	D3D11_TEXTURE2D_DESC textureDesc;
-	ZeroMemory(&textureDesc, sizeof(textureDesc));
-	textureDesc.Width = 1920;
-	textureDesc.Height = 1062;
-	textureDesc.MipLevels = 1;
-	textureDesc.ArraySize = 1;
-	textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	textureDesc.SampleDesc.Count = 1;
-	textureDesc.Usage = D3D11_USAGE_DEFAULT;
-	textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-	textureDesc.CPUAccessFlags = 0;
-	textureDesc.MiscFlags = 0;
+	mRenderTextures.resize(mRenderTextureCount, nullptr);
+	mTextureRenderTargetViews.resize(mRenderTextureCount, nullptr);
+	mRenderTextureSRVs.resize(mRenderTextureCount, nullptr);
 
-	hr = mDevice->CreateTexture2D(&textureDesc, nullptr, mRenderTexture.GetAddressOf());
-	if (FAILED(hr))
-		return hr;
+	for (int i = 0; i < mRenderTextureCount; ++i)
+	{
+		D3D11_TEXTURE2D_DESC textureDesc;
+		ZeroMemory(&textureDesc, sizeof(textureDesc));
+		textureDesc.Width = 1920;
+		textureDesc.Height = 1062;
+		textureDesc.MipLevels = 1;
+		textureDesc.ArraySize = 1;
+		textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		textureDesc.SampleDesc.Count = 1;
+		textureDesc.Usage = D3D11_USAGE_DEFAULT;
+		textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+		textureDesc.CPUAccessFlags = 0;
+		textureDesc.MiscFlags = 0;
 
-	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
-	ZeroMemory(&renderTargetViewDesc, sizeof(renderTargetViewDesc));
-	renderTargetViewDesc.Format = textureDesc.Format;
-	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-	renderTargetViewDesc.Texture2D.MipSlice = 0;
+		hr = mDevice->CreateTexture2D(&textureDesc, nullptr, mRenderTextures[i].GetAddressOf());
+		if (FAILED(hr))
+			return hr;
 
-	hr = mDevice->CreateRenderTargetView(mRenderTexture.Get(), &renderTargetViewDesc, mTextureRenderTargetView.GetAddressOf());
-	if (FAILED(hr))
-		return hr;
+		D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
+		ZeroMemory(&renderTargetViewDesc, sizeof(renderTargetViewDesc));
+		renderTargetViewDesc.Format = textureDesc.Format;
+		renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+		renderTargetViewDesc.Texture2D.MipSlice = 0;
 
-	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
-	ZeroMemory(&shaderResourceViewDesc, sizeof(shaderResourceViewDesc));
-	shaderResourceViewDesc.Format = textureDesc.Format;
-	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
-	shaderResourceViewDesc.Texture2D.MipLevels = 1;
+		hr = mDevice->CreateRenderTargetView(mRenderTextures[i].Get(), &renderTargetViewDesc, mTextureRenderTargetViews[i].GetAddressOf());
+		if (FAILED(hr))
+			return hr;
 
-	hr = mDevice->CreateShaderResourceView(mRenderTexture.Get(), &shaderResourceViewDesc, mRenderTextureSRV.GetAddressOf());
-	if (FAILED(hr))
-		return hr;
+		D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
+		ZeroMemory(&shaderResourceViewDesc, sizeof(shaderResourceViewDesc));
+		shaderResourceViewDesc.Format = textureDesc.Format;
+		shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
+		shaderResourceViewDesc.Texture2D.MipLevels = 1;
 
+		hr = mDevice->CreateShaderResourceView(mRenderTextures[i].Get(), &shaderResourceViewDesc, mRenderTextureSRVs[i].GetAddressOf());
+		if (FAILED(hr))
+			return hr;
+	}
 	return hr;
 }
 
@@ -732,12 +738,16 @@ void RenderSystem_DX::Process()
 
 	SetLights();
 
-	//Render to texture
-	mContext->OMSetRenderTargets(1, mTextureRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
-	Render();
+	for (int i = 0; i < mRenderTextureCount; ++i)
+	{
+		mContext->ClearRenderTargetView(mTextureRenderTargetViews[i].Get(), DirectX::Colors::Black);
+		//Render to texture
+		mContext->OMSetRenderTargets(1, mTextureRenderTargetViews[i].GetAddressOf(), mDepthStencilView.Get());
+		Render();
 
-	//Clear depth between renders
-	mContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
+		//Clear depth between renders
+		mContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
+	}
 
 	//Render to window
 	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
@@ -749,12 +759,11 @@ void RenderSystem_DX::Process()
 }
 
 /// <summary>
-/// Clears screen and render texture to black
+/// Clears render target to black
 /// </summary>
 void RenderSystem_DX::ClearView() const
 {
 	mContext->ClearRenderTargetView(mRenderTargetView.Get(), DirectX::Colors::Black);
-	mContext->ClearRenderTargetView(mTextureRenderTargetView.Get(), DirectX::Colors::Black);
 	mContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
@@ -883,7 +892,10 @@ void RenderSystem_DX::LoadTexture(const Entity& pEntity)
 			texture->Load(this, 2);
 		}
 	}
-	mContext->PSSetShaderResources(3, 1, mRenderTextureSRV.GetAddressOf());
+	for (int i = 0; i < mRenderTextureCount; ++i)
+	{
+		mContext->PSSetShaderResources(3+i, 1, mRenderTextureSRVs[i].GetAddressOf());
+	}
 }
 
 /// <summary>
