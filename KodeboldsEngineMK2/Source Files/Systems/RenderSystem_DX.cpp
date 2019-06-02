@@ -747,7 +747,7 @@ void RenderSystem_DX::Process()
 	for (int i = 0; i < mRenderTextureCount; ++i)
 	{
 		mActiveRenderTarget = i;
-		mContext->ClearRenderTargetView(mTextureRenderTargetViews[i].Get(), DirectX::Colors::Black);
+		mContext->ClearRenderTargetView(mTextureRenderTargetViews[i].Get(), DirectX::Colors::White);
 		//Render to texture
 		mContext->OMSetRenderTargets(1, mTextureRenderTargetViews[i].GetAddressOf(), mDepthStencilView.Get());
 		Render();
