@@ -785,24 +785,28 @@ void GameScene::OnLoad()
 
 
 	//Spawn planet surface
-	SpawnPlanetSurface(Vector4(0, 0, -100, 1), Vector4(0.02f, 0.01f, 0.02f, 1), Vector4(0, 0, 0, 1), L"planet_diffuse.dds", L"planet_normal.dds");
+	SpawnPlanetSurface(Vector4(0, -100, -100, 1), Vector4(0.02f, 0.01f, 0.02f, 1), Vector4(0, 0, 0, 1), L"planet_diffuse.dds", L"planet_normal.dds");
 
 	//Spawn sun
-	mSun = SpawnSun(Vector4(0, 0, 2000, 1), Vector4(500, 500, 500, 1), Vector4(0, 0, 0, 1));
+	mSun = SpawnSun(Vector4(0, 200, 2000, 1), Vector4(500, 500, 500, 1), Vector4(0, 0, 0, 1));
 
 	//Spawn sun light
 	mSunLight = mEcsManager->CreateEntity();
-	DirectionalLight dl{ Vector4(0, 0, 1, 1), Vector4(1.0f, 0.8f, 0.7f, 1) };
+	DirectionalLight dl{ Vector4(0, 0.7f, 1, 1), Vector4(1.0f, 0.8f, 0.7f, 1) };
 	mEcsManager->AddDirectionalLightComp(dl, mSunLight);
 
 	Transform trans{};
-	trans.translation = Vector4(0, 0, 2000, 1);
+	trans.translation = Vector4(0, 125, 500, 1);
 	trans.scale = Vector4(1, 1, 1, 1);
-	trans.rotation = Vector4(0, 0, 0, 1);
+	trans.rotation = Vector4(PI, 0, 0, 1);
 	entitySpawnerEcsManager->AddTransformComp(trans, mSunLight);
 
-	Camera cam{ 60, 1, 10000, std::vector<int>{0}, false };
+	Camera cam{ 60, 1, 1500, std::vector<int>{0}, false };
 	entitySpawnerEcsManager->AddCameraComp(cam, mSunLight);
+
+	//Spawn shadow demo asteroid
+	int asteroid = SpawnAsteroid(Vector4(0, -100, 100, 1), Vector4(3, 3, 3, 1), Vector4(0, 0, 0, 1), 10, 0,
+		CustomCollisionMask::ASTEROID, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
 
 	//Spawn skybox
 	SpawnSkyBox();
@@ -845,6 +849,7 @@ void GameScene::OnLoad()
 	//EVERYTHING BELOW THIS POINT NEEDS TO BE TIDIED UP AND PUT IN FUNCTIONS\\
 	//----------------------------------------------------------------------\\
 
+	/*
 	{
 		int screenspaceQuad = mEcsManager->CreateEntity();
 		Geometry geom{ L"cube.obj" };
@@ -862,7 +867,7 @@ void GameScene::OnLoad()
 
 		mEcsManager->AddTransformComp(transCm, screenspaceQuad);
 	}
-
+	*/
 
 	//------------ GUI ------------\\
 	// Crosshair

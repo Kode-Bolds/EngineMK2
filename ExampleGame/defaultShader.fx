@@ -38,7 +38,7 @@ cbuffer LightingBuffer : register (b1)
 	float3 padding4;
 	DirectionalLight dirLights[2];
 
-	float numPointLights; //5 max
+	float numPointLights;
 	float3 padding5;
 	Pointlight pointLights[20];
 }
@@ -171,23 +171,26 @@ float4 PS(PS_INPUT input) : SV_Target
 		//Check in texture bounds
 		if (saturate(projectedTexCoords.x) == projectedTexCoords.x && saturate(projectedTexCoords.y) == projectedTexCoords.y)
 		{
+
 			float shadowDepth = txShadowTexture.Sample(txDiffSampler, projectedTexCoords).r;
+			
 			float depth = (input.ShadowPos[i].z / input.ShadowPos[i].w);
 			if (depth > 0 && depth < 1)
 			{
-				if (saturate(depth) > shadowDepth + 0.0001f)
+				//return txShadowTexture.Sample(txDiffSampler, projectedTexCoords);
+
+
+				if (saturate(depth) > shadowDepth + 0.001f)
 				{
 					shadow = 0.f;
 				}
 			}
 		}
-
 		
 		float4 lightColour = CalcLightColour(matDiffuse, matSpec, viewDirection, dirLights[i].direction, dirLights[i].colour, input) * shadow;
 		outputCol = saturate(lightColour + outputCol);
 	}
 
-	
 	//Calc spotlights
 
 	for (int i = 0; i < numPointLights; ++i)

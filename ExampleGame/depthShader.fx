@@ -54,8 +54,8 @@ struct VS_INPUT
 struct PS_INPUT
 {
 	float4 Pos : SV_POSITION;
-	float3 Normal: NORMAL;
-	float4 PosWorld : TEXCOORD0;
+	//float3 Normal: NORMAL;
+	//float4 PosWorld : TEXCOORD0;
 	//float2 TexCoord : TEXCOORD1;
 };
 
@@ -80,5 +80,5 @@ PS_INPUT VS(VS_INPUT input)
 float4 PS(PS_INPUT input) : SV_Target
 {
 	float depth = input.Pos.z / input.Pos.w;
-	return float4(depth.rrr, 1);
+	return float4(1 - depth.rrr, 1);
 }
