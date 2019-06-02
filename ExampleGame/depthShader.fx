@@ -80,5 +80,5 @@ PS_INPUT VS(VS_INPUT input)
 float4 PS(PS_INPUT input) : SV_Target
 {
 	float depth = input.Pos.z / input.Pos.w;
-	return float4(depth.rrr, 1);
+	return float4(1 - depth.rrr, 1);
 }

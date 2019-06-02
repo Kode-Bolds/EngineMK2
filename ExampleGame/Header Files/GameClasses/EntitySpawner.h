@@ -103,7 +103,7 @@ namespace EntitySpawner
 		entitySpawnerEcsManager->AddGeometryComp(geo, ID);
 
 		//Shader component
-		Shader shader{ L"errorShader.fx" , BlendState::NOBLEND, CullState::BACK, DepthState::LESSEQUAL, std::vector<int>{0}, true };
+		Shader shader{ L"defaultShader.fx" , BlendState::NOBLEND, CullState::BACK, DepthState::LESSEQUAL, std::vector<int>{0}, true };
 		entitySpawnerEcsManager->AddShaderComp(shader, ID);
 
 		//Texture component

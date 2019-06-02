@@ -612,7 +612,7 @@ void GameScene::OnLoad()
 	mEcsManager->AddDirectionalLightComp(dl, mSunLight);
 
 	Transform trans{};
-	trans.translation = Vector4(0, 5, 50, 1);
+	trans.translation = Vector4(0, 50, 50, 1);
 	trans.scale = Vector4(1, 1, 1, 1);
 	trans.rotation = Vector4(PI, 0, 0, 1);
 	entitySpawnerEcsManager->AddTransformComp(trans, mSunLight);
