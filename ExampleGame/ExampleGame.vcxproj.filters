@@ -110,9 +110,6 @@
     <ClCompile Include="Source Files\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\Scenes\GameScene.cpp">
-      <Filter>Source Files\Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="Source Files\Systems\CollisionResponseSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
@@ -124,6 +121,9 @@
     </ClCompile>
     <ClCompile Include="Source Files\GameClasses\GameNetworking.cpp">
       <Filter>Source Files\GameClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Scenes\GameScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

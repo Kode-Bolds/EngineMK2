@@ -33,6 +33,14 @@ private:
 		LOADING
 	};
 	GAME_STATE mGameState = GAME_STATE::LOADING;
+	int mPlayerNumber;
+
+	int mActivePlayer;
+	int mActivePlayerGun;
+	int mActivePlayerShip;
+	int mActivePlayerShipCam;
+	int mActivePlayerShipEngine;
+	int mActiveCamera;
 
 	int mPlayer;
 	int mPlayerGun;
@@ -40,6 +48,14 @@ private:
 	int mPlayerShipCam;
 	int mPlayerShipEngine;
 	int mCamera;
+
+	int mPlayer2;
+	int mPlayerGun2;
+	int mPlayerShip2;
+	int mPlayerShipCam2;
+	int mPlayerShipEngine2;
+	int mCamera2;
+
 	float mPlayerSpeed;
 	float mPlayerJumpSpeed;
 	float mShipSpeed;
@@ -56,13 +72,15 @@ private:
 
 	KodeboldsMath::Vector4 mPlayerShipStartPos;
 	KodeboldsMath::Vector4 mPlayerStartPos;
-	KodeboldsMath::Vector4 mFreeCamStartPos;
+	KodeboldsMath::Vector4 mPlayerShipStartPos2;
+	KodeboldsMath::Vector4 mPlayerStartPos2;
 
 	std::vector<std::pair<int, float>> mBulletLifeTimers;
 	float mRateOfFire;
 	float mTimeSinceLastFire;
 
 	bool mPlayerIsGrounded;
+	bool mPlayerIsGrounded2;
 
 	void Movement();
 	void Rotation();
@@ -70,12 +88,6 @@ private:
 	void RotateAroundPoint(const int pEntity, const KodeboldsMath::Vector4& pAxis, const KodeboldsMath::Vector4& pPoint, const float& pAngle);
 
 	// Game Assets
-	int mLives = 3;
-	std::vector<Sprite*> mLivesVector;
-
-	int mBullets = 10;
-	std::vector<Sprite*> mBulletVector;
-
 	Sprite* mCrosshair;
 
 	// PAUSED ASSETS
@@ -84,10 +96,8 @@ private:
 	Button* mPausedExitButton = nullptr;
 	Button* mResumeGameButton = nullptr;
 
-	Text* mLivesText;
 	Text* mScoreLabelText;
 	Text* mScoreText;
-	Text* mBulletText;
 
 	void OnClick_MainMenuButton();
 	void OnClick_ResumeGameButton();
