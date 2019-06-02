@@ -71,7 +71,7 @@ int WINAPI wWinMain(_In_ const HINSTANCE pHInstance, _In_opt_ const HINSTANCE pH
 #endif
 
 	//Scenes
-	sceneManager->LoadScene<GameScene>();
+	sceneManager->LoadScene<MenuScene>();
 
 	//Main message loop
 	MSG msg = { 0 };

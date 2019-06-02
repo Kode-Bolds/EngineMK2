@@ -28,6 +28,10 @@ private:
 	int mMenuMusic;
 	Quad* mBackgroundOverlay = nullptr;
 
+	Quad* mOverlay = nullptr;
+	Text* mLoadingText = nullptr;
+
+
 public:
 	//Structors
 	MenuScene();

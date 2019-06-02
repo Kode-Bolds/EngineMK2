@@ -136,20 +136,21 @@ void GUIManager::Update() const
 			mousePos.Y >(buttonBounds.y - (buttonHeight / 25)) && mousePos.Y < (buttonBounds.y + (buttonHeight / 25)))
 		{
 			// if mouse clicked, trigger onclick function
-			if (mInputManager->KeyDown(KEYS::MOUSE_BUTTON_LEFT))
+			if (mInputManager->KeyDown(KEYS::MOUSE_BUTTON_LEFT) || mInputManager->KeyHeld(KEYS::MOUSE_BUTTON_LEFT))
 			{
 				mButton.second.mOnClickFunction();
-				return;
+				//return;
 			}
-
-			// trigger on hover - colour change
-			auto buttonTextHoverColour = DirectX::XMFLOAT4(
-				mButton.second.mTextColourHover.X,
-				mButton.second.mTextColourHover.Y,
-				mButton.second.mTextColourHover.Z,
-				mButton.second.mTextColourHover.W);
-			mButton.second.mText.mColour = buttonTextHoverColour;
-
+			else
+			{
+				// trigger on hover - colour change
+				auto buttonTextHoverColour = DirectX::XMFLOAT4(
+					mButton.second.mTextColourHover.X,
+					mButton.second.mTextColourHover.Y,
+					mButton.second.mTextColourHover.Z,
+					mButton.second.mTextColourHover.W);
+				mButton.second.mText.mColour = buttonTextHoverColour;
+			}
 		}
 		else
 		{
