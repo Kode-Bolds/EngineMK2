@@ -38,7 +38,7 @@ cbuffer LightingBuffer : register (b1)
 	float3 padding4;
 	DirectionalLight dirLights[2];
 
-	float numPointLights; //5 max
+	float numPointLights;
 	float3 padding5;
 	Pointlight pointLights[20];
 }
@@ -165,7 +165,7 @@ float4 PS(PS_INPUT input) : SV_Target
 		float shadow = 1;
 		
 		float2 projectedTexCoords;
-		projectedTexCoords.x = -input.ShadowPos[i].x / input.ShadowPos[i].w / 2 + 0.5f;
+		projectedTexCoords.x = input.ShadowPos[i].x / input.ShadowPos[i].w / 2 + 0.5f;
 		projectedTexCoords.y = -input.ShadowPos[i].y / input.ShadowPos[i].w / 2 + 0.5f;
 
 		//Check in texture bounds
@@ -186,13 +186,11 @@ float4 PS(PS_INPUT input) : SV_Target
 				}
 			}
 		}
-
 		
 		float4 lightColour = CalcLightColour(matDiffuse, matSpec, viewDirection, dirLights[i].direction, dirLights[i].colour, input) * shadow;
 		outputCol = saturate(lightColour + outputCol);
 	}
 
-	
 	//Calc spotlights
 
 	for (int i = 0; i < numPointLights; ++i)
