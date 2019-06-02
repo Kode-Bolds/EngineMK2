@@ -756,12 +756,13 @@ void RenderSystem_DX::Process()
 	}
 
 	mActiveRenderTarget = -1;
+
 	//Render to window
 	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
 	Render();
 
-	//RenderGUI();
-	//mGUIManager->Update();
+	RenderGUI();
+	mGUIManager->Update();
 
 	SwapBuffers();
 

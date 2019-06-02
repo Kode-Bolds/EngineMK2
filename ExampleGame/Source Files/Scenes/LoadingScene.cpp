@@ -28,11 +28,6 @@ void LoadingScene::Update()
 /// </summary>
 void LoadingScene::OnLoad()
 {
-	// creates a panel that covers the screen when game is paused
-	mOverlay = mGUIManager->CreateQuadOverlay(Vector4(0.1f, 0.1f, 0.1f, 1.0f), true);
-
-	mLoadingText = mGUIManager->Write(L"LOADING", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::CENTRE_MIDDLE, Vector2(0, 0), L"AlienEncounters.spritefont", 0.0f, 1.5f, Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);
-
 	mSceneManager->LoadScene<GameScene>();
 }
 
@@ -40,5 +35,9 @@ void LoadingScene::OnLoad()
 /// Clear up scene resources
 /// </summary>
 void LoadingScene::OnUnload() {
+	// creates a panel that covers the screen when game is paused
+	mOverlay = mGUIManager->CreateQuadOverlay(Vector4(0.1f, 0.1f, 0.1f, 1.0f), true);
+
+	mLoadingText = mGUIManager->Write(L"LOADING", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::CENTRE_MIDDLE, Vector2(0, 0), L"AlienEncounters.spritefont", 0.0f, 1.5f, Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);
 
 }
