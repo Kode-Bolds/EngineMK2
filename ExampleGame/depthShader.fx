@@ -54,8 +54,8 @@ struct VS_INPUT
 struct PS_INPUT
 {
 	float4 Pos : SV_POSITION;
-	float3 Normal: NORMAL;
-	float4 PosWorld : TEXCOORD0;
+	//float3 Normal: NORMAL;
+	//float4 PosWorld : TEXCOORD0;
 	//float2 TexCoord : TEXCOORD1;
 };
 

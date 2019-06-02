@@ -531,7 +531,7 @@ HRESULT RenderSystem_DX::CreateRenderTextures()
 		D3D11_TEXTURE2D_DESC textureDesc;
 		ZeroMemory(&textureDesc, sizeof(textureDesc));
 		textureDesc.Width = 1920;
-		textureDesc.Height = 1062;
+		textureDesc.Height = 1061;
 		textureDesc.MipLevels = 1;
 		textureDesc.ArraySize = 1;
 		textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -747,7 +747,7 @@ void RenderSystem_DX::Process()
 	for (int i = 0; i < mRenderTextureCount; ++i)
 	{
 		mActiveRenderTarget = i;
-		mContext->ClearRenderTargetView(mTextureRenderTargetViews[i].Get(), DirectX::Colors::Black);
+		mContext->ClearRenderTargetView(mTextureRenderTargetViews[i].Get(), DirectX::Colors::White);
 		//Render to texture
 		mContext->OMSetRenderTargets(1, mTextureRenderTargetViews[i].GetAddressOf(), mDepthStencilView.Get());
 		Render();
@@ -761,8 +761,8 @@ void RenderSystem_DX::Process()
 	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
 	Render();
 
-	RenderGUI();
-	mGUIManager->Update();
+	//RenderGUI();
+	//mGUIManager->Update();
 
 	SwapBuffers();
 
@@ -981,9 +981,9 @@ void RenderSystem_DX::SetLights()
 		//Calculates the view matrix and sets it in the constant buffer
 		const XMFLOAT4 position(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mDirectionalLights[i].ID)->translation)));
 
-		KodeboldsMath::Vector4 lookAtV = mEcsManager->TransformComp(mDirectionalLights[i].ID)->translation - dlComp->mDirection;
+		KodeboldsMath::Vector4 lookAtV = (mEcsManager->TransformComp(mDirectionalLights[i].ID)->translation - dlComp->mDirection) * -1;
 		const XMFLOAT4 lookAt(reinterpret_cast<float*>(&(lookAtV)));
-		const XMFLOAT4 up(reinterpret_cast<float*>(&(mEcsManager->TransformComp(mDirectionalLights[i].ID)->up)));
+		const XMFLOAT4 up(0,1,0,1);
 
 		const XMVECTOR posVec = XMLoadFloat4(&position);
 		const XMVECTOR lookAtVec = XMLoadFloat4(&lookAt);
