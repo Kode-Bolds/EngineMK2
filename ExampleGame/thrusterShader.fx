@@ -141,6 +141,9 @@ PS_INPUT VS(VS_INPUT input)
 	//animPos.x = sin(turn) * radius * (lifeTime);
 	//animPos.y = cos(turn) * radius * (lifeTime);
 	animPos.z = ((1 - lifeTime) * -50); //sin(inPos.z * 1000 + time);
+
+	animPos = mul(float4(animPos, 1), World);
+
 	//animPos = mul(float4(animPos, 1), View).xyz;
 
 
@@ -151,6 +154,8 @@ PS_INPUT VS(VS_INPUT input)
 	output.ParticleColour.a = 0.75;
 
 	float4x4 newWorld = World;
+	newWorld._m30 += animPos.x;
+	newWorld._m31 += animPos.y;
 	newWorld._m32 += animPos.z;
 
 	float4x4 worldViewMatrix = mul(newWorld, View);
