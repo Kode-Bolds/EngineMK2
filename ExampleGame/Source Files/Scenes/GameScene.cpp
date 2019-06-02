@@ -578,7 +578,7 @@ void GameScene::OnLoad()
 
 	//Spawn ship engine
 	Vector4 engineStartPos = mPlayerShipStartPos - Vector4(1, -10, 15, 1);
-	mPlayerShipEngine = SpawnEngine(engineStartPos, Vector4(1, 1, 1, 1), Vector4(0, 0, 3.14f / 2.f, 1), 4, L"", L"");
+	mPlayerShipEngine = SpawnEngine(engineStartPos, Vector4(1, 1, 1, 1), Vector4(PI, 0, 3.14f / 2.f, 1), 4, L"", L"");
 
 	//Spawn player
 	mPlayerStartPos = Vector4(0, 50, -100, 1);
@@ -608,17 +608,21 @@ void GameScene::OnLoad()
 
 	//Spawn sun light
 	mSunLight = mEcsManager->CreateEntity();
-	DirectionalLight dl{ Vector4(0, 1, 1, 1), Vector4(1.0f, 0.8f, 0.7f, 1) };
+	DirectionalLight dl{ Vector4(0, 0.7f, 1, 1), Vector4(1.0f, 0.8f, 0.7f, 1) };
 	mEcsManager->AddDirectionalLightComp(dl, mSunLight);
 
 	Transform trans{};
-	trans.translation = Vector4(0, 200, 2000, 1);
+	trans.translation = Vector4(0, 125, 500, 1);
 	trans.scale = Vector4(1, 1, 1, 1);
 	trans.rotation = Vector4(PI, 0, 0, 1);
 	entitySpawnerEcsManager->AddTransformComp(trans, mSunLight);
 
-	Camera cam{ 60, 1, 4000, std::vector<int>{0}, false };
+	Camera cam{ 60, 1, 1500, std::vector<int>{0}, false };
 	entitySpawnerEcsManager->AddCameraComp(cam, mSunLight);
+
+	//Spawn shadow demo asteroid
+	int asteroid = SpawnAsteroid(Vector4(0, -100, 100, 1), Vector4(3, 3, 3, 1), Vector4(0, 0, 0, 1), 10, 0,
+		CustomCollisionMask::ASTEROID, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
 
 	//Spawn skybox
 	SpawnSkyBox();
