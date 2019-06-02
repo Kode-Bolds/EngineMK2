@@ -612,12 +612,12 @@ void GameScene::OnLoad()
 	mEcsManager->AddDirectionalLightComp(dl, mSunLight);
 
 	Transform trans{};
-	trans.translation = Vector4(0, 100, 0, 1);
+	trans.translation = Vector4(0, 5, -50, 1);
 	trans.scale = Vector4(1, 1, 1, 1);
 	trans.rotation = Vector4(3.14f, 0, 0, 1);
 	entitySpawnerEcsManager->AddTransformComp(trans, mSunLight);
 
-	Camera cam{ 60, 1, 200, std::vector<int>{0}, false };
+	Camera cam{ 60, 1, 1000, std::vector<int>{0}, false };
 	entitySpawnerEcsManager->AddCameraComp(cam, mSunLight);
 
 	//Spawn skybox
@@ -660,7 +660,7 @@ void GameScene::OnLoad()
 	//----------------------------------------------------------------------\\
 	//EVERYTHING BELOW THIS POINT NEEDS TO BE TIDIED UP AND PUT IN FUNCTIONS\\
 	//----------------------------------------------------------------------\\
-	
+
 	/*
 	{
 		int screenspaceQuad = mEcsManager->CreateEntity();
