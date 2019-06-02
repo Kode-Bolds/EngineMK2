@@ -577,8 +577,8 @@ void GameScene::OnLoad()
 	mActiveCam = mPlayerShipCam;
 
 	//Spawn ship engine
-	//Vector4 engineStartPos = mPlayerShipStartPos - Vector4(0, -10, 15, 1);
-	//mPlayerShipEngine = SpawnEngine(engineStartPos, Vector4(10, 10, 10, 1), Vector4(0, 0, 0, 1), 4, L"", L"");
+	Vector4 engineStartPos = mPlayerShipStartPos - Vector4(1, -10, 15, 1);
+	mPlayerShipEngine = SpawnEngine(engineStartPos, Vector4(1, 1, 1, 1), Vector4(0, 0, 3.14f / 2.f, 1), 4, L"", L"");
 
 	//Spawn player
 	mPlayerStartPos = Vector4(0, 50, -100, 1);
