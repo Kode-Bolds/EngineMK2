@@ -608,11 +608,11 @@ void GameScene::OnLoad()
 
 	//Spawn sun light
 	mSunLight = mEcsManager->CreateEntity();
-	DirectionalLight dl{ Vector4(0, 0, 1, 1), Vector4(1.0f, 0.8f, 0.7f, 1) };
+	DirectionalLight dl{ Vector4(0, 1, 0, 1), Vector4(1.0f, 0.8f, 0.7f, 1) };
 	mEcsManager->AddDirectionalLightComp(dl, mSunLight);
 
 	Transform trans{};
-	trans.translation = Vector4(0, 5, 50, 1);
+	trans.translation = Vector4(0, 50, 50, 1);
 	trans.scale = Vector4(1, 1, 1, 1);
 	trans.rotation = Vector4(PI, 0, 0, 1);
 	entitySpawnerEcsManager->AddTransformComp(trans, mSunLight);
@@ -661,6 +661,7 @@ void GameScene::OnLoad()
 	//EVERYTHING BELOW THIS POINT NEEDS TO BE TIDIED UP AND PUT IN FUNCTIONS\\
 	//----------------------------------------------------------------------\\
 
+	/*
 	{
 		int screenspaceQuad = mEcsManager->CreateEntity();
 		Geometry geom{ L"cube.obj" };
@@ -678,7 +679,7 @@ void GameScene::OnLoad()
 
 		mEcsManager->AddTransformComp(transCm, screenspaceQuad);
 	}
-
+	*/
 
 	//------------ GUI ------------\\
 	// Crosshair
