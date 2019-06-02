@@ -440,6 +440,7 @@ void GameScene::OnClick_MainMenuButton()
 /// </summary>
 void GameScene::OnClick_ResumeGameButton()
 {
+	OnUnPause();
 }
 
 /// <summary>
@@ -683,28 +684,28 @@ void GameScene::OnLoad()
 	// Crosshair
 	mCrosshair = mGUIManager->LoadSprite(L"crosshair.png", GUIManager::SpriteOrigin::CENTRE, GUIManager::SpritePosition::CENTRE_MIDDLE, Vector2(0, 0), 0, 0.045f, true);
 
-	// Lives
-	mLivesText = mGUIManager->Write(L"LIVES: ", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::LEFT_BOTTOM, Vector2(120, -150), L"AlienEncounters.spritefont",
-		0.0f, 0.75f, Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);
+	//// Lives
+	//mLivesText = mGUIManager->Write(L"LIVES: ", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::LEFT_BOTTOM, Vector2(120, -150), L"AlienEncounters.spritefont",
+	//	0.0f, 0.75f, Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);
 
-	for (int i = 0; i < mLives; i++)
-	{
-		Sprite* life = mGUIManager->LoadSprite(L"heart.png", GUIManager::SpriteOrigin::CENTRE, Vector2(mLivesText->mPosition.x, mLivesText->mPosition.y), Vector2(150 + (i * 75), -10), 0, 0.25f, true);
-		mLivesVector.emplace_back(life);
-	}
+	//for (int i = 0; i < mLives; i++)
+	//{
+	//	Sprite* life = mGUIManager->LoadSprite(L"heart.png", GUIManager::SpriteOrigin::CENTRE, Vector2(mLivesText->mPosition.x, mLivesText->mPosition.y), Vector2(150 + (i * 75), -10), 0, 0.25f, true);
+	//	mLivesVector.emplace_back(life);
+	//}
 
-	// Bullets
-	mBulletText = mGUIManager->Write(L"BULLETS: ", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::LEFT_BOTTOM, Vector2(170, -50), L"AlienEncounters.spritefont",
-		0.0f, 0.75f, Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);
+	//// Bullets
+	//mBulletText = mGUIManager->Write(L"BULLETS: ", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::LEFT_BOTTOM, Vector2(170, -50), L"AlienEncounters.spritefont",
+	//	0.0f, 0.75f, Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);
 
-	for (int i = 0; i < mBullets; i++)
-	{
-		Sprite* bullet = mGUIManager->LoadSprite(L"bullet.png", GUIManager::SpriteOrigin::CENTRE, Vector2(mBulletText->mPosition.x, mBulletText->mPosition.y), Vector2(190 + (i * 75), -10), 0, 0.1f, true);
-		mBulletVector.emplace_back(bullet);
-	}
+	//for (int i = 0; i < mBullets; i++)
+	//{
+	//	Sprite* bullet = mGUIManager->LoadSprite(L"bullet.png", GUIManager::SpriteOrigin::CENTRE, Vector2(mBulletText->mPosition.x, mBulletText->mPosition.y), Vector2(190 + (i * 75), -10), 0, 0.1f, true);
+	//	mBulletVector.emplace_back(bullet);
+	//}
 
 	// SCORE
-	mScoreLabelText = mGUIManager->Write(L"SCORE: ", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::LEFT_BOTTOM, Vector2(130, -250), L"AlienEncounters.spritefont",
+	mScoreLabelText = mGUIManager->Write(L"SCORE: ", GUIManager::TextOrigin::CENTRE, GUIManager::TextPosition::LEFT_BOTTOM, Vector2(130, -50), L"AlienEncounters.spritefont",
 		0.0f, 0.75f, Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);
 	mScoreText = mGUIManager->Write(L"0", GUIManager::TextOrigin::CENTRE, Vector2(mScoreLabelText->mPosition.x, mScoreLabelText->mPosition.y), Vector2(150, 0), L"AlienEncounters.spritefont",
 		0.0f, 0.75f, Vector4(1.0f, 0.0f, 0.0f, 1.0f), true);
@@ -714,7 +715,7 @@ void GameScene::OnLoad()
 	// Loading of Pause Menu (initallity hidden)
 
 	// creates a panel that covers the screen when game is paused
-	mPausedOverlay = mGUIManager->CreateQuadOverlay(Vector4(0.1f, 0.1f, 0.1f, 1.0f), false);
+	//mPausedOverlay = mGUIManager->CreateQuadOverlay(Vector4(0.1f, 0.1f, 0.1f, 1.0f), false);
 
 	//mPausedOverlay = mGUIManager->CreateQuad(
 	//	Vector2(0, 0), Vector2(100, 0), Vector2(100, 1200), Vector2(0, 1200),
@@ -784,7 +785,7 @@ void GameScene::OnUnPause()
 	//mSceneManager->Pause(false);
 
 	//exit(0);
-	mPausedOverlay->mIsVisible = false;
+	//mPausedOverlay->mIsVisible = false;
 	mPausedText->mIsVisible = false;
 	mPausedExitButton->SetVisibility(false);
 	mResumeGameButton->SetVisibility(false);
