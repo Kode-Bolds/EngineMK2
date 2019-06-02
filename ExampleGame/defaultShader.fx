@@ -171,10 +171,14 @@ float4 PS(PS_INPUT input) : SV_Target
 		//Check in texture bounds
 		if (saturate(projectedTexCoords.x) == projectedTexCoords.x && saturate(projectedTexCoords.y) == projectedTexCoords.y)
 		{
+
 			float shadowDepth = txShadowTexture.Sample(txDiffSampler, projectedTexCoords).r;
 			float depth = (input.ShadowPos[i].z / input.ShadowPos[i].w);
 			if (depth > 0 && depth < 1)
 			{
+				return txShadowTexture.Sample(txDiffSampler, projectedTexCoords);
+
+
 				if (saturate(depth) > shadowDepth + 0.0001f)
 				{
 					shadow = 0.f;
