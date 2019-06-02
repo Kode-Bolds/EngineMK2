@@ -647,7 +647,10 @@ void GameScene::OnLoad()
 			int randRotation = rand() % 2 - 2;
 			int asteroid = SpawnAsteroid(Vector4(0, 100 * j, -100, 1), Vector4(1, 1, 1, 1) * randScale, Vector4(0, DegreesToRadians(i + randRotation), 0, 1), 10 * randScale, 0,
 				CustomCollisionMask::ASTEROID, L"asteroid_diffuse.dds", L"asteroid_normal.dds");
+
+			//Translate outwards, then reverse rotation
 			mEcsManager->TransformComp(asteroid)->transform *= TranslationMatrix(Vector4(0, 0, 300, 1));
+			mEcsManager->TransformComp(asteroid)->transform *= RotationMatrixY(-DegreesToRadians(i + randRotation));
 		}
 	}
 

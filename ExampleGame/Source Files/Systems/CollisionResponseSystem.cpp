@@ -127,7 +127,7 @@ void CollisionResponseSystem::Process()
 					//If laser collides with asteroid, destroy both
 					if (entityMask == CustomCollisionMask::SHIP_LASER && collision->collidedEntityCollisionMask == CustomCollisionMask::ASTEROID)
 					{
-						if (mEcsManager->CollisionComp(entity.ID))
+						if (mEcsManager->CollisionComp(entity.ID) && mEcsManager->CollisionComp(mEcsManager->CollisionComp(entity.ID)->collidedEntity))
 						{
 							const KodeboldsMath::Vector4 pos = mEcsManager->TransformComp(mEcsManager->CollisionComp(entity.ID)->collidedEntity)->translation;
 							const float radius = mEcsManager->SphereColliderComp(mEcsManager->CollisionComp(entity.ID)->collidedEntity)->radius / 4;
@@ -151,7 +151,10 @@ void CollisionResponseSystem::Process()
 							mEcsManager->VelocityComp(asteroid)->velocity = KodeboldsMath::Vector4(15, -15, 0, 1);
 
 							//Destroy laser and asteroid
-							mEcsManager->DestroyEntity(mEcsManager->CollisionComp(entity.ID)->collidedEntity);
+							if (mEcsManager->CollisionComp(entity.ID))
+							{
+								mEcsManager->DestroyEntity(mEcsManager->CollisionComp(entity.ID)->collidedEntity);
+							}
 							mEcsManager->DestroyEntity(entity.ID);
 						}
 
